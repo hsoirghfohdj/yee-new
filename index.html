@@ -33,6 +33,7 @@
   .btn { border:1px solid var(--ln); background:var(--p2); color:var(--tx); font:600 13px system-ui,sans-serif; padding:8px 14px; border-radius:9px; cursor:pointer; white-space:nowrap; }
   .btn:hover { background:var(--p3); }
   .btn.pri { background:var(--ac); color:#0f1218; border-color:var(--ac); }
+  a.btn { text-decoration:none; display:inline-block; }
   .stage { position:fixed; inset:0; z-index:50; background:var(--bg); display:none; flex-direction:column; }
   .stage.on { display:flex; }
   .bar { display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px solid var(--ln); }
@@ -50,6 +51,7 @@
     <div class="logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15 12h.01M18 14h.01"/></svg></div>
     <div><h1>Class Games</h1><div class="sub" id="count">Loading…</div></div>
     <div class="search"><input id="q" type="search" placeholder="Search games…" autocomplete="off"></div>
+    <a class="btn pri" href="install.html">Install</a>
   </header>
   <div class="grid" id="grid"></div>
   <div class="msg" id="msg"><div class="spin"></div>Loading games from the repo…</div>
@@ -76,7 +78,7 @@
   var BRANCH = 'main';
 
   // Files that are part of the site itself, not games.
-  var SKIP_FILES = { 'index.html':1, 'get-dashboard.html':1, 'single-file.html':1, 'file-input.html':1, 'file-input-minified.html':1 };
+  var SKIP_FILES = { 'index.html':1, 'install.html':1, 'get-dashboard.html':1, 'single-file.html':1, 'file-input.html':1, 'file-input-minified.html':1 };
   var SKIP_DIRS = ['inline-tools/', 'methods/', 'other/', '.github/'];
   // Nicer details for games we know; everything else gets a sensible default.
   var KNOWN = {
