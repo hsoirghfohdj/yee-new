@@ -13,7 +13,7 @@ get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == 
 set(k, v) { try { localStorage.setItem('classdash_' + k, JSON.stringify(v)); } catch (e) {} }
 };
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Test update: nothing big changed, this just checks the update popup works';
+const WHATSNEW = 'Test update 2: the bottom of the sidebar now shows when your version was installed';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -128,6 +128,7 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .ubar .sub{white-space:normal}
 .pcls{color:var(--ac);font-weight:600}
 .sched .sl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ver{margin-top:10px;font-size:11px;opacity:.75}
 a.pcls{cursor:pointer}
 a.pcls:hover{text-decoration:underline}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 14px;margin-top:4px}
@@ -400,7 +401,7 @@ host.id = ID;
 host.style.cssText = 'position:fixed;inset:0;z-index:2147483647';
 const root = host.attachShadow({ mode: 'open' });
 root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div class="win">
-<aside class="sb"><div class="brand"><span class="logo">${I.cap}</span>Class Dash</div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div></div></aside>
+<aside class="sb"><div class="brand"><span class="logo">${I.cap}</span>Class Dash</div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><div class="ver"></div></div></aside>
 <main class="mn"><header class="hd"><h1></h1>
 <div class="omni"><span class="oi">${I.search}</span><input data-omni placeholder="Search Class Dash, or go to study.ecology-study" autocomplete="off" spellcheck="false" aria-label="Search or go to"><span class="kbd">Ctrl K</span><div class="odrop" hidden></div></div><span class="upd"></span>
 <button class="ib" data-act="refresh" title="Refresh">${I.refresh}</button><button class="ib" data-act="close" title="Close (Esc)">${I.x}</button></header>
@@ -947,6 +948,10 @@ if (pendingUpdate) {
 const m = pendingUpdate.code.match(/const WHATSNEW = (['"])(.*?)\1;/);
 $('.unote').textContent = m && m[2] ? "What's new: " + m[2] : 'A newer version of Class Dash is on GitHub.';
 $('.ubar').hidden = false;
+}
+{
+const inst = store.get('installed', null);
+$('.ver').textContent = inst && inst.at ? 'Version installed ' + new Date(inst.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : "Can't check for updates on this page";
 }
 function applyUpdate() {
 if (!pendingUpdate) return;
