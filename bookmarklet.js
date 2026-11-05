@@ -81,7 +81,25 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .row.past{opacity:.5}
 .mn{display:flex;flex-direction:column;min-width:0;min-height:0}
 .hd{display:flex;align-items:center;gap:10px;padding:14px 20px 14px 24px;border-bottom:1px solid var(--ln)}
-.hd h1{font-size:18px;font-weight:650;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd h1{font-size:18px;font-weight:650;flex:0 1 auto;max-width:28%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.omni{position:relative;flex:1;max-width:580px;margin:0 auto;display:flex;align-items:center;gap:8px;height:38px;padding:0 8px 0 12px;border-radius:11px;background:var(--p2);border:1px solid var(--ln);color:var(--mu);transition:border-color .12s,box-shadow .12s}
+.omni:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px rgba(124,156,255,.18);background:var(--bg)}
+.omni .oi{display:grid}
+.omni input{all:unset;flex:1;min-width:0;color:var(--tx);font-size:14px}
+.omni input::placeholder{color:var(--mu)}
+.omni:not(:focus-within) input{color:var(--mu);font-family:ui-monospace,monospace;font-size:13px}
+.omni:focus-within>.kbd{display:none}
+.odrop{position:absolute;left:-1px;right:-1px;top:calc(100% + 6px);background:var(--p1);border:1px solid var(--ln);border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,.5);padding:6px;z-index:20;max-height:min(440px,62vh);overflow:auto}
+.odrop[hidden]{display:none}
+.oit{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:9px;cursor:pointer;color:var(--tx)}
+.oit.on{background:var(--p3)}
+.oit .oic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex:none;background:var(--p3);color:var(--tx)}
+.oit .oic svg{width:16px;height:16px}
+.oit .addr{font:12px ui-monospace,monospace;color:var(--mu);white-space:nowrap;max-width:45%;overflow:hidden;text-overflow:ellipsis}
+.oit.on .addr{color:var(--ac)}
+.ohint{padding:8px 10px;color:var(--mu);font-size:12px}
+.ohint b{font:12px ui-monospace,monospace;color:var(--tx);background:var(--p3);border-radius:5px;padding:1px 5px}
+.bd.lib .omni{display:none}
 .upd{font-size:12px;color:var(--mu)}
 .ib{all:unset;cursor:pointer;width:34px;height:34px;display:grid;place-items:center;border-radius:9px;color:var(--mu);background:var(--p2)}
 .ib:hover{color:var(--tx);background:var(--p3)}
@@ -214,6 +232,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .brand,.sbf{display:none}.nav{flex-direction:row}
 .tiles{grid-template-columns:repeat(2,1fr)}.cols{grid-template-columns:1fr}
 .calh{display:none}.cal{grid-template-columns:repeat(2,minmax(0,1fr))}
+.hd h1,.omni>.kbd{display:none}
 .due{min-width:0}.ct{padding:16px}
 }`;
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -346,7 +365,8 @@ host.style.cssText = 'position:fixed;inset:0;z-index:2147483647';
 const root = host.attachShadow({ mode: 'open' });
 root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div class="win">
 <aside class="sb"><div class="brand"><span class="logo">${I.cap}</span>Class Dash</div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div></div></aside>
-<main class="mn"><header class="hd"><h1></h1><span class="upd"></span>
+<main class="mn"><header class="hd"><h1></h1>
+<div class="omni"><span class="oi">${I.search}</span><input data-omni placeholder="Search Class Dash, or go to study.ecology-study" autocomplete="off" spellcheck="false" aria-label="Search or go to"><span class="kbd">Ctrl K</span><div class="odrop" hidden></div></div><span class="upd"></span>
 <button class="ib" data-act="refresh" title="Refresh">${I.refresh}</button><button class="ib" data-act="close" title="Close (Esc)">${I.x}</button></header>
 <div class="ct"></div></main></div></div>`;
 document.body.appendChild(host);
@@ -364,6 +384,7 @@ $('.upd').textContent = usesLib(S.view) ? (S.libLoading ? 'Checking GitHub…' :
 const rb = $('[data-act="refresh"]');
 rb.style.display = isCanvas || usesLib(S.view) ? '' : 'none';
 rb.classList.toggle('spinning', usesLib(S.view) ? S.libLoading : S.loading);
+paintOmni();
 }
 function renderMain(keepScroll) {
 const ct = $('.ct'), top = ct.scrollTop, v = S.view;
@@ -870,6 +891,93 @@ return `<div class="row${done ? ' past' : ''}"><span class="dot" style="backgrou
 ${on ? `<span class="chip ac">Now · ${span(p.b - m)} left</span>` : done ? '<span class="chip">Done</span>' : `<span class="chip">${p.b - p.a} min</span>`}</div>`;
 }).join('')}</div>`;
 };
+// ---- Address bar: search everything, or type an address like study.ecology-study / games.2048 ----
+const slug = s => String(s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+const ALIAS = { overview: 'home', 'to-do': 'todo', todos: 'todo', class: 'classes', game: 'games', calender: 'calendar', bell: 'schedule' };
+function currentAddr() {
+const v = S.view;
+if (v === 'course') { const c = byId(S.courseId); return c ? 'classes.' + slug(c.name) : 'classes'; }
+if (v === 'play') { const g = PACK.find(x => x.id === S.game); return g ? 'games.' + slug(g.name) : 'games'; }
+if (v === 'read') { const d = DOCS.find(x => x.id === S.doc); return d ? 'study.' + slug(d.cls) + '.' + slug(d.name) : 'study'; }
+if (v === 'study' && S.scls !== 'All') return 'study.' + slug(S.scls);
+return v;
+}
+function omniItems() {
+const out = NAV.map(([v, label, icon]) => ({ kind: 'Page', name: label, addr: v, icon, w: 40, open: () => go(v) }));
+const classes = {};
+DOCS.forEach(p => { classes[p.cls] = classes[p.cls] || p; });
+Object.keys(classes).forEach(cls => out.push({ kind: 'Study class', name: cls, addr: 'study.' + slug(cls), icon: classes[cls].icon, color: classes[cls].color, w: 30,
+open: () => { S.scls = cls; S.sq = ''; go('study'); } }));
+DOCS.forEach(p => out.push({ kind: 'Study · ' + p.cls, name: p.name, addr: 'study.' + slug(p.cls) + '.' + slug(p.name), alt: 'study.' + slug(p.name), icon: p.icon, color: p.color, w: 25,
+open: () => { S.doc = p.id; go('read'); } }));
+PACK.forEach(p => out.push({ kind: 'Game', name: p.name, addr: 'games.' + slug(p.name), icon: (p.theme && p.theme[2] ? svg(p.theme[2]) : I.game), w: 20,
+open: () => { addRecent('pack:' + p.id); S.game = p.id; go('play'); } }));
+if (isCanvas) {
+S.courses.forEach(c => out.push({ kind: 'Class', name: c.name, addr: 'classes.' + slug(c.name), icon: I.book, color: c.color, w: 25,
+open: () => { S.back = 'classes'; S.courseId = c.id; go('course'); } }));
+S.work.forEach(x => x.url && out.push({ kind: (x.done || x.submitted ? 'Done · ' : 'Assignment · ') + x.courseName, name: x.title, icon: I.check, w: x.open ? 10 : 0,
+open: () => window.open(x.url, '_blank', 'noopener') }));
+}
+return out;
+}
+function omniSearch(raw) {
+let q = raw.trim().toLowerCase();
+if (!q) return omniItems().filter(x => x.kind === 'Page');
+const head = q.split('.')[0];
+if (ALIAS[head]) q = q.replace(head, ALIAS[head]);
+const words = q.split(/[\s.]+/).filter(Boolean);
+const qs = slug(q.replace(/\./g, ' ')).replace(/-/g, ' ');
+return omniItems().map(x => {
+const addrs = [x.addr, x.alt].filter(Boolean);
+const name = x.name.toLowerCase(), hay = (name + ' ' + x.kind + ' ' + addrs.join(' ')).toLowerCase();
+let s = 0;
+if (addrs.includes(q)) s = 1000;
+else if (addrs.some(a => a.startsWith(q))) s = 600;
+else if (words.every(w => hay.includes(w))) s = 100 + (name.startsWith(qs) ? 200 : name.includes(qs) ? 80 : 0);
+return s ? Object.assign({ s: s + x.w }, x) : null;
+}).filter(Boolean).sort((a, b) => b.s - a.s || a.name.localeCompare(b.name)).slice(0, 9);
+}
+function paintOmni() {
+const box = $('[data-omni]');
+if (!box) return;
+if (root.activeElement !== box) { box.value = currentAddr(); return; }
+const drop = $('.odrop'), q = box.value;
+S.omni = omniSearch(q === S.omniFrom ? '' : q);
+if (S.omniSel >= S.omni.length) S.omniSel = 0;
+drop.hidden = false;
+drop.innerHTML = S.omni.map((x, i) => `<div class="oit${i === S.omniSel ? ' on' : ''}" data-oi="${i}"><span class="oic"${x.color ? ` style="background:${esc(x.color)};color:#0f1218"` : ''}>${x.icon || I.search}</span>
+<div class="grow"><div class="t">${esc(x.name)}</div><div class="sub">${esc(x.kind)}</div></div>${x.addr ? `<span class="addr">${esc(x.addr)}</span>` : ''}</div>`).join('')
++ (S.omni.length ? '' : `<div class="ohint">Nothing matches “${esc(q.trim())}”.</div>`)
++ (q === S.omniFrom || !q.trim() ? `<div class="ohint">Type to search everything, or jump straight there with <b>study.</b> <b>games.</b> <b>classes.</b></div>` : '');
+}
+function omniOpen(i) {
+const x = S.omni && S.omni[i];
+const box = $('[data-omni]');
+if (!x) return;
+box.blur();
+$('.odrop').hidden = true;
+x.open();
+}
+function omniClose() { $('.odrop').hidden = true; }
+const omniBox = $('[data-omni]');
+omniBox.addEventListener('focus', () => { S.omniFrom = omniBox.value; S.omniSel = 0; omniBox.select(); loadLib(); paintOmni(); });
+omniBox.addEventListener('blur', () => { omniClose(); omniBox.value = currentAddr(); });
+omniBox.addEventListener('input', () => { S.omniFrom = null; S.omniSel = 0; paintOmni(); });
+$('.odrop').addEventListener('mousedown', e => e.preventDefault());
+$('.odrop').addEventListener('click', e => { const it = e.target.closest('[data-oi]'); if (it) omniOpen(Number(it.dataset.oi)); });
+$('.odrop').addEventListener('mousemove', e => {
+const it = e.target.closest('[data-oi]');
+if (it && Number(it.dataset.oi) !== S.omniSel) { S.omniSel = Number(it.dataset.oi); root.querySelectorAll('.oit').forEach((el, i) => el.classList.toggle('on', i === S.omniSel)); }
+});
+function omniKey(e) {
+if (e.type !== 'keydown') return;
+const n = (S.omni || []).length;
+if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+e.preventDefault();
+if (n) { S.omniSel = (S.omniSel + (e.key === 'ArrowDown' ? 1 : n - 1)) % n; paintOmni(); const on = root.querySelector('.oit.on'); if (on) on.scrollIntoView({ block: 'nearest' }); }
+} else if (e.key === 'Enter') { e.preventDefault(); omniOpen(S.omniSel || 0); }
+else if (e.key === 'Escape') { e.preventDefault(); omniBox.blur(); omniClose(); omniBox.value = currentAddr(); }
+}
 root.addEventListener('click', e => {
 if (e.target === $('.bd')) return LIB ? null : close();
 const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-sched],[data-lunch],[data-pack],[data-doc],[data-act]');
@@ -905,6 +1013,8 @@ if (S.view === 'study') { S.sq = e.target.value; filterStudy(); } else { S.q = e
 });
 function onKey(e) {
 const down = e.type === 'keydown', study = S.view === 'study';
+if (root.activeElement === omniBox) { omniKey(e); e.stopPropagation(); return; }
+if (down && !LIB && (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); e.stopPropagation(); omniBox.focus(); return; }
 const box = usesLib(S.view) && $('[data-search]'), typing = box && root.activeElement === box;
 const q = study ? S.sq : S.q;
 if (down && box && e.key === '/' && !typing) { e.preventDefault(); e.stopPropagation(); box.focus(); return; }
