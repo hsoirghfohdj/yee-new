@@ -13,7 +13,7 @@ get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == 
 set(k, v) { try { localStorage.setItem('classdash_' + k, JSON.stringify(v)); } catch (e) {} }
 };
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Test update 2: the bottom of the sidebar now shows when your version was installed';
+const WHATSNEW = 'Hall Pass button · request games and study help right from the Games and Study pages · new tabs are numbered by day';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -42,7 +42,8 @@ game: null,
 lib: store.get('lib', null), libLoading: false, libError: null, libTried: 0, q: '', cat: 'All',
 lunch: store.get('lunch', 1), schedKey: null,
 doc: null, sq: '', scls: 'All',
-periods: store.get('periods', {})
+periods: store.get('periods', {}),
+req: {}, reqMsg: {}
 };
 const svg = p => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
 const I = {
@@ -67,6 +68,8 @@ math: svg('<path d="M18 4H6l6 8-6 8h12"/>'),
 globe: svg('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>'),
 talk: svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>'),
 code: svg('<path d="m8 8-5 4 5 4M16 8l5 4-5 4M14 4l-4 16"/>'),
+pass: svg('<path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v2M14 11v2M14 16v2"/>'),
+send: svg('<path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/>'),
 tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
 };
 const CSS = `
@@ -129,6 +132,19 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .pcls{color:var(--ac);font-weight:600}
 .sched .sl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ver{margin-top:10px;font-size:11px;opacity:.75}
+.req{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 16px;border-radius:14px;background:var(--p1);border:1px solid var(--ln);margin-bottom:16px}
+.req .ric{width:36px;height:36px;border-radius:10px;background:var(--gd);color:#0f1218;display:grid;place-items:center;flex:none}
+.rtxt{flex:1 1 230px;min-width:0}
+.rtxt .sub{white-space:normal}
+.rfields{display:flex;flex-wrap:wrap;gap:8px;flex:2 1 360px}
+.rfields input{all:unset;box-sizing:border-box;flex:1 1 150px;min-width:0;height:36px;padding:0 11px;border-radius:9px;background:var(--p2);border:1px solid var(--ln);color:var(--tx);font-size:13px}
+.rfields input:focus{border-color:var(--ac)}
+.rfields input::placeholder{color:var(--mu)}
+.rfields .btn{height:36px;box-sizing:border-box;display:inline-flex;align-items:center}
+.rmsg{flex-basis:100%;font-size:12px;color:var(--mu)}
+.rmsg:empty{display:none}
+.rmsg.ok{color:var(--gd)}
+.rmsg.err{color:var(--bad)}
 a.pcls{cursor:pointer}
 a.pcls:hover{text-decoration:underline}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 14px;margin-top:4px}
@@ -410,7 +426,7 @@ root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div 
 <div class="ct"></div></main></div></div>`;
 document.body.appendChild(host);
 const $ = s => root.querySelector(s);
-const NAV = [['home', 'Overview', I.home], ['todo', 'To-Do', I.check], ['grades', 'Grades', I.chart], ['classes', 'Classes', I.book], ['calendar', 'Calendar', I.cal], ['schedule', 'Schedule', I.clock], ['study', 'Study', I.study], ['games', 'Games', I.game]];
+const NAV = [['home', 'Overview', I.home], ['todo', 'To-Do', I.check], ['grades', 'Grades', I.chart], ['classes', 'Classes', I.book], ['calendar', 'Calendar', I.cal], ['schedule', 'Schedule', I.clock], ['hallpass', 'Hall Pass', I.pass], ['study', 'Study', I.study], ['games', 'Games', I.game]];
 const navOf = v => v === 'course' ? 'classes' : v === 'play' ? 'games' : v === 'read' ? 'study' : v;
 const usesLib = v => v === 'games' || v === 'study';
 function paintChrome() {
@@ -428,20 +444,16 @@ paintOmni();
 function renderMain(keepScroll) {
 const ct = $('.ct'), top = ct.scrollTop, v = S.view;
 paintChrome();
-if (v === 'games') {
-const focused = root.activeElement && root.activeElement.matches('[data-search]');
-ct.innerHTML = vGames();
-filterGames();
-if (focused) { const box = $('[data-search]'); box.focus(); box.setSelectionRange(box.value.length, box.value.length); }
+if (v === 'games' || v === 'study') {
+// keep the cursor in the search box or a request box when the list re-renders
+const a = root.activeElement, keep = a && a.matches('[data-search],[data-req]') ? (a.matches('[data-search]') ? '[data-search]' : `[data-req="${a.dataset.req}"]`) : null;
+ct.innerHTML = v === 'games' ? vGames() : vStudy();
+if (v === 'games') filterGames(); else filterStudy();
+const box = keep && $(keep);
+if (box) { box.focus(); if (box.setSelectionRange) box.setSelectionRange(box.value.length, box.value.length); }
 loadLib();
 }
-else if (v === 'study') {
-const focused = root.activeElement && root.activeElement.matches('[data-search]');
-ct.innerHTML = vStudy();
-filterStudy();
-if (focused) { const box = $('[data-search]'); box.focus(); box.setSelectionRange(box.value.length, box.value.length); }
-loadLib();
-}
+else if (v === 'hallpass') ct.innerHTML = vHallPass();
 else if (v === 'play') { ct.innerHTML = vPlay(); startPack(ct); }
 else if (v === 'read') { ct.innerHTML = vRead(); startDoc(ct, S.doc); }
 else if (v === 'schedule') ct.innerHTML = vSchedule();
@@ -785,6 +797,7 @@ const state = n ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoad
 return `<div class="ghero shero"><div class="ghead"><div class="grow"><div class="gh">Study resources</div>
 <div class="sub">${n} ${n === 1 ? 'resource' : 'resources'} · ${list.length} ${list.length === 1 ? 'class' : 'classes'} · press <span class="kbd">/</span> to search</div></div></div>
 <div class="gfind"><label class="gsearch">${I.search}<input data-search placeholder="Search study resources…" value="${esc(S.sq)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label></div></div>
+${reqCard('study')}
 ${list.length > 1 ? `<div class="seg">${[['All', n], ...list.map(g => [g.cls, g.docs.length])].map(([l, c]) => `<button data-scls="${esc(l)}" class="${S.scls === l ? 'on' : ''}">${esc(l)}<b>${c}</b></button>`).join('')}</div>` : ''}
 ${S.libError && n ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
 ${state}${list.filter(g => S.scls === 'All' || g.cls === S.scls).map(g => `<div class="sgrp"><div class="grp">${esc(g.cls)}<b>${g.docs.length}</b>${g.mine ? '<span class="chip ac">Your class</span>' : ''}</div>
@@ -818,9 +831,67 @@ pre.textContent = await r.text();
 pre.textContent = 'No license file next to this game in the repo.';
 }
 }
+// New-tab pages open as about:blank#N: #1 on Nov 5 2026, going up by one each day.
+const BLANK_START = new Date(2026, 10, 5);
+const blankUrl = () => 'about:blank#' + (Math.round((sod(new Date()) - BLANK_START) / DAY) + 1);
+// ---- Hall pass (Securly Pass blocks being shown inside other sites, so it opens in its own window) ----
+const PASS = 'https://pass.securly.com/';
+const vHallPass = () => `<div class="card nc"><div class="logo" style="background:var(--gd)">${I.pass}</div><h3>Hall Pass</h3>
+<p class="sub">Opens Securly Pass in its own window. Securly doesn't let other sites show it inside them, so it can't load right here.</p>
+<button class="btn pri big" data-act="hallpass">${I.ext}Open Hall Pass</button></div>`;
+function openHallPass() {
+const w = Math.min(520, screen.availWidth), h = Math.min(820, screen.availHeight);
+const win = window.open(PASS, 'classdash-hallpass', `popup=yes,width=${w},height=${h},left=${Math.max(0, Math.round((screen.availWidth - w) / 2))},top=${Math.max(0, Math.round((screen.availHeight - h) / 2))}`);
+if (!win) window.open(PASS, '_blank');
+}
+// ---- Request boxes on the Study and Games pages (emailed through web3forms.com) ----
+const W3F_KEY = '45efbf44-2e20-4802-8882-7b3ba4b1b3cf';
+const reqCard = kind => {
+const r = S.req, m = S.reqMsg[kind] || { text: '', cls: '' }, study = kind === 'study';
+const classes = [...new Set([...S.courses.map(c => c.name), ...DOCS.map(d => d.cls).filter(c => c !== 'Other')])];
+return `<form class="req" data-reqform="${kind}" novalidate><span class="ric">${I.send}</span>
+<div class="rtxt"><div class="t">${study ? 'Need study help for a class?' : 'Want a game added?'}</div>
+<div class="sub">${study ? "Request practice tests or notes for any class. We'll most likely add it, usually within a few days." : "Tell us the game and we'll most likely add it to the library, usually within a few days."}</div></div>
+<div class="rfields">${study
+? `<input data-req="scls" list="cdreqcls" maxlength="60" placeholder="Class (e.g. Biology)" value="${esc(r.scls || '')}" autocomplete="off" spellcheck="false"><datalist id="cdreqcls">${classes.map(c => `<option value="${esc(c)}"></option>`).join('')}</datalist>
+<input data-req="stopic" maxlength="100" placeholder="Unit or topic (optional)" value="${esc(r.stopic || '')}" autocomplete="off">`
+: `<input data-req="game" maxlength="80" placeholder="Game name (e.g. Retro Bowl)" value="${esc(r.game || '')}" autocomplete="off" spellcheck="false">`}
+<button class="btn pri" type="submit">Request</button></div>
+<div class="rmsg ${m.cls}">${esc(m.text)}</div></form>`;
+};
+function reqSay(kind, text, cls) {
+S.reqMsg[kind] = { text, cls };
+const el = root.querySelector(`[data-reqform="${kind}"] .rmsg`);
+if (el) { el.textContent = text; el.className = 'rmsg ' + cls; }
+}
+function sendReq(kind) {
+const r = S.req;
+let fields, subject;
+if (kind === 'games') {
+const g = (r.game || '').trim();
+if (!g) return reqSay(kind, 'Type the name of the game first.', 'err');
+fields = { Request: 'Game', Game: g, Details: 'Sent from the Class Dash games page' }; subject = 'Class Dash request: ' + g;
+} else {
+const c = (r.scls || '').trim();
+if (!c) return reqSay(kind, "Type which class it's for first.", 'err');
+fields = { Request: 'Study resource', Class: c, Topic: (r.stopic || '').trim() || '-', Details: 'Sent from the Class Dash study page' }; subject = 'Class Dash request: ' + c;
+}
+if (Date.now() - store.get('reqAt', 0) < 30000) return reqSay(kind, 'Thanks! Give it a few seconds before sending another.', 'err');
+reqSay(kind, 'Sending…', '');
+fetch('https://api.web3forms.com/submit', {
+method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+body: JSON.stringify(Object.assign({ access_key: W3F_KEY, subject, from_name: 'Class Dash' }, fields))
+}).then(res => res.json()).then(j => {
+if (String(j.success) !== 'true') throw new Error(j.message || 'failed');
+store.set('reqAt', Date.now());
+if (kind === 'games') r.game = ''; else { r.scls = ''; r.stopic = ''; }
+root.querySelectorAll(`[data-reqform="${kind}"] [data-req]`).forEach(i => { i.value = ''; });
+reqSay(kind, kind === 'games' ? "Sent! We'll most likely add it soon, so check back in a few days." : "Sent! We'll most likely add study stuff for it soon, so check back in a few days.", 'ok');
+}).catch(() => reqSay(kind, "Couldn't send right now. Try again in a bit.", 'err'));
+}
 function openBlank() {
 const p = S.view === 'read' ? DOCS.find(x => x.id === S.doc) : PACK.find(x => x.id === S.game);
-const w = p && window.open('about:blank', '_blank');
+const w = p && window.open(blankUrl(), '_blank');
 if (!w) return;
 w.opener = null;
 const d = w.document;
@@ -834,7 +905,7 @@ d.body.appendChild(f);
 f.focus();
 }
 function openLibraryTab() {
-const w = window.open('about:blank', '_blank');
+const w = window.open(blankUrl(), '_blank');
 if (!w) return;
 w.opener = null;
 const d = w.document;
@@ -862,6 +933,7 @@ return `${PATTERNS}<div class="ghero"><div class="ghead"><div class="grow"><div 
 ${LIB ? '' : `<button class="btn" data-act="libtab" title="Open the games library in a new about:blank tab">${I.ext}Open in new tab</button>`}</div>
 <div class="gfind"><label class="gsearch">${I.search}<input data-search placeholder="Search games…" value="${esc(S.q)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label>
 <button class="btn pri big" data-act="random">${I.shuffle}Random</button></div></div>
+${reqCard('games')}
 ${cats.length > 2 ? `<div class="seg">${cats.map(([l, n]) => `<button data-cat="${l}" class="${S.cat === l ? 'on' : ''}">${l}<b>${n}</b></button>`).join('')}</div>` : ''}
 ${S.libError && PACK.length ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
 ${recent.length ? `<div class="rec"><div class="grp">Jump back in</div><div class="tgrid">${recent.map(gameTile).join('')}</div></div>` : ''}
@@ -964,7 +1036,7 @@ run();
 }
 // ---- Address bar: search everything, or type an address like study.ecology-study / games.2048 ----
 const slug = s => String(s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-const ALIAS = { overview: 'home', 'to-do': 'todo', todos: 'todo', class: 'classes', game: 'games', calender: 'calendar', bell: 'schedule' };
+const ALIAS = { overview: 'home', 'to-do': 'todo', todos: 'todo', class: 'classes', game: 'games', calender: 'calendar', bell: 'schedule', 'hall-pass': 'hallpass', pass: 'hallpass', securly: 'hallpass', request: 'games' };
 function currentAddr() {
 const v = S.view;
 if (v === 'course') { const c = byId(S.courseId); return c ? 'classes.' + slug(c.name) : 'classes'; }
@@ -1077,10 +1149,18 @@ else if (d.act === 'full') { const f = root.querySelector('.gframe'); if (f && f
 else if (d.act === 'reload') renderMain();
 else if (d.act === 'close') close();
 else if (d.act === 'later') $('.ubar').hidden = true;
+else if (d.act === 'hallpass') openHallPass();
 else if (d.act === 'update') applyUpdate();
 else if (d.act === 'refresh') { if (usesLib(S.view)) loadLib(true); else { S.courseCache = {}; load(); } }
 });
+root.addEventListener('submit', e => {
+const f = e.target.closest && e.target.closest('[data-reqform]');
+if (!f) return;
+e.preventDefault();
+sendReq(f.dataset.reqform);
+});
 root.addEventListener('input', e => {
+if (e.target.matches('[data-req]')) { S.req[e.target.dataset.req] = e.target.value; return; }
 if (e.target.matches('[data-period]')) {
 const k = e.target.dataset.period, v = e.target.value.trim();
 if (v) S.periods[k] = v; else delete S.periods[k];
@@ -1097,7 +1177,9 @@ if (root.activeElement === omniBox) { omniKey(e); e.stopPropagation(); return; }
 if (down && !LIB && (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); e.stopPropagation(); omniBox.focus(); return; }
 const box = usesLib(S.view) && $('[data-search]'), typing = box && root.activeElement === box;
 const q = study ? S.sq : S.q;
-if (down && box && e.key === '/' && !typing) { e.preventDefault(); e.stopPropagation(); box.focus(); return; }
+const inField = root.activeElement && root.activeElement.matches('input,textarea,select');
+if (down && inField && !typing && e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); root.activeElement.blur(); return; }
+if (down && box && e.key === '/' && !typing && !inField) { e.preventDefault(); e.stopPropagation(); box.focus(); return; }
 if (down && typing && e.key === 'Enter') {
 const v = study ? visibleDocs() : visibleTiles(), k = q.trim().toLowerCase();
 const pick = v.find(t => t.dataset.name === k) || v.find(t => t.dataset.name.startsWith(k)) || v[0];
