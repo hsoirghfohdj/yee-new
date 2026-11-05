@@ -13,7 +13,7 @@ get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == 
 set(k, v) { try { localStorage.setItem('classdash_' + k, JSON.stringify(v)); } catch (e) {} }
 };
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Pick which class each period is on the Schedule page · updates now ask first';
+const WHATSNEW = 'Test update: nothing big changed, this just checks the update popup works';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
