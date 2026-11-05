@@ -6,7 +6,7 @@ const ENV = window.ENV || {};
 const isCanvas = !!(ENV.current_user_id || ENV.current_user) || /(^|\.)instructure\.com$/.test(location.hostname);
 const LIB = window.__classDashMode === 'library';
 const DAY = 864e5;
-const REPO = 'hsoirghfohdj/yee-new', BRANCH = 'main', DIR = 'offline/';
+const REPO = 'hsoirghfohdj/yee-new', BRANCH = 'main', DIR = 'offline/', STUDY = 'study/';
 const PAGES = 'https://hsoirghfohdj.github.io/yee-new/';
 const store = {
 get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
@@ -19,7 +19,8 @@ me: null, courses: [], work: [], grades: [], ann: [],
 done: new Set(store.get('done', [])), courseCache: {}, courseId: null,
 game: null,
 lib: store.get('lib', null), libLoading: false, libError: null, libTried: 0, q: '', cat: 'All',
-lunch: store.get('lunch', 1), schedKey: null
+lunch: store.get('lunch', 1), schedKey: null,
+doc: null, sq: '', scls: 'All'
 };
 const svg = p => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
 const I = {
@@ -36,6 +37,14 @@ search: svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'),
 shuffle: svg('<path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>'),
 ext: svg('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'),
 clock: svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+study: svg('<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>'),
+leaf: svg('<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.1-6C9.5 14.5 12 13 13 12"/>'),
+flask: svg('<path d="M9 3h6M10 3v6l-5.5 9.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3"/><path d="M7 15h10"/>'),
+atom: svg('<circle cx="12" cy="12" r="1.5"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>'),
+math: svg('<path d="M18 4H6l6 8-6 8h12"/>'),
+globe: svg('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>'),
+talk: svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>'),
+code: svg('<path d="m8 8-5 4 5 4M16 8l5 4-5 4M14 4l-4 16"/>'),
 tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
 };
 const CSS = `
@@ -183,6 +192,19 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .nc h3{font-size:18px;margin-bottom:6px}
 .nc p{margin-bottom:18px;white-space:normal}
 .ann .sub{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ghero.shero{background:radial-gradient(120% 160% at 0% 0%,rgba(62,207,142,.18),transparent 55%),radial-gradient(120% 160% at 100% 100%,rgba(124,156,255,.14),transparent 55%),var(--p1)}
+.sgrp{margin-bottom:8px}
+.sgrp[hidden]{display:none}
+.sgrp .grp{display:flex;align-items:center;gap:8px;margin:18px 0 8px}
+.sgrp .grp .chip{text-transform:none;letter-spacing:0}
+.sgrp .grp b{font-weight:650;font-size:11px;background:var(--p3);border-radius:10px;padding:0 7px;letter-spacing:0}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.sdoc{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--p1);border:1px solid var(--ln);min-width:0;transition:border-color .12s,transform .12s}
+.sdoc[hidden]{display:none}
+.sdoc:hover,.sdoc:focus-visible{border-color:var(--ac);transform:translateY(-2px)}
+.sdoc .sic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;color:#0f1218;flex:none}
+.sdoc .go{color:var(--mu);flex:none}
+.sdoc:hover .go{color:var(--ac)}
 .bd.lib{background:var(--bg);backdrop-filter:none;animation:none}
 .bd.lib .win{width:100vw;height:100vh;border:0;border-radius:0;box-shadow:none;animation:none;grid-template-columns:1fr;grid-template-rows:1fr}
 .bd.lib .sb,.bd.lib [data-act="close"]{display:none}
@@ -309,7 +331,7 @@ S.error = e.message || String(e);
 }
 S.loading = false;
 paintChrome();
-if (!['games', 'play'].includes(S.view)) renderMain(true);
+if (!['games', 'play', 'read'].includes(S.view)) renderMain(true);
 }
 function loadCourse(id) {
 S.courseCache[id] = { loading: true };
@@ -329,18 +351,19 @@ root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div 
 <div class="ct"></div></main></div></div>`;
 document.body.appendChild(host);
 const $ = s => root.querySelector(s);
-const NAV = [['home', 'Overview', I.home], ['todo', 'To-Do', I.check], ['grades', 'Grades', I.chart], ['classes', 'Classes', I.book], ['calendar', 'Calendar', I.cal], ['schedule', 'Schedule', I.clock], ['games', 'Games', I.game]];
-const navOf = v => v === 'course' ? 'classes' : v === 'play' ? 'games' : v;
+const NAV = [['home', 'Overview', I.home], ['todo', 'To-Do', I.check], ['grades', 'Grades', I.chart], ['classes', 'Classes', I.book], ['calendar', 'Calendar', I.cal], ['schedule', 'Schedule', I.clock], ['study', 'Study', I.study], ['games', 'Games', I.game]];
+const navOf = v => v === 'course' ? 'classes' : v === 'play' ? 'games' : v === 'read' ? 'study' : v;
+const usesLib = v => v === 'games' || v === 'study';
 function paintChrome() {
 const overdue = S.work.filter(x => x.open && x.due && new Date(x.due) < Date.now()).length;
 $('.nav').innerHTML = NAV.map(([v, label, icon]) => `<button data-go="${v}" class="${navOf(S.view) === v ? 'on' : ''}">${icon}${label}${v === 'todo' && overdue ? `<span class="badge">${overdue}</span>` : ''}</button>`).join('');
-const c = S.view === 'course' && byId(S.courseId), g = S.view === 'play' && PACK.find(x => x.id === S.game);
-$('.hd h1').textContent = c ? c.name : g ? g.name : (NAV.find(n => n[0] === S.view) || [, ''])[1];
-$('.upd').textContent = S.view === 'games' ? (S.libLoading ? 'Checking GitHub…' : S.lib ? 'Updated ' + fmtTime(new Date(S.lib.at)) : '')
-: S.loading && S.loadedAt ? 'Refreshing…' : S.loadedAt && isCanvas && S.view !== 'play' ?'Updated ' + fmtTime(S.loadedAt) : '';
+const c = S.view === 'course' && byId(S.courseId), g = S.view === 'play' && PACK.find(x => x.id === S.game), dc = S.view === 'read' && DOCS.find(x => x.id === S.doc);
+$('.hd h1').textContent = c ? c.name : g ? g.name : dc ? dc.name : (NAV.find(n => n[0] === S.view) || [, ''])[1];
+$('.upd').textContent = usesLib(S.view) ? (S.libLoading ? 'Checking GitHub…' : S.lib ? 'Updated ' + fmtTime(new Date(S.lib.at)) : '')
+: S.loading && S.loadedAt ? 'Refreshing…' : S.loadedAt && isCanvas && S.view !== 'play' && S.view !== 'read' ? 'Updated ' + fmtTime(S.loadedAt) : '';
 const rb = $('[data-act="refresh"]');
-rb.style.display = isCanvas || S.view === 'games' ? '' : 'none';
-rb.classList.toggle('spinning', S.view === 'games' ? S.libLoading : S.loading);
+rb.style.display = isCanvas || usesLib(S.view) ? '' : 'none';
+rb.classList.toggle('spinning', usesLib(S.view) ? S.libLoading : S.loading);
 }
 function renderMain(keepScroll) {
 const ct = $('.ct'), top = ct.scrollTop, v = S.view;
@@ -352,7 +375,15 @@ filterGames();
 if (focused) { const box = $('[data-search]'); box.focus(); box.setSelectionRange(box.value.length, box.value.length); }
 loadLib();
 }
+else if (v === 'study') {
+const focused = root.activeElement && root.activeElement.matches('[data-search]');
+ct.innerHTML = vStudy();
+filterStudy();
+if (focused) { const box = $('[data-search]'); box.focus(); box.setSelectionRange(box.value.length, box.value.length); }
+loadLib();
+}
 else if (v === 'play') { ct.innerHTML = vPlay(); startPack(ct); }
+else if (v === 'read') { ct.innerHTML = vRead(); startFrame(ct, S.doc); }
 else if (v === 'schedule') ct.innerHTML = vSchedule();
 else if (!isCanvas) ct.innerHTML = vNoCanvas();
 else if (!S.loadedAt) ct.innerHTML = S.error ? vError() : '<div class="spin"></div>';
@@ -568,10 +599,38 @@ return `<div class="art gen" style="background:linear-gradient(rgba(6,8,12,0),rg
 <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${p.theme[2]}</svg>
 <span class="gtitle" style="font-size:${size}px">${esc(p.name)}</span></div>`;
 };
-let PACK = [];
-const setPack = () => { PACK = (S.lib ? S.lib.paths : []).map(toPack).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())); };
+const isDoc = p => {
+if (!p.startsWith(STUDY) || !/\.html?$/i.test(p)) return false;
+const parts = p.slice(STUDY.length).split('/');
+return parts.length <= 2 || (parts.length === 3 && /^index\.html?$/i.test(parts[2]));
+};
+const SUBJECTS = [
+[/bio|life|anatom|ecolog|zoo|botan|health/i, I.leaf],
+[/chem/i, I.flask],
+[/phys|science|earth|environ|astro|geolog/i, I.atom],
+[/math|algebra|geometr|calc|stat|trig/i, I.math],
+[/hist|gov|civic|econ|geograph|social|psych|socio/i, I.globe],
+[/spanish|french|german|chinese|latin|japanese|language|asl/i, I.talk],
+[/english|lit|writ|read|lang/i, I.book],
+[/comput|code|program|cs\b|tech/i, I.code]
+];
+const toDoc = path => {
+const parts = path.slice(STUDY.length).split('/');
+const cls = parts.length === 1 ? 'Other' : pretty(parts[0]);
+const file = parts.length === 3 ? parts[1] : parts[parts.length - 1];
+const h = hash(cls.toLowerCase());
+return { id: path, name: pretty(file.replace(/\.html?$/i, '')), cls, file: parts.slice(1).join('/') || parts[0],
+color: PAL[h % PAL.length], icon: (SUBJECTS.find(s => s[0].test(cls)) || [, I.study])[1] };
+};
+const myClass = cls => S.courses.some(c => { const n = (c.name || '').toLowerCase(), k = cls.toLowerCase(); return n.includes(k) || k.split(' ').some(w => w.length > 3 && n.includes(w)); });
+let PACK = [], DOCS = [];
+const setPack = () => {
+PACK = (S.lib ? S.lib.paths : []).map(toPack).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+DOCS = (S.lib && S.lib.study || []).map(toDoc).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+};
 setPack();
 async function loadLib(force) {
+if (S.lib && !S.lib.study && !S.libTried) force = true;
 if (S.libLoading || (!force && Date.now() - Math.max(S.libTried, S.lib ? S.lib.at : 0) < 5 * 6e4)) return;
 S.libLoading = true; S.libError = null; S.libTried = Date.now();
 paintChrome();
@@ -580,13 +639,13 @@ const r = await fetch('https://api.github.com/repos/' + REPO + '/git/trees/' + B
 let files = [];
 if (r.status !== 409 && r.status !== 404) {
 if (!r.ok) throw new Error(r.status === 403 || r.status === 429 ? 'GitHub is rate-limiting this network. Try again in a few minutes.' : 'GitHub returned an error (' + r.status + ').');
-files = ((await r.json()).tree || []).filter(t => t.type === 'blob' && t.path.startsWith(DIR)).map(t => t.path);
+files = ((await r.json()).tree || []).filter(t => t.type === 'blob' && (t.path.startsWith(DIR) || t.path.startsWith(STUDY))).map(t => t.path);
 }
 const imgs = {}, pics = {};
 files.filter(p => IMG.test(p)).forEach(p => { imgs[p.replace(IMG, '').toLowerCase()] = p; });
 const paths = files.filter(isGame);
 paths.forEach(p => { const a = artFor(p, imgs); if (a) pics[p] = a; });
-S.lib = { at: Date.now(), paths, art: pics };
+S.lib = { at: Date.now(), paths, art: pics, study: files.filter(isDoc) };
 store.set('lib', S.lib);
 setPack();
 } catch (e) {
@@ -594,7 +653,7 @@ S.libError = e.message === 'Failed to fetch' ? "Couldn't reach GitHub. Check you
 }
 S.libLoading = false;
 paintChrome();
-if (S.view === 'games') renderMain(true);
+if (usesLib(S.view)) renderMain(true);
 }
 const vPlay = () => {
 const p = PACK.find(x => x.id === S.game);
@@ -604,17 +663,56 @@ return `<div class="play"><div class="gbar wide"><button class="btn" data-go="ga
 <button class="btn" data-act="license">License</button><button class="btn" data-act="newtab">New tab</button><button class="btn" data-act="full">Full screen</button><button class="btn" data-act="reload">Restart</button></div>
 <div class="frame"><div class="spin"></div></div></div>`;
 };
-function startPack(ct) {
+function startFrame(ct, path) {
 const box = ct.querySelector('.frame');
 if (!box) return;
 const f = document.createElement('iframe');
 f.className = 'gframe';
 f.setAttribute('allow', 'fullscreen; autoplay; gamepad');
 f.addEventListener('load', () => { try { f.contentWindow.focus(); } catch (e) {} });
-f.src = gameUrl(S.game);
+f.src = gameUrl(path);
 box.innerHTML = '';
 box.appendChild(f);
 }
+const startPack = ct => startFrame(ct, S.game);
+const vRead = () => {
+const p = DOCS.find(x => x.id === S.doc);
+if (!p) return `<div class="gbar"><button class="btn" data-go="study">← Study</button></div>` + empty('That study resource is no longer in the repo.');
+return `<div class="play"><div class="gbar wide"><button class="btn" data-go="study">← Study</button>
+<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${esc(p.cls)}</div></div>
+<button class="btn" data-act="newtab">New tab</button><button class="btn" data-act="full">Full screen</button></div>
+<div class="frame"><div class="spin"></div></div></div>`;
+};
+const docCard = p => `<button class="sdoc" data-doc="${esc(p.id)}" data-name="${esc((p.name + ' ' + p.cls).toLowerCase())}" title="${esc(p.name)}">
+<span class="sic" style="background:${p.color}">${p.icon}</span><span class="grow"><span class="t" style="display:block">${esc(p.name)}</span><span class="sub" style="display:block">${esc(p.file)}</span></span><span class="go">${I.ext}</span></button>`;
+const vStudy = () => {
+const groups = {};
+DOCS.forEach(p => { (groups[p.cls] = groups[p.cls] || []).push(p); });
+const list = Object.keys(groups).map(cls => ({ cls, docs: groups[cls], mine: isCanvas && cls !== 'Other' && myClass(cls) }))
+.sort((a, b) => (b.mine - a.mine) || ((a.cls === 'Other') - (b.cls === 'Other')) || a.cls.toLowerCase().localeCompare(b.cls.toLowerCase()));
+if (S.scls !== 'All' && !groups[S.scls]) S.scls = 'All';
+const n = DOCS.length;
+const state = n ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoading ? empty('No study resources yet. Add .html files to study/&lt;class name&gt;/ in the repo, then hit refresh.') : '<div class="spin"></div>';
+return `<div class="ghero shero"><div class="ghead"><div class="grow"><div class="gh">Study resources</div>
+<div class="sub">${n} ${n === 1 ? 'resource' : 'resources'} · ${list.length} ${list.length === 1 ? 'class' : 'classes'} · press <span class="kbd">/</span> to search</div></div></div>
+<div class="gfind"><label class="gsearch">${I.search}<input data-search placeholder="Search study resources…" value="${esc(S.sq)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label></div></div>
+${list.length > 1 ? `<div class="seg">${[['All', n], ...list.map(g => [g.cls, g.docs.length])].map(([l, c]) => `<button data-scls="${esc(l)}" class="${S.scls === l ? 'on' : ''}">${esc(l)}<b>${c}</b></button>`).join('')}</div>` : ''}
+${S.libError && n ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
+${state}${list.filter(g => S.scls === 'All' || g.cls === S.scls).map(g => `<div class="sgrp"><div class="grp">${esc(g.cls)}<b>${g.docs.length}</b>${g.mine ? '<span class="chip ac">Your class</span>' : ''}</div>
+<div class="sgrid">${g.docs.map(docCard).join('')}</div></div>`).join('')}<div class="empty nomatch" hidden></div>`;
+};
+function filterStudy() {
+const ct = $('.ct'), q = S.sq.trim().toLowerCase();
+let shown = 0;
+ct.querySelectorAll('.sgrp').forEach(g => {
+let inGroup = 0;
+g.querySelectorAll('.sdoc').forEach(t => { t.hidden = !!q && !t.dataset.name.includes(q); if (!t.hidden) inGroup++; });
+g.hidden = !inGroup; shown += inGroup;
+});
+const nm = ct.querySelector('.nomatch');
+if (nm) { nm.hidden = !q || shown > 0; nm.textContent = 'No study resources match "' + S.sq.trim() + '".'; }
+}
+const visibleDocs = () => [...$('.ct').querySelectorAll('.sdoc')].filter(t => !t.hidden);
 async function showLicense(ct) {
 const box = ct.querySelector('.frame');
 const open = box.querySelector('.lic');
@@ -632,7 +730,7 @@ pre.textContent = 'No license file next to this game in the repo.';
 }
 }
 function openBlank() {
-const p = PACK.find(x => x.id === S.game);
+const p = S.view === 'read' ? DOCS.find(x => x.id === S.doc) : PACK.find(x => x.id === S.game);
 const w = p && window.open('about:blank', '_blank');
 if (!w) return;
 w.opener = null;
@@ -745,7 +843,7 @@ ${on ? `<span class="chip ac">Now · ${span(p.b - m)} left</span>` : done ? '<sp
 };
 root.addEventListener('click', e => {
 if (e.target === $('.bd')) return LIB ? null : close();
-const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-sched],[data-lunch],[data-pack],[data-act]');
+const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-sched],[data-lunch],[data-pack],[data-doc],[data-act]');
 if (!t) return;
 const d = t.dataset;
 if (d.go) go(d.go);
@@ -758,6 +856,8 @@ renderMain(true);
 }
 else if (d.seg) { S.seg = d.seg; renderMain(true); }
 else if (d.cat) { S.cat = d.cat; renderMain(true); }
+else if (d.scls) { S.scls = d.scls; renderMain(true); }
+else if (d.doc) { S.doc = d.doc; go('read'); }
 else if (d.sched) { S.schedKey = d.sched; renderMain(true); }
 else if (d.lunch) { S.lunch = Number(d.lunch); store.set('lunch', S.lunch); paintSched(); renderMain(true); }
 else if (d.pack) { addRecent('pack:' + d.pack); S.game = d.pack; go('play'); }
@@ -768,23 +868,31 @@ else if (d.act === 'libtab') openLibraryTab();
 else if (d.act === 'full') { const f = root.querySelector('.gframe'); if (f && f.requestFullscreen) f.requestFullscreen(); }
 else if (d.act === 'reload') renderMain();
 else if (d.act === 'close') close();
-else if (d.act === 'refresh') { if (S.view === 'games') loadLib(true); else { S.courseCache = {}; load(); } }
+else if (d.act === 'refresh') { if (usesLib(S.view)) loadLib(true); else { S.courseCache = {}; load(); } }
 });
-root.addEventListener('input', e => { if (e.target.matches('[data-search]')) { S.q = e.target.value; filterGames(); } });
+root.addEventListener('input', e => {
+if (!e.target.matches('[data-search]')) return;
+if (S.view === 'study') { S.sq = e.target.value; filterStudy(); } else { S.q = e.target.value; filterGames(); }
+});
 function onKey(e) {
-const down = e.type === 'keydown';
-const box = S.view === 'games' && $('[data-search]'), typing = box && root.activeElement === box;
+const down = e.type === 'keydown', study = S.view === 'study';
+const box = usesLib(S.view) && $('[data-search]'), typing = box && root.activeElement === box;
+const q = study ? S.sq : S.q;
 if (down && box && e.key === '/' && !typing) { e.preventDefault(); e.stopPropagation(); box.focus(); return; }
 if (down && typing && e.key === 'Enter') {
-const v = visibleTiles(), q = S.q.trim().toLowerCase();
-const pick = v.find(t => t.dataset.name === q) || v.find(t => t.dataset.name.startsWith(q)) || v[0];
+const v = study ? visibleDocs() : visibleTiles(), k = q.trim().toLowerCase();
+const pick = v.find(t => t.dataset.name === k) || v.find(t => t.dataset.name.startsWith(k)) || v[0];
 if (pick) pick.click();
 e.stopPropagation(); return;
 }
-if (down && typing && e.key === 'Escape' && S.q) { e.preventDefault(); e.stopPropagation(); box.value = S.q = ''; filterGames(); return; }
+if (down && typing && e.key === 'Escape' && q) {
+e.preventDefault(); e.stopPropagation(); box.value = '';
+if (study) { S.sq = ''; filterStudy(); } else { S.q = ''; filterGames(); }
+return;
+}
 if (down && e.key === 'Escape') {
 e.preventDefault(); e.stopPropagation();
-if (S.view === 'play') go('games'); else if (!LIB) close();
+if (S.view === 'play') go('games'); else if (S.view === 'read') go('study'); else if (!LIB) close();
 return;
 }
 e.stopPropagation();
