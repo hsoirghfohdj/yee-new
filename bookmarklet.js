@@ -383,7 +383,7 @@ if (focused) { const box = $('[data-search]'); box.focus(); box.setSelectionRang
 loadLib();
 }
 else if (v === 'play') { ct.innerHTML = vPlay(); startPack(ct); }
-else if (v === 'read') { ct.innerHTML = vRead(); startFrame(ct, S.doc); }
+else if (v === 'read') { ct.innerHTML = vRead(); startDoc(ct, S.doc); }
 else if (v === 'schedule') ct.innerHTML = vSchedule();
 else if (!isCanvas) ct.innerHTML = vNoCanvas();
 else if (!S.loadedAt) ct.innerHTML = S.error ? vError() : '<div class="spin"></div>';
@@ -675,6 +675,35 @@ box.innerHTML = '';
 box.appendChild(f);
 }
 const startPack = ct => startFrame(ct, S.game);
+// Study pages load straight from the repo (raw.githubusercontent.com), so a new upload shows up
+// without waiting for GitHub Pages. Raw GitHub serves them as plain text, so the HTML is fetched
+// and shown in a sandboxed frame; relative images/scripts resolve against GitHub Pages.
+const RAW = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/';
+const DOC_SANDBOX = 'allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals allow-downloads';
+const docCache = {};
+function docHtml(path) {
+if (docCache[path]) return Promise.resolve(docCache[path]);
+return fetch(RAW + path.split('/').map(encodeURIComponent).join('/') + '?t=' + Date.now(), { cache: 'no-store' })
+.then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+.then(html => {
+const base = '<base href="' + esc(gameUrl(path).replace(/[^/]*$/, '')) + '">';
+html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + base) : base + html;
+return (docCache[path] = html);
+});
+}
+function fillDoc(f, path) {
+return docHtml(path)
+.then(html => { f.setAttribute('sandbox', DOC_SANDBOX); f.srcdoc = html; })
+.catch(() => { f.src = gameUrl(path); });
+}
+function startDoc(ct, path) {
+const box = ct.querySelector('.frame');
+if (!box) return;
+const f = document.createElement('iframe');
+f.className = 'gframe';
+f.setAttribute('allow', 'fullscreen; autoplay');
+fillDoc(f, path).then(() => { if (S.view === 'read' && S.doc === path && box.isConnected) { box.innerHTML = ''; box.appendChild(f); } });
+}
 const vRead = () => {
 const p = DOCS.find(x => x.id === S.doc);
 if (!p) return `<div class="gbar"><button class="btn" data-go="study">← Study</button></div>` + empty('That study resource is no longer in the repo.');
@@ -740,7 +769,7 @@ d.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;background:#000';
 const f = d.createElement('iframe');
 f.setAttribute('allow', 'fullscreen; autoplay; gamepad');
 f.style.cssText = 'border:0;width:100%;height:100%;display:block';
-f.src = gameUrl(p.id);
+if (S.view === 'read') { d.body.style.background = '#fff'; fillDoc(f, p.id); } else f.src = gameUrl(p.id);
 d.body.appendChild(f);
 f.focus();
 }
