@@ -1,0 +1,1233 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Unit 2 Ecology Test (THIS IS NOT THE ACTUAL TEST, IT IS A PRACTICE TEST)</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one study column (max 780px). Home = start cards + score history; a test shows one question card at a time under a sticky progress bar. */
+:root{
+  --paper:#EEF3EC; --surface:#FFFFFF; --sunk:#F6F9F4; --ink:#16241C; --muted:#53655A; --line:#D3DDD5; --line-2:#AFC0B4;
+  --moss:#2D6A4B; --moss-ink:#FFFFFF; --moss-soft:#DCEDE2;
+  --sun:#E2A428; --sun-ink:#2A1E05; --sun-soft:#FBEFD2;
+  --good:#1E7A49; --good-soft:#DCF1E3; --bad:#B53F2E; --bad-soft:#F8E0DA;
+  --sky:#E6F1F7; --water:#2F72A6; --water-soft:#BFDCEF; --land:#CFDDB8; --soil:#B79A73; --cloud:#FFFFFF;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1813; --surface:#17231C; --sunk:#132019; --ink:#E2ECE5; --muted:#9BB0A3; --line:#2A3A30; --line-2:#3F5547;
+    --moss:#74C69B; --moss-ink:#0C1A12; --moss-soft:#1E3529;
+    --sun:#EDB64B; --sun-ink:#231803; --sun-soft:#3A2E14;
+    --good:#6CCB94; --good-soft:#16382A; --bad:#F2897A; --bad-soft:#3E211C;
+    --sky:#14232C; --water:#7CB8E4; --water-soft:#1F4560; --land:#2B3B26; --soil:#4A3C2A; --cloud:#3A4A55;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1813; --surface:#17231C; --sunk:#132019; --ink:#E2ECE5; --muted:#9BB0A3; --line:#2A3A30; --line-2:#3F5547;
+  --moss:#74C69B; --moss-ink:#0C1A12; --moss-soft:#1E3529;
+  --sun:#EDB64B; --sun-ink:#231803; --sun-soft:#3A2E14;
+  --good:#6CCB94; --good-soft:#16382A; --bad:#F2897A; --bad-soft:#3E211C;
+  --sky:#14232C; --water:#7CB8E4; --water-soft:#1F4560; --land:#2B3B26; --soil:#4A3C2A; --cloud:#3A4A55;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5}
+.wrap{max-width:780px;margin:0 auto;padding-block:20px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* Home */
+.hero{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;padding-block:12px 22px;border-bottom:2px solid var(--ink)}
+.hero h1{font-size:clamp(40px,8vw,64px);font-weight:800;letter-spacing:-.02em}
+.hero .lede{margin:10px 0 0;color:var(--muted);max-width:56ch}
+.pyr{width:132px;height:auto}
+.pyr text{font-family:var(--f-mono);font-size:10px;fill:var(--ink)}
+@media (max-width:560px){.hero{grid-template-columns:1fr}.pyr{display:none}}
+.section{margin-top:28px;display:grid;gap:12px}
+.section > h2{font-size:24px;font-weight:800}
+.resume{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:var(--sun-soft);border:2px solid var(--sun);border-radius:10px;padding:14px 16px}
+.resume p{margin:0;min-width:0}
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:600px){.modes{grid-template-columns:1fr}}
+.mode{display:grid;gap:6px;align-content:start;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;cursor:pointer;min-width:0}
+.mode:hover{border-color:var(--moss)}
+.mode h3{font-size:21px;font-weight:800}
+.mode p{margin:0;color:var(--muted);font-size:15px}
+.mode .meta{font-family:var(--f-mono);font-size:12px;color:var(--moss);letter-spacing:.04em;text-transform:uppercase}
+.mode.primary{grid-column:1/-1;background:var(--moss);color:var(--moss-ink);border-color:var(--moss)}
+.mode.primary p,.mode.primary .meta{color:var(--moss-ink);opacity:.9}
+.mode[disabled]{opacity:.5;cursor:not-allowed}
+.topicbox{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line-2);background:var(--sunk);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--moss);color:var(--moss-ink);border-color:var(--moss)}
+.setting{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.setting p{margin:0;font-size:15px;color:var(--muted)}
+.setting strong{color:var(--ink)}
+.switch{flex:none;width:48px;height:28px;border-radius:999px;border:0;background:var(--line-2);position:relative;cursor:pointer;margin-top:2px}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--surface);transition:transform .15s}
+.switch[aria-checked="true"]{background:var(--moss)}
+.switch[aria-checked="true"]::after{transform:translateX(20px)}
+
+/* History */
+.hist{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:16px;min-width:0}
+.hist-empty{color:var(--muted);margin:0}
+.chart{overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto}
+.chart text{font-family:var(--f-mono);font-size:11px;fill:var(--muted)}
+.chart .gl{stroke:var(--line);stroke-width:1}
+.chart .ln{stroke:var(--moss);stroke-width:2.5;fill:none}
+.chart .ar{fill:var(--moss-soft)}
+.chart .pt{fill:var(--surface);stroke:var(--moss);stroke-width:2.5}
+.chart .pt.last{fill:var(--moss)}
+.chart .pass{stroke:var(--sun);stroke-dasharray:4 4;stroke-width:1.5}
+.chart .lbl{fill:var(--ink);font-weight:700}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;font-family:var(--f-mono);font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px}
+.pill.hi{background:var(--good-soft);color:var(--good)}
+.pill.mid{background:var(--sun-soft);color:var(--ink)}
+.pill.lo{background:var(--bad-soft);color:var(--bad)}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 120px 48px;gap:10px;align-items:center;font-size:15px}
+.bar .track{height:10px;background:var(--sunk);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.bar .fill{height:100%;background:var(--moss)}
+.bar .fill.lo{background:var(--bad)}
+.bar .fill.mid{background:var(--sun)}
+.bar .v{font-family:var(--f-mono);font-size:13px;text-align:right}
+@media (max-width:480px){.bar{grid-template-columns:minmax(0,1fr) 80px 44px}}
+.hist-head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.hist-head h3{font-size:18px}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:14px;padding:0}
+.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px}
+
+/* Buttons */
+.btn{border:0;border-radius:8px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--moss);color:var(--moss-ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-2)}
+.btn.sun{background:var(--sun);color:var(--sun-ink)}
+.btn.small{padding:8px 12px;font-size:14px}
+
+/* Test */
+.bar-top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding-block:10px;border-bottom:1px solid var(--line);display:grid;gap:8px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.bar-row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.bar-row .count{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.prog{height:8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.prog > div{height:100%;background:var(--moss);transition:width .25s}
+.card{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:16px;min-width:0}
+@media (max-width:480px){.card{padding:16px}}
+.qmeta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--moss-soft);color:var(--ink)}
+.tag.src{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+.qtext{font-size:21px;line-height:1.35;font-weight:700;margin:0;text-wrap:pretty}
+.qhint{margin:-6px 0 0;color:var(--muted);font-size:15px}
+.opts{display:grid;gap:10px}
+.opt{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;align-items:center;text-align:left;background:var(--sunk);border:2px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;min-height:52px}
+.opt:hover:not([disabled]){border-color:var(--moss)}
+.opt .k{font-family:var(--f-mono);font-weight:700;font-size:13px;width:28px;height:28px;border-radius:6px;display:grid;place-items:center;border:1px solid var(--line-2);background:var(--surface)}
+.opt.sel{border-color:var(--moss);background:var(--moss-soft)}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt[disabled]{cursor:default}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.actions .spacer{flex:1}
+.fb{border-radius:10px;padding:14px 16px;display:grid;gap:6px}
+.fb.ok{background:var(--good-soft);border:1px solid var(--good)}
+.fb.no{background:var(--bad-soft);border:1px solid var(--bad)}
+.fb.part{background:var(--sun-soft);border:1px solid var(--sun)}
+.fb h4{margin:0;font-family:var(--f-display);font-size:19px}
+.fb p{margin:0}
+.fb .ans{font-weight:700}
+.fig{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:10px;overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:300px;height:auto;margin:0 auto}
+.fig .bx{fill:var(--surface);stroke:var(--line-2);stroke-width:1.5}
+.fig .bx2{fill:var(--moss-soft);stroke:var(--moss);stroke-width:1.5}
+.fig .tx{fill:var(--ink);font-family:var(--f-body);font-size:13px}
+.fig .tx.b{font-weight:700}
+.fig .tx.s{font-size:11px;fill:var(--muted)}
+.fig .ar{stroke:var(--muted);stroke-width:1.6;fill:none}
+.fig .ah{fill:var(--muted)}
+.fig .ax{stroke:var(--ink);stroke-width:1.5;fill:none}
+.fig .gr{stroke:var(--line);stroke-width:1}
+.fig .tagc{fill:var(--sun);stroke:var(--sun-ink);stroke-width:1}
+.fig .tagt{fill:var(--sun-ink);font-family:var(--f-mono);font-size:13px;font-weight:700}
+.fig .dot{fill:var(--moss)}
+.fig .l1{stroke:var(--water);stroke-width:2.5;fill:none}
+.fig .l2{stroke:var(--sun);stroke-width:2.5;fill:none}
+.fig .l3{stroke:var(--moss);stroke-width:2.5;fill:none}
+.fig .dash{stroke:var(--bad);stroke-width:2;stroke-dasharray:6 5}
+.fig .sky{fill:var(--sky)} .fig .wat{fill:var(--water-soft)} .fig .land{fill:var(--land)} .fig .soil{fill:var(--soil)} .fig .cld{fill:var(--cloud)} .fig .sunc{fill:var(--sun)}
+.fig .tree{fill:var(--moss)} .fig .trunk{fill:var(--soil)}
+.fig .rain{stroke:var(--water);stroke-width:2;stroke-dasharray:3 6}
+.fig .band{stroke:var(--ink);stroke-width:1.5}
+.fig .b1{fill:var(--moss-soft)} .fig .b2{fill:var(--land)} .fig .b3{fill:var(--sun-soft)} .fig .b4{fill:var(--water-soft)}
+.figcap{font-size:13px;color:var(--muted);margin:6px 2px 0}
+
+/* sort */
+.sortlist{display:grid;gap:10px}
+.srow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--sunk);border:2px solid var(--line);border-radius:10px;padding:10px 12px}
+.srow.right{border-color:var(--good);background:var(--good-soft)}
+.srow.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.srow .it{min-width:0}
+.srow .fix{display:block;font-size:13px;color:var(--bad);font-weight:700}
+.seg{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.seg button{border:1px solid var(--line-2);background:var(--surface);border-radius:6px;padding:6px 10px;font-size:14px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--moss);color:var(--moss-ink);border-color:var(--moss)}
+.seg button[disabled]{cursor:default}
+@media (max-width:560px){.srow{grid-template-columns:1fr}.seg{justify-content:flex-start}}
+
+/* match */
+.mterms{display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--surface);padding-block:10px;margin-block:-10px;border-bottom:1px solid var(--line)}
+.mterms:empty{display:none}
+.mterm{border:2px solid var(--line-2);background:var(--surface);border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer}
+.mterm.sel{border-color:var(--sun);background:var(--sun-soft)}
+.mterm.used{opacity:.35}
+.mdefs{display:grid;gap:10px}
+.mdef{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;text-align:left;background:var(--sunk);border:2px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer}
+.mdef:hover:not([disabled]){border-color:var(--moss)}
+.mdef.sel{border-color:var(--sun)}
+.mdef .slot{justify-self:start;font-weight:700;font-size:14px;border-radius:6px;padding:3px 10px;border:1px dashed var(--line-2);color:var(--muted)}
+.mdef .slot.filled{border:1px solid var(--moss);background:var(--moss-soft);color:var(--ink)}
+.mdef.right{border-color:var(--good);background:var(--good-soft)}
+.mdef.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.mdef .fix{font-size:14px;color:var(--bad);font-weight:700}
+.mdef[disabled]{cursor:default}
+
+/* order */
+.oseq{display:grid;gap:8px;min-height:52px;background:var(--sunk);border:2px dashed var(--line-2);border-radius:10px;padding:10px}
+.oseq .ph{color:var(--muted);font-size:15px;margin:auto 0}
+.oitem{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;text-align:left;border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:10px 12px;cursor:pointer}
+.oitem .k{font-family:var(--f-mono);font-weight:700;font-size:13px;color:var(--muted)}
+.oitem.right{border-color:var(--good);background:var(--good-soft)}
+.oitem.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opool{display:grid;gap:8px}
+
+/* label */
+.lrows{display:grid;gap:10px}
+.lrow{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:center}
+.lrow .k{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--sun);color:var(--sun-ink);font-family:var(--f-mono);font-weight:700}
+.lrow select{width:100%;font:inherit;padding:10px;border-radius:8px;border:2px solid var(--line-2);background:var(--surface);color:var(--ink)}
+.lrow select.right{border-color:var(--good);background:var(--good-soft)}
+.lrow select.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.lrow .fix{grid-column:2;font-size:14px;color:var(--bad);font-weight:700;margin-top:-4px}
+
+/* typed */
+.inrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inrow input{font:inherit;font-size:20px;padding:10px 12px;border-radius:8px;border:2px solid var(--line-2);background:var(--surface);color:var(--ink);width:min(100%,320px)}
+.inrow input.right{border-color:var(--good);background:var(--good-soft)}
+.inrow input.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.inrow .unit{color:var(--muted)}
+
+/* Results */
+.score{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:center;padding-block:10px 22px;border-bottom:2px solid var(--ink)}
+.big{font-family:var(--f-display);font-weight:800;font-size:clamp(64px,16vw,112px);line-height:.9;letter-spacing:-.03em}
+.score p{margin:4px 0 0;color:var(--muted)}
+.score h1{font-size:28px}
+@media (max-width:480px){.score{grid-template-columns:1fr;gap:6px}}
+.missed{display:grid;gap:10px}
+.miss{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:8px;padding:12px 14px;display:grid;gap:4px;min-width:0}
+.miss .q{font-weight:700}
+.miss .yours{color:var(--bad)}
+.miss .corr{color:var(--good);font-weight:700}
+.miss .why{color:var(--muted);font-size:15px}
+.rowbtns{display:flex;flex-wrap:wrap;gap:10px}
+.quitbox{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+(() => {
+"use strict";
+/* ---------- helpers ---------- */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const fmt = n => Number(n).toLocaleString("en-US", {maximumFractionDigits: 4});
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+
+const TOPICS = {
+  levels: "Levels of organization & Earth systems",
+  factors: "Biotic & abiotic factors",
+  cycles: "Biogeochemical cycles",
+  energy: "Energy flow & food webs",
+  pyramids: "Ecological pyramids & the 10% rule",
+  interactions: "Species interactions",
+  populations: "Population density, distribution & growth",
+  limits: "Carrying capacity & limiting factors",
+  keystone: "Keystone species & biodiversity"
+};
+
+/* ---------- vocabulary (every term) ---------- */
+// [term, definition, topic, extra accepted spellings for typing]
+const VOCAB = [
+  ["Autotroph", "An organism that captures energy from sunlight or chemicals and uses it to make its own food from inorganic compounds", "energy", ["autotrophs", "producer", "producers"]],
+  ["Herbivore", "An animal that feeds mainly or only on plants, algae, and other photosynthetic organisms", "energy", ["herbivores"]],
+  ["Heterotroph", "An organism that gets its food by consuming other living things", "energy", ["heterotrophs", "consumer", "consumers"]],
+  ["Decomposer", "An organism that feeds on and breaks down dead plants, animals, and organic waste (like a mushroom)", "energy", ["decomposers"]],
+  ["Carnivore", "An organism that gets its nutrition and energy mainly or only from eating the flesh of other animals", "energy", ["carnivores"]],
+  ["Biodiversity", "The total variety of organisms in the biosphere", "keystone", ["biological diversity"]],
+  ["Carrying capacity", "The largest number of individuals of a particular species that a particular environment can support", "limits"],
+  ["Commensalism", "A symbiotic relationship in which one organism benefits and the other is neither helped nor harmed (+/0)", "interactions"],
+  ["Organism", "Any individual living thing that can grow, reproduce, maintain an internal balance, and respond to its environment", "levels", ["individual"]],
+  ["Biome", "A group of ecosystems that share similar climates and typical organisms", "levels"],
+  ["Biosphere", "The part of Earth in which life exists, including land, water, and air (atmosphere)", "levels"],
+  ["Community", "An assemblage of different populations that live together in a defined area", "levels"],
+  ["Ecosystem", "All the organisms that live in a place, together with their nonliving environment", "levels"],
+  ["Mutualism", "A symbiotic relationship in which both species benefit from the relationship (+/+)", "interactions"],
+  ["Resilience", "The ability to recover after a disturbance; to change and move on", "keystone", ["resilient"]],
+  ["Population distribution", "Describes the way individuals are spaced out across their range (clumped, uniform, or random)", "populations", ["distribution", "dispersion", "population dispersion"]],
+  ["Niche", "The full range of physical and biological conditions in which an organism lives and the way it uses those conditions", "interactions"],
+  ["Habitat", "The area where an organism lives, including the biotic and abiotic factors that affect it", "interactions"],
+  ["Competition", "A negative-negative interaction between organisms or species that happens when they need the same limited resources", "interactions"],
+  ["Consumer", "An organism that relies on other organisms for its energy and food supply", "energy", ["consumers", "heterotroph", "heterotrophs"]],
+  ["Density-dependent limiting factor", "A limiting factor that depends on population density", "limits", ["density dependent", "density-dependent", "density dependent factor", "density-dependent factor"]],
+  ["Density-independent limiting factor", "A limiting factor that affects all populations in similar ways, regardless of the population density", "limits", ["density independent", "density-independent", "density independent factor", "density-independent factor"]],
+  ["Ecological (trophic) pyramid", "An illustration of the relative amounts of energy or matter contained within each trophic level in a food chain or food web", "pyramids", ["ecological pyramid", "trophic pyramid", "ecologic pyramid", "ecological pyramids"]],
+  ["Immigration", "Movement of individuals INTO an area occupied by an existing population", "populations"],
+  ["Emigration", "Movement of individuals OUT of an area, away from an existing population", "populations"],
+  ["Exponential growth", "A growth pattern in which the individuals in a population reproduce at a constant rate (J-shaped curve)", "populations", ["exponential"]],
+  ["Food chain", "A series of steps in an ecosystem in which organisms transfer energy by eating and being eaten", "energy"],
+  ["Food web", "A network of complex interactions formed by the feeding relationships among the organisms in an ecosystem", "energy"],
+  ["Nitrogen fixation", "The process of converting nitrogen gas into nitrogen compounds that plants can absorb and use", "cycles", ["nitrogen fixing", "fixation"]],
+  ["Omnivore", "An organism that eats both plant and animal matter as its main food source", "energy", ["omnivores"]],
+  ["Chemosynthesis", "A process in which chemical energy is used to produce carbohydrates", "energy"],
+  ["Detritivore", "A heterotroph that gets energy and nutrients by consuming dead and decomposing organic matter (like a worm eating dead leaves)", "energy", ["detritivores"]],
+  ["Scavenger", "An organism that mostly consumes decaying biomass, such as dead animal bodies (like a vulture)", "energy", ["scavengers"]],
+  ["Trophic level", "Each step in a food chain or food web", "energy", ["trophic levels"]],
+  ["Nitrification", "The process in which ammonia or ammonium is converted into nitrate by bacteria", "cycles"],
+  ["Denitrification", "The process by which bacteria convert nitrates into nitrogen gas", "cycles"],
+  ["Keystone species", "A single species that is not usually abundant in a community, yet has strong control over the structure of that community", "keystone", ["keystone"]],
+  ["Population", "A group of individuals of the same species that live in the same area", "levels"],
+  ["Population density", "The number of individuals per unit area", "populations", ["density"]],
+  ["Logistic growth", "A growth pattern in which a population's growth slows and then stops following a period of exponential growth (S-shaped curve)", "populations", ["logistic"]],
+  ["Parasitism", "A symbiotic relationship in which one organism lives on or inside another organism and harms it (+/−)", "interactions"],
+  ["Predation", "A relationship where one organism (the predator) kills and eats another organism (the prey)", "interactions"],
+  ["Producer", "An organism that makes its own organic food from inorganic raw materials using an outside energy source, like sunlight", "energy", ["producers", "autotroph", "autotrophs"]]
+];
+// terms that must not appear in the same matching round (the first term conflicts with each of the others)
+const CONFLICTS = [["Autotroph", "Producer"], ["Heterotroph", "Consumer", "Detritivore"]];
+
+/* ---------- question bank ---------- */
+const B = [];
+const MC = (id, topic, q, a, w, why, x = {}) => B.push(Object.assign({id, t: "mc", topic, q, a, w, why}, x));
+const TF = (id, topic, q, a, why, x = {}) => B.push(Object.assign({id, t: "tf", topic, q, a, why}, x));
+const SORT = (id, topic, q, buckets, items, why, x = {}) => B.push(Object.assign({id, t: "sort", topic, q, buckets, items, why, pick: 7}, x));
+const ORDER = (id, topic, q, items, why, x = {}) => B.push(Object.assign({id, t: "order", topic, q, items, why}, x));
+const LABEL = (id, topic, q, fig, blanks, why, x = {}) => B.push(Object.assign({id, t: "label", topic, q, fig, blanks, why}, x));
+const NUM = (id, topic, q, ans, tol, unit, why, x = {}) => B.push(Object.assign({id, t: "num", topic, q, ans, tol, unit, why}, x));
+const GEN = (id, topic, fn, x = {}) => B.push(Object.assign({id, t: "gen", topic, fn}, x));
+const K = {src: "Kahoot"};
+
+/* Kahoot review (all 31) */
+MC("k1", "levels", "What level of ecology would be represented by a school of fish in a lake?", "Population", ["Ecosystem", "Community", "Organism"], "A school is many fish of the SAME species in the same area, which is a population.", K);
+MC("k2", "populations", "The movement of a single bison out of a herd is called…", "Emigration", ["Density", "Immigration", "Population"], "EMigration = Exiting. Immigration = moving In.", K);
+MC("k3", "pyramids", "Each level in a food chain contains less energy than the level below it. Why?", "It's lost as heat to the environment.", ["It's consumed by carnivores.", "It's added as biomass.", "Photosynthesis captures the sun's energy and creates sugars."], "Only about 10% passes up a level. The rest is lost as heat (and waste).", K);
+MC("k4", "levels", "What phrase best describes the focus of ecology?", "Interactions among organisms", ["The growth of populations", "Population density and distribution", "Interactions among cells"], "Ecology is the study of interactions among organisms and between organisms and their environment.", K);
+MC("k5", "cycles", "Fossil fuels are part of which biogeochemical cycle?", "Carbon", ["Nitrogen", "Phosphorus", "Water"], "Coal, oil, and natural gas are carbon stored from dead organisms. Burning them releases CO₂.", K);
+MC("k6", "factors", "Which of the following is an example of a BIOTIC factor in an ecosystem?", "Bacteria", ["Water", "Sunlight", "Weather"], "Biotic = living. Bacteria are alive; water, sunlight, and weather are abiotic.", K);
+MC("k7", "cycles", "In the water cycle, water vapor in the air _____ to form clouds.", "Condenses", ["Freezes", "Evaporates", "Melts"], "Condensation: water vapor cools into liquid droplets that make clouds.", K);
+MC("k8", "cycles", "Which two biogeochemical cycles depend directly on photosynthesis?", "Carbon and oxygen", ["Water (hydrologic) and phosphorus", "Carbon and nitrogen", "Nitrogen and phosphorus"], "Photosynthesis takes in CO₂ (carbon) and gives off O₂ (oxygen), so it links the carbon and oxygen cycles.", K);
+MC("k9", "populations", "Which of the following properly describes the DENSITY of a population?", "100 oak trees per km²", ["100 people in an area", "100 wolves per 5 km²", "100 sloths dispersed randomly"], "Density = number of individuals per ONE unit of area. \"Per 5 km²\" is not one unit of area.", K);
+MC("k10", "energy", "In this food web, what are the toads?", "Tertiary consumers", ["Herbivores", "Secondary consumers", "Omnivores"], "Plants → herbivorous insects (primary) → predaceous insects (secondary) → toads (tertiary).", Object.assign({fig: "foodweb"}, K));
+MC("k11", "pyramids", "What percentage of energy at one trophic level is LOST when moving to the next level?", "90%", ["10%", "50%", "100%"], "About 10% is passed on, so about 90% is lost (mostly as heat).", Object.assign({order: ["10%", "50%", "90%", "100%"]}, K));
+MC("k12", "cycles", "What process in the water (hydrologic) cycle moves water from the leaves of plants to the atmosphere?", "Transpiration", ["Evaporation", "Precipitation", "Condensation"], "Transpiration is the BIOLOGICAL process of the water cycle: water leaves plants through their leaves.", K);
+MC("k13", "interactions", "Ants eat the sticky waste made by aphids, and the ants protect the aphids. This is an example of…", "Mutualism", ["Parasitism", "Predation", "Competition"], "Both organisms benefit (+/+), so it is mutualism.", K);
+MC("k14", "limits", "Disease spreads more quickly in crowded areas, so disease is considered a…", "Density-dependent limiting factor", ["Non-limiting growth factor", "Density-independent limiting factor", "Carrying capacity limiting factor"], "Its effect gets stronger as the population gets bigger and more crowded.", K);
+MC("k15", "pyramids", "Which level in this ecological pyramid of numbers would contain an HERBIVORE?", "C", ["A", "B", "D"], "D = producers (bottom). Herbivores eat producers, so they are the next level up: C.", Object.assign({fig: "pyrABCD", order: ["A", "B", "C", "D"]}, K));
+MC("k16", "populations", "Elephant herds that live and move together are an example of what type of distribution?", "Clumped", ["Random", "Scattered", "Uniform"], "Living in groups (herds, schools, prides) is clumped distribution.", K);
+MC("k17", "populations", "Why might a species display UNIFORM distribution?", "Because they are territorial", ["Because they have few predators", "Because it provides protection from predators", "Because there are abundant resources"], "Territorial organisms, like nesting gannets, space themselves evenly.", K);
+MC("k18", "energy", "In this food web, which organism has NO natural predators?", "Snakes", ["Spiders", "Predaceous insects", "Decomposers"], "No arrows leave the snakes, so nothing in this web eats them. (Decomposers aren't drawn in this web at all.)", Object.assign({fig: "foodweb"}, K));
+MC("k19", "keystone", "A keystone species is a species that…", "Has an unusually large impact on its ecosystem", ["Goes unnoticed if its numbers decrease", "Leads to a decrease in an area's biodiversity", "Alters an area by building dams in streams and rivers"], "A keystone species plays a vital, unique role; removing it changes the whole ecosystem. (Building dams is one example, not the definition.)", K);
+MC("k20", "populations", "What pattern of growth will a population with LIMITED resources show?", "Logistic", ["Exponential", "Geometric", "Density-dependent"], "Limited resources → growth slows and levels off at carrying capacity (S-curve).", K);
+MC("k21", "energy", "A moose is considered a consumer because it…", "Gets energy by eating other organisms", ["Uses sunlight for energy", "Forms carbohydrates using chemicals", "Makes its own food"], "Consumers (heterotrophs) get energy by eating other organisms.", K);
+MC("k22", "interactions", "Two goldfinches eating seeds from the same plant is an example of…", "Competition", ["Parasitism", "Mutualism", "Commensalism"], "They are using the same limited resource. Same species, so it's intraspecific competition.", K);
+MC("k23", "pyramids", "Biomass refers to the total…", "Mass of all organisms in a given area", ["Unused material passed on as waste", "Amount of energy lost as heat", "Producer-to-consumer ratio"], "Biomass = total mass of living organic matter in an area.", K);
+MC("k24", "limits", "The maximum number of individuals an area can support is the…", "Carrying capacity", ["Limiting factor", "Density", "Distribution"], "Carrying capacity is set by limiting factors like food, water, and space.", K);
+MC("k25", "keystone", "A rainforest has a high level of biodiversity because it has…", "A wide variety of living things", ["Many abiotic factors", "Few connections between living things", "Some endangered species"], "Biodiversity = the variety of plants, animals, and microorganisms.", K);
+MC("k26", "pyramids", "In this food web, if 300,000 units of energy are at the level of the plants, how much energy reaches the foxes (when they eat rabbits)?", "3,000 units", ["300,000 units", "30,000 units", "300 units"], "Plants 300,000 → rabbits 30,000 (10%) → foxes 3,000 (10%).", Object.assign({fig: "foodweb", order: ["300,000 units", "30,000 units", "3,000 units", "300 units"]}, K));
+MC("k27", "levels", "From the smallest level of ecology up, which is the FIRST level that includes abiotic factors?", "Ecosystem", ["Population", "Community", "Biome"], "Organism, population, and community are only living things. An ecosystem adds the nonliving environment.", K);
+MC("k28", "interactions", "Predation is best described as…", "One organism eating another organism", ["One animal eating another animal", "Two organisms competing for limited resources", "An interaction in which both species benefit"], "Predation is when one organism hunts and kills another. Notice it says ORGANISM, not just animal.", K);
+MC("k29", "populations", "Births = 25, deaths = 20, immigration = 5, emigration = 3. How much will the population grow?", "7", ["13", "3", "17"], "(25 + 5) − (20 + 3) = 30 − 23 = 7.", Object.assign({order: ["3", "7", "13", "17"]}, K));
+MC("k30", "cycles", "What is nitrogen fixation?", "Bacteria change nitrogen gas into ammonium", ["Bacteria change ammonium into nitrate", "Bacteria convert nitrate into nitrogen gas", "Bacteria break down dead organisms"], "Fixation turns N₂ gas into ammonium. (Ammonium → nitrate is nitrification; nitrate → N₂ is denitrification.)", K);
+MC("k31", "populations", "Jack counted 250 plants in 5 square meters. What is the population density of the plants?", "50 plants per square meter", ["250 plants per square meter", "25 plants per square meter", "5 plants per square meter"], "250 ÷ 5 = 50 plants per ONE square meter.", K);
+
+/* Levels of organization & Earth systems */
+const R = {src: "Review slides"};
+MC("l1", "levels", "A system is best defined as…", "A set of interconnected parts that form a whole", ["A single living thing and its habitat", "A group of the same species in one area", "Only the nonliving parts of an environment"], "A system is a set of interconnected parts that form a whole. It can be open or closed.", R);
+TF("l2", "levels", "A system can be either open or closed.", true, "A system can be closed or open.", R);
+MC("l3", "levels", "Which Earth system includes all of the gases that surround Earth?", "Atmosphere", ["Hydrosphere", "Geosphere", "Biosphere"], "Atmosphere = gases.", R);
+MC("l4", "levels", "Rocks, continents, and the ocean floor are part of the…", "Geosphere", ["Hydrosphere", "Biosphere", "Atmosphere"], "The geosphere is the \"usually solid stuff.\" Deep inside Earth, parts of it are liquid.", R);
+MC("l5", "levels", "Ocean water, groundwater, and water vapor in the air all belong to the…", "Hydrosphere", ["Atmosphere", "Geosphere", "Biosphere"], "The hydrosphere is all of Earth's water: fresh, salt, vapor, rain, and underground.", R);
+MC("l6", "levels", "All living organisms on Earth and the environments they live in make up the…", "Biosphere", ["Biome", "Geosphere", "Community"], "The biosphere is every living thing plus where it lives.", R);
+MC("l7", "levels", "A volcano erupts and releases CO₂ into the air. Which two Earth systems are interacting?", "Geosphere and atmosphere", ["Biosphere and hydrosphere", "Hydrosphere and atmosphere", "Biosphere and geosphere"], "The volcano is part of the geosphere; the CO₂ goes into the atmosphere. Earth's 4 systems are always interacting.", R);
+MC("l8", "levels", "Tree roots grow into cracks and slowly break apart a rock. Which two Earth systems are interacting?", "Biosphere and geosphere", ["Atmosphere and hydrosphere", "Hydrosphere and geosphere", "Biosphere and atmosphere"], "Trees are living (biosphere); rock is geosphere.", R);
+MC("l9", "levels", "Rain falls and washes soil down a hillside into a river. Which two Earth systems are interacting?", "Hydrosphere and geosphere", ["Atmosphere and biosphere", "Biosphere and hydrosphere", "Geosphere and atmosphere"], "Rain and river water are hydrosphere; soil is geosphere.", R);
+MC("l10", "levels", "All the elk living in Yellowstone National Park make up a…", "Population", ["Community", "Ecosystem", "Biome"], "Same species + same area = population.", R);
+MC("l11", "levels", "All the wolves, elk, beavers, willows, and grasses living together in Yellowstone make up a…", "Community", ["Population", "Ecosystem", "Biosphere"], "Many different populations living together = community (living things only).", R);
+MC("l12", "levels", "A pond's frogs, fish, and algae, PLUS its water, sunlight, and mud, together form a(n)…", "Ecosystem", ["Community", "Population", "Organism"], "Living community + abiotic factors = ecosystem.", R);
+MC("l13", "levels", "Which level is made of many ecosystems that share a similar climate and similar kinds of organisms?", "Biome", ["Biosphere", "Community", "Population"], "Example: the tropical rainforest biome or the desert biome.", R);
+MC("l14", "levels", "Which is the LARGEST level of ecological organization?", "Biosphere", ["Biome", "Ecosystem", "Community"], "Organism → population → community → ecosystem → biome → biosphere.", R);
+MC("l15", "levels", "One elk standing in a meadow represents which level of organization?", "Organism (individual)", ["Population", "Community", "Ecosystem"], "A single living thing is the organism/individual level.", R);
+MC("l16", "levels", "What is the difference between a community and an ecosystem?", "An ecosystem also includes the abiotic (nonliving) factors", ["A community is larger than an ecosystem", "A community includes rocks and water", "An ecosystem has only one species"], "Community = all the living populations. Ecosystem = community + nonliving environment.", R);
+TF("l17", "levels", "A population can include more than one species.", false, "A population is only ONE species. Several species together form a community.", R);
+ORDER("o1", "levels", "Put the levels of ecological organization in order from SMALLEST to LARGEST.", ["Organism", "Population", "Community", "Ecosystem", "Biome", "Biosphere"], "Organism → population → community → ecosystem → biome → biosphere.", R);
+SORT("s1", "levels", "Sort each part of Earth into the system it belongs to.", ["Atmosphere", "Biosphere", "Hydrosphere", "Geosphere"],
+  [["Nitrogen and oxygen gases", 0], ["Carbon dioxide gas in the air", 0], ["A forest of pine trees", 1], ["Bacteria in the soil", 1], ["A herd of elephants", 1], ["Ocean water", 2], ["Groundwater", 2], ["A glacier", 2], ["Rocks and continents", 3], ["The ocean floor", 3], ["Sand and minerals", 3]],
+  "Atmosphere = gases. Biosphere = living things. Hydrosphere = all water. Geosphere = rocks, continents, ocean floor.", Object.assign({pick: 8}, R));
+
+/* Biotic and abiotic */
+MC("f1", "factors", "Which of these is an ABIOTIC factor?", "Temperature", ["Fungi", "Grass", "A beetle"], "Abiotic = nonliving. Temperature is a physical condition.", R);
+MC("f2", "factors", "Which pair contains ONLY abiotic factors?", "Sunlight and soil minerals", ["Water and algae", "Rocks and moss", "Bacteria and oxygen"], "Algae, moss, and bacteria are all living (biotic).", R);
+MC("f3", "factors", "How are biotic and abiotic factors related?", "Abiotic factors affect which organisms can live in a place, and organisms can change abiotic factors too", ["They never affect each other", "Abiotic factors only affect plants", "Biotic factors are only found in water ecosystems"], "Example: water and sunlight decide what plants can grow, and those plants change the soil and shade.", R);
+MC("f4", "factors", "Which change to an ABIOTIC factor would most likely reduce the number of plants in a grassland?", "A long drought with little rain", ["More rabbits moving in", "A new type of fungus", "Fewer hawks"], "Rainfall (water) is abiotic. The other choices are biotic.", R);
+SORT("s2", "factors", "Sort each factor as BIOTIC (living) or ABIOTIC (nonliving).", ["Biotic", "Abiotic"],
+  [["Bacteria", 0], ["Fungi", 0], ["Grass", 0], ["Algae", 0], ["A wolf", 0], ["Plankton", 0], ["Mushrooms", 0], ["Sunlight", 1], ["Water", 1], ["Temperature", 1], ["Soil minerals", 1], ["Oxygen gas", 1], ["Rocks", 1], ["Rainfall", 1], ["Wind", 1]],
+  "Biotic = living things. Abiotic = nonliving physical and chemical factors.", Object.assign({pick: 8}, R));
+
+/* Biogeochemical cycles */
+const C = {src: "Cycle review"};
+MC("c1", "cycles", "What are biogeochemical cycles?", "The cycling of nutrients (matter) through living things and the environment", ["The one-way flow of energy from the sun", "The way populations grow and shrink", "The movement of animals between habitats"], "Biogeochemical cycles are the cycles of nutrients (matter) in an ecosystem.", R);
+MC("c2", "cycles", "Matter ____ through an ecosystem, but energy ____.", "cycles (is recycled) / flows one way and leaves as heat", ["flows one way / is recycled", "is created / is destroyed", "is lost as heat / is recycled forever"], "Matter is recycled by biogeochemical cycles. Energy flows one way: in as sunlight, out as heat.", R);
+MC("c4", "cycles", "The sun heats a lake and liquid water turns into water vapor. This is…", "Evaporation", ["Condensation", "Transpiration", "Precipitation"], "Evaporation: liquid → gas.", C);
+MC("c5", "cycles", "Which water cycle process is a BIOLOGICAL process (done by living things)?", "Transpiration", ["Evaporation", "Condensation", "Runoff"], "Transpiration is the only biological process in the water cycle. The rest are physical/chemical.", C);
+MC("c6", "cycles", "Rain lands on a hillside and flows over the ground into a river. This is…", "Runoff", ["Seepage", "Transpiration", "Condensation"], "Runoff = water flowing over the land surface to rivers, lakes, and oceans.", C);
+MC("c7", "cycles", "Water soaking down through the soil to become groundwater is called…", "Seepage", ["Runoff", "Evaporation", "Precipitation"], "Seepage (infiltration) moves water into the ground.", C);
+MC("c8", "cycles", "Rain, snow, sleet, and hail are all forms of…", "Precipitation", ["Condensation", "Evaporation", "Transpiration"], "Precipitation = water falling from clouds.", C);
+MC("c9", "cycles", "Carbon is a major part of…", "All organic compounds, like carbohydrates, proteins, and nucleic acids", ["Only rocks and minerals", "Only water molecules", "Only the atmosphere"], "That is why life on Earth is called carbon-based life.", R);
+MC("c10", "cycles", "Which process REMOVES carbon dioxide from the atmosphere?", "Photosynthesis", ["Cellular respiration", "Burning fossil fuels", "Volcanic eruptions"], "Producers take in CO₂ during photosynthesis. The other three release CO₂.", C);
+MC("c11", "cycles", "Which process releases CO₂ when organisms break down sugar for energy?", "Cellular respiration", ["Photosynthesis", "Nitrogen fixation", "Condensation"], "Producers and consumers both release CO₂ through cellular respiration.", C);
+MC("c12", "cycles", "How do fossil fuels form?", "Dead organic matter is buried and changed by pressure and heat over millions of years", ["Volcanoes erupt and cool", "CO₂ dissolves into rainwater", "Plants do photosynthesis at night"], "Decomposition, pressure, and heat turn organic matter into fossil fuel over millions of years.", C);
+MC("c13", "cycles", "Which is a HUMAN process in the carbon cycle?", "Burning fossil fuels in factories and cars", ["Volcanic eruptions", "Cellular respiration", "CO₂ dissolving in the ocean"], "Human processes in the carbon cycle: burning fossil fuels and forests, and industry.", C);
+MC("c14", "cycles", "Which is a GEOLOGICAL process in the carbon cycle?", "Volcanoes releasing CO₂", ["Photosynthesis", "Burning forests", "Cellular respiration"], "Geological processes: volcanoes release CO₂, and marine sediments turn into rock.", C);
+MC("c15", "cycles", "CO₂ dissolving into the ocean and later returning to the atmosphere is what type of process?", "Physical/chemical", ["Biological", "Human", "Geological"], "Physical/chemical processes: CO₂ dissolving in rainwater and oceans and returning to the air.", C);
+MC("c16", "cycles", "Where can carbon be stored for MILLIONS of years?", "In fossil fuels and in rocks made from marine sediments", ["In clouds", "In an animal's breath", "In sunlight"], "Geological storage: fossil fuels, carbonate rocks, and marine sediments.", C);
+MC("c17", "cycles", "About what percent of Earth's atmosphere is nitrogen gas (N₂)?", "78%", ["21%", "50%", "1%"], "78% of the atmosphere is nitrogen gas (N₂).", Object.assign({order: ["1%", "21%", "50%", "78%"]}, R));
+MC("c18", "cycles", "Why do living things need nitrogen?", "To make proteins and nucleic acids (like DNA)", ["To do photosynthesis", "To make carbohydrates only", "To breathe"], "Living things require nitrogen to make proteins and nucleic acids.", R);
+MC("c19", "cycles", "Why can't plants use the nitrogen gas (N₂) in the air directly?", "It must first be changed into usable forms (ammonium or nitrate) by bacteria or lightning", ["There is not enough nitrogen in the air", "Plants only need carbon", "Nitrogen gas is poisonous to plants"], "Bacteria convert N₂ into usable forms. That is nitrogen fixation.", R);
+MC("c20", "cycles", "Which organisms do most of the work of changing nitrogen from one form to another in the nitrogen cycle?", "Bacteria", ["Plants", "Animals", "Fungi"], "Bacteria fix N₂ into ammonia, turn ammonia into nitrates (nitrification), and turn nitrates back into N₂ (denitrification).");
+MC("c21", "cycles", "What is nitrification?", "Bacteria change ammonium into nitrites and then nitrates", ["Bacteria change nitrogen gas into ammonium", "Bacteria change nitrates back into nitrogen gas", "Lightning changes nitrogen gas into nitrates"], "NH₄⁺ → NO₂⁻ → NO₃⁻ by nitrifying bacteria (they need oxygen).", R);
+MC("c22", "cycles", "What is denitrification?", "Bacteria change nitrates back into nitrogen gas that returns to the air", ["Bacteria change nitrogen gas into ammonium", "Plants absorb nitrates through their roots", "Decomposers break down dead animals"], "Denitrifying bacteria (working without oxygen) return N₂ to the atmosphere.", R);
+MC("c23", "cycles", "Besides bacteria, what else can \"fix\" nitrogen gas from the atmosphere?", "Lightning", ["Wind", "Sunlight", "Ocean waves"], "Lightning strikes are the physical/chemical way nitrogen gets fixed.", C);
+MC("c24", "cycles", "Where does MOST of the nitrogen cycle take place?", "Underground, in the soil", ["In the clouds", "Inside animals' lungs", "At the top of the atmosphere"], "Most of the nitrogen cycle takes place underground, in the soil.", R);
+MC("c25", "cycles", "How do animals get the nitrogen they need?", "By eating plants (or animals that ate plants)", ["By breathing in N₂ gas", "By absorbing nitrates through their skin", "From sunlight"], "Nitrogen moves through the food web once plants take it up.", R);
+MC("c26", "cycles", "How does the nitrogen in a dead animal get back into the soil?", "Decomposers break it down and release ammonium", ["Denitrification", "Lightning strikes it", "It evaporates"], "Nitrogen returns to the soil during decomposition (and from animal waste/excretion).", R);
+MC("c27", "cycles", "Farmers put nitrogen fertilizer on crops. What happens to EXTRA fertilizer?", "It runs off into streams and oceans", ["It turns into carbon", "It is fixed by lightning", "It becomes groundwater ice"], "Extra fertilizer washes off fields and runs into streams and oceans.", C);
+MC("c28", "cycles", "Plants like peanuts (ground nuts) have small bumps on their roots. What lives in those bumps?", "Nitrogen-fixing bacteria", ["Decomposing fungi", "Nitrifying algae", "Denitrifying insects"], "These bacteria turn N₂ from the air into ammonium the plant can use.", R);
+MC("c29", "cycles", "\"Leaching\" in the nitrogen cycle means…", "Nitrates wash out of the soil and are carried away by water", ["Bacteria turn N₂ into ammonium", "Plants release nitrogen from their leaves", "Lightning makes nitrates"], "Nitrates can leach out of the soil and wash into water.", R);
+MC("c30", "cycles", "Which nitrogen cycle process needs oxygen, and which works without it?", "Nitrification needs oxygen; denitrification works without oxygen", ["Denitrification needs oxygen; nitrification works without it", "Both need oxygen", "Neither involves bacteria"], "Nitrifying bacteria need oxygen; denitrifying bacteria work without oxygen.", R);
+MC("c31", "cycles", "Which biogeochemical cycle includes transpiration, condensation, and runoff?", "The water (hydrologic) cycle", ["The carbon cycle", "The nitrogen cycle", "The phosphorus cycle"], "Those are all ways water moves.", R);
+MC("c32", "cycles", "In the carbon cycle, what does \"diffusion\" describe?", "CO₂ moving between the air and the ocean", ["Plants making sugar", "Animals breathing out CO₂", "Fossil fuels forming underground"], "CO₂ dissolves (diffuses) into ocean water and can return to the atmosphere.", R);
+TF("c34", "cycles", "Organisms can use nitrogen gas (N₂) straight from the air to build proteins.", false, "N₂ has to be fixed first (by bacteria or lightning) into ammonium/nitrate.", R);
+TF("c35", "cycles", "Energy is recycled through an ecosystem the same way carbon and nitrogen are.", false, "Matter is recycled. Energy flows one way and is lost as heat.", R);
+SORT("s3", "cycles", "Carbon cycle: sort each process by its type.", ["Biological", "Human", "Physical/chemical", "Geological"],
+  [["Photosynthesis", 0], ["Cellular respiration", 0], ["Burning fossil fuels in industry", 1], ["Forest fires set by people / burning forests", 1], ["CO₂ dissolving in rainwater", 2], ["CO₂ dissolving in oceans and returning to the air", 2], ["Volcanic eruptions releasing CO₂", 3], ["Marine sediments turning into rock", 3]],
+  "Biological = living things; human = people burning fuel; physical/chemical = CO₂ dissolving; geological = rocks and volcanoes.", Object.assign({pick: 8}, C));
+SORT("s4", "cycles", "Nitrogen cycle: sort each process by its type.", ["Biological", "Human", "Physical/chemical"],
+  [["Nitrogen fixed by bacteria in soil", 0], ["Nitrogen fixed by bacteria in the ocean", 0], ["Animals eating grasses and releasing nitrogen in waste", 0], ["Decomposers breaking down dead matter", 0], ["Nitrogen made into fertilizer for crops", 1], ["Extra fertilizer running into streams", 1], ["Lightning fixing nitrogen", 2]],
+  "Bacteria and animals are biological; fertilizer use and excess fertilizer running into streams are human; lightning is physical/chemical.", Object.assign({pick: 7}, C));
+SORT("s5", "cycles", "Water cycle: is each process BIOLOGICAL or PHYSICAL/CHEMICAL?", ["Biological", "Physical/chemical"],
+  [["Transpiration", 0], ["Evaporation", 1], ["Condensation", 1], ["Precipitation", 1], ["Runoff", 1], ["Seepage", 1]],
+  "Only transpiration is done by living things.", Object.assign({pick: 6}, C));
+SORT("s6", "cycles", "Does each process ADD carbon dioxide to the atmosphere or REMOVE it?", ["Adds CO₂", "Removes CO₂"],
+  [["Cellular respiration", 0], ["Burning fossil fuels", 0], ["Volcanic eruptions", 0], ["Decomposition", 0], ["Burning forests", 0], ["Photosynthesis", 1], ["CO₂ dissolving into the ocean", 1], ["A forest growing larger", 1]],
+  "Photosynthesis and ocean uptake pull CO₂ out of the air. Respiration, burning, decomposition, and volcanoes put it back.", Object.assign({pick: 7}, R));
+ORDER("o2", "cycles", "Put these steps of the nitrogen cycle in order, starting with nitrogen gas in the air.", ["N₂ gas in the atmosphere", "Nitrogen-fixing bacteria change N₂ into ammonium", "Nitrifying bacteria change ammonium into nitrates", "Plants absorb nitrates through their roots", "Animals eat the plants", "Decomposers return ammonium to the soil"], "Fixation → nitrification → plant uptake → food web → decomposition (and denitrifying bacteria can return nitrates to N₂).", R);
+ORDER("o3", "cycles", "Put these water cycle events in order, starting at the ocean.", ["Water evaporates from the ocean", "Water vapor condenses into clouds", "Precipitation falls on a mountain", "Runoff flows downhill into a river", "The river carries water back to the ocean"], "Evaporation → condensation → precipitation → runoff → back to the ocean.", R);
+ORDER("o4", "cycles", "Put these steps in order to show how carbon from a plant ends up back in the atmosphere as CO₂ from a car.", ["A plant takes in CO₂ during photosynthesis", "The plant dies and is buried", "Pressure and heat over millions of years form coal or oil", "People extract and burn the fossil fuel", "CO₂ is released into the atmosphere"], "Photosynthesis → burial → fossil fuel formation → combustion → CO₂.", R);
+LABEL("lb1", "cycles", "Label the water cycle diagram.", "water", [["A", "Evaporation"], ["B", "Condensation"], ["C", "Precipitation"], ["D", "Runoff"], ["E", "Seepage"], ["F", "Transpiration"]], "A: ocean water rises as vapor. B: vapor forms clouds. C: rain/snow falls. D: water flows over land to the ocean. E: water soaks into the ground to become groundwater. F: water leaves plant leaves.", C);
+LABEL("lb2", "cycles", "Label the nitrogen cycle diagram.", "nitrogen", [["A", "Nitrogen fixation by bacteria"], ["B", "Nitrification"], ["C", "Plants absorb nitrates"], ["D", "Decomposition"], ["E", "Denitrification"], ["F", "Nitrogen fixation by lightning"]], "A: N₂ → ammonium (bacteria). F: lightning also fixes N₂. B: ammonium → nitrates. C: roots take up nitrates. D: dead matter and waste → ammonium. E: nitrates → N₂ gas.", C);
+LABEL("lb3", "cycles", "Label the carbon cycle diagram.", "carbon", [["A", "Photosynthesis"], ["B", "Cellular respiration"], ["C", "Burning fossil fuels (combustion)"], ["D", "CO₂ moves between air and ocean (diffusion)"], ["E", "Volcanic eruption"], ["F", "Fossil fuel formation (millions of years)"]], "A: CO₂ into plants. B: CO₂ out of living things. C: cars/factories burn fuel. D: CO₂ moves into the ocean. E: geological release. F: buried organisms → coal, oil, gas.", C);
+
+/* Energy flow & food webs */
+MC("e1", "energy", "\"Photosynthesis\" literally means…", "To make with light", ["To eat with chemicals", "Self-nourishment", "To break down debris"], "Photo = light, synthesis = to make.", R);
+MC("e2", "energy", "Bacteria at deep-sea hydrothermal vents make sugar using energy from chemicals like hydrogen sulfide. This process is…", "Chemosynthesis", ["Photosynthesis", "Cellular respiration", "Decomposition"], "Chemo = chemicals, synthesis = to make. No sunlight reaches the deep sea floor.", R);
+MC("e3", "energy", "Break down the word \"autotroph.\"", "Auto = self, troph = nourishment: an organism that makes its own food", ["Auto = different, troph = eat: an organism that eats others", "Auto = light, troph = make: an organism that uses light", "Auto = debris, troph = eat: an organism that eats dead matter"], "Autotrophs are producers.", R);
+MC("e4", "energy", "Break down the word \"heterotroph.\"", "Hetero = different, troph = nourishment: gets food by eating other organisms", ["Hetero = self, troph = nourishment: makes its own food", "Hetero = chemical, troph = make: uses chemical energy", "Hetero = debris, troph = eat: eats dead matter"], "Heterotrophs are consumers, like a bear.", R);
+MC("e5", "energy", "Which of these organisms is an autotroph?", "Algae", ["A mushroom", "A bear", "A millipede"], "Algae do photosynthesis. Mushrooms are decomposers; bears and millipedes are consumers.", R);
+MC("e6", "energy", "What is the difference between a DECOMPOSER and a SCAVENGER?", "Decomposers break down dead organic matter; scavengers eat dead organic matter", ["Decomposers eat living plants; scavengers eat living animals", "They are the same thing", "Scavengers make their own food; decomposers do not"], "Decomposers (fungi, bacteria) BREAK DOWN dead matter. Scavengers (vultures) EAT dead matter.", R);
+MC("e7", "energy", "A millipede eating dead leaves and other debris is a…", "Detritivore", ["Producer", "Carnivore", "Herbivore"], "Detriti = debris, vore = to eat. A detritivore eats bits of dead organic matter like leaf litter.", R);
+MC("e8", "energy", "Vultures feeding on a zebra that was already dead are…", "Scavengers", ["Decomposers", "Producers", "Carnivores"], "Scavengers EAT the bodies of animals that are already dead. They didn't hunt it, so it isn't predation.", R);
+MC("e9", "energy", "Mushrooms and bacteria slowly breaking down a fallen log are…", "Decomposers", ["Scavengers", "Producers", "Omnivores"], "Decomposers break down dead organic matter and return nutrients to the soil.", R);
+MC("e10", "energy", "Where does the energy in most ecosystems ORIGINALLY come from?", "The sun", ["Decomposers", "Water", "The soil"], "Energy usually starts with the sun, is captured by autotrophs, then consumed by heterotrophs.", R);
+MC("e11", "energy", "Energy flows INTO an ecosystem as ____ and OUT of it as ____.", "Sunlight / heat", ["Heat / sunlight", "Food / oxygen", "Water / carbon dioxide"], "Energy flows in as sunlight and out as heat.", R);
+MC("e12", "energy", "In a food chain or food web, which way do the arrows point?", "From the organism being eaten to the organism that eats it", ["From the predator to its prey", "From the consumer to the producer", "From the sun to the decomposer only"], "Arrows show the direction ENERGY flows: grass → rabbit means the rabbit gets energy from the grass.", R);
+MC("e13", "energy", "How is a food web different from a food chain?", "A food web shows every feeding interaction; a food chain shows one path", ["A food chain shows more organisms", "A food web has no producers", "A food chain shows energy moving in both directions"], "Food chains show energy flow in one direction on one path; food webs show all the connections.", R);
+MC("e14", "energy", "Grass → grasshopper → mouse → snake → hawk. What is the MOUSE?", "Secondary consumer", ["Primary consumer", "Tertiary consumer", "Producer"], "Grass = producer, grasshopper = primary, mouse = secondary, snake = tertiary.", R);
+MC("e15", "energy", "Grass → grasshopper → mouse → snake → hawk. Which organism is the TERTIARY consumer?", "Snake", ["Hawk", "Mouse", "Grasshopper"], "Tertiary = third consumer level.", R);
+MC("e16", "energy", "Grass → grasshopper → mouse → snake → hawk. Which organism is a HERBIVORE?", "Grasshopper", ["Mouse", "Snake", "Hawk"], "It eats a producer (grass), so it's a herbivore / primary consumer.", R);
+MC("e17", "energy", "An animal that eats both plants and animals, like a bear, is a(n)…", "Omnivore", ["Herbivore", "Carnivore", "Detritivore"], "Omni = all.", R);
+MC("e18", "energy", "Which trophic level has the MOST energy available?", "Producers", ["Primary consumers", "Secondary consumers", "Tertiary consumers"], "Producers are the base of the pyramid with 100% of the captured energy.", R);
+MC("e19", "energy", "Why are there usually far fewer top predators than herbivores in an ecosystem?", "Less energy is available at higher trophic levels, so fewer organisms can be supported", ["Top predators reproduce faster", "Herbivores don't need energy", "Top predators get energy from the sun"], "Each step up keeps only about 10% of the energy.", R);
+MC("e20", "energy", "What do photosynthesis and chemosynthesis have in common?", "Both are ways producers make sugar (food)", ["Both use sunlight", "Both happen only in the deep ocean", "Both are done by consumers"], "Photosynthesis uses light; chemosynthesis uses chemicals. Both make sugar.", R);
+MC("e21", "energy", "During photosynthesis, plants take in ____ and give off ____.", "Carbon dioxide / oxygen", ["Oxygen / carbon dioxide", "Sugar / water", "Nitrogen / oxygen"], "Light energy + CO₂ + water → sugar + oxygen.", R);
+MC("e22", "energy", "In this food web, which organism is a PRIMARY consumer?", "Mice", ["Spiders", "Toads", "Hawks & owls"], "Mice eat plants directly.", {fig: "foodweb", src: "Kahoot food web"});
+MC("e23", "energy", "In this food web, what would most likely happen to the toads if the snakes disappeared?", "The toad population would increase", ["The toad population would decrease", "Nothing would change", "Toads would start eating plants"], "Snakes eat toads, so with no snakes fewer toads get eaten.", {fig: "foodweb", src: "Kahoot food web"});
+MC("e24", "energy", "In this food web, insectivorous birds eat herbivorous insects AND spiders. What does that tell you?", "An organism can be at more than one trophic level", ["Insectivorous birds are producers", "Spiders are herbivores", "The arrows are pointing the wrong way"], "Eating herbivorous insects makes them secondary consumers; eating spiders (which eat insects) makes them tertiary consumers.", {fig: "foodweb", src: "Kahoot food web"});
+MC("e25", "energy", "In this food web, if spiders disappeared, which organism would lose one of its food sources?", "Insectivorous birds", ["Rabbits", "Foxes", "Plants"], "The arrow from spiders points to insectivorous birds.", {fig: "foodweb", src: "Kahoot food web"});
+MC("e26", "energy", "How many trophic levels are in this chain: plants → herbivorous insects → predaceous insects → toads → snakes?", "5", ["3", "4", "6"], "Count every organism: 5 levels (producer + 4 consumer levels).", {fig: "foodweb", src: "Kahoot food web", order: ["3", "4", "5", "6"]});
+MC("e27", "energy", "Which organism in this food web is a producer?", "Plants", ["Herbivorous insects", "Seed-eating birds", "Mice"], "Producers make their own food; every other organism here eats.", {fig: "foodweb", src: "Kahoot food web"});
+MC("e28", "energy", "In a food chain, decomposers get energy from…", "Every level: producers and all consumers, when they die or leave waste", ["Only the producers", "Only the top carnivore", "Only the sun"], "Decomposers break down dead matter from every trophic level and recycle the nutrients.");
+ORDER("o5", "energy", "Build the food chain from the food web, starting with the producer.", ["Plants", "Herbivorous insects", "Predaceous insects", "Toads", "Snakes"], "Energy flows from the producer up: plants → herbivorous insects → predaceous insects → toads → snakes.", {fig: "foodweb", src: "Kahoot food web"});
+SORT("s7", "energy", "Sort each organism by how it gets energy.", ["Producer", "Consumer", "Decomposer"],
+  [["Oak tree", 0], ["Algae", 0], ["Grass", 0], ["Phytoplankton", 0], ["Deer", 1], ["Wolf", 1], ["Bear", 1], ["Grasshopper", 1], ["Mushroom", 2], ["Bacteria breaking down a dead log", 2], ["Mold on old bread", 2]],
+  "Producers make food; consumers eat; decomposers break down dead matter.", Object.assign({pick: 8}, R));
+SORT("s8", "energy", "Sort each consumer by what it eats.", ["Herbivore", "Carnivore", "Omnivore"],
+  [["Deer", 0], ["Rabbit", 0], ["Grasshopper", 0], ["Cow", 0], ["Lion", 1], ["Hawk", 1], ["Snake", 1], ["Shark", 1], ["Bear", 2], ["Human", 2], ["Raccoon", 2]],
+  "Herbivores eat plants, carnivores eat animals, omnivores eat both.", Object.assign({pick: 8}, R));
+SORT("s9", "energy", "Decomposer, scavenger, or detritivore?", ["Decomposer", "Scavenger", "Detritivore"],
+  [["Fungi breaking down a dead log", 0], ["Bacteria in the soil breaking down waste", 0], ["Vultures eating a dead zebra", 1], ["Hyenas eating a carcass they found", 1], ["Millipede eating dead leaves", 2], ["Earthworm eating bits of dead plant matter", 2]],
+  "Decomposers BREAK DOWN dead matter; scavengers EAT dead animals; detritivores eat debris.", Object.assign({pick: 6}, R));
+
+/* Pyramids & 10% */
+MC("p1", "pyramids", "Which pyramid shows the RELATIVE NUMBER of individual organisms at each trophic level?", "Pyramid of numbers", ["Pyramid of energy", "Pyramid of biomass", "Food web"], "A pyramid of numbers shows the relative number of individual organisms at each trophic level.", R);
+MC("p2", "pyramids", "Which pyramid shows the relative amount of LIVING ORGANIC MATTER at each trophic level?", "Pyramid of biomass", ["Pyramid of numbers", "Pyramid of energy", "Food chain"], "Biomass = living organic matter (for example 1,000 kg → 100 kg → 10 kg → 1 kg).", R);
+MC("p3", "pyramids", "Primary producers have 100% of the energy. About what percent reaches third-level (tertiary) consumers?", "0.1%", ["10%", "1%", "0.01%"], "100% → 10% → 1% → 0.1%.", Object.assign({order: ["10%", "1%", "0.1%", "0.01%"]}, R));
+MC("p4", "pyramids", "About what percent of the producers' energy reaches SECOND-level (secondary) consumers?", "1%", ["10%", "0.1%", "90%"], "Producers 100% → primary 10% → secondary 1%.", Object.assign({order: ["90%", "10%", "1%", "0.1%"]}, R));
+MC("p5", "pyramids", "A pyramid of biomass has 1,000 kg of producers. About how much herbivore biomass can it support?", "100 kg", ["1,000 kg", "10 kg", "1 kg"], "Each level is about 10% of the one below it.", Object.assign({order: ["1,000 kg", "100 kg", "10 kg", "1 kg"]}, R));
+MC("p6", "pyramids", "About 10% of energy passes to the next trophic level. Where does the rest go?", "It is lost as heat and waste", ["It is stored forever in the producers", "It turns into matter", "It goes back to the sun"], "The rest is lost as heat and waste.", R);
+MC("p7", "pyramids", "In this pyramid, which level contains the PRODUCERS?", "D", ["A", "B", "C"], "Producers are always the base (bottom) of the pyramid.", {fig: "pyrABCD", order: ["A", "B", "C", "D"], src: "Kahoot pyramid"});
+MC("p8", "pyramids", "If this were an energy pyramid, which level would have the LEAST energy available?", "A", ["B", "C", "D"], "The top level is farthest from the producers, so it has the least energy (about 0.1%).", {fig: "pyrABCD", order: ["A", "B", "C", "D"], src: "Kahoot pyramid"});
+MC("p9", "pyramids", "Treat this as an energy pyramid. Level D has 50,000 kcal of energy. About how much energy is at level B?", "500 kcal", ["5,000 kcal", "50 kcal", "25,000 kcal"], "D 50,000 → C 5,000 → B 500.", {fig: "pyrABCD", order: ["25,000 kcal", "5,000 kcal", "500 kcal", "50 kcal"], src: "Kahoot pyramid"});
+MC("p10", "pyramids", "Why is an energy pyramid always wider at the bottom?", "Producers have the most energy, and energy decreases at each level up", ["There are more top predators than producers", "Energy increases as you go up", "Decomposers are at the bottom"], "About 90% is lost at each step, so each level is smaller.", R);
+TF("p11", "pyramids", "If a trophic level has 1,000 kcal, the next level up will have about 100 kcal.", true, "10% of 1,000 = 100.", R);
+LABEL("lb4", "pyramids", "Label each level of the energy pyramid with the percent of the producers' energy it has.", "energyPyr", [["A", "0.1%"], ["B", "1%"], ["C", "10%"], ["D", "100%"]], "Producers 100% → first-level consumers 10% → second-level 1% → third-level 0.1%.", R);
+
+/* Species interactions */
+MC("i1", "interactions", "A bear catches and eats a salmon. This interaction is…", "Predation", ["Commensalism", "Mutualism", "Intraspecific competition"], "One organism hunts and kills another.", R);
+MC("i2", "interactions", "Lions and hyenas fight over the same zebra carcass. This is…", "Interspecific competition", ["Intraspecific competition", "Mutualism", "Parasitism"], "Two DIFFERENT species competing for the same resource.", R);
+MC("i3", "interactions", "Two bighorn rams butt heads over territory and mates. This is…", "Intraspecific competition", ["Interspecific competition", "Predation", "Commensalism"], "Same species competing = intraspecific (intra = within).", R);
+MC("i4", "interactions", "Two goldfinches of the same species eat seeds from the same plant. What TYPE of competition is it?", "Intraspecific", ["Interspecific", "Mutualistic", "Parasitic"], "Same species → intraspecific.", R);
+MC("i5", "interactions", "A plover bird picks food from between a crocodile's teeth. The bird gets food and the crocodile gets clean teeth. This is…", "Mutualism", ["Commensalism", "Parasitism", "Predation"], "Both benefit: +/+.", R);
+MC("i6", "interactions", "Barnacles attach to a whale. The barnacles get a ride to food; the whale is not affected. This is…", "Commensalism", ["Mutualism", "Parasitism", "Competition"], "One benefits, one is unaffected: +/0.", R);
+MC("i7", "interactions", "A tongue-eating louse replaces a fish's tongue and feeds off the fish. This is…", "Parasitism", ["Mutualism", "Commensalism", "Predation"], "The louse benefits and the fish is harmed: +/−.", R);
+MC("i8", "interactions", "A spider builds its web between an antelope's horns. The spider gets a place to catch food; the antelope is unaffected. This is…", "Commensalism", ["Mutualism", "Parasitism", "Predation"], "+/0.", R);
+MC("i9", "interactions", "Which symbols represent COMMENSALISM?", "+/0", ["+/+", "+/−", "−/−"], "One benefits (+), the other is unaffected (0). It can also be written 0/+.", Object.assign({order: ["+/+", "+/0", "+/−", "−/−"]}, R));
+MC("i10", "interactions", "Which symbols represent PARASITISM?", "+/−", ["+/+", "+/0", "0/0"], "The parasite benefits (+), the host is harmed (−). It can also be written −/+.", Object.assign({order: ["+/+", "+/0", "+/−", "0/0"]}, R));
+MC("i11", "interactions", "Which symbols represent MUTUALISM?", "+/+", ["+/0", "+/−", "−/−"], "Both organisms benefit.", Object.assign({order: ["+/+", "+/0", "+/−", "−/−"]}, R));
+MC("i12", "interactions", "INTERspecific competition happens between…", "Members of different species competing for the same resource", ["Members of the same species", "A predator and its prey", "A parasite and its host"], "Inter = between (different species). Intra = within (same species).", R);
+MC("i13", "interactions", "How is parasitism different from predation?", "A parasite usually feeds on its host without killing it right away; a predator kills its prey", ["A parasite always kills its host immediately", "Predators help their prey", "There is no difference"], "Predation: hunts and kills. Parasitism: one is harmed while the other benefits.", R);
+MC("i14", "interactions", "Why are predator-prey relationships important in shaping communities?", "Predators keep prey populations in check, which affects other species like the plants the prey eat", ["Predators make prey populations grow without limit", "They only affect the predator", "They have no effect on plants"], "Example: wolves in Yellowstone controlled elk, so willows and aspens could regrow.", R);
+MC("i15", "interactions", "Why are herbivore-plant relationships important in shaping communities?", "Herbivores control plant populations, which changes habitat and food for other species", ["Plants control herbivores by eating them", "Herbivores never affect plants", "They only matter in the ocean"], "Example: too many elk overgrazed willows along Yellowstone's rivers.", R);
+SORT("s10", "interactions", "Mutualism, commensalism, or parasitism?", ["Mutualism (+/+)", "Commensalism (+/0)", "Parasitism (+/−)"],
+  [["Ants protect aphids and eat their sticky waste", 0], ["Plover cleans a crocodile's teeth", 0], ["Oxpecker eats flies off a zebra", 0], ["Bees pollinate flowers while getting nectar", 0], ["Barnacles ride on a whale", 1], ["Spider builds a web on an antelope's horns", 1], ["Remora eats scraps from a shark's meals", 1], ["A bird nests in a tree", 1], ["Tongue-eating louse feeds inside a fish's mouth", 2], ["A tick feeds on a dog's blood", 2], ["A tapeworm lives in an animal's intestine", 2]],
+  "+/+ both benefit. +/0 one benefits, one unaffected. +/− one benefits, one harmed.", Object.assign({pick: 8}, R));
+SORT("s11", "interactions", "Which type of interaction is each example?", ["Predation", "Interspecific competition", "Intraspecific competition"],
+  [["A lion chases and kills a zebra", 0], ["A bear catches a salmon", 0], ["A fox preys on a rabbit", 0], ["An eagle and a fox fight over the same carcass", 1], ["Hyenas and lions fight over a kill", 1], ["Tigers and lions hunt the same prey", 1], ["Two rams butt heads over territory", 2], ["Male elephants battle over mates", 2], ["Two goldfinches eat from the same plant", 2], ["Two oak trees compete for sunlight", 2]],
+  "Predation kills for food. Inter = different species compete. Intra = same species compete.", Object.assign({pick: 7}, R));
+
+/* Populations */
+MC("q1", "populations", "Population density measures…", "How closely packed organisms are: number of individuals per one unit of area", ["How a population is spaced out in its habitat", "How fast a population grows", "The total mass of a population"], "Density = # of individuals ÷ ONE unit of area.", R);
+MC("q2", "populations", "Population DISTRIBUTION describes…", "The way a population is spaced out in its habitat", ["The number of individuals per unit of area", "Births minus deaths", "The maximum population an area can support"], "Clumped, uniform, or random.", R);
+MC("q3", "populations", "Gannets nest at evenly spaced distances to protect their eggs from other gannets. This is ____ distribution.", "Uniform", ["Clumped", "Random", "Exponential"], "Territorial organisms generally show uniform dispersion.", R);
+MC("q4", "populations", "Fish swim together in large schools. What distribution is this, and why does it help them?", "Clumped, because moving as a large group helps them avoid predators", ["Uniform, because they are territorial", "Random, because they have no predators", "Clumped, because they compete less for food"], "By moving as a large mass, individuals have an advantage in avoiding predators.", R);
+MC("q5", "populations", "The three-toed sloth lives alone, has almost no competitors, and has few natural predators. It shows ____ distribution.", "Random", ["Clumped", "Uniform", "Logistic"], "Solitary animals with no need to group or defend territory are randomly spaced.", R);
+MC("q6", "populations", "Lions live together in prides. What distribution do lions show?", "Clumped", ["Uniform", "Random", "Exponential"], "Living in a group = clumped.", {src: "Lion worksheet"});
+MC("q7", "populations", "Why is living in a group (clumped distribution) beneficial for lions?", "They can hunt together and protect each other and their cubs", ["They never have to compete for food", "It lets them spread out evenly", "It keeps them away from all other animals"], "Group living helps with hunting, defending territory, and protecting young.", {src: "Lion worksheet"});
+MC("q8", "populations", "Which TWO factors INCREASE a population's size?", "Births and immigration", ["Deaths and emigration", "Births and emigration", "Deaths and immigration"], "Births and immigration add individuals; deaths and emigration remove them.", R);
+MC("q9", "populations", "Which TWO factors DECREASE a population's size?", "Deaths and emigration", ["Births and immigration", "Births and deaths", "Immigration and emigration"], "Deaths and emigration remove individuals.", R);
+MC("q10", "populations", "Immigration means…", "Individuals moving INTO a population", ["Individuals moving OUT of a population", "Individuals being born", "Individuals dying"], "Immigration = In. Emigration = Exit.", R);
+MC("q11", "populations", "Exponential growth happens when…", "Resources are unlimited", ["Resources are running out", "The population is at carrying capacity", "Predators eat most of the population"], "With unlimited resources, the population keeps growing faster and faster.", R);
+MC("q12", "populations", "What shape is an EXPONENTIAL growth curve?", "J-shaped", ["S-shaped", "A flat line", "A bell curve"], "It curves sharply upward like a J.", R);
+MC("q13", "populations", "What shape is a LOGISTIC growth curve?", "S-shaped", ["J-shaped", "A straight line down", "A bell curve"], "Slow start, fast growth, then it levels off at carrying capacity.", R);
+MC("q14", "populations", "In logistic growth, why does population growth slow down and stop?", "Resources get used up", ["Births increase", "Resources become unlimited", "Immigration increases"], "As resources are used up, population growth slows and stops.", R);
+MC("q15", "populations", "A population of 500 deer has 60 births, 40 deaths, 10 immigrants, and 30 emigrants in one year. What happens to the population?", "It stays the same size", ["It grows by 20", "It shrinks by 20", "It grows by 40"], "(60 + 10) − (40 + 30) = 70 − 70 = 0.", R);
+MC("q16", "populations", "Which graph shows EXPONENTIAL growth?", "Graph A", ["Graph B", "Both graphs", "Neither graph"], "Graph A is a J-curve that keeps climbing; Graph B levels off.", {fig: "growth", src: "Review slides", order: ["Graph A", "Graph B", "Both graphs", "Neither graph"]});
+MC("q17", "populations", "In Graph B, what does the dashed line X represent?", "Carrying capacity", ["Exponential growth", "Birth rate", "Population density"], "The logistic curve levels off at the carrying capacity.", {fig: "growth", src: "Review slides"});
+MC("q18", "populations", "Which graph shows a population with LIMITED resources?", "Graph B", ["Graph A", "Both graphs", "Neither graph"], "Limited resources → logistic (S-shaped) growth.", {fig: "growth", src: "Review slides", order: ["Graph A", "Graph B", "Both graphs", "Neither graph"]});
+MC("q19", "populations", "In this predator-prey graph, after the gazelle population increases, what happens to the lion population?", "It increases, because lions have more food", ["It decreases, because lions have less food", "It stays the same", "It increases, because gazelles eat lions"], "More prey = more food for predators, so the predator population rises a little later.", {fig: "predprey", src: "Lion worksheet"});
+MC("q20", "populations", "In this predator-prey graph, after the lion population increases, what happens to the gazelle population?", "It decreases, because more gazelles are eaten", ["It increases, because lions protect them", "It stays the same", "It decreases, because gazelles eat less grass"], "More predators eat more prey, so the prey population falls.", {fig: "predprey", src: "Lion worksheet"});
+MC("q22", "populations", "On a predator-prey graph, the predator population's peaks usually come…", "Shortly after the prey's peaks, and they are lower", ["Before the prey's peaks", "At exactly the same time as the prey's peaks", "Only once and never again"], "Predators respond to more food after a delay, and there are always fewer predators (less energy higher up).", {fig: "predprey", src: "Lion worksheet"});
+MC("q23", "populations", "What kind of limiting factors are acting on the lions and gazelles in this graph?", "Density-dependent factors, like predation and food supply", ["Density-independent factors, like weather", "No limiting factors", "Only natural disasters"], "Predation and competition for food get stronger as the populations get bigger.", {fig: "predprey", src: "Lion worksheet"});
+MC("q24", "populations", "Which statement about population density is written correctly?", "50 dandelions per square meter", ["50 dandelions", "50 dandelions per 10 square meters", "50 dandelions spread out randomly"], "Density must be per ONE unit of area.", R);
+SORT("s12", "populations", "Does each factor INCREASE or DECREASE a population's size?", ["Increases", "Decreases"],
+  [["Births", 0], ["Immigration", 0], ["Deaths", 1], ["Emigration", 1]], "Births + immigration add; deaths + emigration subtract.", Object.assign({pick: 4}, R));
+SORT("s13", "populations", "Which distribution does each example show?", ["Clumped", "Uniform", "Random"],
+  [["A school of fish", 0], ["An elephant herd", 0], ["A pride of lions", 0], ["A wolf pack", 0], ["Gannets nesting evenly apart", 1], ["Territorial birds spacing out their nests", 1], ["Three-toed sloths living alone in the canopy", 2], ["Dandelions growing wherever wind-blown seeds land", 2]],
+  "Groups = clumped; territorial = uniform; unpredictable spacing = random.", Object.assign({pick: 7}, R));
+LABEL("lb5", "populations", "Name the distribution shown in each box.", "dist", [["A", "Clumped"], ["B", "Uniform"], ["C", "Random"]], "A: groups. B: evenly spaced. C: no pattern.", R);
+ORDER("o6", "populations", "Put the predator-prey cycle in order, starting when the prey population grows.", ["The prey population increases", "Predators have more food, so the predator population increases", "More prey get eaten, so the prey population decreases", "Predators have less food, so the predator population decreases"], "Then the prey population can increase again and the cycle repeats.", {src: "Lion worksheet"});
+
+/* Carrying capacity & limiting factors */
+MC("m1", "limits", "Limiting factors are factors that…", "Determine carrying capacity by limiting population growth", ["Make populations grow exponentially", "Only affect producers", "Increase biodiversity"], "Limiting factors determine carrying capacity because they limit population growth.", R);
+MC("m2", "limits", "Which is a density-INDEPENDENT limiting factor?", "A hurricane", ["Disease", "Competition for food", "Predation"], "Weather and natural disasters affect a population the same no matter its size.", R);
+MC("m3", "limits", "Which is a density-DEPENDENT limiting factor?", "Competition for food", ["A drought", "A wildfire", "A cold winter"], "Competition gets stronger as the population gets more crowded.", R);
+MC("m4", "limits", "Density-dependent limiting factors…", "Increase pressure as the population size grows", ["Stay the same no matter the population size", "Only include weather", "Never affect large populations"], "Examples: predation, competition, disease.", R);
+MC("m5", "limits", "Density-independent limiting factors…", "Put the same pressure on a population no matter its size", ["Get stronger as the population gets crowded", "Include predation and disease", "Only affect small populations"], "Examples: weather, natural disasters, seasonal changes, human activity.", R);
+MC("m6", "limits", "A wildfire burns a forest and kills the squirrels there whether there are 20 or 2,000 of them. The fire is a…", "Density-independent factor", ["Density-dependent factor", "Carrying capacity", "Keystone species"], "Its effect doesn't depend on how crowded the population is.", R);
+MC("m7", "limits", "If a population grows ABOVE its carrying capacity, what usually happens?", "It declines because there aren't enough resources", ["It keeps growing exponentially", "The carrying capacity rises to match it", "Nothing happens"], "The population will decline because there aren't enough resources.", R);
+MC("m8", "limits", "Which change would most likely RAISE an area's carrying capacity for deer?", "More food plants growing in the area", ["A new disease spreading", "More wolves moving in", "A long drought"], "More resources → the habitat can support more individuals.", R);
+MC("m9", "limits", "Which set lists only density-dependent factors?", "Predation, competition, disease", ["Weather, natural disasters, seasonal changes", "Predation, hurricanes, disease", "Floods, competition, droughts"], "These all get stronger as a population gets crowded.", R);
+TF("m10", "limits", "A flood is a density-dependent limiting factor.", false, "A flood is a natural disaster. It affects a population the same no matter its size, so it is density-independent.", R);
+SORT("s14", "limits", "Is each limiting factor density-DEPENDENT or density-INDEPENDENT?", ["Density-dependent", "Density-independent"],
+  [["Predation", 0], ["Competition for food", 0], ["Disease", 0], ["Parasites", 0], ["Competition for space", 0], ["Hurricane", 1], ["Wildfire", 1], ["Drought", 1], ["Flood", 1], ["A very cold winter", 1], ["Volcanic eruption", 1], ["Human activity, like clearing land", 1]],
+  "Dependent: gets stronger as the population grows (competition, predation, disease). Independent: same pressure regardless of size (weather, natural disasters, human activity).", Object.assign({pick: 8}, R));
+
+/* Keystone species & biodiversity */
+MC("b1", "keystone", "What is most likely to happen if a keystone species is removed from an ecosystem?", "A domino effect that changes the whole ecosystem and lowers biodiversity", ["Nothing, because other species fill in right away", "Biodiversity increases", "Only the keystone species is affected"], "Without them, entire habitats can collapse, leading to a decline in biodiversity.", R);
+MC("b2", "keystone", "Which keystone role describes a species that shapes habitats, like a beaver building dams?", "Engineer", ["Predator", "Regulator", "Decomposer"], "Engineers shape habitats and support diversity.", R);
+MC("b3", "keystone", "Which keystone role controls populations and maintains balance, like wolves controlling elk?", "Predator", ["Engineer", "Producer", "Maintainer"], "Predators control populations and maintain balance.", R);
+MC("b4", "keystone", "Keystone \"maintainers\" are species that…", "Preserve species interactions and stability", ["Build dams and burrows", "Only eat plants", "Break down dead matter"], "The four keystone roles are predators, engineers, maintainers, and regulators.", R);
+MC("b5", "keystone", "Keystone \"regulators\" are species that…", "Influence ecosystem processes and health", ["Shape habitats like beavers", "Live alone with no competitors", "Make their own food from chemicals"], "The four keystone roles are predators, engineers, maintainers, and regulators.", R);
+MC("b6", "keystone", "Biodiversity is…", "The variety and variation of plants, animals, and microorganisms in an ecosystem", ["The number of one species in an area", "The total mass of living things", "The nonliving parts of an ecosystem"], "It includes all the different plants, animals, and microorganisms.", R);
+MC("b7", "keystone", "Why is an ecosystem with HIGH biodiversity more stable?", "More species means more interactions, so it is more resilient (able to withstand change)", ["It has fewer species competing", "It has no predators", "It never changes"], "The MORE biodiversity, the MORE interactions, and the MORE stable and resilient the ecosystem.", R);
+MC("b8", "keystone", "\"Resilient\" means an ecosystem is…", "Able to withstand change", ["Unable to recover", "Made of only one species", "Very small"], "Resilient = able to withstand change.", R);
+MC("b9", "keystone", "Which ecosystem would most likely be the LEAST resilient?", "A farm field growing only one crop", ["A tropical rainforest", "A coral reef", "A large forest with many species"], "One crop = very low biodiversity, so one disease or pest can wipe it out.", R);
+MC("b10", "keystone", "A top predator is brought back to an area where herbivores had overgrazed the plants. What will most likely happen?", "Herbivore numbers drop, the plants grow back, and other species that depend on those plants return", ["The herbivore population explodes", "The plants disappear completely", "Nothing changes, because predators don't affect plants"], "Predators control herbivores, which lets plants recover. That ripple effect through the food web is why a top predator can be a keystone species.");
+MC("b12", "keystone", "If the top predator disappeared from an ecosystem, what would most likely happen to the PRODUCERS (trees, bushes, grass)?", "Herbivores would increase and overgraze them, so producers would decrease", ["Producers would increase because predators eat plants", "Nothing would happen to producers", "Producers would turn into consumers"], "Without the predator, primary consumers grow out of control and eat more plants.");
+MC("b13", "keystone", "If the top predator disappeared from an ecosystem, what would most likely happen to the PRIMARY CONSUMERS (herbivores)?", "They would increase at first, then could crash after eating too much of their food", ["They would immediately go extinct", "They would turn into predators", "They would decrease because the predator fed them"], "Fewer predators → more herbivores → overgrazing → not enough food.");
+MC("b14", "keystone", "Why can a top predator, like a lion or a wolf, be a keystone species?", "It controls herbivore populations, which affects the plants and the rest of the ecosystem", ["It is at the bottom of the food web", "It eats only plants", "It builds dams"], "Keystone predators control populations and maintain balance.");
+MC("b15", "keystone", "Why is protecting biodiversity important?", "Keystone species and high biodiversity keep ecosystems balanced and stable", ["It lowers the number of interactions", "It removes predators from ecosystems", "It makes ecosystems less resilient"], "Keystone species and high biodiversity keep ecosystems stable; losing them can make habitats collapse.", R);
+ORDER("o7", "keystone", "A top predator returns to an ecosystem. Put the effects in order.", ["The top predator returns", "The predator eats herbivores, so the herbivore population drops", "With fewer herbivores eating them, plants grow back", "Animals that depend on those plants return", "More habitat and food means more species (higher biodiversity)"], "This chain reaction is why a top predator can be a keystone species.");
+
+/* Lion worksheet extras */
+const LW = {src: "Lion worksheet"};
+MC("g1", "energy", "Why do top predator populations usually take longer to recover than herbivore populations?", "Top predators are at a higher trophic level with less energy available, and they need their prey populations to recover first", ["Top predators are producers", "Top predators have more energy available than herbivores", "Herbivores eat top predators"], "Only about 10% of the energy passes up each level, so fewer predators can be supported, and they depend on their prey recovering.");
+NUM("g3", "populations", "Researchers count 41 lions in an 800 km² area. What is the population density of the lions? (Round to 2 decimal places.)", 0.05125, 0.0016, "lions per km²", "41 ÷ 800 = 0.051, about 0.05 lions per km².");
+
+/* From your class notes, warm-ups, glossary, foldables and worksheets */
+const WU = {src: "Warm-up"}, GL = {src: "Glossary"};
+MC("n1", "levels", "What is \"systems thinking\"?", "Considering how a change in one part of a system affects the other parts and the whole system", ["Looking for one cause and one effect", "Studying only the biosphere", "Studying each part of a system completely on its own"], "Traditional thinking = one cause → one effect. Systems thinking looks at all the connections.", {src: "Systems worksheet"});
+MC("n3", "levels", "Do biologists only study the biosphere?", "No. All four spheres are connected, so changes in the atmosphere, hydrosphere, and geosphere affect living things", ["Yes, biology is only about living things", "Yes, the other spheres never change", "No, biologists only study the geosphere"], "Ecosystems practice: we study all of Earth because everything is connected.", {src: "Systems worksheet"});
+MC("n4", "levels", "Rain (hydrosphere) falls from clouds (atmosphere), soaks into soil (geosphere), and plants (biosphere) take it up. This shows that…", "Earth's 4 systems are in constant interaction", ["The spheres work separately", "Only the biosphere matters", "Water is a biotic factor"], "Earth's 4 global systems are always interacting.", {src: "I Can statements"});
+MC("n5", "cycles", "In biogeochemical cycles, what happens to the elements?", "They never leave the cycle; they just change from one form to another", ["They are used up and disappear", "They leave Earth as heat", "They are created by the sun"], "Earth is a closed, but complex, system.", {src: "Cycles handout"});
+TF("n6", "cycles", "Earth is a closed system for matter: elements cycle and change form, but they don't leave.", true, "Elements move between the atmosphere, biosphere, hydrosphere, and geosphere and only change form.", {src: "Cycles handout"});
+MC("n7", "factors", "Dirt, rock structures, rain, and wind are all examples of…", "Abiotic factors", ["Biotic factors", "Producers", "Decomposers"], "They are all nonliving.", WU);
+MC("n8", "cycles", "Leaves release water vapor into the atmosphere through their stomata. What is this process?", "Transpiration", ["Denitrification", "Evaporation", "Condensation"], "Transpiration is the water cycle's biological process. (Denitrification is a nitrogen cycle process.)", WU);
+MC("n9", "cycles", "When lightning strikes, it turns nitrogen gas from the atmosphere into a form that ends up in the soil. What is this process?", "Nitrogen fixation", ["Nitrification", "Denitrification", "Leaching"], "Fixation can be done by lightning OR bacteria.", WU);
+MC("n10", "cycles", "Bacteria in the soil convert nitrogen GAS (N₂) from the air into ammonia that plants can use. What is this process?", "Nitrogen fixation", ["Nitrification", "Denitrification", "Transpiration"], "Fixation starts with N₂ gas. Nitrification starts with ammonia/ammonium and makes nitrates.", WU);
+MC("n11", "cycles", "Which pair of processes BOTH put carbon dioxide INTO the atmosphere?", "Cellular respiration and combustion", ["Photosynthesis and respiration", "Photosynthesis and combustion", "Photosynthesis and CO₂ dissolving in the ocean"], "Respiration and burning release CO₂. Photosynthesis removes it.", WU);
+TF("n12", "cycles", "Cellular respiration takes carbon dioxide OUT of the atmosphere.", false, "Respiration RETURNS CO₂ to the atmosphere. Photosynthesis is what takes it out.", WU);
+MC("n13", "cycles", "How does MATTER move through an ecosystem, compared with ENERGY?", "Matter cycles (is recycled); energy flows one way, starting with the sun", ["Both cycle", "Both flow one way", "Energy cycles; matter flows one way"], "Matter cycles through the ecosystem; the ultimate source of energy is the sun.", WU);
+MC("n14", "cycles", "Dissolved CO₂ in the ocean combines with other elements to form ____, which harden over time into sedimentary rock.", "Carbonates", ["Fossil fuels", "Nitrates", "Sugars"], "Carbonates harden into sedimentary rock, storing carbon for a very long time.", {src: "Cycles handout"});
+MC("n17", "cycles", "After nitrogen is fixed and turned into nitrate in the soil, what happens next in the nitrogen cycle?", "Producers (plants) take in the nitrate through their roots", ["Consumers eat the nitrate directly from the soil", "The nitrate turns into carbon", "Lightning strikes the nitrate"], "Order: fixation → plants take in nitrate → consumers eat producers → decomposers return ammonia → denitrification returns N₂ to the air.");
+MC("n18", "cycles", "Humans \"fix\" nitrogen too. What do they make with it?", "Fertilizer", ["Fossil fuels", "Carbonates", "Acid rain"], "Humans fix (capture) N₂ to make fertilizer, which increases nitrogen in the soil.", {src: "Nitrogen handout"});
+MC("n22", "populations", "A new herbivore species moves into a habitat and eats the same plants as the rabbits there. Foxes eat both. What will most likely happen?", "The rabbits face competition for food, while the foxes may increase because they have more prey", ["The rabbits will increase because they have more food", "The foxes will decrease because they have less food", "Nothing will change"], "The new herbivore competes with the rabbits for plants (interspecific competition), but it is also extra prey for the foxes.");
+MC("n23", "populations", "Would primary producers and primary consumers show the same rise-and-fall pattern as predators and prey?", "Yes: more plants let herbivores increase, herbivores eat the plants down, then herbivores decrease and plants grow back", ["No, plants never change in number", "No, herbivores never eat enough to matter", "Only in the ocean"], "Prey gets eaten and grows back, and the same thing happens with producers and herbivores.", WU);
+MC("n24", "populations", "Which describes an EXPONENTIAL growth graph?", "A J-shape that keeps getting steeper", ["A curve that rises, then levels off", "A flat line", "A curve that rises and falls over and over"], "\"Evens out eventually\" is LOGISTIC growth, not exponential.", WU);
+MC("n25", "interactions", "How can similar species survive in the same habitat without constantly competing?", "Each has its own niche, like birds living in different parts of the same tree", ["They eat each other", "They share exactly the same niche", "One of them must leave right away"], "Example: three bird species each use a different part of one tree (upper, middle, and lower).", WU);
+MC("n26", "interactions", "What is the difference between a habitat and a niche?", "A habitat is WHERE an organism lives; a niche is its ROLE (how it lives and uses resources)", ["They mean the same thing", "A niche is where it lives; a habitat is what it eats", "A habitat is only nonliving things"], "A frog's habitat is the pond; its niche includes eating flies and being active at night.", GL);
+MC("n27", "interactions", "A frog lives in a pond, eats flies, and is active at night. \"Eats flies and is active at night\" describes its…", "Niche", ["Habitat", "Biome", "Population"], "Niche = the organism's role and how it uses its conditions.", GL);
+MC("n28", "interactions", "Predation is correctly defined as…", "A relationship where one organism (the predator) kills and eats another (the prey)", ["Growth that takes place at the tips and shoots of a plant", "Two organisms of the same species competing", "A relationship where both organisms benefit"], "Watch out: \"growth at the tips and shoots of a plant\" is NOT predation.", {src: "Interactions foldable"});
+MC("n29", "energy", "Which word means ANY organism that gets food by eating other living things (also called a consumer)?", "Heterotroph", ["Herbivore", "Autotroph", "Producer"], "Hetero = other. A herbivore is one KIND of heterotroph (one that eats plants).", GL);
+MC("n30", "energy", "Which word means an animal that feeds mainly on plants, algae, and other photosynthetic organisms?", "Herbivore", ["Carnivore", "Autotroph", "Decomposer"], "Herbi = plant, vore = eat.", GL);
+MC("n31", "interactions", "An oxpecker bird rides on a zebra and eats the flies on its skin. The bird gets food and the zebra gets pest control. This is…", "Mutualism", ["Commensalism", "Parasitism", "Predation"], "+/+: both benefit.", {src: "Interactions foldable"});
+MC("n32", "interactions", "A remora fish attaches to a shark and eats scraps from its meals without harming it. This is…", "Commensalism", ["Mutualism", "Parasitism", "Competition"], "+/0: the remora benefits, the shark is unaffected.", {src: "Interactions foldable"});
+MC("n33", "interactions", "Tapeworms attach to an animal's intestine and eat its food, depriving the animal of nutrients. This is…", "Parasitism", ["Mutualism", "Commensalism", "Predation"], "+/−: the tapeworm benefits and the host is harmed.", {src: "Interactions foldable"});
+MC("n34", "interactions", "Tigers and lions hunt the same prey. This is…", "Interspecific competition", ["Intraspecific competition", "Mutualism", "Predation"], "Different species, same resource. Inter = between.", {src: "Interactions foldable"});
+MC("n35", "interactions", "Male elephants battle over mating privileges. This is…", "Intraspecific competition", ["Interspecific competition", "Predation", "Commensalism"], "Same species, same limited resource. Intra = within.", {src: "Interactions foldable"});
+MC("n36", "interactions", "Which symbols represent COMPETITION?", "−/−", ["+/+", "+/0", "+/−"], "Competition is a negative-negative interaction: both lose some of the limited resource.", Object.assign({order: ["+/+", "+/0", "+/−", "−/−"]}, GL));
+MC("n37", "energy", "In the food chain oak leaves → caterpillar → treecreeper → hawk, what does each arrow point toward?", "The organism that is GAINING the energy", ["The organism that is losing energy", "The producer", "The decomposer"], "Arrows always point toward the organism gaining energy.", {src: "Energy Flow worksheet"});
+MC("n38", "energy", "In the ocean chain phytoplankton → zooplankton → small fish → shark → orca, what is the ORCA?", "Quaternary consumer", ["Tertiary consumer", "Secondary consumer", "Primary consumer"], "Phytoplankton = producer, zooplankton = primary, small fish = secondary, shark = tertiary, orca = quaternary.", {src: "Energy Flow worksheet"});
+MC("n39", "energy", "In the ocean chain phytoplankton → zooplankton → small fish → shark → orca, what are the ZOOPLANKTON?", "Primary consumers", ["Producers", "Secondary consumers", "Decomposers"], "They eat the phytoplankton (the producers).", {src: "Energy Flow worksheet"});
+MC("n40", "energy", "A raccoon eats berries and also eats frogs. What trophic level is it?", "Both a primary consumer and a higher-level consumer, because it is an omnivore", ["Only a producer", "Only a primary consumer", "Only a decomposer"], "Eating berries (producers) makes it a primary consumer; eating frogs makes it a higher-level consumer. An organism can be at more than one trophic level.");
+MC("n41", "energy", "An earthworm eats soil to get the dead leaves and other dead organic matter in it. What is the earthworm?", "A detritivore", ["A producer", "A carnivore", "A primary consumer of living grass"], "Detritivores eat dead and decomposing organic matter, recycling it back into the soil.");
+TF("n42", "energy", "Soil is a producer in a food web.", false, "Soil is abiotic (nonliving), so it can't be a producer. Producers are living things like grasses and algae.");
+MC("n44", "energy", "Grass, grasshopper, mouse, snake. Which is the correct food chain?", "Grass → grasshopper → mouse → snake", ["Snake → mouse → grasshopper → grass", "Grass → mouse → grasshopper → snake", "Grasshopper → grass → snake → mouse"], "Producer first, and each arrow points to the eater.", {src: "Energy Flow worksheet"});
+MC("n45", "energy", "Which term describes the top predator in a food chain, where energy flow ends?", "Apex predator", ["Primary consumer", "Producer", "Detritivore"], "The tertiary consumer at the top of the pyramid is the apex predator.", {src: "Pyramid foldable"});
+MC("n46", "pyramids", "A biomass pyramid goes grass → moose → wolf → tiger. The grass has 1,000 kg of biomass. About how much do the wolves have?", "10 kg", ["100 kg", "1 kg", "500 kg"], "Each level is about 10% of the one below: 1,000 kg grass → 100 kg moose → 10 kg wolf → 1 kg tiger.", {order: ["500 kg", "100 kg", "10 kg", "1 kg"]});
+MC("n47", "pyramids", "In an energy pyramid, the producers have 10,000 J. How much energy do the secondary consumers have?", "100 J", ["1,000 J", "10 J", "1 J"], "10,000 J producers → 1,000 J primary consumers → 100 J secondary → 10 J tertiary.", {order: ["1,000 J", "100 J", "10 J", "1 J"]});
+MC("n48", "pyramids", "Organisms use most of the energy they take in for metabolism, movement, growth, and reproduction. Most of what's left is released as…", "Heat and waste", ["New sunlight", "Oxygen gas", "Biomass for the next level"], "That's why only about 10% is stored in the next trophic level.", {src: "Pyramid notes"});
+MC("n51", "pyramids", "What are the 3 kinds of ecological pyramids?", "Energy, biomass, and numbers", ["Energy, water, and carbon", "Producers, consumers, and decomposers", "Food chain, food web, and trophic level"], "Pyramids of energy, biomass, and numbers.", {src: "Pyramid notes"});
+MC("n52", "limits", "Which list best describes what determines an ecosystem's carrying capacity?", "Food, water, space, shelter, predators, and disease", ["Only the number of births", "Only sunlight", "The color of the organisms"], "Carrying capacity is set by limiting factors like food, water, space, shelter, predators, and disease.", {src: "I Can statements"});
+MC("n53", "limits", "Which is a density-INDEPENDENT limiting factor?", "Human activity, like clearing land", ["Competition", "Predation", "Disease"], "Density-independent factors include weather, natural disasters, and human activity.");
+MC("n54", "keystone", "A keystone species is usually…", "Not very abundant, but has strong control over the structure of its community", ["The most common species in the ecosystem", "A producer at the bottom of every food web", "A species with no effect on others"], "A keystone species is not usually abundant, yet it has strong control over its community.", GL);
+MC("n55", "keystone", "Sea otters eat sea urchins, and urchins eat kelp. If sea otters were removed, what would happen?", "Urchins would increase and destroy the kelp forest", ["Kelp would grow even more", "Urchins would disappear", "Nothing would change"], "Otter → eats urchins → saves kelp. That's why otters are a keystone species.", GL);
+MC("n56", "keystone", "What is one way biodiversity benefits people?", "It provides resources like medicine, clean air, and clean water", ["It makes ecosystems collapse", "It removes all predators", "It lowers the number of interactions"], "Biodiversity makes ecosystems stronger and gives people medicine, clean air, and clean water.", {src: "I Can statements"});
+MC("n57", "keystone", "How do keystone species help keep an ecosystem stable?", "Their interactions regulate the populations of other species", ["They are the most numerous species", "They make their own food", "They keep other species from interacting"], "Keystone species maintain structure, stability, and diversity because their interactions regulate the populations of other species.");
+MC("n59", "levels", "Which level of organization is \"all biotic factors in a given place\"?", "Community", ["Ecosystem", "Population", "Biome"], "Community = all the living things. Ecosystem adds the abiotic factors.", {src: "Ecosystems worksheet"});
+MC("n60", "levels", "Which level of organization is \"all abiotic and biotic factors in a given place\"?", "Ecosystem", ["Community", "Biosphere", "Population"], "Ecosystem = living + nonliving.", {src: "Ecosystems worksheet"});
+MC("n61", "levels", "Which level is \"areas on Earth with similar climates and organisms\"?", "Biome", ["Biosphere", "Ecosystem", "Community"], "Example: the desert biome.", {src: "Ecosystems worksheet"});
+MC("n62", "populations", "Population density is calculated as…", "Number of individuals ÷ area", ["Area ÷ number of individuals", "Births − deaths", "Number of individuals × area"], "# of individuals / area (units²).", {src: "Population notes"});
+MC("n63", "populations", "\"Movement of individuals into an area occupied by an existing population\" is…", "Immigration", ["Emigration", "Exponential growth", "Dispersion"], "Immigration = moving IN. Emigration = moving OUT.", GL);
+MC("n64", "limits", "Which is a density-DEPENDENT limiting factor?", "Disease", ["Weather", "Natural disasters", "Human activity, like clearing land"], "Density-dependent factors include competition, predation, and disease.");
+ORDER("o8", "energy", "Put this food chain in order, starting with the producer.", ["Oak tree leaves", "Caterpillar", "Treecreeper (small bird)", "Hawk"], "Producer → primary → secondary → tertiary consumer.", {src: "Energy Flow worksheet"});
+ORDER("o9", "pyramids", "Put the trophic levels in order from the BOTTOM of an energy pyramid (most energy) to the TOP.", ["Primary producer", "Primary consumer (herbivore)", "Secondary consumer", "Tertiary consumer (apex predator)"], "Each level up keeps only about 10% of the energy of the level below it.");
+SORT("s15", "interactions", "Habitat or niche?", ["Habitat (where it lives)", "Niche (its role)"],
+  [["A frog lives in a pond", 0], ["A bison lives in a grassland", 0], ["A sloth lives in the rainforest canopy", 0], ["A frog eats flies", 1], ["An owl hunts mice at night", 1], ["Three bird species share one tree, each feeding in a different part so they don't compete", 1], ["An earthworm breaks down dead leaves in the soil", 1]],
+  "Habitat = the address. Niche = the job (what it eats, when it's active, how it uses resources).", Object.assign({pick: 6}, GL));
+
+/* Randomized math (new numbers every attempt) */
+GEN("x1", "populations", () => {
+  const units = [["m²", "m²"], ["km²", "km²"], ["hectare", "hectares"]];
+  const u = pick(units); const org = pick(["dandelions", "oak trees", "deer", "sunflowers", "prairie dogs", "mushrooms", "ant hills", "beetles"]);
+  const area = pick([2, 4, 5, 8, 10, 20, 25]); const per = pick([3, 4, 5, 6, 8, 12, 15, 20, 25]); const n = area * per;
+  return {t: "num", q: `A student counts ${fmt(n)} ${org} in an area of ${area} ${u[1]}. What is the population density?`, ans: per, tol: 0, unit: `${org} per ${u[0]}`, why: `Density = number of individuals ÷ ONE unit of area. ${fmt(n)} ÷ ${area} = ${per} ${org} per ${u[0]}.`};
+});
+GEN("x2", "populations", () => {
+  const b = rand(10, 60), d = rand(5, 55), i = rand(0, 20), e = rand(0, 20); const ch = b + i - d - e;
+  return {t: "num", q: `In one year a population has ${b} births, ${d} deaths, ${i} immigrants, and ${e} emigrants. By how much does the population change? (Type a negative number if it shrinks.)`, ans: ch, tol: 0, unit: "individuals", why: `(births + immigration) − (deaths + emigration) = (${b} + ${i}) − (${d} + ${e}) = ${b + i} − ${d + e} = ${ch}.`};
+});
+GEN("x3", "populations", () => {
+  const n0 = pick([120, 200, 350, 480, 600, 1000]); const b = rand(20, 90), d = rand(10, 80), i = rand(0, 25), e = rand(0, 25); const n1 = n0 + b + i - d - e;
+  return {t: "num", q: `A population of ${n0} rabbits has ${b} births, ${d} deaths, ${i} rabbits moving in, and ${e} rabbits moving out. What is the new population size?`, ans: n1, tol: 0, unit: "rabbits", why: `${n0} + ${b} + ${i} − ${d} − ${e} = ${n1}. Moving in = immigration (adds); moving out = emigration (subtracts).`};
+});
+GEN("x4", "pyramids", () => {
+  const base = pick([1000, 5000, 10000, 20000, 50000, 100000, 300000, 1000000]);
+  const L = pick([[1, "primary consumers"], [2, "secondary consumers"], [3, "tertiary consumers"]]);
+  const ans = base / Math.pow(10, L[0]);
+  const steps = [base]; for (let k = 1; k <= L[0]; k++) steps.push(base / Math.pow(10, k));
+  return {t: "num", q: `Producers in an ecosystem capture ${fmt(base)} kcal of energy. Using the 10% rule, about how much energy reaches the ${L[1]}?`, ans, tol: 0, unit: "kcal", why: `Each level keeps about 10%: ${steps.map(fmt).join(" → ")} kcal.`};
+});
+GEN("x5", "pyramids", () => {
+  const top = pick([2, 5, 10, 20, 50, 80, 150]); const L = pick([[2, "secondary consumers"], [3, "tertiary consumers"]]);
+  const ans = top * Math.pow(10, L[0]);
+  return {t: "num", q: `The ${L[1]} in a food chain receive ${top} kcal of energy. Using the 10% rule, about how much energy did the PRODUCERS start with?`, ans, tol: 0, unit: "kcal", why: `Work backwards, multiplying by 10 for each level down: ${top} × ${Math.pow(10, L[0])} = ${fmt(ans)} kcal.`};
+});
+GEN("x6", "pyramids", () => {
+  const x = pick([500, 1000, 2000, 4000, 8000, 25000]); const ans = x * 0.9;
+  return {t: "num", q: `A trophic level contains ${fmt(x)} kcal. About how much of that energy is LOST (mostly as heat) instead of being passed to the next level?`, ans, tol: 0, unit: "kcal", why: `About 10% (${fmt(x * 0.1)} kcal) passes up, so about 90% is lost: ${fmt(x)} × 0.9 = ${fmt(ans)} kcal.`};
+});
+GEN("x7", "pyramids", () => {
+  const p = pick([1000, 5000, 10000, 20000, 60000]); const ans = p / 1000;
+  return {t: "num", q: `A pyramid of biomass has ${fmt(p)} kg of producers. Following the 10% pattern, about how many kg of top carnivores (3 levels above the producers) can it support?`, ans, tol: 0, unit: "kg", why: `${fmt(p)} → ${fmt(p / 10)} → ${fmt(p / 100)} → ${fmt(ans)} kg.`};
+});
+GEN("x8", "populations", () => {
+  let a1, n1, a2, n2;
+  do { a1 = pick([2, 4, 5, 10]); n1 = a1 * rand(3, 30); a2 = pick([2, 4, 5, 10]); n2 = a2 * rand(3, 30); } while (n1 / a1 === n2 / a2);
+  const d1 = n1 / a1, d2 = n2 / a2; const ansA = d1 > d2;
+  return {t: "mc", q: `Field A has ${n1} wildflowers in ${a1} m². Field B has ${n2} wildflowers in ${a2} m². Which field has the HIGHER population density?`, a: ansA ? `Field A (${d1} per m²)` : `Field B (${d2} per m²)`, w: [ansA ? `Field B (${d2} per m²)` : `Field A (${d1} per m²)`, "They are the same", "You can't tell without knowing the distribution"], why: `Divide each by ONE unit of area: A = ${n1} ÷ ${a1} = ${d1}; B = ${n2} ÷ ${a2} = ${d2}.`};
+});
+
+/* ---------- figures (inline SVG, drawn for this test) ---------- */
+const AH = id => `<defs><marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs>`;
+const tagc = (x, y, t) => `<circle class="tagc" cx="${x}" cy="${y}" r="12"/><text class="tagt" x="${x}" y="${y + 4.5}" text-anchor="middle">${t}</text>`;
+const box = (x, y, w, h, t, cls = "bx", tcls = "tx b") => `<rect class="${cls}" x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="6"/><text class="${tcls}" x="${x}" y="${y + 4.5}" text-anchor="middle">${t}</text>`;
+const FIG = {};
+FIG.foodweb = () => {
+  const N = {foxes: [80, 40, "Foxes"], hawks: [330, 40, "Hawks & owls"], snakes: [590, 40, "Snakes"], ibirds: [450, 135, "Insectivorous birds"], toads: [612, 135, "Toads"], spiders: [420, 230, "Spiders"], pinsects: [588, 230, "Predaceous insects"], rabbits: [55, 320, "Rabbits"], squirrels: [150, 320, "Squirrels"], mice: [240, 320, "Mice"], sbirds: [340, 320, "Seed-eating birds"], hinsects: [530, 320, "Herbivorous insects"]};
+  const E = [["rabbits", "foxes"], ["rabbits", "hawks"], ["squirrels", "foxes"], ["squirrels", "hawks"], ["mice", "foxes"], ["mice", "hawks"], ["sbirds", "foxes"], ["sbirds", "hawks"], ["hinsects", "spiders"], ["hinsects", "ibirds"], ["hinsects", "pinsects"], ["spiders", "ibirds"], ["pinsects", "ibirds"], ["pinsects", "toads"], ["toads", "snakes"], ["ibirds", "foxes"], ["ibirds", "hawks"], ["ibirds", "snakes"]];
+  let s = `<svg viewBox="0 0 680 410" role="img" aria-label="Food web: plants are eaten by rabbits, squirrels, mice, seed-eating birds, and herbivorous insects. Rabbits, squirrels, mice, and seed-eating birds are eaten by foxes and by hawks and owls. Herbivorous insects are eaten by spiders, insectivorous birds, and predaceous insects. Spiders and predaceous insects are eaten by insectivorous birds. Predaceous insects are eaten by toads. Toads are eaten by snakes. Insectivorous birds are eaten by foxes, hawks and owls, and snakes.">${AH("ah-fw")}`;
+  for (const [a, b] of E) { const A = N[a], Bn = N[b]; s += `<line class="ar" x1="${A[0]}" y1="${A[1] - 13}" x2="${Bn[0]}" y2="${Bn[1] + 15}" marker-end="url(#ah-fw)"/>`; }
+  for (const k of ["rabbits", "squirrels", "mice", "sbirds", "hinsects"]) s += `<line class="ar" x1="${N[k][0]}" y1="372" x2="${N[k][0]}" y2="335" marker-end="url(#ah-fw)"/>`;
+  for (const k in N) { const [x, y, t] = N[k]; s += box(x, y, t.length * 7.3 + 18, 26, t); }
+  s += `<rect class="bx2" x="20" y="372" width="640" height="28" rx="6"/><text class="tx b" x="340" y="391" text-anchor="middle">Plants</text></svg>`;
+  return s + `<p class="figcap">Arrows point from the food to the organism that eats it (the direction energy flows).</p>`;
+};
+FIG.pyrABCD = () => `<svg viewBox="0 0 360 210" role="img" aria-label="Ecological pyramid with four levels labeled A at the top through D at the bottom">
+  <polygon class="b4" points="180,10 140,58 220,58"/><polygon class="b3" points="140,58 100,106 260,106 220,58"/><polygon class="b2" points="100,106 60,154 300,154 260,106"/><polygon class="b1" points="60,154 20,202 340,202 300,154"/>
+  <polygon class="band" fill="none" points="180,10 20,202 340,202"/><line class="band" x1="140" y1="58" x2="220" y2="58"/><line class="band" x1="100" y1="106" x2="260" y2="106"/><line class="band" x1="60" y1="154" x2="300" y2="154"/>
+  <text class="tx b" x="180" y="46" text-anchor="middle">A</text><text class="tx b" x="180" y="87" text-anchor="middle">B</text><text class="tx b" x="180" y="135" text-anchor="middle">C</text><text class="tx b" x="180" y="183" text-anchor="middle">D</text></svg>`;
+FIG.energyPyr = () => `<svg viewBox="0 0 420 230" role="img" aria-label="Energy pyramid with four levels: A third-level consumers at the top, B second-level consumers, C first-level consumers, D primary producers at the bottom">
+  <polygon class="b4" points="210,10 165,62 255,62"/><polygon class="b3" points="165,62 120,114 300,114 255,62"/><polygon class="b2" points="120,114 75,166 345,166 300,114"/><polygon class="b1" points="75,166 30,218 390,218 345,166"/>
+  <polygon class="band" fill="none" points="210,10 30,218 390,218"/><line class="band" x1="165" y1="62" x2="255" y2="62"/><line class="band" x1="120" y1="114" x2="300" y2="114"/><line class="band" x1="75" y1="166" x2="345" y2="166"/>
+  ${tagc(210, 46, "A")}<text class="tx s" x="210" y="98" text-anchor="middle">second-level consumers</text>${tagc(140, 94, "B")}<text class="tx s" x="210" y="150" text-anchor="middle">first-level consumers</text>${tagc(95, 146, "C")}<text class="tx s" x="210" y="202" text-anchor="middle">primary producers</text>${tagc(52, 198, "D")}
+  <text class="tx s" x="262" y="40">third-level consumers</text></svg>`;
+FIG.water = () => `<svg viewBox="0 0 640 340" role="img" aria-label="Water cycle landscape. A: arrow rising from the ocean to the sky. B: the cloud. C: rain falling from the cloud onto a mountain. D: water flowing downhill over land into the ocean. E: water soaking down into groundwater. F: arrow rising from a tree's leaves to the cloud.">${AH("ah-w")}
+  <rect class="sky" x="0" y="0" width="640" height="340"/><circle class="sunc" cx="58" cy="52" r="26"/>
+  <rect class="wat" x="0" y="250" width="240" height="90"/><text class="tx b" x="70" y="300">Ocean</text>
+  <polygon class="land" points="230,252 300,252 470,118 600,252 640,252 640,340 230,340"/>
+  <rect class="wat" x="232" y="306" width="408" height="34" opacity=".85"/><text class="tx b" x="470" y="328" text-anchor="middle">Groundwater</text>
+  <rect class="trunk" x="296" y="214" width="8" height="38"/><circle class="tree" cx="300" cy="205" r="22"/>
+  <g><circle class="cld" cx="330" cy="62" r="26"/><circle class="cld" cx="365" cy="52" r="32"/><circle class="cld" cx="402" cy="64" r="24"/><rect class="cld" x="330" y="62" width="74" height="26" rx="10"/></g>
+  <line class="rain" x1="410" y1="96" x2="430" y2="160"/><line class="rain" x1="432" y1="96" x2="452" y2="150"/><line class="rain" x1="454" y1="96" x2="474" y2="140"/><line class="rain" x1="388" y1="96" x2="408" y2="170"/>
+  <path class="ar" d="M120,244 C140,170 220,110 318,88" marker-end="url(#ah-w)"/>
+  <path class="ar" d="M300,180 C296,150 312,120 340,98" marker-end="url(#ah-w)"/>
+  <path class="ar" d="M455,150 L360,232 L250,250" marker-end="url(#ah-w)"/>
+  <path class="ar" d="M520,232 L520,300" marker-end="url(#ah-w)"/>
+  ${tagc(178, 150, "A")}${tagc(410, 36, "B")}${tagc(486, 104, "C")}${tagc(336, 262, "D")}${tagc(548, 266, "E")}${tagc(272, 140, "F")}</svg>`;
+FIG.nitrogen = () => `<svg viewBox="0 0 640 360" role="img" aria-label="Nitrogen cycle diagram. A: arrow from nitrogen gas in the air to ammonium in soil. F: arrow from nitrogen gas, through a lightning bolt, to nitrates. B: arrow from ammonium to nitrites and nitrates. C: arrow from nitrates up into plants. Plants are eaten by animals. D: arrow from dead organisms and waste to ammonium. E: arrow from nitrates back up to nitrogen gas.">${AH("ah-n")}
+  <path class="ar" d="M210,48 C140,70 110,120 110,170" marker-end="url(#ah-n)"/>
+  <path class="ar" d="M340,48 L352,228" marker-end="url(#ah-n)"/>
+  <path class="ar" d="M224,202 C246,214 260,228 268,238" marker-end="url(#ah-n)"/>
+  <path class="ar" d="M452,246 C500,230 530,200 548,166" marker-end="url(#ah-n)"/>
+  <path class="ar" d="M560,166 L560,268" marker-end="url(#ah-n)"/>
+  <path class="ar" d="M514,288 L246,298" marker-end="url(#ah-n)"/>
+  <path class="ar" d="M110,286 L110,210" marker-end="url(#ah-n)"/>
+  <path class="ar" d="M430,232 C460,160 450,90 418,50" marker-end="url(#ah-n)"/>
+  ${box(320, 34, 300, 30, "Nitrogen gas (N₂) in the air — 78%", "bx2")}
+  ${box(116, 192, 212, 30, "Ammonia / ammonium (NH₄⁺)")}${box(362, 250, 190, 30, "Nitrites → Nitrates (NO₃⁻)")}${box(560, 150, 90, 30, "Plants")}${box(560, 284, 90, 30, "Animals")}${box(140, 300, 196, 30, "Dead organisms & waste")}
+  <path class="sunc" d="M366,118 l-14,22 h10 l-8,20 l20,-28 h-10 l8,-14 z"/>
+  <text class="tx s" x="574" y="222">eaten by</text>
+  ${tagc(140, 100, "A")}${tagc(330, 140, "F")}${tagc(236, 232, "B")}${tagc(520, 214, "C")}${tagc(86, 252, "D")}${tagc(470, 140, "E")}</svg>`;
+FIG.carbon = () => `<svg viewBox="0 0 640 380" role="img" aria-label="Carbon cycle diagram. A: arrow from carbon dioxide in the atmosphere to plants. B: arrow from animals up to the atmosphere. C: arrow from cars and factories up to the atmosphere. D: arrow between the atmosphere and the ocean. E: arrow from a volcano to the atmosphere. F: arrow from dead plants and animals down to fossil fuels.">${AH("ah-c")}
+  <path class="ar" d="M200,46 C130,60 105,100 105,128" marker-end="url(#ah-c)"/>
+  <path class="ar" d="M175,240 C230,170 250,100 262,52" marker-end="url(#ah-c)"/>
+  <path class="ar" d="M105,168 L105,230" marker-end="url(#ah-c)"/>
+  <path class="ar" d="M330,300 L330,214" marker-end="url(#ah-c)"/>
+  <path class="ar" d="M330,182 L330,52" marker-end="url(#ah-c)"/>
+  <path class="ar" d="M430,48 C500,80 520,120 528,190" marker-end="url(#ah-c)" marker-start="url(#ah-c)"/>
+  <path class="ar" d="M572,112 C560,80 520,50 446,36" marker-end="url(#ah-c)"/>
+  <path class="ar" d="M120,272 C150,320 200,330 230,330" marker-end="url(#ah-c)"/>
+  ${box(320, 34, 230, 30, "CO₂ in the atmosphere", "bx2")}
+  ${box(105, 148, 150, 30, "Plants (producers)")}${box(105, 252, 170, 30, "Animals (consumers)")}${box(330, 198, 150, 30, "Cars & factories")}${box(330, 330, 200, 30, "Fossil fuels (coal, oil, gas)")}${box(540, 212, 150, 30, "Ocean (dissolved CO₂)")}
+  <polygon class="soil" points="540,150 572,112 590,112 622,150"/><text class="tx b" x="581" y="170" text-anchor="middle">Volcano</text>
+  <text class="tx s" x="112" y="200">eaten by</text><text class="tx s" x="345" y="268">burned</text>
+  ${tagc(128, 82, "A")}${tagc(232, 150, "B")}${tagc(352, 112, "C")}${tagc(510, 100, "D")}${tagc(520, 56, "E")}${tagc(170, 318, "F")}</svg>`;
+FIG.growth = () => {
+  const J = [], S = [];
+  for (let i = 0; i <= 40; i++) { const t = i / 40; J.push(`${40 + t * 220},${180 - (6 + 150 * (Math.exp(3.4 * t) - 1) / (Math.exp(3.4) - 1))}`); S.push(`${360 + t * 220},${180 - (6 + 124 / (1 + Math.exp(-11 * (t - 0.45))))}`); }
+  return `<svg viewBox="0 0 620 230" role="img" aria-label="Two graphs of population size over time. Graph A curves sharply upward in a J shape. Graph B rises in an S shape and levels off at a dashed line labeled X.">
+  <path class="ax" d="M40,20 V180 H270"/><path class="ax" d="M360,20 V180 H590"/>
+  <polyline class="l3" points="${J.join(" ")}"/><polyline class="l1" points="${S.join(" ")}"/>
+  <line class="dash" x1="360" y1="50" x2="590" y2="50"/><text class="tx b" x="574" y="42">X</text>
+  <text class="tx b" x="155" y="14" text-anchor="middle">Graph A</text><text class="tx b" x="475" y="14" text-anchor="middle">Graph B</text>
+  <text class="tx s" x="155" y="200" text-anchor="middle">Time</text><text class="tx s" x="475" y="200" text-anchor="middle">Time</text>
+  <text class="tx s" transform="translate(28,100) rotate(-90)" text-anchor="middle">Population size</text><text class="tx s" transform="translate(348,100) rotate(-90)" text-anchor="middle">Population size</text></svg>`;
+};
+FIG.predprey = () => {
+  const X = m => 50 + (m - 100) / 700 * 540, Y = v => 200 - v * 1.8;
+  const prey = [], pred = [];
+  for (let m = 100; m <= 800; m += 4) {
+    let g = 3, l = 3;
+    for (const c of [235, 460, 690]) { g += 87 * Math.exp(-Math.pow((m - c) / 16, 2)); l += 29 * Math.exp(-Math.pow((m - c - 32) / (m < c + 32 ? 14 : 45), 2)); }
+    prey.push(`${X(m).toFixed(1)},${Y(g).toFixed(1)}`); pred.push(`${X(m).toFixed(1)},${Y(l).toFixed(1)}`);
+  }
+  let grid = ""; for (const v of [0, 20, 40, 60, 80, 100]) grid += `<line class="gr" x1="50" x2="590" y1="${Y(v)}" y2="${Y(v)}"/><text class="tx s" x="42" y="${Y(v) + 4}" text-anchor="end">${v}</text>`;
+  let xt = ""; for (let m = 100; m <= 800; m += 100) xt += `<text class="tx s" x="${X(m)}" y="${218}" text-anchor="middle">${m}</text>`;
+  return `<svg viewBox="0 0 620 250" role="img" aria-label="Predator-prey graph from 100 to 800 months. The gazelle line spikes to about 90 three times. The lion line rises to about 30 a little after each gazelle spike, then slowly falls. The y-axis has numbers but no label.">
+  ${grid}<path class="ax" d="M50,20 V200 H590"/>${xt}<text class="tx s" x="320" y="240" text-anchor="middle">Months</text>
+  <polyline class="l1" points="${prey.join(" ")}"/><polyline class="l2" points="${pred.join(" ")}"/>
+  <text class="tx b" x="${X(262)}" y="${Y(78)}" style="fill:var(--water)">gazelle</text><text class="tx b" x="${X(300)}" y="${Y(40)}" style="fill:var(--sun)">lions</text></svg>`;
+};
+FIG.dist = () => {
+  const P = (ox, pts) => pts.map(([x, y]) => `<circle class="dot" cx="${ox + x}" cy="${30 + y}" r="5"/>`).join("");
+  const clumped = [[22, 20], [32, 28], [26, 36], [38, 18], [110, 30], [120, 24], [116, 38], [126, 34], [60, 100], [70, 110], [64, 118], [76, 98], [56, 112], [130, 120], [138, 128]];
+  const uniform = []; for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) uniform.push([22 + c * 36, 22 + r * 36]);
+  const random = [[18, 30], [70, 14], [128, 40], [44, 78], [100, 70], [140, 100], [24, 128], [86, 120], [60, 46], [120, 136], [30, 92], [106, 22]];
+  return `<svg viewBox="0 0 540 210" role="img" aria-label="Three square boxes of dots. Box A: dots in small tight groups. Box B: dots in an even grid. Box C: dots scattered with no pattern.">
+  <rect class="bx" x="20" y="30" width="160" height="160"/><rect class="bx" x="190" y="30" width="160" height="160"/><rect class="bx" x="360" y="30" width="160" height="160"/>
+  ${P(20, clumped)}${P(190, uniform)}${P(360, random)}${tagc(100, 14, "A")}${tagc(270, 14, "B")}${tagc(440, 14, "C")}</svg>`;
+};
+const PYR_MINI = `<svg class="pyr" viewBox="0 0 132 112" aria-hidden="true"><polygon class="b4" points="66,4 54,28 78,28" style="fill:var(--water-soft)"/><polygon points="54,28 42,52 90,52 78,28" style="fill:var(--sun-soft)"/><polygon points="42,52 30,76 102,76 90,52" style="fill:var(--land)"/><polygon points="30,76 18,100 114,100 102,76" style="fill:var(--moss-soft)"/><polygon points="66,4 18,100 114,100" style="fill:none;stroke:var(--ink);stroke-width:1.2"/><line x1="54" y1="28" x2="78" y2="28" style="stroke:var(--ink)"/><line x1="42" y1="52" x2="90" y2="52" style="stroke:var(--ink)"/><line x1="30" y1="76" x2="102" y2="76" style="stroke:var(--ink)"/><text x="66" y="24" text-anchor="middle">.1%</text><text x="66" y="46" text-anchor="middle">1%</text><text x="66" y="70" text-anchor="middle">10%</text><text x="66" y="94" text-anchor="middle">100%</text></svg>`;
+
+/* ---------- building a test ---------- */
+const BYID = Object.fromEntries(B.map(q => [q.id, q]));
+const VBY = Object.fromEntries(VOCAB.map(v => [v[0], v]));
+const conflict = (a, b) => CONFLICTS.some(c => (c[0] === a && c.includes(b)) || (c[0] === b && c.includes(a)));
+
+function instance(q) {
+  const base = {id: q.id, t: q.t, topic: q.topic, src: q.src || "", fig: q.fig || null, why: q.why || ""};
+  if (q.t === "gen") { const g = q.fn(); return instance(Object.assign({}, g, {id: q.id, topic: q.topic, src: "New numbers each time", fig: g.fig || null})); }
+  if (q.t === "mc") { const opts = q.order ? q.order.slice() : shuffle([q.a, ...q.w]); return Object.assign(base, {q: q.q, opts, ans: opts.indexOf(q.a), pts: 1}); }
+  if (q.t === "tf") return Object.assign(base, {t: "mc", q: q.q, opts: ["True", "False"], ans: q.a ? 0 : 1, pts: 1});
+  if (q.t === "num") return Object.assign(base, {q: q.q, ans: q.ans, tol: q.tol, unit: q.unit, pts: 1});
+  if (q.t === "sort") {
+    const sh = shuffle(q.items), chosen = [], seen = new Set();
+    for (const it of sh) if (!seen.has(it[1])) { seen.add(it[1]); chosen.push(it); }
+    for (const it of sh) if (chosen.length < Math.min(q.pick, q.items.length) && !chosen.includes(it)) chosen.push(it);
+    return Object.assign(base, {q: q.q, buckets: q.buckets, items: shuffle(chosen), pts: chosen.length});
+  }
+  if (q.t === "order") { let d; do { d = shuffle(q.items); } while (d.join("|") === q.items.join("|")); return Object.assign(base, {q: q.q, items: q.items.slice(), deck: d, pts: 1}); }
+  if (q.t === "label") return Object.assign(base, {q: q.q, blanks: q.blanks, opts: shuffle(q.blanks.map(b => b[1])), pts: q.blanks.length});
+  return base;
+}
+function matchItems(terms) {
+  const list = shuffle(terms), n = Math.max(1, Math.ceil(list.length / 6)), rounds = Array.from({length: n}, () => []);
+  const cap = Math.ceil(list.length / n);
+  for (const term of list) {
+    const ok = rounds.filter(rd => rd.length < cap && !rd.some(x => conflict(x, term)));
+    const pool = ok.length ? ok : rounds;
+    pool.reduce((m, rd) => rd.length < m.length ? rd : m, pool[0]).push(term);
+  }
+  return rounds.filter(r => r.length).map(r => ({id: "match", t: "match", topic: "vocab", src: "Every vocab word", q: "Match each term to its definition.", terms: shuffle(r), defs: shuffle(r), pts: r.length}));
+}
+function typeItem(term) {
+  const v = VBY[term];
+  return {id: "type:" + term, t: "type", topic: v[2], src: "Vocab", q: v[1], term: v[0], accept: [v[0].replace(/\s*\(.*\)$/, ""), ...(v[3] || [])], pts: 1, why: `${v[0]}: ${v[1]}.`};
+}
+function buildRun(mode, opts = {}) {
+  let items = [], label = "";
+  const all = B;
+  if (mode === "full") {
+    label = "Full test";
+    items = all.map(instance).concat(matchItems(VOCAB.map(v => v[0])), shuffle(VOCAB).slice(0, 15).map(v => typeItem(v[0])));
+  } else if (mode === "practice" || mode === "quick") {
+    const big = mode === "practice";
+    label = big ? "Practice test" : "Quick quiz";
+    const nBank = big ? 48 : 18, nGen = big ? 4 : 3, nMatch = big ? 18 : 12, nType = big ? 5 : 2;
+    const byTopic = {}; for (const q of shuffle(all.filter(q => q.t !== "gen"))) (byTopic[q.topic] = byTopic[q.topic] || []).push(q);
+    const keys = shuffle(Object.keys(byTopic)), rest = [];
+    while (rest.length < nBank && keys.some(k => byTopic[k].length)) for (const k of keys) if (byTopic[k].length && rest.length < nBank) rest.push(byTopic[k].pop());
+    const gens = shuffle(all.filter(q => q.t === "gen")).slice(0, nGen);
+    items = [...gens, ...rest].map(instance).concat(matchItems(shuffle(VOCAB).slice(0, nMatch).map(v => v[0])), shuffle(VOCAB).slice(0, nType).map(v => typeItem(v[0])));
+  } else if (mode === "vocab") {
+    label = "Vocab match";
+    items = matchItems(VOCAB.map(v => v[0]));
+  } else if (mode === "topics") {
+    const ts = opts.topics;
+    label = ts.length === 1 ? TOPICS[ts[0]] : `Topics (${ts.length})`;
+    const terms = VOCAB.filter(v => ts.includes(v[2])).map(v => v[0]);
+    items = all.filter(q => ts.includes(q.topic)).map(instance).concat(terms.length >= 4 ? matchItems(terms) : terms.map(typeItem));
+  } else if (mode === "missed") {
+    label = "Missed questions";
+    const ids = opts.missed || [];
+    const qs = ids.filter(id => BYID[id]).map(id => instance(BYID[id]));
+    const terms = [...new Set(ids.filter(id => id.startsWith("v:")).map(id => id.slice(2)).filter(t => VBY[t]))];
+    items = qs.concat(terms.length >= 4 ? matchItems(terms) : [], terms.map(typeItem));
+  }
+  return {id: uid(), mode, label, study: S.study, items: mode === "vocab" ? items : shuffle(items), resp: [], res: [], i: 0, started: Date.now(), elapsed: 0};
+}
+
+/* ---------- grading ---------- */
+const norm = s => String(s).toLowerCase().replace(/\(.*?\)/g, " ").replace(/[^a-z0-9%\- ]/g, " ").replace(/-/g, " ").replace(/\s+/g, " ").trim().replace(/^(the|a|an) /, "");
+function lev(a, b) { const m = a.length, n = b.length; const d = Array.from({length: m + 1}, (_, i) => [i]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[m][n]; }
+const ACCEPTS = VOCAB.map(v => [v[0], [v[0].replace(/\s*\(.*\)$/, ""), v[0], ...(v[3] || [])].map(norm)]);
+function typeOk(given, accept, term) {
+  const g = norm(given); if (!g) return false;
+  const own = accept.map(norm);
+  if (own.includes(g)) return true;
+  let best = Infinity, tolBest = 0;
+  for (const t of own) { const d = lev(g, t); if (d < best) { best = d; tolBest = t.length >= 9 ? 2 : t.length >= 5 ? 1 : 0; } }
+  if (best > tolBest) return false;
+  // a close spelling only counts if it isn't just as close to a different vocab word (emigration vs immigration)
+  for (const [other, list] of ACCEPTS) { if (other === term) continue; for (const t of list) if (lev(g, t) <= best) return false; }
+  return true;
+}
+const parseNum = s => { const m = String(s).replace(/,/g, "").match(/-?\d*\.?\d+/); return m ? parseFloat(m[0]) : NaN; };
+function grade(it, r) {
+  switch (it.t) {
+    case "mc": { const ok = r === it.ans; return {earned: ok ? 1 : 0, possible: 1, ok, given: it.opts[r], correct: it.opts[it.ans]}; }
+    case "num": { const v = parseNum(r); const ok = !isNaN(v) && Math.abs(v - it.ans) <= it.tol + 1e-9; return {earned: ok ? 1 : 0, possible: 1, ok, given: `${r}`, correct: `${fmt(it.tol ? Math.round(it.ans * 100) / 100 : it.ans)} ${it.unit}`}; }
+    case "type": { const ok = typeOk(r, it.accept, it.term);return {earned: ok ? 1 : 0, possible: 1, ok, given: r, correct: it.term, missedTerms: ok ? [] : [it.term]}; }
+    case "sort": { const parts = it.items.map((x, k) => r[k] === x[1]); const e = parts.filter(Boolean).length; return {earned: e, possible: it.items.length, ok: e === it.items.length, parts, given: `${e} of ${it.items.length} sorted correctly`, correct: it.items.filter((x, k) => !parts[k]).map(x => `${x[0]} → ${it.buckets[x[1]]}`).join("; ")}; }
+    case "order": { const ok = r.join("|") === it.items.join("|"); return {earned: ok ? 1 : 0, possible: 1, ok, given: r.join(" → "), correct: it.items.join(" → ")}; }
+    case "label": { const parts = it.blanks.map((b, k) => r[k] === b[1]); const e = parts.filter(Boolean).length; return {earned: e, possible: it.blanks.length, ok: e === it.blanks.length, parts, given: `${e} of ${it.blanks.length} labels correct`, correct: it.blanks.filter((b, k) => !parts[k]).map(b => `${b[0]} = ${b[1]}`).join("; ")}; }
+    case "match": { const parts = it.defs.map((d, k) => r[k] === d); const e = parts.filter(Boolean).length; return {earned: e, possible: it.defs.length, ok: e === it.defs.length, parts, given: `${e} of ${it.defs.length} matched`, correct: it.defs.filter((d, k) => !parts[k]).map(d => `${d}: ${VBY[d][1]}`).join(" • "), missedTerms: it.defs.filter((d, k) => !parts[k])}; }
+  }
+}
+
+/* ---------- state ---------- */
+const S = {view: "home", study: store.get("eco2.study", true), topics: store.get("eco2.topics", []), run: null, history: [], cloud: null, confirmClear: false, confirmQuit: false, last: null};
+S.history = store.get("eco2.history", []);
+const savedRun = store.get("eco2.run", null);
+let cur = null; // live response for the current item
+let revealed = false;
+let qStart = Date.now();
+const app = document.getElementById("app");
+
+function saveRun() { if (S.run) store.set("eco2.run", S.run); else store.del("eco2.run"); }
+
+/* ---------- home ---------- */
+const pctCls = p => p >= 85 ? "hi" : p >= 70 ? "mid" : "lo";
+function countFull() { let n = 0; for (const q of B) n += 1; return n + Math.ceil(VOCAB.length / 6) + 15; }
+function renderHome() {
+  S.view = "home";
+  const resumable = store.get("eco2.run", null);
+  const last = S.history[S.history.length - 1];
+  const lastMissed = [...S.history].reverse().find(h => h.missed && h.missed.length);
+  const topicChips = Object.entries(TOPICS).map(([k, v]) => `<button class="chip" data-topic="${k}" aria-pressed="${S.topics.includes(k)}">${esc(v)}</button>`).join("");
+  app.innerHTML = `
+  <header class="hero">
+    <div><p class="eyebrow">Biology · Unit 2</p><h1>Ecology Test</h1>
+    <p class="lede">Levels of organization, biogeochemical cycles, energy flow, species interactions, populations, and keystone species. Questions and answer choices are shuffled every time, and math problems get new numbers.</p></div>
+    ${PYR_MINI}
+  </header>
+  ${resumable && resumable.items && resumable.i < resumable.items.length ? `<div class="resume" style="margin-top:20px"><p><strong>${esc(resumable.label)} in progress</strong> · question ${resumable.i + 1} of ${resumable.items.length}</p><div class="rowbtns"><button class="btn sun" data-act="resume">Resume</button><button class="btn ghost" data-act="discard">Discard</button></div></div>` : ""}
+  <section class="section" aria-label="Start a test">
+    <div class="modes">
+      <button class="mode primary" data-start="full"><span class="meta">${countFull()} items · about 2 hours total</span><h3>Full test</h3><p>Every question in the bank and every vocab word: multiple choice, diagrams to label, sorting, ordering, math, matching, and typed answers. Exit anytime and it saves your spot.</p></button>
+      <button class="mode" data-start="practice"><span class="meta">60 items · about 35 min</span><h3>Practice test</h3><p>A test-length random mix, spread evenly across every topic.</p></button>
+      <button class="mode" data-start="quick"><span class="meta">25 items · about 12 min</span><h3>Quick quiz</h3><p>A short random mix from the whole unit.</p></button>
+      <button class="mode" data-start="vocab"><span class="meta">${VOCAB.length} terms · ${Math.ceil(VOCAB.length / 6)} rounds</span><h3>Vocab match</h3><p>Match every vocab term to its definition, 6 at a time.</p></button>
+      <button class="mode" data-start="missed" ${lastMissed ? "" : "disabled"}><span class="meta">${lastMissed ? "From your " + esc(lastMissed.mode.toLowerCase()) : "Nothing yet"}</span><h3>Redo what I missed</h3><p>${lastMissed ? "Questions and vocab you got wrong on your last attempt that had misses." : "Finish a test first. Anything you miss shows up here."}</p></button>
+      <div class="topicbox" style="grid-column:1/-1">
+        <div><h3 style="font-size:21px;font-weight:800">Practice by topic</h3><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Pick one or more topics.</p></div>
+        <div class="chips">${topicChips}</div>
+        <div><button class="btn" data-start="topics" ${S.topics.length ? "" : "disabled"}>Start topic practice</button></div>
+      </div>
+    </div>
+    <div class="setting"><button class="switch" id="studySwitch" role="switch" aria-checked="${S.study}" aria-labelledby="studyLbl"></button><p id="studyLbl"><strong>Show the answer after each question</strong><br>${S.study ? "On: you see if you're right and why, right away (best for studying)." : "Off: real test mode. You only see your score at the end."}</p></div>
+  </section>
+  <section class="section" aria-label="Score history"><h2>Your scores</h2>${renderHistory()}</section>`;
+}
+function renderHistory() {
+  const H = S.history;
+  if (!H.length) return `<div class="hist"><p class="hist-empty">No attempts yet. Finish any test and your score, date, and time show up here, with a chart of how you're improving.</p></div>`;
+  const pts = H.slice(-20);
+  const W = Math.round(Math.max(300, Math.min(620, (app.clientWidth || 686) - 66))), Ht = 200, L = 36, Rr = 14, T = 16, Bt = 28;
+  const x = i => pts.length === 1 ? (L + W - Rr) / 2 : L + i * (W - L - Rr) / (pts.length - 1);
+  const y = p => T + (100 - p) * (Ht - T - Bt) / 100;
+  let g = ""; for (const v of [0, 25, 50, 75, 100]) g += `<line class="gl" x1="${L}" x2="${W - Rr}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}%</text>`;
+  const line = pts.map((h, i) => `${x(i)},${y(h.pct)}`).join(" ");
+  const area = `${x(0)},${y(0)} ${line} ${x(pts.length - 1)},${y(0)}`;
+  const dots = pts.map((h, i) => `<circle class="pt${i === pts.length - 1 ? " last" : ""}" cx="${x(i)}" cy="${y(h.pct)}" r="4.5"><title>${esc(h.mode)}: ${h.pct}%</title></circle>`).join("");
+  const lastP = pts[pts.length - 1];
+  const xl = pts.map((h, i) => (pts.length <= 10 || i % Math.ceil(pts.length / 10) === 0 || i === pts.length - 1) ? `<text x="${x(i)}" y="${Ht - 8}" text-anchor="middle">#${H.length - pts.length + i + 1}</text>` : "").join("");
+  const chart = `<div class="chart"><svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Line chart of your last ${pts.length} scores. Latest: ${lastP.pct}%.">${g}<line class="pass" x1="${L}" x2="${W - Rr}" y1="${y(70)}" y2="${y(70)}"/>${pts.length > 1 ? `<polygon class="ar" points="${area}" opacity=".6"/><polyline class="ln" points="${line}"/>` : ""}${dots}<text class="lbl" x="${Math.min(x(pts.length - 1), W - 40)}" y="${Math.max(y(lastP.pct) - 10, 12)}" text-anchor="middle">${lastP.pct}%</text>${xl}</svg></div>`;
+  const agg = {}; for (const h of H) for (const [k, v] of Object.entries(h.topics || {})) { agg[k] = agg[k] || [0, 0]; agg[k][0] += v[0]; agg[k][1] += v[1]; }
+  const bars = Object.entries(agg).filter(([k, v]) => v[1] > 0 && (TOPICS[k] || k === "vocab")).map(([k, v]) => [k, Math.round(100 * v[0] / v[1])]).sort((a, b) => a[1] - b[1]);
+  const barHtml = bars.map(([k, p]) => `<div class="bar"><span>${esc(TOPICS[k] || "Vocab matching & typing")}</span><span class="track"><span class="fill ${pctCls(p) === "hi" ? "" : pctCls(p)}" style="display:block;width:${p}%"></span></span><span class="v">${p}%</span></div>`).join("");
+  const best = Math.max(...H.map(h => h.pct));
+  const rows = [...H].reverse().slice(0, 25).map(h => `<tr><td>${new Date(h.at).toLocaleDateString(undefined, {month: "short", day: "numeric"})} <span style="color:var(--muted)">${new Date(h.at).toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"})}</span></td><td>${esc(h.mode)}${h.study ? "" : ` <span class="pill mid" title="Answers hidden until the end">test mode</span>`}</td><td class="n">${fmt(h.earned)}/${fmt(h.possible)}</td><td class="n"><span class="pill ${pctCls(h.pct)}">${h.pct}%</span></td><td class="n">${Math.max(1, Math.round(h.secs / 60))} min</td></tr>`).join("");
+  return `<div class="hist">
+    <div class="hist-head"><h3>${H.length} attempt${H.length === 1 ? "" : "s"} · best ${best}% · latest ${lastP.pct}%</h3><span class="eyebrow">dashed line = 70%</span></div>
+    ${chart}
+    ${bars.length ? `<div><h3 style="font-size:18px;margin-bottom:10px">By topic, all attempts (weakest first)</h3><div class="bars">${barHtml}</div></div>` : ""}
+    <div class="tbl"><table><thead><tr><th>When</th><th>Test</th><th>Points</th><th>Score</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div>${S.confirmClear ? `<div class="confirm"><span>Delete all ${H.length} saved scores? This can't be undone.</span><button class="btn small sun" data-act="clear-yes">Delete scores</button><button class="btn small ghost" data-act="clear-no">Keep them</button></div>` : `<button class="linkbtn" data-act="clear">Clear score history</button>`}</div>
+    ${S.cloud ? "" : `<p class="eyebrow" style="text-transform:none;letter-spacing:0">Scores are saved in this browser.</p>`}
+  </div>`;
+}
+
+/* ---------- test view ---------- */
+function renderTest() {
+  S.view = "test";
+  const run = S.run, it = run.items[run.i];
+  const done = run.res.filter(Boolean);
+  const earned = done.reduce((a, r) => a + r.earned, 0), possible = done.reduce((a, r) => a + r.possible, 0);
+  revealed = !!run.res[run.i];
+  if (!revealed) { cur = initResp(it); qStart = Date.now(); } else cur = run.resp[run.i];
+  const pct = Math.round(100 * run.i / run.items.length);
+  app.innerHTML = `
+  <div class="bar-top">
+    <div class="bar-row"><span class="count">${esc(run.label)} · ${run.i + 1} / ${run.items.length}</span>
+      <span class="count">${run.study && possible ? `${fmt(earned)}/${fmt(possible)} pts · ${Math.round(100 * earned / possible)}%` : run.study ? "" : "Test mode"}</span>
+      ${S.confirmQuit ? `<span class="quitbox">Leave? Progress is saved.<button class="btn small" data-act="quit-yes">Save & exit</button><button class="btn small ghost" data-act="quit-no">Stay</button></span>` : `<button class="btn small ghost" data-act="quit">Exit</button>`}</div>
+    <div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${run.items.length}" aria-valuenow="${run.i}"><div style="width:${pct}%"></div></div>
+  </div>
+  <article class="card" id="card">
+    ${it.t === "type" ? `<p class="eyebrow">Type the term for this definition</p>` : ""}
+    <p class="qtext">${esc(it.q)}</p>
+    ${hintFor(it)}
+    ${it.fig && FIG[it.fig] ? `<div class="fig">${FIG[it.fig]()}</div>` : ""}
+    <div id="ans">${bodyFor(it)}</div>
+    <div id="fb"></div>
+    <div class="actions" id="actions"></div>
+  </article>`;
+  paint();
+}
+function hintFor(it) {
+  const h = {sort: "Choose a group for every item.", order: "Tap the items in the correct order. Tap a placed item to remove it.", label: "Choose the right label for each letter.", match: "Tap a term, then tap its definition. Tap a filled definition to clear it.", num: "Type a number.", type: "Spelling close enough still counts."}[it.t];
+  return h ? `<p class="qhint">${h}</p>` : "";
+}
+function initResp(it) {
+  if (it.t === "mc") return null;
+  if (it.t === "num" || it.t === "type") return "";
+  if (it.t === "sort") return it.items.map(() => null);
+  if (it.t === "order") return [];
+  if (it.t === "label") return it.blanks.map(() => "");
+  if (it.t === "match") return {sel: null, map: it.defs.map(() => null)};
+}
+function bodyFor(it) {
+  if (it.t === "mc") return `<div class="opts">${it.opts.map((o, k) => `<button class="opt" data-k="${k}"><span class="k">${k + 1}</span><span>${esc(o)}</span></button>`).join("")}</div>`;
+  if (it.t === "num") return `<div class="inrow"><input id="numIn" inputmode="decimal" autocomplete="off" aria-label="Your answer" placeholder="Answer"><span class="unit">${esc(it.unit)}</span></div>`;
+  if (it.t === "type") return `<div class="inrow"><input id="typeIn" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Your answer" placeholder="Type the term"></div>`;
+  if (it.t === "sort") return `<div class="sortlist">${it.items.map((x, k) => `<div class="srow" data-row="${k}"><span class="it">${esc(x[0])}</span><span class="seg">${it.buckets.map((b, j) => `<button data-sk="${k}" data-sj="${j}" aria-pressed="false">${esc(b)}</button>`).join("")}</span></div>`).join("")}</div>`;
+  if (it.t === "order") return `<div class="oseq" id="oseq"></div><p class="eyebrow" style="margin-top:4px">Tap in order</p><div class="opool" id="opool"></div>`;
+  if (it.t === "label") return `<div class="lrows">${it.blanks.map((b, k) => `<div class="lrow"><span class="k">${b[0]}</span><select data-lk="${k}" aria-label="Label ${b[0]}"><option value="">Choose…</option>${it.opts.map(o => `<option>${esc(o)}</option>`).join("")}</select></div>`).join("")}</div>`;
+  if (it.t === "match") return `<div class="mterms" id="mterms"></div><div class="mdefs" id="mdefs"></div>`;
+  return "";
+}
+function complete(it) {
+  if (it.t === "mc") return cur !== null;
+  if (it.t === "num") return String(cur).trim() !== "" && !isNaN(parseNum(cur));
+  if (it.t === "type") return String(cur).trim() !== "";
+  if (it.t === "sort") return cur.every(v => v !== null);
+  if (it.t === "order") return cur.length === it.items.length;
+  if (it.t === "label") return cur.every(v => v !== "");
+  if (it.t === "match") return cur.map.every(v => v !== null);
+}
+function paint() {
+  const run = S.run, it = run.items[run.i], res = run.res[run.i];
+  const card = document.getElementById("card"); if (!card) return;
+  if (it.t === "mc") card.querySelectorAll(".opt").forEach(b => { const k = +b.dataset.k; b.className = "opt" + (res ? (k === it.ans && run.study ? " right" : k === cur && (!res.ok && run.study) ? " wrong" : k === cur ? " sel" : "") : (k === cur ? " sel" : "")); b.disabled = !!res; });
+  if (it.t === "num" || it.t === "type") { const inp = card.querySelector("input"); if (inp) { if (document.activeElement !== inp) inp.value = cur; inp.disabled = !!res; inp.className = res && run.study ? (res.ok ? "right" : "wrong") : ""; } }
+  if (it.t === "sort") card.querySelectorAll(".srow").forEach(row => { const k = +row.dataset.row; row.className = "srow" + (res && run.study ? (res.parts[k] ? " right" : " wrong") : ""); row.querySelectorAll("button").forEach(b => { b.setAttribute("aria-pressed", String(cur[k] === +b.dataset.sj)); b.disabled = !!res; }); let fx = row.querySelector(".fix"); if (res && run.study && !res.parts[k]) { if (!fx) { fx = document.createElement("span"); fx.className = "fix"; row.querySelector(".it").appendChild(fx); } fx.textContent = "Answer: " + it.buckets[it.items[k][1]]; } });
+  if (it.t === "order") {
+    const seq = document.getElementById("oseq"), pool = document.getElementById("opool");
+    seq.innerHTML = cur.length ? cur.map((t, k) => `<button class="oitem${res && run.study ? (it.items[k] === t ? " right" : " wrong") : ""}" data-ou="${k}" ${res ? "disabled" : ""}><span class="k">${k + 1}</span><span>${esc(t)}</span></button>`).join("") : `<span class="ph">Your order shows up here.</span>`;
+    const left = it.deck.filter(t => !cur.includes(t));
+    pool.innerHTML = left.map(t => `<button class="oitem" data-oa="${esc(t)}" ${res ? "disabled" : ""}><span class="k">+</span><span>${esc(t)}</span></button>`).join("");
+    pool.previousElementSibling.hidden = !left.length;
+  }
+  if (it.t === "label") card.querySelectorAll("select").forEach(sel => { const k = +sel.dataset.lk; sel.value = cur[k]; sel.disabled = !!res; sel.className = res && run.study ? (res.parts[k] ? "right" : "wrong") : ""; const row = sel.parentElement; let fx = row.querySelector(".fix"); if (res && run.study && !res.parts[k]) { if (!fx) { fx = document.createElement("span"); fx.className = "fix"; row.appendChild(fx); } fx.textContent = "Answer: " + it.blanks[k][1]; } });
+  if (it.t === "match") {
+    const used = new Set(cur.map.filter(Boolean));
+    document.getElementById("mterms").innerHTML = res ? "" : it.terms.map(t => `<button class="mterm${cur.sel === t ? " sel" : ""}${used.has(t) ? " used" : ""}" data-mt="${esc(t)}">${esc(t)}</button>`).join("");
+    document.getElementById("mdefs").innerHTML = it.defs.map((d, k) => `<button class="mdef${res && run.study ? (res.parts[k] ? " right" : " wrong") : ""}" data-md="${k}" ${res ? "disabled" : ""}><span>${esc(VBY[d][1])}</span><span class="slot${cur.map[k] ? " filled" : ""}">${cur.map[k] ? esc(cur.map[k]) : "tap to place a term"}</span>${res && run.study && !res.parts[k] ? `<span class="fix">Answer: ${esc(d)}</span>` : ""}</button>`).join("");
+  }
+  const fb = document.getElementById("fb");
+  if (res && run.study) {
+    const cls = res.ok ? "ok" : res.earned > 0 ? "part" : "no";
+    const head = res.ok ? pick(["Correct", "Yes", "Got it", "Right"]) : res.earned > 0 ? `${res.earned} of ${res.possible}` : "Not quite";
+    const showCorrect = !res.ok && ["mc", "num", "type", "order"].includes(it.t);
+    fb.innerHTML = `<div class="fb ${cls}" role="status"><h4>${head}</h4>${showCorrect ? `<p>Answer: <span class="ans">${esc(res.correct)}</span></p>` : ""}${it.why ? `<p>${esc(it.why)}</p>` : ""}</div>`;
+  } else fb.innerHTML = "";
+  const actions = document.getElementById("actions");
+  const last = run.i === run.items.length - 1;
+  if (res) actions.innerHTML = `<span class="spacer"></span><button class="btn" data-act="next" id="nextBtn">${last ? "See my score" : "Next"}</button>`;
+  else if (it.t === "mc" && run.study) actions.innerHTML = `<span class="eyebrow" style="text-transform:none;letter-spacing:0">Tip: press 1–${it.opts.length} to answer</span>`;
+  else actions.innerHTML = `<span class="spacer"></span><button class="btn" data-act="${run.study ? "check" : "submit"}" ${complete(it) ? "" : "disabled"}>${run.study ? "Check answer" : last ? "Finish" : "Next"}</button>`;
+}
+function submit() {
+  const run = S.run, it = run.items[run.i];
+  if (run.res[run.i] || !complete(it)) return;
+  run.elapsed += Math.min(Date.now() - qStart, 300000);
+  run.resp[run.i] = it.t === "match" ? {sel: null, map: cur.map.slice()} : Array.isArray(cur) ? cur.slice() : cur;
+  const r = grade(it, it.t === "match" ? cur.map : cur);
+  run.res[run.i] = r;
+  saveRun();
+  if (!run.study) { next(); return; }
+  paint();
+  const nb = document.getElementById("nextBtn"); if (nb) nb.focus({preventScroll: true});
+}
+function next() {
+  const run = S.run;
+  if (run.i < run.items.length - 1) { run.i++; saveRun(); renderTest(); window.scrollTo({top: 0}); }
+  else finish();
+}
+
+/* ---------- results ---------- */
+function finish() {
+  const run = S.run;
+  const earned = run.res.reduce((a, r) => a + (r ? r.earned : 0), 0), possible = run.items.reduce((a, it) => a + it.pts, 0);
+  const topics = {}, missed = [];
+  run.items.forEach((it, k) => {
+    const r = run.res[k]; const tp = it.topic;
+    topics[tp] = topics[tp] || [0, 0]; topics[tp][0] += r ? r.earned : 0; topics[tp][1] += it.pts;
+    if (!r || !r.ok) { if (it.t === "match" || it.t === "type") (r ? r.missedTerms : (it.defs || [it.term])).forEach(t => missed.push("v:" + t)); else missed.push(it.id); }
+  });
+  const entry = {id: run.id, at: Date.now(), mode: run.label, study: run.study, earned, possible, pct: possible ? Math.round(100 * earned / possible) : 0, secs: Math.round(run.elapsed / 1000), topics, missed: [...new Set(missed)]};
+  if (!S.history.some(h => h.id === entry.id)) S.history.push(entry);
+  persistHistory();
+  S.last = run; S.run = null; saveRun();
+  renderResults(run, entry);
+}
+function renderResults(run, entry) {
+  S.view = "results";
+  const grade = entry.pct >= 90 ? "A" : entry.pct >= 80 ? "B" : entry.pct >= 70 ? "C" : entry.pct >= 60 ? "D" : "F";
+  const tb = Object.entries(entry.topics).map(([k, v]) => [k, v, Math.round(100 * v[0] / v[1])]).sort((a, b) => a[2] - b[2]);
+  const misses = run.items.map((it, k) => [it, run.res[k]]).filter(([it, r]) => r && !r.ok);
+  const missHtml = misses.map(([it, r]) => {
+    let q = it.t === "type" ? `Definition: ${it.q}` : it.t === "match" ? "Vocab matching round" : it.q;
+    return `<div class="miss"><span class="q">${esc(q)}</span><span class="yours">You: ${esc(r.given || "(blank)")}</span><span class="corr">${it.t === "match" || it.t === "sort" || it.t === "label" ? "Fix: " : "Answer: "}${esc(r.correct)}</span>${it.why && it.t !== "match" ? `<span class="why">${esc(it.why)}</span>` : ""}</div>`;
+  }).join("");
+  const prev = S.history.filter(h => h.id !== entry.id && h.mode === entry.mode).pop();
+  app.innerHTML = `
+  <section class="score">
+    <div class="big num">${entry.pct}%</div>
+    <div><p class="eyebrow">${esc(entry.mode)} · grade ${grade}</p><h1>${entry.pct >= 90 ? "You're ready." : entry.pct >= 80 ? "Strong. Clean up the misses below." : entry.pct >= 70 ? "Passing, but review the weak topics." : "Keep studying. Start with the weakest topic."}</h1>
+    <p class="num">${fmt(entry.earned)} of ${fmt(entry.possible)} points · ${Math.max(1, Math.round(entry.secs / 60))} min${prev ? ` · last time ${prev.pct}% (${entry.pct - prev.pct >= 0 ? "+" : ""}${entry.pct - prev.pct})` : ""}</p></div>
+  </section>
+  <section class="section"><h2>By topic</h2><div class="hist"><div class="bars">${tb.map(([k, v, p]) => `<div class="bar"><span>${esc(TOPICS[k] || "Vocab matching & typing")}</span><span class="track"><span class="fill ${pctCls(p) === "hi" ? "" : pctCls(p)}" style="display:block;width:${p}%"></span></span><span class="v">${p}%</span></div>`).join("")}</div></div></section>
+  <div class="rowbtns" style="margin-top:20px">${entry.missed.length ? `<button class="btn sun" data-act="redo">Redo what I missed</button>` : ""}<button class="btn" data-act="home">Back to start</button></div>
+  <section class="section"><h2>${misses.length ? `What you missed (${misses.length})` : "You missed nothing."}</h2><div class="missed">${missHtml}</div></section>`;
+  window.scrollTo({top: 0});
+}
+
+/* ---------- history persistence (browser + your account when available) ---------- */
+function trimHistory(H) { H = H.slice().sort((a, b) => a.at - b.at).slice(-200); return H.map((h, i) => i < H.length - 10 ? Object.assign({}, h, {missed: []}) : h); }
+let cloudBusy = Promise.resolve();
+function persistHistory() {
+  S.history = trimHistory(S.history);
+  store.set("eco2.history", S.history);
+  if (S.cloud) { const data = {attempts: S.history}; cloudBusy = cloudBusy.then(() => S.cloud.set(data)).catch(() => {}); }
+}
+async function initCloud() {
+  try {
+    const c = window.claude; if (!c || !c.use) return;
+    const [db, user] = await Promise.all([c.use("db"), c.use("user")]);
+    if (!db || !user) return;
+    const id = await user.id(); if (!id) return;
+    const ref = db.doc("data/users/" + id + "/history");
+    const snap = await ref.get();
+    const remote = snap.exists ? (snap.data().attempts || []) : [];
+    const byId = new Map(); for (const h of [...remote, ...S.history]) byId.set(h.id, h);
+    const merged = trimHistory([...byId.values()]);
+    const changed = merged.length !== remote.length;
+    S.cloud = ref; S.history = merged; store.set("eco2.history", merged);
+    if (changed) await ref.set({attempts: merged});
+    if (S.view === "home") renderHome();
+  } catch (e) { S.cloud = null; }
+}
+
+/* ---------- events ---------- */
+app.addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t || t.disabled) return;
+  if (t.dataset.start) {
+    const mode = t.dataset.start;
+    let opts = {};
+    if (mode === "missed") { const lm = [...S.history].reverse().find(h => h.missed && h.missed.length); if (!lm) return; opts.missed = lm.missed; }
+    if (mode === "topics") opts.topics = S.topics.slice();
+    S.run = buildRun(mode, opts); S.confirmQuit = false;
+    if (!S.run.items.length) { S.run = null; return; }
+    saveRun(); renderTest(); window.scrollTo({top: 0}); return;
+  }
+  if (t.dataset.topic) { const k = t.dataset.topic; S.topics = S.topics.includes(k) ? S.topics.filter(x => x !== k) : [...S.topics, k]; store.set("eco2.topics", S.topics); renderHome(); return; }
+  if (t.id === "studySwitch") { S.study = !S.study; store.set("eco2.study", S.study); renderHome(); document.getElementById("studySwitch").focus(); return; }
+  const act = t.dataset.act;
+  if (act === "resume") { S.run = store.get("eco2.run", null); if (S.run) { renderTest(); window.scrollTo({top: 0}); } return; }
+  if (act === "discard") { S.run = null; saveRun(); renderHome(); return; }
+  if (act === "clear") { S.confirmClear = true; renderHome(); return; }
+  if (act === "clear-no") { S.confirmClear = false; renderHome(); return; }
+  if (act === "clear-yes") { S.confirmClear = false; S.history = []; persistHistory(); renderHome(); return; }
+  if (act === "home") { renderHome(); window.scrollTo({top: 0}); return; }
+  if (act === "redo") { const lm = S.history[S.history.length - 1]; S.run = buildRun("missed", {missed: lm.missed}); if (!S.run.items.length) { S.run = null; return; } saveRun(); renderTest(); window.scrollTo({top: 0}); return; }
+  if (act === "quit") { S.confirmQuit = true; renderTestKeep(); return; }
+  if (act === "quit-no") { S.confirmQuit = false; renderTestKeep(); return; }
+  if (act === "quit-yes") { S.confirmQuit = false; saveRun(); S.run = null; renderHome(); window.scrollTo({top: 0}); return; }
+  if (act === "check" || act === "submit") { submit(); return; }
+  if (act === "next") { next(); return; }
+  if (!S.run || S.view !== "test") return;
+  const it = S.run.items[S.run.i]; if (S.run.res[S.run.i]) return;
+  if (t.classList.contains("opt")) { cur = +t.dataset.k; if (S.run.study) submit(); else paint(); return; }
+  if (t.dataset.sk !== undefined) { cur[+t.dataset.sk] = +t.dataset.sj; paint(); return; }
+  if (t.dataset.oa !== undefined) { cur.push(it.deck.find(x => x === t.dataset.oa) || t.dataset.oa); paint(); return; }
+  if (t.dataset.ou !== undefined) { cur.splice(+t.dataset.ou, 1); paint(); return; }
+  if (t.dataset.mt !== undefined) {
+    const term = t.dataset.mt; const at = cur.map.indexOf(term);
+    if (at >= 0) { cur.map[at] = null; cur.sel = term; }
+    else cur.sel = cur.sel === term ? null : term;
+    paint(); return;
+  }
+  if (t.dataset.md !== undefined) {
+    const k = +t.dataset.md;
+    if (cur.sel) { const prevAt = cur.map.indexOf(cur.sel); if (prevAt >= 0) cur.map[prevAt] = null; cur.map[k] = cur.sel; cur.sel = null; }
+    else if (cur.map[k]) cur.map[k] = null;
+    paint(); return;
+  }
+});
+function renderTestKeep() { const keep = cur; const wasRevealed = !!S.run.res[S.run.i]; renderTest(); if (!wasRevealed) { cur = keep; restoreInputs(); paint(); } }
+function restoreInputs() { const inp = document.querySelector("#card input"); if (inp && typeof cur === "string") inp.value = cur; }
+app.addEventListener("input", e => {
+  if (!S.run || S.view !== "test") return;
+  if (e.target.id === "numIn" || e.target.id === "typeIn") { cur = e.target.value; const b = document.querySelector('[data-act="check"],[data-act="submit"]'); if (b) b.disabled = !complete(S.run.items[S.run.i]); }
+});
+app.addEventListener("change", e => {
+  if (!S.run || S.view !== "test") return;
+  if (e.target.dataset.lk !== undefined) { cur[+e.target.dataset.lk] = e.target.value; paint(); }
+});
+document.addEventListener("keydown", e => {
+  if (S.view !== "test" || !S.run || e.metaKey || e.ctrlKey || e.altKey) return;
+  const it = S.run.items[S.run.i], res = S.run.res[S.run.i];
+  if (e.key === "Enter") {
+    if (e.target.tagName === "BUTTON" && !e.target.matches('[data-act="next"],[data-act="check"],[data-act="submit"]')) return;
+    e.preventDefault();
+    if (res) next(); else submit();
+    return;
+  }
+  if (!res && it.t === "mc" && /^[1-9]$/.test(e.key) && e.target.tagName !== "INPUT") { const k = +e.key - 1; if (k < it.opts.length) { cur = k; if (S.run.study) submit(); else paint(); } }
+});
+
+/* ---------- boot ---------- */
+function boot(data) {
+  if (data && data.run) S.run = data.run;
+  if (data && data.view === "test" && S.run) renderTest(); else renderHome();
+  initCloud();
+}
+const hot = window.claude && window.claude.hot;
+if (hot && hot.snapshot) hot.snapshot(() => ({run: S.run, view: S.view}));
+if (hot && hot.ready) hot.ready(boot); else boot((hot && hot.data) || {});
+})();
+</script>
+
+</body></html>
