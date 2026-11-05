@@ -86,11 +86,9 @@
     return fetch(path, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); });
   }
 
-  Promise.all([get('loader.js'), get('bookmarklet.js')])
-    .then(function (files) {
-      var loader = files[0].replace(/\r/g, '').trim(), app = files[1].replace(/\r/g, '').trim();
-      if (loader.indexOf('/*APP*/') < 0) throw new Error('loader');
-      code = encode(loader.replace('/*APP*/', function () { return app; }));
+  get('loader.js')
+    .then(function (loader) {
+      code = encode(loader.replace(/\r/g, '').trim());
       bm.href = code;
       bm.removeAttribute('aria-disabled');
       copy.disabled = false;
