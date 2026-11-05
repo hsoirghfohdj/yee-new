@@ -12,6 +12,27 @@ const store = {
 get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
 set(k, v) { try { localStorage.setItem('classdash_' + k, JSON.stringify(v)); } catch (e) {} }
 };
+// What's new in this version (shown in the update prompt). Change it when you publish an update.
+const WHATSNEW = 'Pick which class each period is on the Schedule page · updates now ask first';
+// Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
+// The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
+// the installed copy runs instead and shows an "Update available" bar.
+if (!LIB) {
+const pinned = window.__classDashPinned;
+window.__classDashPinned = false;
+if (!pinned) {
+let fresh = null;
+try { fresh = localStorage.getItem('classdash_code'); } catch (e) {}
+const inst = store.get('installed', null);
+if (fresh && (!inst || !inst.code)) store.set('installed', { code: fresh, at: Date.now() });
+else if (fresh && inst.code !== fresh) {
+let run = null;
+try { run = new Function(inst.code); } catch (e) {}
+if (run) { window.__classDashUpdate = { code: fresh }; window.__classDashPinned = true; run(); return; }
+store.set('installed', { code: fresh, at: Date.now() });
+}
+}
+}
 const S = {
 view: isCanvas && !LIB ? 'home' : 'games', back: 'classes', seg: 'all',
 loading: false, error: null, loadedAt: null,
@@ -20,7 +41,8 @@ done: new Set(store.get('done', [])), courseCache: {}, courseId: null,
 game: null,
 lib: store.get('lib', null), libLoading: false, libError: null, libTried: 0, q: '', cat: 'All',
 lunch: store.get('lunch', 1), schedKey: null,
-doc: null, sq: '', scls: 'All'
+doc: null, sq: '', scls: 'All',
+periods: store.get('periods', {})
 };
 const svg = p => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
 const I = {
@@ -100,6 +122,20 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .ohint{padding:8px 10px;color:var(--mu);font-size:12px}
 .ohint b{font:12px ui-monospace,monospace;color:var(--tx);background:var(--p3);border-radius:5px;padding:1px 5px}
 .bd.lib .omni{display:none}
+.ubar{display:flex;align-items:center;gap:12px;margin:12px 24px 0;padding:10px 12px 10px 14px;border-radius:12px;background:rgba(124,156,255,.12);border:1px solid rgba(124,156,255,.35);animation:pop .22s ease}
+.ubar[hidden]{display:none}
+.ubar .uic{width:32px;height:32px;border-radius:9px;background:var(--ac);color:#0f1218;display:grid;place-items:center;flex:none}
+.ubar .sub{white-space:normal}
+.pcls{color:var(--ac);font-weight:600}
+.sched .sl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+a.pcls{cursor:pointer}
+a.pcls:hover{text-decoration:underline}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 14px;margin-top:4px}
+.pset{display:flex;align-items:center;gap:10px}
+.pset label{width:92px;flex:none;font-weight:600;font-size:13px;color:var(--mu)}
+.pset input{all:unset;box-sizing:border-box;flex:1;min-width:0;height:34px;padding:0 10px;border-radius:9px;background:var(--p2);border:1px solid var(--ln);color:var(--tx);font-size:13px}
+.pset input:focus{border-color:var(--ac)}
+.pset input::placeholder{color:var(--mu)}
 .upd{font-size:12px;color:var(--mu)}
 .ib{all:unset;cursor:pointer;width:34px;height:34px;display:grid;place-items:center;border-radius:9px;color:var(--mu);background:var(--p2)}
 .ib:hover{color:var(--tx);background:var(--p3)}
@@ -368,6 +404,8 @@ root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div 
 <main class="mn"><header class="hd"><h1></h1>
 <div class="omni"><span class="oi">${I.search}</span><input data-omni placeholder="Search Class Dash, or go to study.ecology-study" autocomplete="off" spellcheck="false" aria-label="Search or go to"><span class="kbd">Ctrl K</span><div class="odrop" hidden></div></div><span class="upd"></span>
 <button class="ib" data-act="refresh" title="Refresh">${I.refresh}</button><button class="ib" data-act="close" title="Close (Esc)">${I.x}</button></header>
+<div class="ubar" hidden><span class="uic">${I.refresh}</span><div class="grow"><div class="t">Update available</div><div class="sub unote"></div></div>
+<button class="btn" data-act="later">Later</button><button class="btn pri" data-act="update">Update now</button></div>
 <div class="ct"></div></main></div></div>`;
 document.body.appendChild(host);
 const $ = s => root.querySelector(s);
@@ -803,8 +841,8 @@ d.title = 'Class Games';
 d.body.style.cssText = 'margin:0;height:100vh;display:grid;place-items:center;background:#0f1218;color:#8c93a5;font:15px system-ui,sans-serif';
 d.body.textContent = 'Loading games…';
 const get = url => fetch(url + '?t=' + Date.now(), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); });
-let saved = null;
-try { saved = localStorage.getItem('classdash_code'); } catch (e) {}
+let saved = (store.get('installed', null) || {}).code || null;
+if (!saved) try { saved = localStorage.getItem('classdash_code'); } catch (e) {}
 (saved ? Promise.resolve(saved) : get('https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/bookmarklet.js').catch(() => get(PAGES + 'bookmarklet.js')))
 .then(code => { d.body.removeAttribute('style'); d.body.textContent = ''; w.__classDashMode = 'library'; new w.Function(code)(); })
 .catch(() => { d.body.textContent = "Couldn't load the games library. Try again from Class Dash."; });
@@ -860,15 +898,21 @@ const ampm = m => hm(m) + (m < 720 ? ' a.m.' : ' p.m.');
 const span = mins => { const t = Math.ceil(mins); return t >= 60 ? Math.floor(t / 60) + 'h ' + (t % 60) + 'm' : t + 'm'; };
 const periodsFor = key => { const s = SCHEDULES[key]; return [...s.first, ...s[S.lunch === 2 ? 'l2' : 'l1'], ...s.last].map(([name, a, b]) => ({ name, a: toMin(a), b: toMin(b) })); };
 const nowMin = d => d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60;
+// Which class each period is. Saved in this browser (classdash_periods), so updates never reset it.
+const PERIOD_KEYS = ['Period 1', 'Period 2', 'Period 3', 'Period 4', 'Period 5', 'Period 6', 'Period 7', 'Homeroom', 'iVision/Flex'];
+const pkey = name => name.replace(/^(Period \d)[AB]$/, '$1');
+const classFor = name => /lunch/i.test(name) ? '' : String(S.periods[pkey(name)] || '').trim();
+const courseFor = cls => { const k = cls.toLowerCase(); return k ? S.courses.find(c => c.name.toLowerCase() === k) || S.courses.find(c => c.name.toLowerCase().includes(k)) : null; };
+const withClass = name => { const c = classFor(name); return c ? name + ' · ' + c : name; };
 function dayStatus(d) {
 const key = DAY_SCHED[d.getDay()];
 if (!key) return { label: 'No school today', sub: 'See you Monday' };
 const list = periodsFor(key), m = nowMin(d);
 const cur = list.find(p => m >= p.a && m < p.b), next = list.find(p => p.a > m);
-if (cur) return { label: cur.name, sub: span(cur.b - m) + ' left · ends ' + hm(cur.b), pct: (m - cur.a) / (cur.b - cur.a) };
+if (cur) return { label: withClass(cur.name), sub: span(cur.b - m) + ' left · ends ' + hm(cur.b), pct: (m - cur.a) / (cur.b - cur.a) };
 if (!next) return { label: "School's out", sub: d.getDay() === 5 ? 'Have a good weekend' : 'See you tomorrow' };
-if (m < list[0].a) return { label: 'Before school', sub: next.name + ' starts in ' + span(next.a - m) };
-return { label: 'Passing period', sub: next.name + ' in ' + span(next.a - m) };
+if (m < list[0].a) return { label: 'Before school', sub: withClass(next.name) + ' starts in ' + span(next.a - m) };
+return { label: 'Passing period', sub: withClass(next.name) + ' in ' + span(next.a - m) };
 }
 let schedHtml = '';
 function paintSched() {
@@ -886,11 +930,33 @@ return `<div class="card schnow"><span class="logo" style="width:46px;height:46p
 <div class="card"><h2>${esc(SCHEDULES[key].name)}<span>${esc(SCHEDULES[key].days)}</span></h2>
 ${periodsFor(key).map(p => {
 const on = live && m >= p.a && m < p.b, done = live && m >= p.b;
-return `<div class="row${done ? ' past' : ''}"><span class="dot" style="background:${on ? 'var(--ac)' : /lunch/i.test(p.name) ? 'var(--wn)' : 'var(--p3)'}"></span>
-<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${hm(p.a)} – ${ampm(p.b)}</div></div>
+const cls = classFor(p.name), crs = cls && courseFor(cls);
+const clsHtml = !cls ? '' : crs ? ` <a class="pcls" data-course="${crs.id}" title="Open ${esc(crs.name)}">· ${esc(cls)}</a>` : ` <span class="pcls">· ${esc(cls)}</span>`;
+return `<div class="row${done ? ' past' : ''}"><span class="dot" style="background:${on ? 'var(--ac)' : /lunch/i.test(p.name) ? 'var(--wn)' : crs ? esc(crs.color) : 'var(--p3)'}"></span>
+<div class="grow"><div class="t">${esc(p.name)}${clsHtml}</div><div class="sub">${hm(p.a)} – ${ampm(p.b)}</div></div>
 ${on ? `<span class="chip ac">Now · ${span(p.b - m)} left</span>` : done ? '<span class="chip">Done</span>' : `<span class="chip">${p.b - p.a} min</span>`}</div>`;
-}).join('')}</div>`;
+}).join('')}</div>
+<div class="card" style="margin-top:16px"><h2>My periods<span>Saved on this computer · stays when Class Dash updates</span></h2>
+<datalist id="cdcourses">${S.courses.map(c => `<option value="${esc(c.name)}"></option>`).join('')}</datalist>
+<div class="pgrid">${PERIOD_KEYS.map(k => `<div class="pset"><label for="cdp-${slug(k)}">${esc(k)}</label><input id="cdp-${slug(k)}" data-period="${esc(k)}" list="cdcourses" value="${esc(S.periods[k] || '')}" placeholder="${/Period/.test(k) ? 'e.g. Biology' : 'Optional'}" autocomplete="off" spellcheck="false"></div>`).join('')}</div></div>`;
 };
+// ---- Update prompt ----
+const pendingUpdate = !LIB && window.__classDashUpdate;
+window.__classDashUpdate = null;
+if (pendingUpdate) {
+const m = pendingUpdate.code.match(/const WHATSNEW = (['"])(.*?)\1;/);
+$('.unote').textContent = m && m[2] ? "What's new: " + m[2] : 'A newer version of Class Dash is on GitHub.';
+$('.ubar').hidden = false;
+}
+function applyUpdate() {
+if (!pendingUpdate) return;
+let run;
+try { run = new Function(pendingUpdate.code); } catch (e) { $('.unote').textContent = "The new version has an error, so you're staying on this one."; return; }
+store.set('installed', { code: pendingUpdate.code, at: Date.now() });
+close();
+window.__classDashPinned = true;
+run();
+}
 // ---- Address bar: search everything, or type an address like study.ecology-study / games.2048 ----
 const slug = s => String(s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 const ALIAS = { overview: 'home', 'to-do': 'todo', todos: 'todo', class: 'classes', game: 'games', calender: 'calendar', bell: 'schedule' };
@@ -1005,9 +1071,18 @@ else if (d.act === 'libtab') openLibraryTab();
 else if (d.act === 'full') { const f = root.querySelector('.gframe'); if (f && f.requestFullscreen) f.requestFullscreen(); }
 else if (d.act === 'reload') renderMain();
 else if (d.act === 'close') close();
+else if (d.act === 'later') $('.ubar').hidden = true;
+else if (d.act === 'update') applyUpdate();
 else if (d.act === 'refresh') { if (usesLib(S.view)) loadLib(true); else { S.courseCache = {}; load(); } }
 });
 root.addEventListener('input', e => {
+if (e.target.matches('[data-period]')) {
+const k = e.target.dataset.period, v = e.target.value.trim();
+if (v) S.periods[k] = v; else delete S.periods[k];
+store.set('periods', S.periods);
+paintSched();
+return;
+}
 if (!e.target.matches('[data-search]')) return;
 if (S.view === 'study') { S.sq = e.target.value; filterStudy(); } else { S.q = e.target.value; filterGames(); }
 });
@@ -1041,7 +1116,7 @@ const n = new Date();
 $('.clock').textContent = fmtTime(n);
 $('.date').textContent = n.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
 paintSched();
-if (S.view === 'schedule' && n.getSeconds() === 0) renderMain(true);
+if (S.view === 'schedule' && n.getSeconds() === 0 && !(root.activeElement && root.activeElement.matches('[data-period]'))) renderMain(true);
 };
 const clockT = setInterval(tick, 1000);
 const oldOverflow = document.documentElement.style.overflow;
