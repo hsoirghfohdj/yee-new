@@ -13,7 +13,7 @@ get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == 
 set(k, v) { try { localStorage.setItem('classdash_' + k, JSON.stringify(v)); } catch (e) {} }
 };
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'hiiiiii';
+const WHATSNEW = 'Grades page fits the window again · announcement banners';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -70,6 +70,12 @@ talk: svg('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>'),
 code: svg('<path d="m8 8-5 4 5 4M16 8l5 4-5 4M14 4l-4 16"/>'),
 pass: svg('<path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v2M14 11v2M14 16v2"/>'),
 send: svg('<path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/>'),
+star: svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>'),
+bolt: svg('<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'),
+rocket: svg('<path d="M5 15c-1.5 1.3-2 5-2 5s3.7-.5 5-2"/><path d="M9 12a17 17 0 0 1 11-9 17 17 0 0 1-9 11z"/><path d="M9 12 6 11l3-4h4M12 15l1 3 4-3v-4"/>'),
+heart: svg('<path d="M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z"/>'),
+news: svg('<path d="M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 8a5 5 0 0 1 0 8"/>'),
+gear: svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
 tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
 };
 const CSS = `
@@ -145,6 +151,36 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .rmsg:empty{display:none}
 .rmsg.ok{color:var(--gd)}
 .rmsg.err{color:var(--bad)}
+.bnrs{display:flex;flex-direction:column;gap:8px;margin:12px 24px 0}
+.bnrs:empty{display:none}
+.bnr{display:flex;align-items:center;gap:12px;padding:9px 8px 9px 12px;border-radius:12px;background:color-mix(in srgb,var(--bc) 13%,transparent);border:1px solid color-mix(in srgb,var(--bc) 45%,transparent);animation:pop .22s ease}
+.bnr .bic{width:30px;height:30px;border-radius:9px;background:var(--bc);color:#0f1218;display:grid;place-items:center;flex:none}
+.bnr .grow{font-size:13.5px}
+.bnr .btn{background:var(--bc);color:#0f1218}
+.ib.bx{width:28px;height:28px;background:transparent}
+.adm{margin-bottom:16px}
+.adm input:not([type=checkbox]):not([type=color]),.adm textarea{all:unset;box-sizing:border-box;height:34px;padding:0 10px;border-radius:9px;background:var(--p2);border:1px solid var(--ln);color:var(--tx);font-size:13px;min-width:0}
+.adm input:focus,.adm textarea:focus{border-color:var(--ac)}
+.adm textarea{display:block;width:100%;height:240px;padding:10px;font:12px/1.5 ui-monospace,monospace;white-space:pre;overflow:auto}
+.adm input[type=datetime-local]{color-scheme:dark;flex:0 1 210px}
+.arow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+.arow input{flex:1 1 160px}
+.arow input.wide{flex:3 1 260px}
+.alab{display:block;font-size:12px;font-weight:650;color:var(--mu);margin:14px 0 6px}
+.arow .alab{display:inline;margin:0 2px 0 6px}
+.icons,.sws{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.icn{all:unset;cursor:pointer;width:34px;height:34px;border-radius:9px;background:var(--p2);display:grid;place-items:center;color:var(--mu);border:1px solid var(--ln)}
+.icn.on{color:var(--tx);border-color:var(--ac);background:var(--p3)}
+.sw{all:unset;cursor:pointer;width:24px;height:24px;border-radius:50%;border:2px solid transparent;box-sizing:border-box}
+.sw.on{border-color:var(--tx)}
+.sws input[type=color]{width:34px;height:28px;border:0;background:none;padding:0;cursor:pointer}
+.abn{padding:12px;border:1px solid var(--ln);border-radius:12px;margin-top:12px;background:var(--bg)}
+.seg.mini{margin:0}
+.seg.mini button{padding:4px 10px;font-size:12px}
+.chk{display:inline-flex;align-items:center;gap:6px;margin:6px 16px 0 0;font-size:13px;cursor:pointer}
+.amsg{font-size:12px;color:var(--mu)}
+.amsg.ok{color:var(--gd)}
+.amsg.err{color:var(--bad)}
 a.pcls{cursor:pointer}
 a.pcls:hover{text-decoration:underline}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 14px;margin-top:4px}
@@ -166,10 +202,11 @@ a.pcls:hover{text-decoration:underline}
 .card h2{font-size:12px;font-weight:650;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
 .card h2 a,.card h2 span{text-transform:none;letter-spacing:0;font-weight:550;color:var(--ac);cursor:pointer;font-size:13px}
 .card h2 span{color:var(--mu);cursor:default}
-.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.card{min-width:0}
 .tile .k{font-size:12px;color:var(--mu);font-weight:550}
 .tile .v{font-size:30px;font-weight:700;margin:2px 0;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.cols{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;align-items:start}
+.cols{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
 .stack{display:flex;flex-direction:column;gap:16px;min-width:0}
 .row{display:flex;align-items:center;gap:12px;padding:10px 8px;margin:0 -8px;border-top:1px solid var(--ln)}
 .row:first-of-type{border-top:0}
@@ -283,7 +320,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .win{grid-template-columns:1fr;grid-template-rows:auto 1fr;width:100vw;height:100vh;border-radius:0}
 .sb{flex-direction:row;padding:8px;border-right:0;border-bottom:1px solid var(--ln);overflow-x:auto}
 .brand,.sbf{display:none}.nav{flex-direction:row}
-.tiles{grid-template-columns:repeat(2,1fr)}.cols{grid-template-columns:1fr}
+.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.cols{grid-template-columns:minmax(0,1fr)}
 .calh{display:none}.cal{grid-template-columns:repeat(2,minmax(0,1fr))}
 .hd h1,.omni>.kbd{display:none}
 .due{min-width:0}.ct{padding:16px}
@@ -417,10 +454,11 @@ host.id = ID;
 host.style.cssText = 'position:fixed;inset:0;z-index:2147483647';
 const root = host.attachShadow({ mode: 'open' });
 root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div class="win">
-<aside class="sb"><div class="brand"><span class="logo">${I.cap}</span>Class Dash</div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><div class="ver"></div></div></aside>
+<aside class="sb"><div class="brand"><span class="logo">${I.cap}</span><span class="bname">Class Dash</span></div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><div class="ver"></div></div></aside>
 <main class="mn"><header class="hd"><h1></h1>
 <div class="omni"><span class="oi">${I.search}</span><input data-omni placeholder="Search Class Dash, or go to study.ecology-study" autocomplete="off" spellcheck="false" aria-label="Search or go to"><span class="kbd">Ctrl K</span><div class="odrop" hidden></div></div><span class="upd"></span>
 <button class="ib" data-act="refresh" title="Refresh">${I.refresh}</button><button class="ib" data-act="close" title="Close (Esc)">${I.x}</button></header>
+<div class="bnrs"></div>
 <div class="ubar" hidden><span class="uic">${I.refresh}</span><div class="grow"><div class="t">Update available</div><div class="sub unote"></div></div>
 <button class="btn" data-act="later">Later</button><button class="btn pri" data-act="update">Update now</button></div>
 <div class="ct"></div></main></div></div>`;
@@ -431,9 +469,9 @@ const navOf = v => v === 'course' ? 'classes' : v === 'play' ? 'games' : v === '
 const usesLib = v => v === 'games' || v === 'study';
 function paintChrome() {
 const overdue = S.work.filter(x => x.open && x.due && new Date(x.due) < Date.now()).length;
-$('.nav').innerHTML = NAV.map(([v, label, icon]) => `<button data-go="${v}" class="${navOf(S.view) === v ? 'on' : ''}">${icon}${label}${v === 'todo' && overdue ? `<span class="badge">${overdue}</span>` : ''}</button>`).join('');
+$('.nav').innerHTML = shownNav().map(([v, label, icon]) => `<button data-go="${v}" class="${navOf(S.view) === v ? 'on' : ''}">${icon}${label}${v === 'todo' && overdue ? `<span class="badge">${overdue}</span>` : ''}</button>`).join('');
 const c = S.view === 'course' && byId(S.courseId), g = S.view === 'play' && PACK.find(x => x.id === S.game), dc = S.view === 'read' && DOCS.find(x => x.id === S.doc);
-$('.hd h1').textContent = c ? c.name : g ? g.name : dc ? dc.name : (NAV.find(n => n[0] === S.view) || [, ''])[1];
+$('.hd h1').textContent = c ? c.name : g ? g.name : dc ? dc.name : S.view === 'admin' ? 'Site editor' : (NAV.find(n => n[0] === S.view) || [, ''])[1];
 $('.upd').textContent = usesLib(S.view) ? (S.libLoading ? 'Checking GitHub…' : S.lib ? 'Updated ' + fmtTime(new Date(S.lib.at)) : '')
 : S.loading && S.loadedAt ? 'Refreshing…' : S.loadedAt && isCanvas && S.view !== 'play' && S.view !== 'read' ? 'Updated ' + fmtTime(S.loadedAt) : '';
 const rb = $('[data-act="refresh"]');
@@ -454,6 +492,7 @@ if (box) { box.focus(); if (box.setSelectionRange) box.setSelectionRange(box.val
 loadLib();
 }
 else if (v === 'hallpass') ct.innerHTML = vHallPass();
+else if (v === 'admin') ct.innerHTML = S.draft ? vAdmin() : empty('Nothing here.');
 else if (v === 'play') { ct.innerHTML = vPlay(); startPack(ct); }
 else if (v === 'read') { ct.innerHTML = vRead(); startDoc(ct, S.doc); }
 else if (v === 'schedule') ct.innerHTML = vSchedule();
@@ -841,8 +880,9 @@ const vHallPass = () => `<div class="card nc"><div class="logo" style="backgroun
 <button class="btn pri big" data-act="hallpass">${I.ext}Open Hall Pass</button></div>`;
 function openHallPass() {
 const w = Math.min(520, screen.availWidth), h = Math.min(820, screen.availHeight);
-const win = window.open(PASS, 'classdash-hallpass', `popup=yes,width=${w},height=${h},left=${Math.max(0, Math.round((screen.availWidth - w) / 2))},top=${Math.max(0, Math.round((screen.availHeight - h) / 2))}`);
-if (!win) window.open(PASS, '_blank');
+const url = /^https?:\/\//.test(SITE.hallpass || '') ? SITE.hallpass : PASS;
+const win = window.open(url, 'classdash-hallpass', `popup=yes,width=${w},height=${h},left=${Math.max(0, Math.round((screen.availWidth - w) / 2))},top=${Math.max(0, Math.round((screen.availHeight - h) / 2))}`);
+if (!win) window.open(url, '_blank');
 }
 // ---- Request boxes on the Study and Games pages (emailed through web3forms.com) ----
 const W3F_KEY = '45efbf44-2e20-4802-8882-7b3ba4b1b3cf';
@@ -1013,6 +1053,145 @@ ${on ? `<span class="chip ac">Now · ${span(p.b - m)} left</span>` : done ? '<sp
 <datalist id="cdcourses">${S.courses.map(c => `<option value="${esc(c.name)}"></option>`).join('')}</datalist>
 <div class="pgrid">${PERIOD_KEYS.map(k => `<div class="pset"><label for="cdp-${slug(k)}">${esc(k)}</label><input id="cdp-${slug(k)}" data-period="${esc(k)}" list="cdcourses" value="${esc(S.periods[k] || '')}" placeholder="${/Period/.test(k) ? 'e.g. Biology' : 'Optional'}" autocomplete="off" spellcheck="false"></div>`).join('')}</div></div>`;
 };
+// ---- Site settings: site.json in the repo (name, icon, colour, banners, hidden pages, hall pass link) ----
+const ICON_CHOICES = ['cap', 'book', 'study', 'star', 'bolt', 'rocket', 'heart', 'news', 'leaf', 'flask', 'atom', 'math', 'globe', 'talk', 'code', 'game', 'cal', 'clock', 'pass', 'chart'];
+const COLOR_CHOICES = ['#7c9cff', '#3ecf8e', '#f5b546', '#f2637a', '#b48cff', '#4cc9f0', '#ff8f5a', '#e46fd0'];
+const SITE_DEFAULT = { name: 'Class Dash', icon: 'cap', accent: '#7c9cff', banners: [], hidden: [], hallpass: PASS };
+const clone = o => JSON.parse(JSON.stringify(o));
+const hexOk = c => /^#[0-9a-f]{6}$/i.test(c || '');
+function fixSite(j) {
+const s = Object.assign(clone(SITE_DEFAULT), j && typeof j === 'object' && !Array.isArray(j) ? j : {});
+if (!Array.isArray(s.banners)) s.banners = [];
+if (!Array.isArray(s.hidden)) s.hidden = [];
+s.banners = s.banners.filter(b => b && typeof b === 'object').map(b => Object.assign({ id: 'b' + Math.random().toString(36).slice(2, 8), title: '', text: '', button: '', link: '', color: '#3ecf8e', icon: 'news', where: 'both', start: '', end: '' }, b));
+return s;
+}
+let SITE = fixSite(store.get('site', null));
+const curSite = () => S.draft || SITE;
+function shownNav() { const h = curSite().hidden || []; return NAV.filter(n => !h.includes(n[0])); }
+const inWindow = b => { const now = Date.now(), a = b.start ? new Date(b.start).getTime() : -Infinity, z = b.end ? new Date(b.end).getTime() : Infinity; return now >= a && now < z; };
+function paintBanners() {
+const s = curSite(), gone = store.get('bannersClosed', []);
+const list = LIB ? [] : s.banners.filter(b => (b.title || b.text) && b.where !== 'website' && inWindow(b) && (S.draft || !gone.includes(b.id)));
+$('.bnrs').innerHTML = list.map(b => `<div class="bnr" style="--bc:${hexOk(b.color) ? b.color : '#3ecf8e'}"><span class="bic">${I[b.icon] || I.news}</span>
+<div class="grow wrap">${b.title ? `<b>${esc(b.title)}</b> ` : ''}${esc(b.text)}</div>
+${b.button && b.link ? `<button class="btn" data-banner="${esc(b.id)}">${esc(b.button)}</button>` : ''}<button class="ib bx" data-bclose="${esc(b.id)}" title="Hide this">${I.x}</button></div>`).join('');
+}
+function applySite() {
+const s = curSite();
+$('.bd').style.setProperty('--ac', hexOk(s.accent) ? s.accent : '#7c9cff');
+$('.brand .logo').innerHTML = I[s.icon] || I.cap;
+$('.bname').textContent = s.name || 'Class Dash';
+$('[data-omni]').placeholder = 'Search ' + (s.name || 'Class Dash') + ', or go to study.ecology-study';
+paintBanners();
+}
+function loadSite() {
+fetch(RAW + 'site.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => {
+if (!j) return;
+const s = fixSite(j);
+if (JSON.stringify(s) === JSON.stringify(SITE)) return;
+SITE = s; store.set('site', j);
+if (!S.draft) { applySite(); paintChrome(); }
+}).catch(() => {});
+}
+// A banner button can point at a study page or game in the repo, a web address, or a dashboard address like study.biology
+function openLink(link) {
+link = String(link || '').trim();
+if (!link) return;
+const doc = DOCS.find(d => d.id === link || d.id === 'study/' + link);
+if (doc) { S.doc = doc.id; return go('read'); }
+const pk = PACK.find(p => p.id === link || p.id === 'offline/' + link);
+if (pk) { addRecent('pack:' + pk.id); S.game = pk.id; return go('play'); }
+if (/^https?:\/\//i.test(link)) return void window.open(link, '_blank', 'noopener');
+if (/\//.test(link) || /\.html?$/i.test(link)) return void window.open(PAGES + link.replace(/^\/+/, ''), '_blank', 'noopener');
+const hit = omniSearch(link).find(x => x.s >= 1000);
+if (hit) hit.open(); else if (NAV.some(n => n[0] === link)) go(link);
+}
+// ---- Site editor (hidden page) ----
+const SEAL = 'b1b303b405163284c0f00b8e4bd9e1e85816f6e6b882e11d49dab44868b39375';
+async function sealed(v) {
+try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('') === SEAL; } catch (e) { return false; }
+}
+function openAdmin() { S.draft = clone(SITE); S.adminMsg = null; go('admin'); applySite(); }
+const NEW_BANNER = () => ({ id: 'b' + Date.now().toString(36), title: '', text: '', button: '', link: '', color: '#3ecf8e', icon: 'news', where: 'both', start: '', end: '' });
+function vAdmin() {
+const s = S.draft, tok = !!store.get('admintoken', ''), m = S.adminMsg || { text: '', cls: '' };
+const sw = (cur, attr) => COLOR_CHOICES.map(c => `<button class="sw${(cur || '').toLowerCase() === c ? ' on' : ''}" style="background:${c}" ${attr(c)} title="${c}"></button>`).join('');
+const icons = (cur, attr) => ICON_CHOICES.map(k => `<button class="icn${cur === k ? ' on' : ''}" ${attr(k)} title="${k}">${I[k]}</button>`).join('');
+const when = b => { const now = Date.now(); if (b.end && new Date(b.end) <= now) return '<span class="chip">Ended</span>'; if (b.start && new Date(b.start) > now) return '<span class="chip wn">Scheduled</span>'; return '<span class="chip gd">Showing now</span>'; };
+return `<div class="card adm"><h2>Publish<span>${tok ? 'GitHub key saved on this computer' : 'No GitHub key on this computer yet'}</span></h2>
+<p class="sub wrap">Your edits preview right away, just for you. <b>Publish</b> saves them to site.json in the repo so everyone gets them: the dashboard within about 5 minutes, the website once it redeploys.</p>
+${tok ? '' : `<div class="arow"><input type="password" data-tok class="wide" placeholder="Paste a GitHub fine-grained token (Contents: read and write on yee-new)" autocomplete="off"><button class="btn" data-act="adm-savetok">Save key</button></div>`}
+<div class="arow"><button class="btn pri" data-act="adm-publish">Publish changes</button><button class="btn" data-act="adm-discard">Discard changes</button>${tok ? '<button class="btn" data-act="adm-forget">Remove key from this computer</button>' : ''}<span class="amsg ${m.cls}">${esc(m.text)}</span></div></div>
+<div class="card adm"><h2>Look</h2>
+<label class="alab">Name</label><input data-site="name" value="${esc(s.name)}" maxlength="40" style="width:100%;max-width:360px">
+<label class="alab">Icon</label><div class="icons">${icons(s.icon, k => `data-sicon="${k}"`)}</div>
+<label class="alab">Accent colour</label><div class="sws">${sw(s.accent, c => `data-saccent="${c}"`)}<input type="color" data-site="accent" value="${hexOk(s.accent) ? s.accent : '#7c9cff'}" title="Pick any colour"></div></div>
+<div class="card adm"><h2>Banners<span>shown at the top of the dashboard and/or the website</span></h2>
+${s.banners.map((b, i) => `<div class="abn"><div class="arow" style="margin-top:0">${when(b)}<span class="grow"></span><button class="btn" data-act="adm-rmb" data-i="${i}">Delete</button></div>
+<div class="arow"><input data-bf="${i}:title" value="${esc(b.title)}" placeholder="Bold start (e.g. Taking Bio?)" maxlength="60"><input class="wide" data-bf="${i}:text" value="${esc(b.text)}" placeholder="Message" maxlength="240"></div>
+<div class="arow"><input data-bf="${i}:button" value="${esc(b.button)}" placeholder="Button text (optional)" maxlength="40"><input class="wide" data-bf="${i}:link" value="${esc(b.link)}" placeholder="Button link: https://…, study/Biology/file.html, or study.biology"></div>
+<div class="arow"><span class="alab">Show on</span><div class="seg mini">${[['dashboard', 'Dashboard'], ['website', 'Website'], ['both', 'Both']].map(([k, l]) => `<button data-bwhere="${i}:${k}" class="${b.where === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+<span class="alab">From</span><input type="datetime-local" data-bf="${i}:start" value="${esc(b.start)}"><span class="alab">Until</span><input type="datetime-local" data-bf="${i}:end" value="${esc(b.end)}"></div>
+<div class="arow"><span class="alab">Colour</span><div class="sws">${sw(b.color, c => `data-bcolor="${i}:${c}"`)}</div></div>
+<div class="arow"><span class="alab">Icon</span><div class="icons">${icons(b.icon, k => `data-bicon="${i}:${k}"`)}</div></div></div>`).join('') || '<p class="sub">No banners yet.</p>'}
+<div class="arow"><button class="btn" data-act="adm-addb">+ Add banner</button></div></div>
+<div class="card adm"><h2>Pages<span>untick to hide a page from the sidebar</span></h2>
+${NAV.map(([v, label]) => `<label class="chk"><input type="checkbox" data-shide="${v}"${(s.hidden || []).includes(v) ? '' : ' checked'}>${esc(label)}</label>`).join('')}</div>
+<div class="card adm"><h2>Links</h2><label class="alab">Hall pass link</label><input data-site="hallpass" value="${esc(s.hallpass)}" style="width:100%;max-width:460px"></div>
+<div class="card adm"><h2>Everything (advanced)<span>edit the raw settings, then Apply</span></h2>
+<textarea data-sitejson spellcheck="false">${esc(JSON.stringify(s, null, 2))}</textarea><div class="arow"><button class="btn" data-act="adm-json">Apply</button></div></div>`;
+}
+function adminSay(text, cls) { S.adminMsg = { text, cls }; const el = root.querySelector('.amsg'); if (el) { el.textContent = text; el.className = 'amsg ' + cls; } }
+async function publishSite() {
+const tok = store.get('admintoken', '');
+if (!tok) return adminSay('Save a GitHub key first.', 'err');
+adminSay('Publishing…', '');
+const api = 'https://api.github.com/repos/' + REPO + '/contents/site.json';
+const h = { Authorization: 'Bearer ' + tok, Accept: 'application/vnd.github+json' };
+try {
+let sha;
+const g = await fetch(api + '?ref=' + BRANCH + '&t=' + Date.now(), { headers: h, cache: 'no-store' });
+if (g.ok) sha = (await g.json()).sha;
+else if (g.status === 401) throw new Error('GitHub rejected the key. Check it, or make a new one.');
+else if (g.status !== 404) throw new Error('GitHub error ' + g.status + '.');
+const text = JSON.stringify(S.draft, null, 2) + '\n';
+const put = await fetch(api, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, h),
+body: JSON.stringify({ message: 'Update site settings', content: btoa(unescape(encodeURIComponent(text))), branch: BRANCH, sha }) });
+if (!put.ok) throw new Error(put.status === 403 || put.status === 404 ? "That key can't write to the repo. It needs Contents: read and write on yee-new." : 'GitHub error ' + put.status + '.');
+SITE = fixSite(clone(S.draft)); store.set('site', SITE);
+adminSay("Published! Everyone gets it within about 5 minutes.", 'ok');
+} catch (e) { adminSay(e.message || "Couldn't publish.", 'err'); }
+}
+root.addEventListener('input', e => {
+const t = e.target, s = S.draft;
+if (!s) return;
+if (t.matches('[data-site]')) { s[t.dataset.site] = t.value; applySite(); }
+else if (t.matches('[data-bf]')) { const [i, f] = t.dataset.bf.split(':'); if (s.banners[i]) s.banners[i][f] = t.value; paintBanners(); }
+else if (t.matches('[data-shide]')) { const v = t.dataset.shide; s.hidden = s.hidden.filter(x => x !== v); if (!t.checked) s.hidden.push(v); paintChrome(); }
+});
+root.addEventListener('click', e => {
+const t = e.target.closest('[data-sicon],[data-saccent],[data-bwhere],[data-bcolor],[data-bicon],[data-banner],[data-bclose],[data-act^="adm-"]');
+if (!t) return;
+const d = t.dataset, s = S.draft;
+if (d.banner) { const b = curSite().banners.find(x => x.id === d.banner); if (b) openLink(b.link); return; }
+if (d.bclose) { if (!S.draft) store.set('bannersClosed', [...store.get('bannersClosed', []).filter(x => x !== d.bclose), d.bclose].slice(-50)); t.closest('.bnr').remove(); return; }
+if (!s) return;
+const pair = v => { const k = v.indexOf(':'); return [Number(v.slice(0, k)), v.slice(k + 1)]; };
+if (d.sicon) s.icon = d.sicon;
+else if (d.saccent) s.accent = d.saccent;
+else if (d.bwhere) { const [i, v] = pair(d.bwhere); s.banners[i].where = v; }
+else if (d.bcolor) { const [i, v] = pair(d.bcolor); s.banners[i].color = v; }
+else if (d.bicon) { const [i, v] = pair(d.bicon); s.banners[i].icon = v; }
+else if (d.act === 'adm-addb') s.banners.push(NEW_BANNER());
+else if (d.act === 'adm-rmb') s.banners.splice(Number(d.i), 1);
+else if (d.act === 'adm-publish') return void publishSite();
+else if (d.act === 'adm-discard') { S.draft = clone(SITE); S.adminMsg = { text: 'Changes discarded.', cls: '' }; }
+else if (d.act === 'adm-savetok') { const v = (root.querySelector('[data-tok]') || {}).value || ''; if (!v.trim()) return adminSay('Paste the key first.', 'err'); store.set('admintoken', v.trim()); S.adminMsg = { text: 'Key saved on this computer.', cls: 'ok' }; }
+else if (d.act === 'adm-forget') { try { localStorage.removeItem('classdash_admintoken'); } catch (err) {} S.adminMsg = { text: 'Key removed from this computer.', cls: '' }; }
+else if (d.act === 'adm-json') { try { S.draft = fixSite(JSON.parse(root.querySelector('[data-sitejson]').value)); S.adminMsg = { text: 'Applied. Publish to save it for everyone.', cls: 'ok' }; } catch (err) { return adminSay("That isn't valid JSON: " + err.message, 'err'); } }
+applySite(); renderMain(true);
+});
 // ---- Update prompt ----
 const pendingUpdate = !LIB && window.__classDashUpdate;
 window.__classDashUpdate = null;
@@ -1043,10 +1222,10 @@ if (v === 'course') { const c = byId(S.courseId); return c ? 'classes.' + slug(c
 if (v === 'play') { const g = PACK.find(x => x.id === S.game); return g ? 'games.' + slug(g.name) : 'games'; }
 if (v === 'read') { const d = DOCS.find(x => x.id === S.doc); return d ? 'study.' + slug(d.cls) + '.' + slug(d.name) : 'study'; }
 if (v === 'study' && S.scls !== 'All') return 'study.' + slug(S.scls);
-return v;
+return v === 'admin' ? '' : v;
 }
 function omniItems() {
-const out = NAV.map(([v, label, icon]) => ({ kind: 'Page', name: label, addr: v, icon, w: 40, open: () => go(v) }));
+const out = shownNav().map(([v, label, icon]) => ({ kind: 'Page', name: label, addr: v, icon, w: 40, open: () => go(v) }));
 const classes = {};
 DOCS.forEach(p => { classes[p.cls] = classes[p.cls] || p; });
 Object.keys(classes).forEach(cls => out.push({ kind: 'Study class', name: cls, addr: 'study.' + slug(cls), icon: classes[cls].icon, color: classes[cls].color, w: 30,
@@ -1118,7 +1297,11 @@ const n = (S.omni || []).length;
 if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
 e.preventDefault();
 if (n) { S.omniSel = (S.omniSel + (e.key === 'ArrowDown' ? 1 : n - 1)) % n; paintOmni(); const on = root.querySelector('.oit.on'); if (on) on.scrollIntoView({ block: 'nearest' }); }
-} else if (e.key === 'Enter') { e.preventDefault(); omniOpen(S.omniSel || 0); }
+} else if (e.key === 'Enter') {
+e.preventDefault();
+const v = omniBox.value, sel = S.omniSel || 0;
+sealed(v).then(ok => { if (ok) { omniBox.blur(); omniClose(); openAdmin(); } else omniOpen(sel); });
+}
 else if (e.key === 'Escape') { e.preventDefault(); omniBox.blur(); omniClose(); omniBox.value = currentAddr(); }
 }
 root.addEventListener('click', e => {
@@ -1219,6 +1402,8 @@ host.remove();
 }
 host.__close = close;
 tick();
+applySite();
+loadSite();
 renderMain();
 load();
 })();
