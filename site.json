@@ -1,7 +1,7 @@
 {
   "name": "Class Dash",
   "icon": "cap",
-  "accent": "#7c9cff",
+  "accent": "#f5b546",
   "banners": [
     {
       "id": "bio-ecology",
@@ -14,6 +14,18 @@
       "where": "both",
       "start": "",
       "end": "2026-11-06T14:52"
+    },
+    {
+      "id": "bmw4887gs",
+      "title": "Anything to add? ",
+      "text": "Tell us what you want us to add whethere it's study resources or games, we'll add it! (go to games or study tab to request)",
+      "button": "",
+      "link": "",
+      "color": "#b48cff",
+      "icon": "talk",
+      "where": "both",
+      "start": "",
+      "end": ""
     }
   ],
   "hidden": [],
