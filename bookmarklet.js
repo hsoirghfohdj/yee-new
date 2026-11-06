@@ -13,7 +13,7 @@ get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == 
 set(k, v) { try { localStorage.setItem('classdash_' + k, JSON.stringify(v)); } catch (e) {} }
 };
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Check for updates button at the bottom of the sidebar';
+const WHATSNEW = 'Study resources can now be PDFs, images, links or any file';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -43,7 +43,8 @@ lib: store.get('lib', null), libLoading: false, libError: null, libTried: 0, q: 
 lunch: store.get('lunch', 1), schedKey: null,
 doc: null, sq: '', scls: 'All',
 periods: store.get('periods', {}),
-req: {}, reqMsg: {}
+req: {}, reqMsg: {},
+up: { kind: 'file' }, upMsg: null, delArm: null
 };
 const svg = p => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
 const I = {
@@ -161,7 +162,11 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .bnr .btn{background:var(--bc);color:#0f1218}
 .ib.bx{width:28px;height:28px;background:transparent}
 .adm{margin-bottom:16px}
-.adm input:not([type=checkbox]):not([type=color]),.adm textarea{all:unset;box-sizing:border-box;height:34px;padding:0 10px;border-radius:9px;background:var(--p2);border:1px solid var(--ln);color:var(--tx);font-size:13px;min-width:0}
+.adm select{height:34px;padding:0 8px;border-radius:9px;background:var(--p2);border:1px solid var(--ln);color:var(--tx);font:13px system-ui,sans-serif;color-scheme:dark;min-width:160px}
+.adm input[type=file]{font:12px system-ui,sans-serif;color:var(--mu);flex:3 1 260px}
+.ares{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--ln)}
+.ares .grow{display:flex;gap:8px;align-items:baseline;min-width:0}
+.adm input:not([type=checkbox]):not([type=color]):not([type=file]),.adm textarea{all:unset;box-sizing:border-box;height:34px;padding:0 10px;border-radius:9px;background:var(--p2);border:1px solid var(--ln);color:var(--tx);font-size:13px;min-width:0}
 .adm input:focus,.adm textarea:focus{border-color:var(--ac)}
 .adm textarea{display:block;width:100%;height:240px;padding:10px;font:12px/1.5 ui-monospace,monospace;white-space:pre;overflow:auto}
 .adm input[type=datetime-local]{color-scheme:dark;flex:0 1 210px}
@@ -712,11 +717,18 @@ return `<div class="art gen" style="background:linear-gradient(rgba(6,8,12,0),rg
 <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${p.theme[2]}</svg>
 <span class="gtitle" style="font-size:${size}px">${esc(p.name)}</span></div>`;
 };
+// Study resources: any file in study/<Class>/ (HTML pages, PDFs, images, .url links, or other files),
+// or a folder study/<Class>/<name>/index.html for a page with its own assets.
 const isDoc = p => {
-if (!p.startsWith(STUDY) || !/\.html?$/i.test(p)) return false;
-const parts = p.slice(STUDY.length).split('/');
+if (!p.startsWith(STUDY)) return false;
+const parts = p.slice(STUDY.length).split('/'), last = parts[parts.length - 1];
+if (!last || last.startsWith('.') || /^readme(\.md)?$/i.test(last)) return false;
 return parts.length <= 2 || (parts.length === 3 && /^index\.html?$/i.test(parts[2]));
 };
+const extOf = p => ((p.match(/\.([a-z0-9]+)$/i) || [])[1] || '').toLowerCase();
+const kindOf = p => { const e = extOf(p); return /^html?$/.test(e) ? 'html' : e === 'pdf' ? 'pdf' : /^(png|jpe?g|gif|webp|svg)$/.test(e) ? 'image' : e === 'url' ? 'link' : 'file'; };
+const KIND_LABEL = { html: 'Interactive', pdf: 'PDF', image: 'Image', link: 'Link' };
+const kindLabel = p => KIND_LABEL[p.kind] || (p.ext ? p.ext.toUpperCase() + ' file' : 'File');
 const SUBJECTS = [
 [/bio|life|anatom|ecolog|zoo|botan|health/i, I.leaf],
 [/chem/i, I.flask],
@@ -732,7 +744,7 @@ const parts = path.slice(STUDY.length).split('/');
 const cls = parts.length === 1 ? 'Other' : pretty(parts[0]);
 const file = parts.length === 3 ? parts[1] : parts[parts.length - 1];
 const h = hash(cls.toLowerCase());
-return { id: path, name: pretty(file.replace(/\.html?$/i, '')), cls, file: parts.slice(1).join('/') || parts[0],
+return { id: path, name: pretty(file.replace(/\.[a-z0-9]+$/i, '')), cls, file: parts.slice(1).join('/') || parts[0], kind: kindOf(path), ext: extOf(path),
 color: PAL[h % PAL.length], icon: (SUBJECTS.find(s => s[0].test(cls)) || [, I.study])[1] };
 };
 const myClass = cls => S.courses.some(c => { const n = (c.name || '').toLowerCase(), k = cls.toLowerCase(); return n.includes(k) || k.split(' ').some(w => w.length > 3 && n.includes(w)); });
@@ -809,13 +821,51 @@ return docHtml(path)
 .then(html => { f.setAttribute('sandbox', DOC_SANDBOX); f.srcdoc = html; })
 .catch(() => { f.src = gameUrl(path); });
 }
+// PDFs and images: raw GitHub serves them as downloads, so fetch the bytes and show them from a blob URL
+const MIME = { pdf: 'application/pdf', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', svg: 'image/svg+xml' };
+const rawUrl = p => RAW + p.split('/').map(encodeURIComponent).join('/');
+const blobCache = {};
+function docBlob(p) {
+if (blobCache[p]) return Promise.resolve(blobCache[p]);
+return fetch(rawUrl(p) + '?t=' + Date.now(), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+.then(buf => (blobCache[p] = URL.createObjectURL(new Blob([buf], { type: MIME[extOf(p)] || 'application/octet-stream' }))));
+}
+function docLinkUrl(p) {
+return fetch(rawUrl(p) + '?t=' + Date.now(), { cache: 'no-store' }).then(r => r.text()).then(t => {
+const m = t.match(/^\s*URL\s*=\s*(\S+)/mi) || t.match(/https?:\/\/\S+/);
+const u = m && (m[1] || m[0]);
+return /^https?:\/\//i.test(u || '') ? u : null;
+});
+}
+// Builds the viewer for a study resource inside document `d` (the dashboard, or an about:blank tab)
+function docView(d, p) {
+const FILL = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
+const mk = (tag, css) => { const e = d.createElement(tag); e.className = 'gframe'; e.style.cssText = FILL + (css || ''); return e; };
+const panel = (title, sub, href, label, dl) => {
+const box = mk('div', 'display:grid;place-items:center;background:#0f1218;color:#e9ecf2;font:15px system-ui,sans-serif;text-align:center;padding:20px;box-sizing:border-box');
+box.innerHTML = `<div><div style="font-size:18px;font-weight:700;margin-bottom:6px">${esc(title)}</div><div style="color:#8c93a5;margin-bottom:16px">${esc(sub)}</div></div>`;
+if (href) {
+const a = d.createElement('a');
+a.style.cssText = 'display:inline-block;padding:10px 18px;border-radius:10px;background:#7c9cff;color:#0f1218;font-weight:700;text-decoration:none';
+a.href = href; a.textContent = label;
+if (dl) a.download = dl; else { a.target = '_blank'; a.rel = 'noopener'; }
+box.firstChild.appendChild(a);
+}
+return box;
+};
+if (p.kind === 'html') { const f = mk('iframe', 'background:#fff'); f.setAttribute('allow', 'fullscreen; autoplay'); return fillDoc(f, p.id).then(() => f); }
+if (p.kind === 'link') return docLinkUrl(p.id).then(u => u ? panel(p.name, 'This study resource is a link to another website.', u, 'Open link') : panel(p.name, "This link doesn't have a web address in it.", ''));
+return docBlob(p.id).then(url => {
+if (p.kind === 'pdf') { const f = mk('iframe', 'background:#fff'); f.src = url; return f; }
+if (p.kind === 'image') { const box = mk('div', 'overflow:auto;display:grid;place-items:center;background:#0f1218'); const img = d.createElement('img'); img.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain'; img.src = url; box.appendChild(img); return box; }
+return panel(p.name, (p.ext ? p.ext.toUpperCase() + ' files' : 'These files') + " can't be shown here, but you can download it.", url, 'Download', p.id.split('/').pop());
+});
+}
 function startDoc(ct, path) {
-const box = ct.querySelector('.frame');
-if (!box) return;
-const f = document.createElement('iframe');
-f.className = 'gframe';
-f.setAttribute('allow', 'fullscreen; autoplay');
-fillDoc(f, path).then(() => { if (S.view === 'read' && S.doc === path && box.isConnected) { box.innerHTML = ''; box.appendChild(f); } });
+const box = ct.querySelector('.frame'), p = DOCS.find(x => x.id === path);
+if (!box || !p) return;
+docView(document, p).then(el => { if (S.view === 'read' && S.doc === path && box.isConnected) { box.innerHTML = ''; box.appendChild(el); } })
+.catch(() => { if (box.isConnected) box.innerHTML = empty("Couldn't load this resource. Check your connection and try again."); });
 }
 const vRead = () => {
 const p = DOCS.find(x => x.id === S.doc);
@@ -826,7 +876,7 @@ return `<div class="play"><div class="gbar wide"><button class="btn" data-go="st
 <div class="frame"><div class="spin"></div></div></div>`;
 };
 const docCard = p => `<button class="sdoc" data-doc="${esc(p.id)}" data-name="${esc((p.name + ' ' + p.cls).toLowerCase())}" title="${esc(p.name)}">
-<span class="sic" style="background:${p.color}">${p.icon}</span><span class="grow"><span class="t" style="display:block">${esc(p.name)}</span><span class="sub" style="display:block">${esc(p.file)}</span></span><span class="go">${I.ext}</span></button>`;
+<span class="sic" style="background:${p.color}">${p.icon}</span><span class="grow"><span class="t" style="display:block">${esc(p.name)}</span><span class="sub" style="display:block">${esc(kindLabel(p))} · ${esc(p.file)}</span></span><span class="go">${I.ext}</span></button>`;
 const vStudy = () => {
 const groups = {};
 DOCS.forEach(p => { (groups[p.cls] = groups[p.cls] || []).push(p); });
@@ -834,7 +884,7 @@ const list = Object.keys(groups).map(cls => ({ cls, docs: groups[cls], mine: isC
 .sort((a, b) => (b.mine - a.mine) || ((a.cls === 'Other') - (b.cls === 'Other')) || a.cls.toLowerCase().localeCompare(b.cls.toLowerCase()));
 if (S.scls !== 'All' && !groups[S.scls]) S.scls = 'All';
 const n = DOCS.length;
-const state = n ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoading ? empty('No study resources yet. Add .html files to study/&lt;class name&gt;/ in the repo, then hit refresh.') : '<div class="spin"></div>';
+const state = n ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoading ? empty('No study resources yet. Add files to study/&lt;class name&gt;/ in the repo, then hit refresh.') : '<div class="spin"></div>';
 return `<div class="ghero shero"><div class="ghead"><div class="grow"><div class="gh">Study resources</div>
 <div class="sub">${n} ${n === 1 ? 'resource' : 'resources'} · ${list.length} ${list.length === 1 ? 'class' : 'classes'} · press <span class="kbd">/</span> to search</div></div></div>
 <div class="gfind"><label class="gsearch">${I.search}<input data-search placeholder="Search study resources…" value="${esc(S.sq)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label></div></div>
@@ -932,17 +982,23 @@ reqSay(kind, kind === 'games' ? "Sent! We'll most likely add it soon, so check b
 }).catch(() => reqSay(kind, "Couldn't send right now. Try again in a bit.", 'err'));
 }
 function openBlank() {
-const p = S.view === 'read' ? DOCS.find(x => x.id === S.doc) : PACK.find(x => x.id === S.game);
+const read = S.view === 'read';
+const p = read ? DOCS.find(x => x.id === S.doc) : PACK.find(x => x.id === S.game);
 const w = p && window.open(blankUrl(), '_blank');
 if (!w) return;
 w.opener = null;
 const d = w.document;
 d.title = p.name;
 d.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;background:#000';
+if (read) {
+d.body.style.position = 'relative';
+docView(d, p).then(el => d.body.appendChild(el)).catch(() => { d.body.style.color = '#fff'; d.body.textContent = "Couldn't load this resource."; });
+return;
+}
 const f = d.createElement('iframe');
 f.setAttribute('allow', 'fullscreen; autoplay; gamepad');
 f.style.cssText = 'border:0;width:100%;height:100%;display:block';
-if (S.view === 'read') { d.body.style.background = '#fff'; fillDoc(f, p.id); } else f.src = gameUrl(p.id);
+f.src = gameUrl(p.id);
 d.body.appendChild(f);
 f.focus();
 }
@@ -1114,7 +1170,7 @@ const SEAL = 'b1b303b405163284c0f00b8e4bd9e1e85816f6e6b882e11d49dab44868b39375';
 async function sealed(v) {
 try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('') === SEAL; } catch (e) { return false; }
 }
-function openAdmin() { S.draft = clone(SITE); S.adminMsg = null; go('admin'); applySite(); }
+function openAdmin() { S.draft = clone(SITE); S.adminMsg = null; S.upMsg = null; S.delArm = null; go('admin'); applySite(); loadLib(); }
 const NEW_BANNER = () => ({ id: 'b' + Date.now().toString(36), title: '', text: '', button: '', link: '', color: '#3ecf8e', icon: 'news', where: 'both', start: '', end: '' });
 function vAdmin() {
 const s = S.draft, tok = !!store.get('admintoken', ''), m = S.adminMsg || { text: '', cls: '' };
@@ -1125,6 +1181,7 @@ return `<div class="card adm"><h2>Publish<span>${tok ? 'GitHub key saved on this
 <p class="sub wrap">Your edits preview right away, just for you. <b>Publish</b> saves them to site.json in the repo so everyone gets them: the dashboard within about 5 minutes, the website once it redeploys.</p>
 ${tok ? '' : `<div class="arow"><input type="password" data-tok class="wide" placeholder="Paste a GitHub fine-grained token (Contents: read and write on yee-new)" autocomplete="off"><button class="btn" data-act="adm-savetok">Save key</button></div>`}
 <div class="arow"><button class="btn pri" data-act="adm-publish">Publish changes</button><button class="btn" data-act="adm-discard">Discard changes</button>${tok ? '<button class="btn" data-act="adm-forget">Remove key from this computer</button>' : ''}<span class="amsg ${m.cls}">${esc(m.text)}</span></div></div>
+${studyCard()}
 <div class="card adm"><h2>Look</h2>
 <label class="alab">Name</label><input data-site="name" value="${esc(s.name)}" maxlength="40" style="width:100%;max-width:360px">
 <label class="alab">Icon</label><div class="icons">${icons(s.icon, k => `data-sicon="${k}"`)}</div>
@@ -1143,6 +1200,77 @@ ${NAV.map(([v, label]) => `<label class="chk"><input type="checkbox" data-shide=
 <div class="card adm"><h2>Links</h2><label class="alab">Hall pass link</label><input data-site="hallpass" value="${esc(s.hallpass)}" style="width:100%;max-width:460px"></div>
 <div class="card adm"><h2>Everything (advanced)<span>edit the raw settings, then Apply</span></h2>
 <textarea data-sitejson spellcheck="false">${esc(JSON.stringify(s, null, 2))}</textarea><div class="arow"><button class="btn" data-act="adm-json">Apply</button></div></div>`;
+}
+// ---- Site editor: study resources (uploads go straight into study/<category>/ in the repo) ----
+const studyFolders = () => [...new Set(DOCS.map(d => d.id.slice(STUDY.length).split('/')).filter(a => a.length > 1).map(a => a[0]))].sort((a, b) => a.localeCompare(b));
+const cleanSeg = s => String(s || '').trim().replace(/[\\/:*?"<>|#%[\]\u0000-\u001f]+/g, '').replace(/\s+/g, '-').replace(/^[.-]+/, '').slice(0, 60);
+function studyCard() {
+const up = S.up, um = S.upMsg || { text: '', cls: '' }, folders = studyFolders();
+const sel = up.cat && (up.cat === '__new' || folders.includes(up.cat)) ? up.cat : (folders[0] || '__new');
+const docs = DOCS.slice().sort((a, b) => a.cls.localeCompare(b.cls) || a.name.localeCompare(b.name));
+return `<div class="card adm"><h2>Study resources<span>PDFs, interactive HTML pages, images, links or any file</span></h2>
+<div class="arow"><span class="alab">Category</span><select data-upcat>${folders.map(f => `<option value="${esc(f)}"${sel === f ? ' selected' : ''}>${esc(pretty(f))}</option>`).join('')}<option value="__new"${sel === '__new' ? ' selected' : ''}>+ New category…</option></select>
+${sel === '__new' ? `<input data-up="newcat" value="${esc(up.newcat || '')}" placeholder="New category name (e.g. Chemistry)" maxlength="40">` : ''}</div>
+<div class="arow"><span class="alab">Add</span><div class="seg mini"><button data-upkind="file" class="${up.kind !== 'link' ? 'on' : ''}">A file</button><button data-upkind="link" class="${up.kind === 'link' ? 'on' : ''}">A web link</button></div>
+${up.kind === 'link' ? `<input class="wide" data-up="url" value="${esc(up.url || '')}" placeholder="https://quizlet.com/…">` : '<input type="file" data-upfile>'}</div>
+<div class="arow"><input class="wide" data-up="name" value="${esc(up.name || '')}" placeholder="Name shown in Study (optional: uses the file name)" maxlength="80"><button class="btn pri" data-act="adm-upload">Add to Study</button></div>
+<div class="arow"><span class="amsg upmsg ${um.cls}">${esc(um.text)}</span></div>
+${docs.length ? `<label class="alab">In Study now</label>${docs.map(p => `<div class="ares"><span class="chip">${esc(kindLabel(p))}</span><span class="grow"><span class="t">${esc(p.name)}</span><span class="sub">${esc(p.cls)}</span></span><button class="btn" data-act="adm-delres" data-path="${esc(p.id)}">${S.delArm === p.id ? 'Confirm delete' : 'Delete'}</button></div>`).join('')}` : ''}</div>`;
+}
+function upSay(text, cls) { S.upMsg = { text, cls }; const el = root.querySelector('.upmsg'); if (el) { el.textContent = text; el.className = 'amsg upmsg ' + cls; } }
+const ghApi = (path, opt = {}) => fetch('https://api.github.com/repos/' + REPO + '/contents/' + path.split('/').map(encodeURIComponent).join('/') + (opt.method ? '' : '?ref=' + BRANCH + '&t=' + Date.now()),
+Object.assign({ cache: 'no-store' }, opt, { headers: Object.assign({ Authorization: 'Bearer ' + store.get('admintoken', ''), Accept: 'application/vnd.github+json' }, opt.body ? { 'Content-Type': 'application/json' } : {}) }));
+const ghErr = st => st === 401 ? 'GitHub rejected the key. Check it, or make a new one.' : st === 403 || st === 404 ? "That key can't write to the repo. It needs Contents: read and write on yee-new." : st === 409 ? 'GitHub was busy. Try again.' : st === 422 ? "GitHub didn't accept that file (it may be too big)." : 'GitHub error ' + st + '.';
+async function ghSha(path) { const r = await ghApi(path); if (r.ok) return (await r.json()).sha; if (r.status === 404) return null; throw new Error(ghErr(r.status)); }
+async function uploadStudy() {
+if (!store.get('admintoken', '')) return upSay('Save your GitHub key first (in the Publish box above).', 'err');
+const up = S.up, folders = studyFolders();
+const pick = up.cat && (up.cat === '__new' || folders.includes(up.cat)) ? up.cat : (folders[0] || '__new');
+const cat = cleanSeg(pick === '__new' ? up.newcat : pick);
+if (!cat) return upSay('Pick a category, or type a name for the new one.', 'err');
+let name = (up.name || '').trim(), ext, b64;
+if (up.kind === 'link') {
+const url = (up.url || '').trim();
+if (!/^https?:\/\/\S+$/i.test(url)) return upSay('Paste a full web address starting with https://', 'err');
+if (!name) { try { name = new URL(url).hostname.replace(/^www\./, ''); } catch (e) { name = 'Link'; } }
+ext = 'url'; b64 = btoa(unescape(encodeURIComponent('[InternetShortcut]\r\nURL=' + url + '\r\n')));
+} else {
+const input = root.querySelector('[data-upfile]'), file = input && input.files && input.files[0];
+if (!file) return upSay('Choose a file first.', 'err');
+if (file.size > 25 * 1024 * 1024) return upSay('That file is over 25 MB, which is too big to upload here.', 'err');
+ext = extOf(file.name) || 'bin';
+if (!name) name = file.name.replace(/\.[^.]+$/, '');
+upSay('Reading the file…', '');
+b64 = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(new Error('read')); r.readAsDataURL(file); }).catch(() => null);
+if (b64 == null) return upSay("Couldn't read that file.", 'err');
+}
+const base = cleanSeg(name);
+if (!base) return upSay('Give it a name.', 'err');
+const path = STUDY + cat + '/' + base + '.' + ext;
+upSay('Uploading…', '');
+try {
+const sha = await ghSha(path);
+const r = await ghApi(path, { method: 'PUT', body: JSON.stringify(Object.assign({ message: (sha ? 'Update' : 'Add') + ' study resource: ' + cat + '/' + base + '.' + ext, content: b64, branch: BRANCH }, sha ? { sha } : {})) });
+if (!r.ok) throw new Error(ghErr(r.status));
+delete docCache[path]; delete blobCache[path];
+if (S.lib) { S.lib.study = S.lib.study || []; if (!S.lib.study.includes(path)) S.lib.study.push(path); store.set('lib', S.lib); setPack(); }
+S.up = { kind: up.kind, cat };
+S.upMsg = { text: (sha ? 'Replaced' : 'Added') + ' "' + pretty(base) + '" in ' + pretty(cat) + '. Everyone can see it in Study now.', cls: 'ok' };
+if (S.view === 'admin') renderMain(true);
+} catch (e) { upSay(e.message || "Couldn't upload.", 'err'); }
+}
+async function deleteStudy(path) {
+if (S.delArm !== path) { S.delArm = path; return renderMain(true); }
+S.delArm = null;
+if (!store.get('admintoken', '')) return upSay('Save your GitHub key first (in the Publish box above).', 'err');
+upSay('Deleting…', '');
+try {
+const sha = await ghSha(path);
+if (sha) { const r = await ghApi(path, { method: 'DELETE', body: JSON.stringify({ message: 'Remove study resource: ' + path.slice(STUDY.length), sha, branch: BRANCH }) }); if (!r.ok) throw new Error(ghErr(r.status)); }
+if (S.lib) { S.lib.study = (S.lib.study || []).filter(x => x !== path); store.set('lib', S.lib); setPack(); }
+S.upMsg = { text: 'Deleted.', cls: 'ok' };
+if (S.view === 'admin') renderMain(true);
+} catch (e) { upSay(e.message || "Couldn't delete.", 'err'); }
 }
 function adminSay(text, cls) { S.adminMsg = { text, cls }; const el = root.querySelector('.amsg'); if (el) { el.textContent = text; el.className = 'amsg ' + cls; } }
 async function publishSite() {
@@ -1171,9 +1299,11 @@ if (!s) return;
 if (t.matches('[data-site]')) { s[t.dataset.site] = t.value; applySite(); }
 else if (t.matches('[data-bf]')) { const [i, f] = t.dataset.bf.split(':'); if (s.banners[i]) s.banners[i][f] = t.value; paintBanners(); }
 else if (t.matches('[data-shide]')) { const v = t.dataset.shide; s.hidden = s.hidden.filter(x => x !== v); if (!t.checked) s.hidden.push(v); paintChrome(); }
+else if (t.matches('[data-upcat]')) { S.up.cat = t.value; renderMain(true); }
+else if (t.matches('[data-up]')) S.up[t.dataset.up] = t.value;
 });
 root.addEventListener('click', e => {
-const t = e.target.closest('[data-sicon],[data-saccent],[data-bwhere],[data-bcolor],[data-bicon],[data-banner],[data-bclose],[data-act^="adm-"]');
+const t = e.target.closest('[data-sicon],[data-saccent],[data-bwhere],[data-bcolor],[data-bicon],[data-upkind],[data-banner],[data-bclose],[data-act^="adm-"]');
 if (!t) return;
 const d = t.dataset, s = S.draft;
 if (d.banner) { const b = curSite().banners.find(x => x.id === d.banner); if (b) openLink(b.link); return; }
@@ -1188,6 +1318,9 @@ else if (d.bicon) { const [i, v] = pair(d.bicon); s.banners[i].icon = v; }
 else if (d.act === 'adm-addb') s.banners.push(NEW_BANNER());
 else if (d.act === 'adm-rmb') s.banners.splice(Number(d.i), 1);
 else if (d.act === 'adm-publish') return void publishSite();
+else if (d.upkind) S.up.kind = d.upkind;
+else if (d.act === 'adm-upload') return void uploadStudy();
+else if (d.act === 'adm-delres') return void deleteStudy(d.path);
 else if (d.act === 'adm-discard') { S.draft = clone(SITE); S.adminMsg = { text: 'Changes discarded.', cls: '' }; }
 else if (d.act === 'adm-savetok') { const v = (root.querySelector('[data-tok]') || {}).value || ''; if (!v.trim()) return adminSay('Paste the key first.', 'err'); store.set('admintoken', v.trim()); S.adminMsg = { text: 'Key saved on this computer.', cls: 'ok' }; }
 else if (d.act === 'adm-forget') { try { localStorage.removeItem('classdash_admintoken'); } catch (err) {} S.adminMsg = { text: 'Key removed from this computer.', cls: '' }; }
