@@ -13,7 +13,7 @@ get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == 
 set(k, v) { try { localStorage.setItem('classdash_' + k, JSON.stringify(v)); } catch (e) {} }
 };
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Grades page fits the window again · announcement banners';
+const WHATSNEW = 'Check for updates button at the bottom of the sidebar';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -137,7 +137,9 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .ubar .sub{white-space:normal}
 .pcls{color:var(--ac);font-weight:600}
 .sched .sl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ver{margin-top:10px;font-size:11px;opacity:.75}
+.ver{margin-top:4px;font-size:11px;opacity:.75}
+.cupd{all:unset;cursor:pointer;display:inline-flex;align-items:center;margin-top:10px;font-size:11.5px;font-weight:650;color:var(--ac)}
+.cupd:hover{text-decoration:underline}
 .req{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 16px;border-radius:14px;background:var(--p1);border:1px solid var(--ln);margin-bottom:16px}
 .req .ric{width:36px;height:36px;border-radius:10px;background:var(--gd);color:#0f1218;display:grid;place-items:center;flex:none}
 .rtxt{flex:1 1 230px;min-width:0}
@@ -454,7 +456,7 @@ host.id = ID;
 host.style.cssText = 'position:fixed;inset:0;z-index:2147483647';
 const root = host.attachShadow({ mode: 'open' });
 root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div class="win">
-<aside class="sb"><div class="brand"><span class="logo">${I.cap}</span><span class="bname">Class Dash</span></div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><div class="ver"></div></div></aside>
+<aside class="sb"><div class="brand"><span class="logo">${I.cap}</span><span class="bname">Class Dash</span></div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><button class="cupd" data-act="checkupd">Check for updates</button><div class="ver"></div></div></aside>
 <main class="mn"><header class="hd"><h1></h1>
 <div class="omni"><span class="oi">${I.search}</span><input data-omni placeholder="Search Class Dash, or go to study.ecology-study" autocomplete="off" spellcheck="false" aria-label="Search or go to"><span class="kbd">Ctrl K</span><div class="odrop" hidden></div></div><span class="upd"></span>
 <button class="ib" data-act="refresh" title="Refresh">${I.refresh}</button><button class="ib" data-act="close" title="Close (Esc)">${I.x}</button></header>
@@ -1193,12 +1195,33 @@ else if (d.act === 'adm-json') { try { S.draft = fixSite(JSON.parse(root.querySe
 applySite(); renderMain(true);
 });
 // ---- Update prompt ----
-const pendingUpdate = !LIB && window.__classDashUpdate;
+let pendingUpdate = !LIB && window.__classDashUpdate;
 window.__classDashUpdate = null;
-if (pendingUpdate) {
-const m = pendingUpdate.code.match(/const WHATSNEW = (['"])(.*?)\1;/);
+function showUpdate(code) {
+pendingUpdate = { code };
+const m = code.match(/const WHATSNEW = (['"])(.*?)\1;/);
 $('.unote').textContent = m && m[2] ? "What's new: " + m[2] : 'A newer version of Class Dash is on GitHub.';
 $('.ubar').hidden = false;
+}
+if (pendingUpdate) showUpdate(pendingUpdate.code);
+// "Check for updates" in the sidebar: download the newest bookmarklet.js and compare it with the installed copy
+async function checkUpdates() {
+const btn = $('.cupd');
+if (btn.dataset.busy) return;
+btn.dataset.busy = '1'; btn.textContent = 'Checking…';
+const get = u => fetch(u + '?t=' + Date.now(), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); });
+const inst = store.get('installed', null);
+let msg;
+try {
+const code = await get(RAW + 'bookmarklet.js').catch(() => get(PAGES + 'bookmarklet.js'));
+if (!inst || !inst.code) msg = "Can't check on this page";
+else if (code === inst.code) msg = "You're up to date";
+else {
+try { new Function(code); showUpdate(code); msg = 'Update found!'; } catch (e) { msg = 'The newest version has an error'; }
+}
+} catch (e) { msg = "Couldn't check right now"; }
+btn.textContent = msg;
+setTimeout(() => { btn.textContent = 'Check for updates'; delete btn.dataset.busy; }, 3500);
 }
 {
 const inst = store.get('installed', null);
@@ -1333,6 +1356,7 @@ else if (d.act === 'reload') renderMain();
 else if (d.act === 'close') close();
 else if (d.act === 'later') $('.ubar').hidden = true;
 else if (d.act === 'hallpass') openHallPass();
+else if (d.act === 'checkupd') checkUpdates();
 else if (d.act === 'update') applyUpdate();
 else if (d.act === 'refresh') { if (usesLib(S.view)) loadLib(true); else { S.courseCache = {}; load(); } }
 });
