@@ -8,11 +8,11 @@
   :root { --bg:#0f1218; --p1:#161a22; --p2:#1d222c; --p3:#272d3a; --ln:#262c39; --tx:#e9ecf2; --mu:#8c93a5; --ac:#7c9cff; --gd:#3ecf8e; --bad:#f2637a; }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { background:var(--bg); color:var(--tx); font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; -webkit-font-smoothing:antialiased; min-height:100vh; }
-  .bio { display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; padding:12px 16px; background:linear-gradient(90deg,#123528,#16402f); border-bottom:1px solid #1f5a41; text-align:center; }
-  .bio .ic { width:30px; height:30px; border-radius:9px; background:var(--gd); color:#0c2a1e; display:grid; place-items:center; flex:none; }
+  .bio { --bc:#3ecf8e; display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; padding:12px 16px; background:color-mix(in srgb, var(--bc) 20%, #0f1218); border-bottom:1px solid color-mix(in srgb, var(--bc) 45%, transparent); text-align:center; }
+  .bio .ic { width:30px; height:30px; border-radius:9px; background:var(--bc); color:#0f1218; display:grid; place-items:center; flex:none; }
   .bio p { font-size:15px; }
-  .bio b { color:#7ef0bb; }
-  .bio a { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; background:var(--gd); color:#0c2a1e; font-weight:700; font-size:14px; text-decoration:none; white-space:nowrap; }
+  .bio b { color:color-mix(in srgb, var(--bc) 60%, #fff); }
+  .bio a { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:10px; background:var(--bc); color:#0f1218; font-weight:700; font-size:14px; text-decoration:none; white-space:nowrap; }
   .bio a:hover { filter:brightness(1.08); }
   .wrap { max-width:640px; margin:0 auto; padding:72px 16px 60px; }
   .hero { text-align:center; margin-bottom:56px; }
@@ -45,19 +45,11 @@
 </style>
 </head>
 <body>
-<div class="bio">
-  <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>
-  <p><b>Taking Bio?</b> Before the test, get study resources and practice tests for the ecology unit.</p>
-  <a href="study/Biology/ecology-study.html">Start studying →</a>
-</div>
-<script>
-  // The Bio banner disappears after the test: Friday, Nov 6 2026 at 2:52 PM (visitor's local time).
-  if (Date.now() >= new Date(2026, 10, 6, 14, 52).getTime()) document.querySelector('.bio').remove();
-</script>
+<div id="banners"></div>
 <div class="wrap">
   <div class="hero">
-    <span class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span>
-    <h1>Class Dash</h1>
+    <span class="logo" id="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span>
+    <h1 id="name">Class Dash</h1>
     <p class="sub">Your Canvas classes, grades, to-dos and games in one place.</p>
     <a class="go" href="install.html">Install Class Dash</a>
   </div>
@@ -209,6 +201,30 @@
       $('cls').value = ''; $('otherWrap').hidden = true;
       say('Sent! Thanks for the request.', 'ok');
     }
+  })();
+</script>
+<script>
+  // Banners, name, icon and colour come from site.json (edited in the dashboard's site editor).
+  (function () {
+    var ICONS = {"cap":"<path d=\"M22 10 12 5 2 10l10 5z\"/><path d=\"M6 12v5c3 2 9 2 12 0v-5\"/>","book":"<path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z\"/><path d=\"M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5\"/>","study":"<path d=\"M9 18h6M10 21h4\"/><path d=\"M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z\"/>","star":"<path d=\"m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z\"/>","bolt":"<path d=\"M13 2 4 14h7l-1 8 9-12h-7z\"/>","rocket":"<path d=\"M5 15c-1.5 1.3-2 5-2 5s3.7-.5 5-2\"/><path d=\"M9 12a17 17 0 0 1 11-9 17 17 0 0 1-9 11z\"/><path d=\"M9 12 6 11l3-4h4M12 15l1 3 4-3v-4\"/>","heart":"<path d=\"M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z\"/>","news":"<path d=\"M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z\"/><path d=\"M17 8a5 5 0 0 1 0 8\"/>","leaf":"<path d=\"M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z\"/><path d=\"M2 21c0-3 1.9-5.4 5.1-6C9.5 14.5 12 13 13 12\"/>","flask":"<path d=\"M9 3h6M10 3v6l-5.5 9.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3\"/><path d=\"M7 15h10\"/>","atom":"<circle cx=\"12\" cy=\"12\" r=\"1.5\"/><ellipse cx=\"12\" cy=\"12\" rx=\"10\" ry=\"4\"/><ellipse cx=\"12\" cy=\"12\" rx=\"10\" ry=\"4\" transform=\"rotate(60 12 12)\"/><ellipse cx=\"12\" cy=\"12\" rx=\"10\" ry=\"4\" transform=\"rotate(120 12 12)\"/>","math":"<path d=\"M18 4H6l6 8-6 8h12\"/>","globe":"<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18\"/>","talk":"<path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z\"/>","code":"<path d=\"m8 8-5 4 5 4M16 8l5 4-5 4M14 4l-4 16\"/>","game":"<rect x=\"2\" y=\"7\" width=\"20\" height=\"11\" rx=\"5\"/><path d=\"M7 11v3M5.5 12.5h3M15 12h.01M18 14h.01\"/>","cal":"<rect x=\"3\" y=\"5\" width=\"18\" height=\"16\" rx=\"2\"/><path d=\"M3 10h18M8 3v4M16 3v4\"/>","clock":"<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 2\"/>","pass":"<path d=\"M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z\"/><path d=\"M14 6v2M14 11v2M14 16v2\"/>","chart":"<path d=\"M4 20V11M10 20V5M16 20v-6M22 20H2\"/>"};
+    var svg = function (k, n) { return '<svg width="' + n + '" height="' + n + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[k] || ICONS.news) + '</svg>'; };
+    var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+    var hex = function (c) { return /^#[0-9a-f]{6}$/i.test(c || ''); };
+    var live = function (b) { var now = Date.now(); return !(b.start && new Date(b.start).getTime() > now) && !(b.end && new Date(b.end).getTime() <= now); };
+    var href = function (l) { l = String(l || '').trim(); return /^https?:\/\//i.test(l) || /\//.test(l) || /\.html?$/i.test(l) ? l : ''; };
+    fetch('site.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+      if (!s) return;
+      if (s.name) { document.getElementById('name').textContent = s.name; document.title = s.name; }
+      if (hex(s.accent)) document.documentElement.style.setProperty('--ac', s.accent);
+      if (s.icon && ICONS[s.icon]) document.getElementById('logo').innerHTML = svg(s.icon, 26);
+      document.getElementById('banners').innerHTML = (s.banners || []).filter(function (b) {
+        return b && (b.title || b.text) && b.where !== 'dashboard' && live(b);
+      }).map(function (b) {
+        var h = href(b.link);
+        return '<div class="bio" style="--bc:' + (hex(b.color) ? b.color : '#3ecf8e') + '"><span class="ic">' + svg(b.icon, 18) + '</span><p>' + (b.title ? '<b>' + esc(b.title) + '</b> ' : '') + esc(b.text) + '</p>'
+          + (b.button && h ? '<a href="' + esc(h) + '"' + (/^https?:/i.test(h) ? ' target="_blank" rel="noopener"' : '') + '>' + esc(b.button) + '</a>' : '') + '</div>';
+      }).join('');
+    }).catch(function () {});
   })();
 </script>
 </body>
