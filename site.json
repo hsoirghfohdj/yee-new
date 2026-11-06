@@ -1,0 +1,21 @@
+{
+  "name": "Class Dash",
+  "icon": "cap",
+  "accent": "#7c9cff",
+  "banners": [
+    {
+      "id": "bio-ecology",
+      "title": "Taking Bio?",
+      "text": "Before the test, get study resources and practice tests for the ecology unit.",
+      "button": "Start studying →",
+      "link": "study/Biology/ecology-study.html",
+      "color": "#3ecf8e",
+      "icon": "leaf",
+      "where": "both",
+      "start": "",
+      "end": "2026-11-06T14:52"
+    }
+  ],
+  "hidden": [],
+  "hallpass": "https://pass.securly.com/"
+}
