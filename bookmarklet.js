@@ -24,7 +24,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'New Settings page: themes, text size, 24-hour clock, start page, hide grades and more. Open it next to Check for updates.';
+const WHATSNEW = 'A redesigned Study page (classes on the side, filters, Continue studying, one-tap requests) and a new Settings page next to Check for updates.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -52,7 +52,7 @@ done: new Set(store.get('done', [])), courseCache: {}, courseId: null,
 game: null,
 lib: store.get('lib', null), libLoading: false, libError: null, libTried: 0, q: '', cat: 'All',
 lunch: store.get('lunch', 1), schedKey: null,
-doc: null, sq: '', scls: 'All',
+doc: null, sq: '', scls: 'All', skind: 'all',
 periods: store.get('periods', {}),
 req: {}, reqMsg: {},
 up: { kind: 'file' }, upMsg: null, delArm: null,
@@ -89,6 +89,12 @@ rocket: svg('<path d="M5 15c-1.5 1.3-2 5-2 5s3.7-.5 5-2"/><path d="M9 12a17 17 0
 heart: svg('<path d="M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z"/>'),
 news: svg('<path d="M3 11v2a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 8a5 5 0 0 1 0 8"/>'),
 gear: svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
+quiz: svg('<rect x="4" y="3" width="16" height="18" rx="2"/><path d="m8.5 10 2 2 4-4M8.5 16.5h7"/>'),
+doc: svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>'),
+chain: svg('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
+pic: svg('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>'),
+file: svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>'),
+plus: svg('<path d="M12 5v14M5 12h14"/>'),
 tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
 };
 const CSS = `
@@ -320,18 +326,54 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .nc p{margin-bottom:18px;white-space:normal}
 .ann .sub{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .ghero.shero{background:radial-gradient(120% 160% at 0% 0%,rgba(62,207,142,.18),transparent 55%),radial-gradient(120% 160% at 100% 100%,rgba(124,156,255,.14),transparent 55%),var(--p1)}
-.sgrp{margin-bottom:8px}
-.sgrp[hidden]{display:none}
-.sgrp .grp{display:flex;align-items:center;gap:8px;margin:18px 0 8px}
-.sgrp .grp .chip{text-transform:none;letter-spacing:0}
-.sgrp .grp b{font-weight:650;font-size:11px;background:var(--p3);border-radius:10px;padding:0 7px;letter-spacing:0}
-.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
-.sdoc{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--p1);border:1px solid var(--ln);min-width:0;transition:border-color .12s,transform .12s}
-.sdoc[hidden]{display:none}
-.sdoc:hover,.sdoc:focus-visible{border-color:var(--ac);transform:translateY(-2px)}
-.sdoc .sic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;color:#0f1218;flex:none}
-.sdoc .go{color:var(--mu);flex:none}
-.sdoc:hover .go{color:var(--act)}
+.ghero.shero{padding:18px 20px}
+.shero .gh{display:flex;align-items:center;gap:10px}
+.shero .sub{margin:2px 0 12px}
+.skinds{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.skinds button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;background:var(--bg);border:1px solid var(--ln);color:var(--mu);font-size:13px;font-weight:550}
+.skinds button svg{width:15px;height:15px}
+.skinds button:hover{color:var(--tx)}
+.skinds button.on{background:var(--ac);border-color:var(--ac);color:#0f1218}
+.skinds b{font-weight:700;opacity:.75}
+.scont{margin-bottom:18px}
+.scont[hidden]{display:none}
+.stl{display:grid;grid-template-columns:228px minmax(0,1fr);gap:20px;align-items:start}
+.stl.one{grid-template-columns:minmax(0,1fr)}
+.scl{position:sticky;top:0;display:flex;flex-direction:column;gap:2px;padding:6px;border-radius:14px;background:var(--p1);border:1px solid var(--ln)}
+.scl .lbl{padding:8px 10px 4px;font-size:11px;font-weight:650;color:var(--mu);text-transform:uppercase;letter-spacing:.07em}
+.scl button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;color:var(--mu);font-weight:550;font-size:13px;min-width:0}
+.scl button:hover{background:var(--p2);color:var(--tx)}
+.scl button.on{background:var(--p3);color:var(--tx)}
+.scl .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scl .n{flex:none;font-size:11px;font-weight:700;background:var(--p2);border-radius:10px;padding:0 7px;line-height:18px}
+.scl button.on .n{background:var(--bg)}
+.sdot{width:9px;height:9px;border-radius:50%;flex:none}
+.ssec{margin-bottom:24px}
+.ssec[hidden]{display:none}
+.ssh{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ssh .ssi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#0f1218;flex:none}
+.ssh .t{font-size:16px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.rc{position:relative;display:flex;align-items:center;gap:12px;padding:12px 10px 12px 12px;border-radius:14px;background:var(--p1);border:1px solid var(--ln);cursor:pointer;min-width:0;transition:border-color .12s,transform .12s,box-shadow .12s}
+.rc:hover,.rc:focus-visible{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.18);outline:none}
+.rc[hidden]{display:none}
+.rci{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--c) 26%,var(--p2));color:var(--c)}
+.rci svg{width:22px;height:22px}
+.rc .t{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.rmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:5px;font-size:12px;color:var(--mu)}
+.chip.new{background:var(--ac);color:#0f1218}
+.rnt{width:30px;height:30px;flex:none;background:transparent;opacity:0;transition:opacity .12s}
+.rc:hover .rnt,.rc:focus-within .rnt{opacity:1}
+.sneed{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 14px;border-radius:14px;border:1px dashed var(--p3);margin:4px 0 18px}
+.sneed .t{margin-right:4px}
+.sneed button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;background:var(--p2);font-size:12.5px;font-weight:600}
+.sneed button:hover{background:var(--p3)}
+.sneed button svg{width:13px;height:13px;color:var(--act)}
+.snone{text-align:center;padding:28px 12px;color:var(--mu)}
+.snone[hidden]{display:none}
+.snone .btn{margin-top:12px;display:inline-flex}
+.sreq{margin-top:8px}
+.sreq .grp{margin-top:0}
 .bd.lib{background:var(--bg);backdrop-filter:none;animation:none}
 .bd.lib .win{width:calc(100vw / var(--z,1));height:calc(100vh / var(--z,1));border:0;border-radius:0;box-shadow:none;animation:none;grid-template-columns:1fr;grid-template-rows:1fr}
 .bd.lib .sb,.bd.lib [data-act="close"]{display:none}
@@ -370,6 +412,13 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .thc .pv i:first-child{flex:.45}
 .thc span{display:block;padding:5px 0 6px}
 .sacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+@media (max-width:900px){
+.stl{grid-template-columns:minmax(0,1fr)}
+.scl{position:static;flex-direction:row;overflow-x:auto;background:none;border:0;padding:0 0 4px;gap:6px}
+.scl .lbl{display:none}
+.scl button{flex:none;background:var(--p2);border-radius:20px;padding:6px 12px}
+.scl .nm{overflow:visible}
+}
 @media (max-width:780px){
 .ib.sset{display:grid}
 .upd,.sset-c h2 span{display:none}
@@ -799,7 +848,25 @@ const h = hash(cls.toLowerCase());
 return { id: path, name: pretty(file.replace(/\.[a-z0-9]+$/i, '')), cls, file: parts.slice(1).join('/') || parts[0], kind: kindOf(path), ext: extOf(path),
 color: PAL[h % PAL.length], icon: (SUBJECTS.find(s => s[0].test(cls)) || [, I.study])[1] };
 };
-const myClass = cls => S.courses.some(c => { const n = (c.name || '').toLowerCase(), k = cls.toLowerCase(); return n.includes(k) || k.split(' ').some(w => w.length > 3 && n.includes(w)); });
+const clsMatch = (cls, name) => { const n = (name || '').toLowerCase(), k = cls.toLowerCase(); return n.includes(k) || k.split(/[^a-z0-9]+/).some(w => w.length > 3 && n.includes(w)); };
+const myClass = cls => S.courses.some(c => clsMatch(cls, c.name));
+// "AP HUMAN GEOGRAPHY A_Hakes_S1" -> "AP Human Geography"
+const KEEP_CAPS = /^(AP|IB|US|UK|PE|CS|ELA|ESL|STEM|JROTC|AVID|CTE|II|III|IV)$/;
+const niceCourse = name => {
+let s = String(name || '').replace(/\s+\S*_\S*$/, '').replace(/\s+(S|SEM|T|Q)\d$/i, '').trim() || String(name || '');
+if (s === s.toUpperCase()) s = s.toLowerCase().replace(/[a-z0-9]+/g, w => KEEP_CAPS.test(w.toUpperCase()) ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1));
+return s;
+};
+// Remembers when each study resource first showed up in this browser, for the "New" badge
+let SEEN = store.get('seenDocs', null);
+function noteSeen(paths) {
+const first = !SEEN, map = SEEN || {};
+let changed = first;
+paths.forEach(p => { if (!(p in map)) { map[p] = first ? 0 : Date.now(); changed = true; } });
+SEEN = map;
+if (changed) store.set('seenDocs', map);
+}
+const isNewDoc = p => !!SEEN && SEEN[p.id] > Date.now() - 7 * DAY;
 let PACK = [], DOCS = [];
 const setPack = () => {
 PACK = (S.lib ? S.lib.paths : []).map(toPack).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
@@ -824,6 +891,7 @@ const paths = files.filter(isGame);
 paths.forEach(p => { const a = artFor(p, imgs); if (a) pics[p] = a; });
 S.lib = { at: Date.now(), paths, art: pics, study: files.filter(isDoc) };
 store.set('lib', S.lib);
+noteSeen(S.lib.study);
 setPack();
 } catch (e) {
 S.libError = e.message === 'Failed to fetch' ? "Couldn't reach GitHub. Check you're online, then refresh." : e.message || String(e);
@@ -927,37 +995,71 @@ return `<div class="play"><div class="gbar wide"><button class="btn" data-go="st
 <button class="btn" data-act="newtab">New tab</button><button class="btn" data-act="full">Full screen</button></div>
 <div class="frame"><div class="spin"></div></div></div>`;
 };
-const docCard = p => `<button class="sdoc" data-doc="${esc(p.id)}" data-name="${esc((p.name + ' ' + p.cls).toLowerCase())}" title="${esc(p.name)}">
-<span class="sic" style="background:${p.color}">${p.icon}</span><span class="grow"><span class="t" style="display:block">${esc(p.name)}</span><span class="sub" style="display:block">${esc(kindLabel(p))} · ${esc(p.file)}</span></span><span class="go">${I.ext}</span></button>`;
+// ---- Study page layout ----
+const STUDY_KINDS = [['all', 'All', null], ['html', 'Practice & quizzes', I.quiz], ['pdf', 'PDFs', I.doc], ['link', 'Links', I.chain], ['image', 'Images', I.pic], ['file', 'Files', I.file]];
+const kindIcon = p => ({ html: I.quiz, pdf: I.doc, link: I.chain, image: I.pic })[p.kind] || I.file;
+const docLabel = p => p.kind === 'html' ? (/test|quiz|exam|practice|study|review/i.test(p.name) ? 'Practice & quizzes' : 'Interactive page')
+: p.kind === 'pdf' ? 'PDF' : p.kind === 'link' ? 'Website link' : p.kind === 'image' ? 'Image' : (p.ext ? p.ext.toUpperCase() + ' file' : 'File');
+const recentDocs = () => store.get('recentDocs', []).map(r => ({ r, p: DOCS.find(d => d.id === r.id) })).filter(x => x.p);
+function openDoc(id) {
+store.set('recentDocs', [{ id, at: Date.now() }, ...store.get('recentDocs', []).filter(x => x.id !== id)].slice(0, 6));
+S.doc = id;
+go('read');
+}
+const resCard = (p, opened) => `<div class="rc" tabindex="0" role="button" data-doc="${esc(p.id)}" data-kind="${p.kind}" data-cls="${esc(p.cls)}" data-name="${esc((p.name + ' ' + p.cls + ' ' + docLabel(p)).toLowerCase())}" title="Open ${esc(p.name)}">
+<span class="rci" style="--c:${p.color}">${kindIcon(p)}</span>
+<span class="grow"><span class="t">${esc(p.name)}</span><span class="rmeta">${isNewDoc(p) ? '<span class="chip new">New</span>' : ''}<span>${esc(opened ? p.cls + ' · ' + opened : docLabel(p))}</span></span></span>
+<button class="ib rnt" data-docnew="${esc(p.id)}" title="Open in a new tab">${I.ext}</button></div>`;
 const vStudy = () => {
 const groups = {};
 DOCS.forEach(p => { (groups[p.cls] = groups[p.cls] || []).push(p); });
-const list = Object.keys(groups).map(cls => ({ cls, docs: groups[cls], mine: isCanvas && cls !== 'Other' && myClass(cls) }))
+const list = Object.keys(groups).map(cls => ({ cls, docs: groups[cls], mine: isCanvas && cls !== 'Other' && myClass(cls), color: groups[cls][0].color, icon: groups[cls][0].icon }))
 .sort((a, b) => (b.mine - a.mine) || ((a.cls === 'Other') - (b.cls === 'Other')) || a.cls.toLowerCase().localeCompare(b.cls.toLowerCase()));
 if (S.scls !== 'All' && !groups[S.scls]) S.scls = 'All';
-const n = DOCS.length;
+const kinds = STUDY_KINDS.filter(k => k[0] === 'all' || DOCS.some(p => p.kind === k[0]));
+if (!kinds.some(k => k[0] === S.skind)) S.skind = 'all';
+const n = DOCS.length, mineCount = list.filter(g => g.mine).length;
+const recent = recentDocs().slice(0, 3);
+const missing = isCanvas ? S.courses.filter(c => !list.some(g => g.cls !== 'Other' && clsMatch(g.cls, c.name))).slice(0, 10) : [];
 const state = n ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoading ? empty('No study resources yet. Add files to study/&lt;class name&gt;/ in the repo, then hit refresh.') : '<div class="spin"></div>';
-return `<div class="ghero shero"><div class="ghead"><div class="grow"><div class="gh">Study resources</div>
-<div class="sub">${n} ${n === 1 ? 'resource' : 'resources'} · ${list.length} ${list.length === 1 ? 'class' : 'classes'} · press <span class="kbd">/</span> to search</div></div></div>
-<div class="gfind"><label class="gsearch">${I.search}<input data-search placeholder="Search study resources…" value="${esc(S.sq)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label></div></div>
-${reqCard('study')}
-${list.length > 1 ? `<div class="seg">${[['All', n], ...list.map(g => [g.cls, g.docs.length])].map(([l, c]) => `<button data-scls="${esc(l)}" class="${S.scls === l ? 'on' : ''}">${esc(l)}<b>${c}</b></button>`).join('')}</div>` : ''}
+const navBtn = (cls, label, count, color) =>`<button data-scls="${esc(cls)}" class="${S.scls === cls ? 'on' : ''}" title="${esc(label)}">${color ? `<span class="sdot" style="background:${color}"></span>` : I.study}<span class="nm">${esc(label)}</span><span class="n">${count}</span></button>`;
+return `<div class="ghero shero"><div class="ghead"><div class="grow"><div class="gh">Study</div>
+<div class="sub">${n} ${n === 1 ? 'resource' : 'resources'} for ${list.length} ${list.length === 1 ? 'class' : 'classes'}${mineCount ? ` · ${mineCount} of them ${mineCount === 1 ? 'is' : 'are'} yours` : ''} · press <span class="kbd">/</span> to search</div></div></div>
+<div class="gfind"><label class="gsearch">${I.search}<input data-search placeholder="Search by class, unit or topic…" value="${esc(S.sq)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label></div>
+${kinds.length > 2 ? `<div class="skinds">${kinds.map(([k, l, ic]) => `<button data-skind="${k}" class="${S.skind === k ? 'on' : ''}">${ic || ''}${l}<b>${k === 'all' ? n : DOCS.filter(p => p.kind === k).length}</b></button>`).join('')}</div>` : ''}</div>
 ${S.libError && n ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
-${state}${list.filter(g => S.scls === 'All' || g.cls === S.scls).map(g => `<div class="sgrp"><div class="grp">${esc(g.cls)}<b>${g.docs.length}</b>${g.mine ? '<span class="chip ac">Your class</span>' : ''}</div>
-<div class="sgrid">${g.docs.map(docCard).join('')}</div></div>`).join('')}<div class="empty nomatch" hidden></div>`;
+${recent.length ? `<div class="scont"><div class="grp">Continue studying</div><div class="rgrid">${recent.map(x => resCard(x.p, 'opened ' + rel(new Date(x.r.at).toISOString()))).join('')}</div></div>` : ''}
+${missing.length && n ? `<div class="sneed"><span class="t">Nothing yet for:</span>${missing.map(c => `<button data-reqcls="${esc(niceCourse(c.name))}" title="Request study help for ${esc(niceCourse(c.name))}">${I.plus}${esc(niceCourse(c.name))}</button>`).join('')}<span class="sub">tap one to request it</span></div>` : ''}
+${state}${n ? `<div class="stl${list.length > 1 ? '' : ' one'}">
+${list.length > 1 ? `<nav class="scl">${navBtn('All', 'All classes', n)}${mineCount ? `<div class="lbl">Your classes</div>${list.filter(g => g.mine).map(g => navBtn(g.cls, g.cls, g.docs.length, g.color)).join('')}${list.some(g => !g.mine) ? '<div class="lbl">More classes</div>' : ''}` : '<div class="lbl">Classes</div>'}${list.filter(g => !g.mine).map(g => navBtn(g.cls, g.cls, g.docs.length, g.color)).join('')}</nav>` : ''}
+<div class="sres">${list.map(g => `<section class="ssec" data-sec="${esc(g.cls)}"><div class="ssh"><span class="ssi" style="background:${g.color}">${g.icon}</span>
+<div class="grow"><div class="t">${esc(g.cls)}</div><div class="sub">${g.docs.length} ${g.docs.length === 1 ? 'resource' : 'resources'}</div></div>${g.mine ? '<span class="chip ac">Your class</span>' : ''}</div>
+<div class="rgrid">${g.docs.slice().sort((a, b) => (isNewDoc(b) - isNewDoc(a)) || a.name.localeCompare(b.name, undefined, { numeric: true })).map(p => resCard(p)).join('')}</div></section>`).join('')}
+<div class="snone" hidden><div class="t">Nothing matches</div><div class="sub nmtxt"></div><button class="btn pri" data-reqtopic="1">${I.send}Request it</button></div></div></div>` : ''}
+<div class="sreq"><div class="grp">Can't find what you need?</div>${reqCard('study')}</div>`;
 };
 function filterStudy() {
 const ct = $('.ct'), q = S.sq.trim().toLowerCase();
 let shown = 0;
-ct.querySelectorAll('.sgrp').forEach(g => {
-let inGroup = 0;
-g.querySelectorAll('.sdoc').forEach(t => { t.hidden = !!q && !t.dataset.name.includes(q); if (!t.hidden) inGroup++; });
-g.hidden = !inGroup; shown += inGroup;
+ct.querySelectorAll('.ssec').forEach(sec => {
+const inCls = !!q || S.scls === 'All' || sec.dataset.sec === S.scls;
+let inSec = 0;
+sec.querySelectorAll('.rc').forEach(t => {
+t.hidden = !inCls || (S.skind !== 'all' && t.dataset.kind !== S.skind) || (!!q && !q.split(/\s+/).every(w => t.dataset.name.includes(w)));
+if (!t.hidden) inSec++;
 });
-const nm = ct.querySelector('.nomatch');
-if (nm) { nm.hidden = !q || shown > 0; nm.textContent = 'No study resources match "' + S.sq.trim() + '".'; }
+sec.hidden = !inSec; shown += inSec;
+});
+const cont = ct.querySelector('.scont');
+if (cont) cont.hidden = !!q || S.skind !== 'all' || S.scls !== 'All';
+const nm = ct.querySelector('.snone');
+if (nm) {
+nm.hidden = shown > 0 || !ct.querySelector('.ssec');
+const what = [q && '"' + S.sq.trim() + '"', S.skind !== 'all' && (STUDY_KINDS.find(k => k[0] === S.skind) || [])[1], S.scls !== 'All' && !q && S.scls].filter(Boolean).join(' · ');
+nm.querySelector('.nmtxt').textContent = what ? 'No study resources for ' + what + ' yet. Ask for it and we\'ll most likely add it.' : '';
 }
-const visibleDocs = () => [...$('.ct').querySelectorAll('.sdoc')].filter(t => !t.hidden);
+}
+const visibleDocs = () => [...$('.ct').querySelectorAll('.ssec .rc')].filter(t => !t.hidden);
 async function showLicense(ct) {
 const box = ct.querySelector('.frame');
 const open = box.querySelector('.lic');
@@ -1034,7 +1136,7 @@ reqSay(kind, kind === 'games' ? "Sent! We'll most likely add it soon, so check b
 }).catch(() => reqSay(kind, "Couldn't send right now. Try again in a bit.", 'err'));
 }
 function openBlank(item) {
-const read = !item && S.view === 'read';
+const read = item ? !!item.cls : S.view === 'read';
 const p = item || (read ? DOCS.find(x => x.id === S.doc) : PACK.find(x => x.id === S.game));
 const w = p && window.open(blankUrl(), '_blank');
 if (!w) return false;
@@ -1218,7 +1320,7 @@ function openLink(link) {
 link = String(link || '').trim();
 if (!link) return;
 const doc = DOCS.find(d => d.id === link || d.id === 'study/' + link);
-if (doc) { S.doc = doc.id; return go('read'); }
+if (doc) return openDoc(doc.id);
 const pk = PACK.find(p => p.id === link || p.id === 'offline/' + link);
 if (pk) return playGame(pk.id);
 if (/^https?:\/\//i.test(link)) return void window.open(link, '_blank', 'noopener');
@@ -1502,7 +1604,7 @@ DOCS.forEach(p => { classes[p.cls] = classes[p.cls] || p; });
 Object.keys(classes).forEach(cls => out.push({ kind: 'Study class', name: cls, addr: 'study.' + slug(cls), icon: classes[cls].icon, color: classes[cls].color, w: 30,
 open: () => { S.scls = cls; S.sq = ''; go('study'); } }));
 DOCS.forEach(p => out.push({ kind: 'Study · ' + p.cls, name: p.name, addr: 'study.' + slug(p.cls) + '.' + slug(p.name), alt: 'study.' + slug(p.name), icon: p.icon, color: p.color, w: 25,
-open: () => { S.doc = p.id; go('read'); } }));
+open: () => openDoc(p.id) }));
 PACK.forEach(p => out.push({ kind: 'Game', name: p.name, addr: 'games.' + slug(p.name), icon: (p.theme && p.theme[2] ? svg(p.theme[2]) : I.game), w: 20,
 open: () => playGame(p.id) }));
 if (isCanvas) {
@@ -1577,10 +1679,19 @@ else if (e.key === 'Escape') { e.preventDefault(); omniBox.blur(); omniClose(); 
 }
 root.addEventListener('click', e => {
 if (e.target === $('.bd')) return LIB || !P.outside ? null : close();
-const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-sched],[data-lunch],[data-pack],[data-doc],[data-pref],[data-pacc],[data-act]');
+const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-skind],[data-reqcls],[data-reqtopic],[data-sched],[data-lunch],[data-pack],[data-docnew],[data-doc],[data-pref],[data-pacc],[data-act]');
 if (!t) return;
 const d = t.dataset;
-if (d.pref) setPref(d.pref, d.val === 'true' ? true : d.val === 'false' ? false : d.val);
+const toReq = sel => { const el = root.querySelector(sel) || root.querySelector('[data-req="scls"]'); if (el) { el.scrollIntoView({ block: 'center', behavior: P.motion ? 'smooth' : 'auto' }); el.focus({ preventScroll: true }); } };
+if (d.docnew) {
+const p = DOCS.find(x => x.id === d.docnew);
+store.set('recentDocs', [{ id: d.docnew, at: Date.now() }, ...store.get('recentDocs', []).filter(x => x.id !== d.docnew)].slice(0, 6));
+if (!p || !openBlank(p)) openDoc(d.docnew);
+}
+else if (d.skind) { S.skind = d.skind; renderMain(true); }
+else if (d.reqcls) { S.req.scls = d.reqcls; S.reqMsg.study = null; renderMain(true); toReq('[data-req="stopic"]'); }
+else if (d.reqtopic) { S.req.stopic = S.sq.trim(); if (S.scls !== 'All') S.req.scls = S.scls; S.reqMsg.study = null; renderMain(true); toReq(S.req.scls ? '[data-req="stopic"]' : '[data-req="scls"]'); }
+else if (d.pref) setPref(d.pref, d.val === 'true' ? true : d.val === 'false' ? false : d.val);
 else if (d.pacc != null) setPref('accent', d.pacc);
 else if (d.act === 'settings') go('settings');
 else if (d.act === 'pclear') { store.set('recent', []); S.setMsg = { text: 'Recently played cleared.', cls: 'ok' }; renderMain(true); }
@@ -1601,7 +1712,7 @@ renderMain(true);
 else if (d.seg) { S.seg = d.seg; renderMain(true); }
 else if (d.cat) { S.cat = d.cat; renderMain(true); }
 else if (d.scls) { S.scls = d.scls; renderMain(true); }
-else if (d.doc) { S.doc = d.doc; go('read'); }
+else if (d.doc) openDoc(d.doc);
 else if (d.sched) { S.schedKey = d.sched; renderMain(true); }
 else if (d.lunch) { S.lunch = Number(d.lunch); store.set('lunch', S.lunch); paintSched(); renderMain(true); }
 else if (d.pack) playGame(d.pack);
@@ -1649,6 +1760,7 @@ function onKey(e) {
 const down = e.type === 'keydown', study = S.view === 'study';
 if (root.activeElement === omniBox) { omniKey(e); e.stopPropagation(); return; }
 if (down && !LIB && (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); e.stopPropagation(); omniBox.focus(); return; }
+if (down && (e.key === 'Enter' || e.key === ' ') && root.activeElement && root.activeElement.matches('.rc')) { e.preventDefault(); e.stopPropagation(); root.activeElement.click(); return; }
 const box = usesLib(S.view) && $('[data-search]'), typing = box && root.activeElement === box;
 const q = study ? S.sq : S.q;
 const inField = root.activeElement && root.activeElement.matches('input,textarea,select');
