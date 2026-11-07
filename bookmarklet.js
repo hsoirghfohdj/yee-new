@@ -310,6 +310,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .gt:hover,.gt:focus-visible{transform:translateY(-3px) scale(1.03);box-shadow:0 0 0 2px var(--ac),0 14px 30px rgba(0,0,0,.45)}
 .gt .art{position:absolute;inset:0;display:grid;place-items:center;font-size:36px;font-weight:800;letter-spacing:-.02em;color:rgba(15,18,24,.78)}
 .gt .art img{width:100%;height:100%;object-fit:cover;display:block}
+.gt .art .aimg{position:absolute;inset:0;z-index:1}
 .gt .tn{position:absolute;left:0;right:0;bottom:0;padding:26px 11px 10px;background:linear-gradient(transparent,rgba(6,8,12,.88));color:#fff;font-weight:650;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gt .art.gen{color:#fff}
 .art .pat{position:absolute;inset:0;width:100%;height:100%;opacity:.14}
@@ -859,14 +860,13 @@ const dir = stem.replace(/\/index$/, '');
 return [stem, dir + '/preview', dir + '/cover', dir].map(s => imgs[s]).find(Boolean) || null;
 };
 const art = p => {
-if (p.img) return `<div class="art"><img src="${esc(p.img)}" alt="" loading="lazy"></div>`;
 const h = hash(p.name), c1 = PAL[h % PAL.length], c2 = PAL[(h >>> 3) % PAL.length], deg = 100 + (h >>> 6) % 140;
 const longest = Math.max(...p.name.split(' ').map(w => w.length));
 const size = Math.max(12, Math.min(p.name.length <= 6 ? 27 : p.name.length <= 12 ? 21 : 17, Math.floor(150 / longest)));
 return `<div class="art gen" style="background:linear-gradient(rgba(6,8,12,0),rgba(6,8,12,.38)),linear-gradient(${deg}deg,${c1},${c2})">
 <svg class="pat" aria-hidden="true"><rect width="100%" height="100%" fill="url(#cdp${(h >>> 9) % 5})"/></svg>
 <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${p.theme[2]}</svg>
-<span class="gtitle" style="font-size:${size}px">${esc(p.name)}</span></div>`;
+<span class="gtitle" style="font-size:${size}px">${esc(p.name)}</span>${p.img ? `<img class="aimg" src="${esc(p.img)}" alt="" loading="lazy">` : ''}</div>`;
 };
 // Study resources: any file in study/<Class>/ (HTML pages, PDFs, images, .url links, or other files),
 // or a folder study/<Class>/<name>/index.html for a page with its own assets.
