@@ -110,7 +110,6 @@ main, footer { position: relative; z-index: 2; }
 .meta span + span::before { content: "·"; margin: 0 10px; }
 
 /* Floating dashboard */
-.stage { position: relative; max-width: 1140px; margin: clamp(60px, 10vh, 96px) auto 0; padding: 0 var(--pad) clamp(40px, 8vh, 90px); perspective: 1700px; }
 .device { position: relative; container-type: inline-size; transform-origin: 50% 0; will-change: transform;
   transform: translateY(var(--ty, 30px)) rotateX(var(--rx, 24deg)) rotateY(var(--ry, 0deg)) scale(var(--s, .93));
   border-radius: 22px; background: linear-gradient(180deg, rgba(22,19,30,.92), rgba(12,10,17,.96));
@@ -121,9 +120,13 @@ main, footer { position: relative; z-index: 2; }
 .d-brand { display: flex; align-items: center; gap: .7em; font-weight: 600; font-size: 1.15em; letter-spacing: -.02em; padding: 0 .5em 1.3em; }
 .d-tile { width: 2em; height: 2em; border-radius: .6em; display: grid; place-items: center; background: linear-gradient(135deg, #b39bff, #e2559b); color: #0b0910; }
 .d-tile svg { width: 1.2em; height: 1.2em; }
-.d-nav span { display: flex; align-items: center; gap: .8em; padding: .62em .8em; border-radius: .65em; color: var(--mu); font-weight: 500; }
-.d-nav span.on { background: rgba(255,255,255,.065); color: var(--tx); }
+.d-nav { position: relative; }
+.d-nav span { position: relative; z-index: 1; display: flex; align-items: center; gap: .8em; padding: .62em .8em; border-radius: .65em; color: var(--mu); font-weight: 500; cursor: pointer; transition: color .4s; }
+.d-nav span:hover { color: var(--tx); }
+.d-nav span.on { color: var(--tx); }
+.d-nav span svg { transition: color .4s; }
 .d-nav span.on svg { color: var(--vi); }
+.d-ind { position: absolute; left: 0; right: 0; top: 0; height: 2.8em; border-radius: .65em; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 1px rgba(255,255,255,.04); transition: transform .6s var(--ease), height .6s var(--ease); }
 .d-nav svg { width: 1.15em; height: 1.15em; flex: none; }
 .d-nav i { margin-left: auto; font-style: normal; font-size: .75em; font-weight: 700; background: #e2559b; color: #fff; border-radius: 1em; padding: .05em .6em; }
 .d-clock { margin-top: auto; padding: 0 .8em; font-size: 2.1em; font-weight: 600; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
@@ -152,65 +155,83 @@ main, footer { position: relative; z-index: 2; }
 .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .thumb span { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.4em .55em .45em; font-size: .72em; font-weight: 600; background: linear-gradient(transparent, rgba(0,0,0,.85)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Story (pinned) */
-.story { position: relative; height: 440vh; }
-.pin { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: clamp(28px, 6vw, 96px); align-items: center;
-  max-width: 1200px; margin: 0 auto; padding: 0 var(--pad); }
-.story-txt { position: relative; }
-.steps { position: relative; height: 330px; margin-top: 28px; }
-.step { position: absolute; inset: 0 0 auto 0; opacity: 0; transform: translateY(30px); filter: blur(8px); pointer-events: none;
-  transition: opacity .8s var(--ease), transform 1s var(--ease), filter .8s var(--ease); }
-.step.on { opacity: 1; transform: none; filter: none; pointer-events: auto; }
-.step.past { transform: translateY(-30px); }
-.step .num { font: 500 12px var(--mono); letter-spacing: .12em; color: var(--mu2); }
-.step h2 { font-size: clamp(36px, 4.8vw, 70px); line-height: 1; letter-spacing: -.05em; font-weight: 600; margin: 16px 0 20px; }
-.step h2 em { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .06em; }
-.step p { color: var(--mu); font-size: clamp(16px, 1.4vw, 18px); max-width: 430px; }
-.prog { display: flex; gap: 8px; }
-.prog i { position: relative; width: 36px; height: 2px; border-radius: 2px; background: rgba(255,255,255,.12); overflow: hidden; }
+/* Scroll tour: the preview steps through each tab */
+.tour { position: relative; height: calc(100vh + 6 * 62vh); height: calc(100svh + 6 * 62svh); margin-top: -8vh; }
+.tour-pin { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 72px 0 16px; }
+.stage { position: relative; width: 100%; max-width: min(1140px, calc((100svh - 210px) * 1.6 + 2 * var(--pad))); margin: 0 auto; padding: 0 var(--pad); perspective: 1700px; }
+.tour-cap { position: relative; width: 100%; max-width: 760px; margin-top: clamp(16px, 3vh, 30px); padding: 0 var(--pad); text-align: center; }
+.prog { display: flex; gap: 8px; justify-content: center; margin-bottom: 14px; }
+.prog i { position: relative; width: 34px; height: 2px; border-radius: 2px; background: rgba(255,255,255,.12); overflow: hidden; cursor: pointer; }
 .prog i::after { content: ""; position: absolute; inset: 0; background: var(--tx); transform-origin: 0 50%; transform: scaleX(var(--f, 0)); }
-.vis { position: relative; height: min(64vh, 560px); }
-.scene { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transform: translateY(26px) scale(.96); filter: blur(10px); pointer-events: none;
-  transition: opacity .9s var(--ease), transform 1.1s var(--ease), filter .9s var(--ease); }
-.scene.on { opacity: 1; transform: none; filter: none; pointer-events: auto; }
-.panel { position: relative; width: min(100%, 470px); font-size: clamp(12px, 1.05vw, 15px); border-radius: 1.6em; padding: 1.6em;
-  background: linear-gradient(180deg, rgba(26,22,36,.78), rgba(13,11,19,.88)); box-shadow: inset 0 0 0 1px var(--ln2), 0 40px 100px -30px rgba(0,0,0,.9);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
-.panel::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(180deg, rgba(255,255,255,.06), transparent 30%); }
-.panel h4 { display: flex; justify-content: space-between; align-items: baseline; font: 500 .82em var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mu); margin-bottom: 1.1em; }
-.panel h4 span { letter-spacing: 0; text-transform: none; font-family: var(--sans); color: var(--mu2); }
-.todo { display: flex; align-items: center; gap: .9em; padding: .85em 0; border-top: 1px solid var(--ln); }
-.todo:first-of-type { border-top: 0; }
-.box { width: 1.25em; height: 1.25em; border-radius: .4em; flex: none; box-shadow: inset 0 0 0 1.5px var(--ln2); display: grid; place-items: center; transition: background-color .5s var(--ease) .9s, box-shadow .5s .9s; }
-.box svg { width: .8em; height: .8em; stroke-dasharray: 20; stroke-dashoffset: 20; transition: stroke-dashoffset .6s var(--ease) 1.1s; }
-.on .todo.done .box { background: var(--vi); box-shadow: none; }
-.on .todo.done .box svg { stroke-dashoffset: 0; }
-.todo .n { flex: 1; min-width: 0; }
-.todo .n b { display: block; font-weight: 550; transition: color .5s 1.1s; }
-.todo .n small { color: var(--mu); }
-.on .todo.done .n b { color: var(--mu); }
-.grade { display: grid; grid-template-columns: 7.5em 1fr 3em; align-items: center; gap: 1em; padding: .7em 0; }
-.grade .track { height: .45em; }
-.grade .track b { width: 0; transition: width 1.4s var(--ease); transition-delay: calc(.25s + var(--i) * .1s); }
-.on .grade .track b { width: var(--w); }
-.grade .pct { width: auto; color: var(--tx); font-weight: 600; }
-.flip { perspective: 1000px; height: 12em; margin-bottom: 1.2em; }
+.caps { position: relative; height: 3.4em; font-size: clamp(15px, 1.35vw, 18px); }
+.cap { position: absolute; left: 0; right: 0; top: 0; color: var(--mu); opacity: 0; transform: translateY(10px); filter: blur(6px); transition: opacity .6s var(--ease), transform .8s var(--ease), filter .6s var(--ease); }
+.cap.on { opacity: 1; transform: none; filter: none; }
+.cap b { color: var(--tx); font-weight: 550; }
+.cap .num { font: 500 11.5px var(--mono); letter-spacing: .12em; color: var(--mu2); margin-right: 12px; vertical-align: 1px; }
+.d-tabs { display: none; gap: .4em; overflow: hidden; scrollbar-width: none; }
+.d-tabs span { flex: none; font-size: .9em; font-weight: 500; padding: .35em .85em; border-radius: 1em; color: var(--mu); background: rgba(255,255,255,.045); cursor: pointer; transition: background-color .4s, color .4s; }
+.d-tabs span.on { background: var(--tx); color: #0b0910; }
+.panes { position: relative; flex: 1; min-height: 0; }
+.pane { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 1.1em; opacity: 0; transform: translateY(1.2em); filter: blur(5px); pointer-events: none;
+  transition: opacity .55s var(--ease), transform .75s var(--ease), filter .55s var(--ease); }
+.pane.on { opacity: 1; transform: none; filter: none; }
+.pane .d-hi { margin-top: 0; }
+.trow { display: flex; align-items: center; gap: .8em; padding: .62em 0; border-top: 1px solid var(--ln); min-width: 0; }
+.d-card h4 + .trow, .d-card h4 + .res { border-top: 0; }
+.trow .n, .res .n { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trow .n small { color: var(--mu); margin-left: .45em; }
+.box { width: 1.15em; height: 1.15em; border-radius: .35em; flex: none; box-shadow: inset 0 0 0 1.5px var(--ln2); display: grid; place-items: center; transition: background-color .4s var(--ease) .7s, box-shadow .4s .7s; }
+.box svg { width: .75em; height: .75em; stroke-dasharray: 20; stroke-dashoffset: 20; transition: stroke-dashoffset .5s var(--ease) .9s; }
+.pane.on .trow.done .box { background: var(--vi); box-shadow: none; }
+.pane.on .trow.done .box svg { stroke-dashoffset: 0; }
+.pane.on .trow.done .n { color: var(--mu); transition: color .4s .9s; }
+.tcols { display: grid; grid-template-columns: 1.45fr 1fr; gap: 1em; align-items: start; min-height: 0; }
+.gstats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; }
+.gstat { border-radius: 1em; background: rgba(255,255,255,.03); box-shadow: inset 0 0 0 1px var(--ln); padding: .85em 1.1em; }
+.gstat small { display: block; color: var(--mu); font-size: .8em; }
+.gstat b { display: block; font-size: 1.8em; font-weight: 600; letter-spacing: -.03em; line-height: 1.15; }
+.gstat b.gr { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.grow2 { display: grid; grid-template-columns: 8em 1fr 3.2em 2em; align-items: center; gap: 1em; padding: .5em 0; }
+.grow2 .track { height: .42em; }
+.grow2 .track b { width: 0; transition: width 1.2s var(--ease); transition-delay: calc(.2s + var(--i) * .08s); }
+.pane.on .grow2 .track b { width: var(--w); }
+.grow2 .pct { width: auto; color: var(--tx); font-weight: 600; }
+.grow2 .lt { color: var(--mu); font-weight: 600; text-align: right; }
+.cls-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; gap: 1em; flex: 1; min-height: 0; }
+.cls { position: relative; border-radius: 1em; background: rgba(255,255,255,.03); box-shadow: inset 0 0 0 1px var(--ln); padding: 1.2em 1.1em 1em; display: flex; flex-direction: column; gap: .15em; overflow: hidden; min-width: 0; }
+.cls::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: .28em; background: var(--c); }
+.cls b { font-size: 1.1em; font-weight: 600; letter-spacing: -.01em; }
+.cls small { color: var(--mu); }
+.cls .ft { margin-top: auto; display: flex; align-items: end; justify-content: space-between; gap: .6em; min-width: 0; }
+.cls .big { font-size: 1.7em; font-weight: 600; letter-spacing: -.03em; line-height: 1; }
+.cls .nx { font-size: .8em; color: var(--mu); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 1em; flex: 1; min-height: 0; }
+.flip { perspective: 1000px; flex: 1; min-height: 8em; }
 .card3 { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; animation: flip 7s var(--ease) infinite; }
-.card3 > div { position: absolute; inset: 0; border-radius: 1.1em; display: grid; place-items: center; text-align: center; padding: 1.4em; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+.pane:not(.on) .card3 { animation-play-state: paused; }
+.card3 > div { position: absolute; inset: 0; border-radius: 1em; display: grid; place-items: center; text-align: center; padding: 1.2em; backface-visibility: hidden; -webkit-backface-visibility: hidden;
   background: rgba(255,255,255,.04); box-shadow: inset 0 0 0 1px var(--ln2); }
-.card3 .front { font-size: 1.9em; font-weight: 600; letter-spacing: -.03em; }
-.card3 .back { transform: rotateY(180deg); color: var(--mu); font-size: 1.05em; background: linear-gradient(135deg, rgba(167,139,250,.14), rgba(226,85,155,.12)); }
-.card3 .back b { display: block; color: var(--tx); font-size: 1.3em; letter-spacing: -.02em; margin-bottom: .3em; }
-.card3 small { position: absolute; top: 1.1em; left: 1.2em; font: 500 .7em var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mu2); }
+.card3 .front { font-size: 1.7em; font-weight: 600; letter-spacing: -.03em; }
+.card3 .back { transform: rotateY(180deg); color: var(--mu); background: linear-gradient(135deg, rgba(167,139,250,.14), rgba(226,85,155,.12)); }
+.card3 .back b { display: block; color: var(--tx); font-size: 1.25em; letter-spacing: -.02em; margin-bottom: .3em; }
+.card3 small { position: absolute; top: 1em; left: 1.1em; font: 500 .7em var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mu2); }
 @keyframes flip { 0%, 38% { transform: rotateY(0); } 50%, 88% { transform: rotateY(180deg); } 100% { transform: rotateY(360deg); } }
-.tags { display: flex; flex-wrap: wrap; gap: .5em; }
-.tags span { font-size: .85em; padding: .4em .85em; border-radius: 1em; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1px var(--ln); color: var(--mu); }
+.tags { display: flex; flex-wrap: wrap; gap: .45em; }
+.tags span { font-size: .8em; padding: .3em .75em; border-radius: 1em; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1px var(--ln); color: var(--mu); }
 .tags .code { font-family: var(--mono); color: #c9b8ff; }
-.games { display: grid; grid-template-columns: repeat(3, 1fr); gap: .7em; }
-.games .thumb { aspect-ratio: 4 / 3; min-height: 0; border-radius: .9em; }
-.games .thumb span { font-size: .78em; }
-.gbar { display: flex; align-items: center; gap: .6em; margin-top: 1.1em; color: var(--mu); font-size: .88em; }
-.gbar svg { width: 1.1em; height: 1.1em; }
+.res { display: flex; align-items: center; gap: .8em; padding: .55em 0; border-top: 1px solid var(--ln); min-width: 0; }
+.res .ic { width: 2em; height: 2em; border-radius: .6em; display: grid; place-items: center; background: rgba(167,139,250,.12); color: #c9b8ff; flex: none; }
+.res .ic svg { width: 1.05em; height: 1.05em; }
+.res .n small { display: block; color: var(--mu); font-size: .85em; }
+.gtop { display: flex; gap: .7em; align-items: center; }
+.gtop .d-search { flex: 1; }
+.gtop .rnd { height: 2.7em; padding: 0 1.1em; border-radius: .8em; display: flex; align-items: center; font-weight: 600; font-size: .9em; color: #0b0910; background: var(--vi); }
+.gchips { display: flex; gap: .45em; flex-wrap: wrap; }
+.gchips span { font-size: .82em; font-weight: 600; padding: .3em .8em; border-radius: 1em; background: rgba(255,255,255,.05); color: var(--mu); }
+.gchips span.on { background: var(--tx); color: #0b0910; }
+.ggrid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; gap: .8em; flex: 1; min-height: 0; }
+.ggrid .thumb { min-height: 0; border-radius: .8em; }
+.ggrid .thumb span { font-size: .78em; }
 
 /* Games wall */
 .wall { position: relative; padding: clamp(110px, 16vh, 180px) 0 clamp(80px, 12vh, 140px); overflow: hidden; }
@@ -289,32 +310,36 @@ footer a { color: var(--mu); text-decoration: none; transition: color .3s; }
 footer a:hover { color: var(--tx); }
 
 @media (max-width: 880px) {
-  .pin { grid-template-columns: 1fr; grid-template-rows: auto auto; align-content: center; gap: 22px; padding-top: 70px; }
-  .vis { order: -1; height: min(42svh, 400px); }
-  .panel { font-size: clamp(11px, 2.9vw, 14px); }
-  .steps { height: 230px; margin-top: 18px; }
-  .step h2 { margin: 10px 0 12px; }
   .req { grid-template-columns: 1fr; }
   .req-head { position: static; }
   .d { font-size: 1.5cqw; grid-template-columns: minmax(0, 1fr); }
   .d-sb { display: none; }
+  .d-tabs { display: flex; }
+  .d-main { gap: .9em; }
 }
 @media (max-width: 560px) {
   .hero { padding-top: 112px; }
   .meta { font-size: 10.5px; letter-spacing: .08em; }
   .meta span + span::before { margin: 0 6px; }
-  .stage { padding: 0 12px; }
+  .stage { padding: 0 12px; max-width: min(100%, calc((100svh - 230px) * .8 + 24px)); }
   .d { font-size: 2.3cqw; aspect-ratio: 4 / 5; }
-  .d-grid { grid-template-columns: 1fr; }
-  .d-card.sched { display: none; }
-  .story { height: 400vh; }
+  .d-main { padding: 1.3em 1.3em; }
+  .d-grid, .tcols, .st-grid { grid-template-columns: 1fr; }
+  .d-card.sched, .tcols > .d-card + .d-card { display: none; }
+  .cls-grid { grid-template-columns: repeat(2, 1fr); }
+  .ggrid { grid-template-columns: repeat(3, 1fr); }
+  .ggrid .thumb:nth-child(n+7) { display: none; }
+  .st-grid .res:nth-of-type(n+3) { display: none; }
+  .gtop .rnd { display: none; }
+  .caps { height: 4.6em; font-size: 15px; }
+  .cap .num { display: block; margin: 0 0 4px; }
   .wall-view { height: 420px; }
   .tilt { width: 1100px; gap: 12px; } .col { gap: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .js [data-r], .js .ln > span { opacity: 1; transform: none; filter: none; transition: none; }
   .col, .card3 { animation: none; }
-  .step, .scene, .pill, .nav { transition: none; }
+  .pane, .cap, .pill, .nav, .d-ind { transition: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
 </style>
@@ -355,103 +380,118 @@ footer a:hover { color: var(--tx); }
       <a class="btn ghost mag" href="#inside">See what's inside</a>
     </div>
     <p class="meta" data-r style="--d:.7s"><span>Free</span><span>Works on Chromebooks</span><span>Updates itself</span></p>
-
-    <div class="stage" data-r style="--d:.5s">
-      <div class="device" id="device" aria-label="A preview of the Classboard dashboard" role="img">
-        <div class="d">
-          <aside class="d-sb">
-            <div class="d-brand"><span class="d-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 3v18M3 12h18"/></svg></span><span data-name>Classboard</span></div>
-            <div class="d-nav">
-              <span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</span>
-              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/></svg>Classes</span>
-              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>To-do<i>4</i></span>
-              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20v-6M22 20H2"/></svg>Grades</span>
-              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>Study</span>
-              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15 12h.01M18 14h.01"/></svg>Games</span>
-            </div>
-            <div class="d-clock" id="dclock">8:42<small>Tuesday</small></div>
-          </aside>
-          <div class="d-main">
-            <div class="d-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search <span data-name>Classboard</span><kbd>Ctrl K</kbd></div>
-            <div class="d-hi" id="dhi">Good morning</div>
-            <p>4 things due this week · nothing late</p>
-            <div class="d-grid">
-              <div class="d-card">
-                <h4>Due soon</h4>
-                <div class="row"><span class="c" style="background:#6ee0ac"></span><span class="n">Cell energy lab<small>Biology</small></span><span class="chip hot">Today</span></div>
-                <div class="row"><span class="c" style="background:#a78bfa"></span><span class="n">4.3 practice set<small>Algebra 2</small></span><span class="chip vi">Tomorrow</span></div>
-                <div class="row"><span class="c" style="background:#f5b546"></span><span class="n">Essay draft<small>English</small></span><span class="chip">Fri</span></div>
-                <div class="row"><span class="c" style="background:#4cc9f0"></span><span class="n">Chapter 7 reading<small>US History</small></span><span class="chip">Mon</span></div>
-              </div>
-              <div class="d-card">
-                <h4>Grades</h4>
-                <div class="row"><span class="n">Biology</span><span class="track"><b style="width:94%"></b></span><span class="pct">94%</span></div>
-                <div class="row"><span class="n">Algebra 2</span><span class="track"><b style="width:88%"></b></span><span class="pct">88%</span></div>
-                <div class="row"><span class="n">English</span><span class="track"><b style="width:91%"></b></span><span class="pct">91%</span></div>
-                <div class="row"><span class="n">US History</span><span class="track"><b style="width:86%"></b></span><span class="pct">86%</span></div>
-              </div>
-              <div class="d-card sched">
-                <h4>Up next</h4>
-                <div class="row"><span class="n">Chemistry<small>Room 214</small></span><span class="chip">9:50</span></div>
-                <div class="row"><span class="n">Lunch</span><span class="chip">11:30</span></div>
-              </div>
-              <div class="d-card">
-                <h4>Jump back in</h4>
-                <div class="thumbs" data-thumbs="3"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </section>
 
-  <section class="story" id="inside" aria-label="What's inside">
-    <div class="pin">
-      <div class="story-txt">
-        <span class="kick">What's inside</span>
-        <div class="steps">
-          <div class="step on"><span class="num">01 / 04</span><h2>Know what's <em>due.</em></h2><p>Every assignment from every class in one list, sorted by when it's due. Late work stands out, so nothing slips.</p></div>
-          <div class="step"><span class="num">02 / 04</span><h2>Every grade, <em>one glance.</em></h2><p>All your classes side by side, read straight from Canvas while you're logged in.</p></div>
-          <div class="step"><span class="num">03 / 04</span><h2>Study, <em>your way.</em></h2><p>Study guides and practice tests by class, plus flashcards you make yourself and share with a code.</p></div>
-          <div class="step"><span class="num">04 / 04</span><h2>Breaks, <em>sorted.</em></h2><p>Hundreds of games that open right inside Classboard, start muted and remember your progress.</p></div>
+  <section class="tour" id="inside" aria-label="What's inside">
+    <div class="tour-pin">
+      <div class="stage" data-r style="--d:.5s">
+        <div class="device" id="device" aria-hidden="true">
+          <div class="d">
+            <aside class="d-sb">
+              <div class="d-brand"><span class="d-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 3v18M3 12h18"/></svg></span><span data-name>Classboard</span></div>
+              <div class="d-nav"><span class="d-ind" id="dind" aria-hidden="true"></span><span data-tab="0" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Overview</span><span data-tab="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>To-do<i>4</i></span><span data-tab="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20v-6M22 20H2"/></svg>Grades</span><span data-tab="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/></svg>Classes</span><span data-tab="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>Study</span><span data-tab="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15 12h.01M18 14h.01"/></svg>Games</span></div>
+              <div class="d-clock" id="dclock">8:42<small>Tuesday</small></div>
+            </aside>
+            <div class="d-main">
+              <div class="d-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search <span data-name>Classboard</span><kbd>Ctrl K</kbd></div>
+              <div class="d-tabs" id="dtabs"><span data-tab="0" class="on">Overview</span><span data-tab="1">To-do</span><span data-tab="2">Grades</span><span data-tab="3">Classes</span><span data-tab="4">Study</span><span data-tab="5">Games</span></div>
+              <div class="panes">
+              <div class="pane on" data-pane="0">
+                <div class="d-hi" id="dhi">Good morning</div>
+                <p>4 things due this week · nothing late</p>
+                <div class="d-grid">
+                  <div class="d-card">
+                    <h4>Due soon</h4>
+                    <div class="row"><span class="c" style="background:#6ee0ac"></span><span class="n">Cell energy lab<small>Biology</small></span><span class="chip hot">Today</span></div>
+                    <div class="row"><span class="c" style="background:#a78bfa"></span><span class="n">4.3 practice set<small>Algebra 2</small></span><span class="chip vi">Tomorrow</span></div>
+                    <div class="row"><span class="c" style="background:#f5b546"></span><span class="n">Essay draft<small>English</small></span><span class="chip">Fri</span></div>
+                    <div class="row"><span class="c" style="background:#4cc9f0"></span><span class="n">Chapter 7 reading<small>US History</small></span><span class="chip">Mon</span></div>
+                  </div>
+                  <div class="d-card">
+                    <h4>Grades</h4>
+                    <div class="row"><span class="n">Biology</span><span class="track"><b style="width:94%"></b></span><span class="pct">94%</span></div>
+                    <div class="row"><span class="n">Algebra 2</span><span class="track"><b style="width:88%"></b></span><span class="pct">88%</span></div>
+                    <div class="row"><span class="n">English</span><span class="track"><b style="width:91%"></b></span><span class="pct">91%</span></div>
+                    <div class="row"><span class="n">US History</span><span class="track"><b style="width:86%"></b></span><span class="pct">86%</span></div>
+                  </div>
+                  <div class="d-card sched">
+                    <h4>Up next</h4>
+                    <div class="row"><span class="n">Chemistry<small>Room 214</small></span><span class="chip">9:50</span></div>
+                    <div class="row"><span class="n">Lunch</span><span class="chip">11:30</span></div>
+                  </div>
+                  <div class="d-card">
+                    <h4>Jump back in</h4>
+                    <div class="thumbs" data-thumbs><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="pane" data-pane="1">
+                <div class="d-hi">To-do</div>
+                <p>4 due this week · 1 done today</p>
+                <div class="tcols">
+                  <div class="d-card">
+                    <h4>This week</h4>
+                    <div class="trow"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n">Cell energy lab<small>Biology</small></span><span class="chip hot">Today</span></div>
+                    <div class="trow done"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n">Vocab quiz 6<small>Spanish 2</small></span><span class="chip">Done</span></div>
+                    <div class="trow"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n">4.3 practice set<small>Algebra 2</small></span><span class="chip vi">Tomorrow</span></div>
+                    <div class="trow"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n">Essay draft<small>English 10</small></span><span class="chip">Fri</span></div>
+                    <div class="trow"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n">Chapter 7 reading<small>US History</small></span><span class="chip">Mon</span></div>
+                  </div>
+                  <div class="d-card">
+                    <h4>Coming up</h4>
+                    <div class="trow"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n">Lab report<small>Chemistry</small></span><span class="chip">Wed</span></div>
+                    <div class="trow"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n">Quiz 5<small>Algebra 2</small></span><span class="chip">Thu</span></div>
+                    <div class="trow"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n">Reading log<small>English 10</small></span><span class="chip">Fri</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="pane" data-pane="2">
+                <div class="d-hi">Grades</div>
+                <p>Straight from Canvas · updated just now</p>
+                <div class="gstats"><div class="gstat"><small>Average</small><b class="gr">91.0%</b></div><div class="gstat"><small>Estimated GPA</small><b>3.62</b></div><div class="gstat"><small>Best class</small><b>Spanish 2</b></div></div>
+                <div class="d-card">
+                  <h4>All classes</h4>
+                  <div class="grow2" style="--i:0;--w:94%"><span>Biology</span><span class="track"><b></b></span><span class="pct">94%</span><span class="lt">A</span></div><div class="grow2" style="--i:1;--w:88%"><span>Algebra 2</span><span class="track"><b></b></span><span class="pct">88%</span><span class="lt">B+</span></div><div class="grow2" style="--i:2;--w:91%"><span>English 10</span><span class="track"><b></b></span><span class="pct">91%</span><span class="lt">A-</span></div><div class="grow2" style="--i:3;--w:86%"><span>US History</span><span class="track"><b></b></span><span class="pct">86%</span><span class="lt">B</span></div><div class="grow2" style="--i:4;--w:97%"><span>Spanish 2</span><span class="track"><b></b></span><span class="pct">97%</span><span class="lt">A</span></div><div class="grow2" style="--i:5;--w:90%"><span>Chemistry</span><span class="track"><b></b></span><span class="pct">90%</span><span class="lt">A-</span></div>
+                </div>
+              </div>
+              <div class="pane" data-pane="3">
+                <div class="d-hi">Classes</div>
+                <p>6 classes · fall semester</p>
+                <div class="cls-grid"><div class="cls" style="--c:#6ee0ac"><b>Biology</b><small>Ms. Rivera</small><div class="ft"><span class="nx">Next: Cell energy lab</span><span class="big">94%</span></div></div><div class="cls" style="--c:#a78bfa"><b>Algebra 2</b><small>Mr. Chen</small><div class="ft"><span class="nx">Next: 4.3 practice set</span><span class="big">88%</span></div></div><div class="cls" style="--c:#f5b546"><b>English 10</b><small>Mrs. Patel</small><div class="ft"><span class="nx">Next: Essay draft</span><span class="big">91%</span></div></div><div class="cls" style="--c:#4cc9f0"><b>US History</b><small>Mr. Okafor</small><div class="ft"><span class="nx">Next: Chapter 7 reading</span><span class="big">86%</span></div></div><div class="cls" style="--c:#e2559b"><b>Spanish 2</b><small>Sra. Lopez</small><div class="ft"><span class="nx">Next: Vocab quiz 7</span><span class="big">97%</span></div></div><div class="cls" style="--c:#ff8f5a"><b>Chemistry</b><small>Dr. Kim</small><div class="ft"><span class="nx">Next: Lab report</span><span class="big">90%</span></div></div></div>
+              </div>
+              <div class="pane" data-pane="4">
+                <div class="d-hi">Study</div>
+                <p>Guides, practice tests and your own flashcards</p>
+                <div class="st-grid">
+                  <div class="d-card">
+                    <h4>Flashcards · Biology</h4>
+                    <div class="flip"><div class="card3"><div class="front"><small>Term</small>Mitochondria</div><div class="back"><small>Meaning</small><span><b>The cell's power plant</b>Where the cell makes its energy (ATP).</span></div></div></div>
+                    <div class="tags"><span>12 cards</span><span class="code">CD1-x8Fq2…</span></div>
+                  </div>
+                  <div class="d-card">
+                    <h4>Study resources</h4>
+                    <div class="res"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span><span class="n">Unit 3: Culture<small>AP Human Geography</small></span><span class="chip vi">Guide</span></div>
+                    <div class="res"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/></svg></span><span class="n">Cell division<small>Biology</small></span><span class="chip">Practice test</span></div>
+                    <div class="res"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/></svg></span><span class="n">Quadratics review<small>Algebra 2</small></span><span class="chip">Practice test</span></div>
+                    <div class="res"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="15" height="13" rx="2"/><path d="M7 3h13a2 2 0 0 1 2 2v11"/></svg></span><span class="n">Vocab 7<small>Spanish 2</small></span><span class="chip">Flashcards</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="pane" data-pane="5">
+                <div class="d-hi">Games</div>
+                <p><span class="gcount2">349</span> games · sound starts off</p>
+                <div class="gtop"><div class="d-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search games…</div><span class="rnd">Random</span></div>
+                <div class="gchips"><span class="on">All</span><span>Racing</span><span>Puzzle</span><span>Sports</span><span>Arcade</span></div>
+                <div class="ggrid" data-thumbs><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div>
+              </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="prog" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       </div>
-      <div class="vis" aria-hidden="true">
-        <div class="scene on">
-          <div class="panel">
-            <h4>To-do <span>This week</span></h4>
-            <div class="todo"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n"><b>Cell energy lab</b><small>Biology</small></span><span class="chip hot">Today</span></div>
-            <div class="todo"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n"><b>4.3 practice set</b><small>Algebra 2</small></span><span class="chip vi">Tomorrow</span></div>
-            <div class="todo done"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n"><b>Vocab quiz 6</b><small>Spanish</small></span><span class="chip">Done</span></div>
-            <div class="todo"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#0b0910" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><span class="n"><b>Essay draft</b><small>English</small></span><span class="chip">Fri</span></div>
-          </div>
-        </div>
-        <div class="scene">
-          <div class="panel">
-            <h4>Grades <span>Updated just now</span></h4>
-            <div class="grade" style="--i:0;--w:94%"><span>Biology</span><span class="track"><b></b></span><span class="pct">94%</span></div>
-            <div class="grade" style="--i:1;--w:88%"><span>Algebra 2</span><span class="track"><b></b></span><span class="pct">88%</span></div>
-            <div class="grade" style="--i:2;--w:91%"><span>English</span><span class="track"><b></b></span><span class="pct">91%</span></div>
-            <div class="grade" style="--i:3;--w:86%"><span>US History</span><span class="track"><b></b></span><span class="pct">86%</span></div>
-            <div class="grade" style="--i:4;--w:97%"><span>Spanish</span><span class="track"><b></b></span><span class="pct">97%</span></div>
-          </div>
-        </div>
-        <div class="scene">
-          <div class="panel">
-            <h4>Flashcards <span>Biology · Unit 3</span></h4>
-            <div class="flip"><div class="card3"><div class="front"><small>Term</small>Mitochondria</div><div class="back"><small>Meaning</small><span><b>The cell's power plant</b>Where the cell makes its energy (ATP).</span></div></div></div>
-            <div class="tags"><span>Study guide</span><span>Practice test</span><span class="code">CD1-x8Fq2…</span></div>
-          </div>
-        </div>
-        <div class="scene">
-          <div class="panel">
-            <h4>Games <span>New this week</span></h4>
-            <div class="games" data-thumbs="6"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div>
-            <div class="gbar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/></svg>Sound starts off. Turn it on when you want it.</div>
-          </div>
-        </div>
+      <div class="tour-cap">
+        <div class="prog" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="caps" aria-live="polite"><p class="cap on"><span class="num">01 / 06</span><b>Overview.</b> Everything at a glance the moment it opens.</p><p class="cap"><span class="num">02 / 06</span><b>To-do.</b> What's due, sorted by when. Late work stands out.</p><p class="cap"><span class="num">03 / 06</span><b>Grades.</b> Every grade, read straight from Canvas while you're logged in.</p><p class="cap"><span class="num">04 / 06</span><b>Classes.</b> Each class, teacher and grade in one place.</p><p class="cap"><span class="num">05 / 06</span><b>Study.</b> Study guides, practice tests and flashcards you can share.</p><p class="cap"><span class="num">06 / 06</span><b>Games.</b> Hundreds of games for your breaks. They start muted.</p></div>
       </div>
     </div>
   </section>
@@ -767,24 +807,42 @@ footer a:hover { color: var(--tx); }
 
   /* ---------- per-frame scroll effects ---------- */
   var nav = d.getElementById('nav'), bar = d.getElementById('bar'), device = d.getElementById('device'), glow = d.getElementById('cglow');
-  var story = d.getElementById('inside'), steps = [].slice.call(d.querySelectorAll('.step')), scenes = [].slice.call(d.querySelectorAll('.scene')), prog = [].slice.call(d.querySelectorAll('.prog i'));
+  var tour = d.getElementById('inside'), panes = [].slice.call(d.querySelectorAll('.pane')), caps = [].slice.call(d.querySelectorAll('.cap')), prog = [].slice.call(d.querySelectorAll('.prog i'));
+  var navTabs = [].slice.call(d.querySelectorAll('.d-nav [data-tab]')), stripTabs = [].slice.call(d.querySelectorAll('.d-tabs [data-tab]')), ind = d.getElementById('dind'), strip = d.getElementById('dtabs'), N = panes.length;
   var wall = d.getElementById('games');
   var lastY = scrollY, hidden = false, idx = 0, mx = 0, my = 0, smx = 0, smy = 0, gx = vw / 2, gy = vh / 2, sgx = gx, sgy = gy;
   var MOODS = [
     { a: [.48, .33, 1], b: [.88, .26, .58], y: -.3, l: 1 },      // hero: violet into pink
-    { a: [.36, .3, .95], b: [.62, .32, 1], y: .05, l: .7 },      // story: deep violet
+    { a: [.36, .3, .95], b: [.62, .32, 1], y: -.38, l: .75 },    // tour: deep violet, low behind the preview
     { a: [.86, .24, .55], b: [.55, .3, 1], y: -.05, l: .85 },    // games: pink first
     { a: [.42, .3, .98], b: [.8, .25, .62], y: -.2, l: .55 },    // the rest: quieter
     { a: [.5, .34, 1], b: [.9, .28, .6], y: -.32, l: 1 }         // end
   ];
-  var moodEls = [d.querySelector('.hero'), story, wall, d.querySelector('.more'), d.querySelector('.end')];
+  var moodEls = [d.querySelector('.hero'), tour, wall, d.querySelector('.more'), d.querySelector('.end')];
   var moodAt = 0;
 
-  function setStep(i) {
-    idx = i;
-    steps.forEach(function (s, k) { s.classList.toggle('on', k === i); s.classList.toggle('past', k < i); });
-    scenes.forEach(function (s, k) { s.classList.toggle('on', k === i); });
+  function moveInd() {
+    var it = navTabs[idx];
+    if (!it || !it.offsetParent) return;
+    ind.style.height = it.offsetHeight + 'px';
+    ind.style.transform = 'translateY(' + it.offsetTop + 'px)';
   }
+  function setTab(i) {
+    idx = i;
+    [panes, caps, navTabs, stripTabs].forEach(function (list) { list.forEach(function (el, k) { el.classList.toggle('on', k === i); }); });
+    moveInd();
+    var chip = stripTabs[i];
+    if (chip && strip.offsetParent) strip.scrollTo({ left: Math.max(0, chip.offsetLeft - strip.clientWidth / 2 + chip.offsetWidth / 2), behavior: reduce ? 'auto' : 'smooth' });
+  }
+  // clicking a tab (or a progress mark) scrolls to that tab's stretch of the tour
+  function goTab(k) {
+    var r = tour.getBoundingClientRect(), span = r.height - vh;
+    scrollToY(r.top + scrollY + span * (k + .5) / N);
+  }
+  navTabs.concat(stripTabs).forEach(function (el) { el.addEventListener('click', function () { goTab(+el.dataset.tab); }); });
+  prog.forEach(function (el, k) { el.addEventListener('click', function () { goTab(k); }); });
+  moveInd();
+  if (d.fonts && d.fonts.ready) d.fonts.ready.then(moveInd);
 
   function frame(now) {
     var y = scrollY;
@@ -794,20 +852,19 @@ footer a:hover { color: var(--tx); }
     lastY = y;
     bar.style.transform = 'scaleX(' + (y / Math.max(1, maxY())).toFixed(4) + ')';
 
-    // the dashboard flattens out as the page scrolls
-    var p = clamp(y / (vh * .75), 0, 1), e = 1 - Math.pow(1 - p, 3);
+    // the preview flattens out as it rises into place, then steps through its tabs
+    var r = tour.getBoundingClientRect(), span = r.height - vh;
+    var p = clamp(1 - r.top / (vh * .85), 0, 1), e = 1 - Math.pow(1 - p, 3);
     smx += (mx - smx) * .06; smy += (my - smy) * .06;
     device.style.setProperty('--rx', (24 * (1 - e) - smy * 2.2).toFixed(2) + 'deg');
     device.style.setProperty('--ry', (smx * 3.2).toFixed(2) + 'deg');
     device.style.setProperty('--s', (.93 + .07 * e).toFixed(4));
     device.style.setProperty('--ty', (30 * (1 - e)).toFixed(1) + 'px');
 
-    // pinned story
-    var r = story.getBoundingClientRect(), span = r.height - vh;
     var sp = clamp(-r.top / span, 0, .9999);
-    var i = Math.floor(sp * steps.length);
-    if (i !== idx) setStep(i);
-    prog.forEach(function (b, k) { b.style.setProperty('--f', clamp(sp * steps.length - k, 0, 1).toFixed(3)); });
+    var i = Math.floor(sp * N);
+    if (i !== idx) setTab(i);
+    prog.forEach(function (b, k) { b.style.setProperty('--f', clamp(sp * N - k, 0, 1).toFixed(3)); });
 
     // the light's colour follows the section in view
     if (aura) {
@@ -846,7 +903,7 @@ footer a:hover { color: var(--tx); }
     });
   }
 
-  addEventListener('resize', function () { vh = innerHeight; vw = innerWidth; if (aura) aura.size(); });
+  addEventListener('resize', function () { vh = innerHeight; vw = innerWidth; if (aura) aura.size(); moveInd(); });
 
   // the clock and greeting in the preview match the real time
   (function () {
@@ -890,6 +947,7 @@ footer a:hover { color: var(--tx); }
     if (!games.length) return;
     total = games.length;
     d.getElementById('gcount').textContent = total + ' games';
+    d.querySelectorAll('.gcount2').forEach(function (el) { el.textContent = total; });
     if (seen && !counted) { counted = true; countUp(countEl, total); }
     else if (!counted) countEl.textContent = total;
 
