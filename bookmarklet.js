@@ -326,54 +326,51 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .nc p{margin-bottom:18px;white-space:normal}
 .ann .sub{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .ghero.shero{background:radial-gradient(120% 160% at 0% 0%,rgba(62,207,142,.18),transparent 55%),radial-gradient(120% 160% at 100% 100%,rgba(124,156,255,.14),transparent 55%),var(--p1)}
-.ghero.shero{padding:18px 20px}
-.shero .gh{display:flex;align-items:center;gap:10px}
-.shero .sub{margin:2px 0 12px}
-.skinds{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.skinds button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;background:var(--bg);border:1px solid var(--ln);color:var(--mu);font-size:13px;font-weight:550}
-.skinds button svg{width:15px;height:15px}
-.skinds button:hover{color:var(--tx)}
-.skinds button.on{background:var(--ac);border-color:var(--ac);color:#0f1218}
-.skinds b{font-weight:700;opacity:.75}
-.scont{margin-bottom:18px}
+.shead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.shead .gh{font-size:22px;font-weight:750;letter-spacing:-.02em}
+.shead .sub{margin-top:1px}
+.shead .gsearch{flex:1 1 300px;height:42px;min-width:220px;max-width:460px;margin-left:auto;background:var(--p1);border-radius:12px}
+.sbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.sbar button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;background:var(--p1);border:1px solid var(--ln);color:var(--mu);font-size:12.5px;font-weight:550}
+.sbar button svg{width:14px;height:14px}
+.sbar button:hover{color:var(--tx)}
+.sbar button.on{background:var(--ac);border-color:var(--ac);color:#0f1218}
+.sbar b{font-weight:700;opacity:.75}
+.sbar .sep{width:1px;align-self:stretch;background:var(--ln);margin:2px 4px}
+.scont{margin-bottom:16px}
 .scont[hidden]{display:none}
-.stl{display:grid;grid-template-columns:228px minmax(0,1fr);gap:20px;align-items:start}
-.stl.one{grid-template-columns:minmax(0,1fr)}
-.scl{position:sticky;top:0;display:flex;flex-direction:column;gap:2px;padding:6px;border-radius:14px;background:var(--p1);border:1px solid var(--ln)}
-.scl .lbl{padding:8px 10px 4px;font-size:11px;font-weight:650;color:var(--mu);text-transform:uppercase;letter-spacing:.07em}
-.scl button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;color:var(--mu);font-weight:550;font-size:13px;min-width:0}
-.scl button:hover{background:var(--p2);color:var(--tx)}
-.scl button.on{background:var(--p3);color:var(--tx)}
-.scl .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.scl .n{flex:none;font-size:11px;font-weight:700;background:var(--p2);border-radius:10px;padding:0 7px;line-height:18px}
-.scl button.on .n{background:var(--bg)}
-.sdot{width:9px;height:9px;border-radius:50%;flex:none}
-.ssec{margin-bottom:24px}
-.ssec[hidden]{display:none}
-.ssh{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.ssh .ssi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#0f1218;flex:none}
-.ssh .t{font-size:16px}
-.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
-.rc{position:relative;display:flex;align-items:center;gap:12px;padding:12px 10px 12px 12px;border-radius:14px;background:var(--p1);border:1px solid var(--ln);cursor:pointer;min-width:0;transition:border-color .12s,transform .12s,box-shadow .12s}
-.rc:hover,.rc:focus-visible{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.18);outline:none}
-.rc[hidden]{display:none}
-.rci{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--c) 26%,var(--p2));color:var(--c)}
-.rci svg{width:22px;height:22px}
-.rc .t{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
-.rmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:5px;font-size:12px;color:var(--mu)}
-.chip.new{background:var(--ac);color:#0f1218}
-.rnt{width:30px;height:30px;flex:none;background:transparent;opacity:0;transition:opacity .12s}
-.rc:hover .rnt,.rc:focus-within .rnt{opacity:1}
-.sneed{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 14px;border-radius:14px;border:1px dashed var(--p3);margin:4px 0 18px}
-.sneed .t{margin-right:4px}
-.sneed button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;background:var(--p2);font-size:12.5px;font-weight:600}
+.ccards{display:flex;flex-wrap:wrap;gap:8px}
+.ccard{display:flex;align-items:center;gap:10px;padding:7px 12px 7px 7px;border-radius:12px;background:var(--p1);border:1px solid var(--ln);cursor:pointer;max-width:280px;min-width:0}
+.ccard:hover,.ccard:focus-visible{border-color:var(--ac);outline:none}
+.ccard .t{font-size:13px}
+.ccard .sub{font-size:11.5px}
+.spans{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;align-items:start;margin-bottom:14px}
+.cpan{min-width:0;background:var(--p1);border:1px solid var(--ln);border-radius:14px;overflow:hidden}
+.cpan[hidden]{display:none}
+.cph{display:flex;align-items:center;gap:10px;padding:11px 12px 9px;border-top:3px solid var(--c)}
+.cph .ssi{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#0f1218;flex:none;background:var(--c)}
+.cph .ssi svg{width:17px;height:17px}
+.cph .chip{font-size:10.5px;padding:1px 8px}
+.cph .t{white-space:normal;line-height:1.25}
+.rr{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 12px;cursor:pointer;border-top:1px solid var(--ln);min-width:0}
+.rr:hover,.rr:focus-visible{background:var(--p2);outline:none}
+.rr[hidden]{display:none}
+.rri{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--c) 22%,var(--p2));color:var(--c)}
+.rri svg{width:16px;height:16px}
+.rr .t,.ccard .t{font-size:13.5px;line-height:1.3}
+.rr .sub{font-size:11.5px;display:flex;gap:6px;align-items:center}
+.chip.new{background:var(--ac);color:#0f1218;font-size:10px;padding:0 7px}
+.rnt{width:28px;height:28px;flex:none;background:transparent;opacity:0;transition:opacity .12s}
+.rr:hover .rnt,.rr:focus-within .rnt{opacity:1}
+.sneed{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:9px 12px;border-radius:12px;border:1px dashed var(--p3);margin-bottom:14px;font-size:12.5px}
+.sneed .t{margin-right:2px;font-size:12.5px}
+.sneed button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;background:var(--p2);font-size:12px;font-weight:600}
 .sneed button:hover{background:var(--p3)}
-.sneed button svg{width:13px;height:13px;color:var(--act)}
-.snone{text-align:center;padding:28px 12px;color:var(--mu)}
+.sneed button svg{width:12px;height:12px;color:var(--act)}
+.snone{text-align:center;padding:24px 12px;color:var(--mu)}
 .snone[hidden]{display:none}
-.snone .btn{margin-top:12px;display:inline-flex}
-.sreq{margin-top:8px}
-.sreq .grp{margin-top:0}
+.snone .btn{margin-top:12px;display:inline-flex;gap:6px;align-items:center}
+.sreq{margin-top:6px}
 .bd.lib{background:var(--bg);backdrop-filter:none;animation:none}
 .bd.lib .win{width:calc(100vw / var(--z,1));height:calc(100vh / var(--z,1));border:0;border-radius:0;box-shadow:none;animation:none;grid-template-columns:1fr;grid-template-rows:1fr}
 .bd.lib .sb,.bd.lib [data-act="close"]{display:none}
@@ -412,13 +409,6 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .thc .pv i:first-child{flex:.45}
 .thc span{display:block;padding:5px 0 6px}
 .sacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-@media (max-width:900px){
-.stl{grid-template-columns:minmax(0,1fr)}
-.scl{position:static;flex-direction:row;overflow-x:auto;background:none;border:0;padding:0 0 4px;gap:6px}
-.scl .lbl{display:none}
-.scl button{flex:none;background:var(--p2);border-radius:20px;padding:6px 12px}
-.scl .nm{overflow:visible}
-}
 @media (max-width:780px){
 .ib.sset{display:grid}
 .upd,.sset-c h2 span{display:none}
@@ -1006,10 +996,12 @@ store.set('recentDocs', [{ id, at: Date.now() }, ...store.get('recentDocs', []).
 S.doc = id;
 go('read');
 }
-const resCard = (p, opened) => `<div class="rc" tabindex="0" role="button" data-doc="${esc(p.id)}" data-kind="${p.kind}" data-cls="${esc(p.cls)}" data-name="${esc((p.name + ' ' + p.cls + ' ' + docLabel(p)).toLowerCase())}" title="Open ${esc(p.name)}">
-<span class="rci" style="--c:${p.color}">${kindIcon(p)}</span>
-<span class="grow"><span class="t">${esc(p.name)}</span><span class="rmeta">${isNewDoc(p) ? '<span class="chip new">New</span>' : ''}<span>${esc(opened ? p.cls + ' · ' + opened : docLabel(p))}</span></span></span>
+const docAttrs = p => `tabindex="0" role="button" data-doc="${esc(p.id)}" data-kind="${p.kind}" data-name="${esc((p.name + ' ' + p.cls + ' ' + docLabel(p)).toLowerCase())}" title="Open ${esc(p.name)}"`;
+const resRow = p => `<div class="rr" ${docAttrs(p)}><span class="rri" style="--c:${p.color}">${kindIcon(p)}</span>
+<span class="grow"><span class="t" style="display:block">${esc(p.name)}</span><span class="sub">${isNewDoc(p) ? '<span class="chip new">New</span>' : ''}${esc(docLabel(p))}</span></span>
 <button class="ib rnt" data-docnew="${esc(p.id)}" title="Open in a new tab">${I.ext}</button></div>`;
+const contCard = (p, at) => `<div class="ccard" ${docAttrs(p)}><span class="rri" style="--c:${p.color}">${kindIcon(p)}</span>
+<span class="grow"><span class="t" style="display:block">${esc(p.name)}</span><span class="sub" style="display:block">${esc(p.cls)} · ${esc(rel(new Date(at).toISOString()))}</span></span></div>`;
 const vStudy = () => {
 const groups = {};
 DOCS.forEach(p => { (groups[p.cls] = groups[p.cls] || []).push(p); });
@@ -1019,32 +1011,32 @@ if (S.scls !== 'All' && !groups[S.scls]) S.scls = 'All';
 const kinds = STUDY_KINDS.filter(k => k[0] === 'all' || DOCS.some(p => p.kind === k[0]));
 if (!kinds.some(k => k[0] === S.skind)) S.skind = 'all';
 const n = DOCS.length, mineCount = list.filter(g => g.mine).length;
-const recent = recentDocs().slice(0, 3);
+const recent = recentDocs().slice(0, 4);
 const missing = isCanvas ? S.courses.filter(c => !list.some(g => g.cls !== 'Other' && clsMatch(g.cls, c.name))).slice(0, 10) : [];
 const state = n ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoading ? empty('No study resources yet. Add files to study/&lt;class name&gt;/ in the repo, then hit refresh.') : '<div class="spin"></div>';
-const navBtn = (cls, label, count, color) =>`<button data-scls="${esc(cls)}" class="${S.scls === cls ? 'on' : ''}" title="${esc(label)}">${color ? `<span class="sdot" style="background:${color}"></span>` : I.study}<span class="nm">${esc(label)}</span><span class="n">${count}</span></button>`;
-return `<div class="ghero shero"><div class="ghead"><div class="grow"><div class="gh">Study</div>
-<div class="sub">${n} ${n === 1 ? 'resource' : 'resources'} for ${list.length} ${list.length === 1 ? 'class' : 'classes'}${mineCount ? ` · ${mineCount} of them ${mineCount === 1 ? 'is' : 'are'} yours` : ''} · press <span class="kbd">/</span> to search</div></div></div>
-<div class="gfind"><label class="gsearch">${I.search}<input data-search placeholder="Search by class, unit or topic…" value="${esc(S.sq)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label></div>
-${kinds.length > 2 ? `<div class="skinds">${kinds.map(([k, l, ic]) => `<button data-skind="${k}" class="${S.skind === k ? 'on' : ''}">${ic || ''}${l}<b>${k === 'all' ? n : DOCS.filter(p => p.kind === k).length}</b></button>`).join('')}</div>` : ''}</div>
+const kindBtns = kinds.length > 2 ? kinds.map(([k, l, ic]) => `<button data-skind="${k}" class="${S.skind === k ? 'on' : ''}">${ic || ''}${l}<b>${k === 'all' ? n : DOCS.filter(p => p.kind === k).length}</b></button>`).join('') : '';
+const clsBtns = list.length > 3 ? [['All', 'All classes', n], ...list.map(g => [g.cls, g.cls, g.docs.length])].map(([v, l, c]) => `<button data-scls="${esc(v)}" class="${S.scls === v ? 'on' : ''}">${esc(l)}<b>${c}</b></button>`).join('') : '';
+const sortDocs = d => d.slice().sort((a, b) => (isNewDoc(b) - isNewDoc(a)) || a.name.localeCompare(b.name, undefined, { numeric: true }));
+return `<div class="shead"><div><div class="gh">Study</div>
+<div class="sub">${n} ${n === 1 ? 'resource' : 'resources'} · ${list.length} ${list.length === 1 ? 'class' : 'classes'}${mineCount ? ` · ${mineCount} yours` : ''}</div></div>
+<label class="gsearch">${I.search}<input data-search placeholder="Search by class, unit or topic…" value="${esc(S.sq)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label></div>
+${kindBtns || clsBtns ? `<div class="sbar">${kindBtns}${kindBtns && clsBtns ? '<span class="sep"></span>' : ''}${clsBtns}</div>` : ''}
 ${S.libError && n ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
-${recent.length ? `<div class="scont"><div class="grp">Continue studying</div><div class="rgrid">${recent.map(x => resCard(x.p, 'opened ' + rel(new Date(x.r.at).toISOString()))).join('')}</div></div>` : ''}
-${missing.length && n ? `<div class="sneed"><span class="t">Nothing yet for:</span>${missing.map(c => `<button data-reqcls="${esc(niceCourse(c.name))}" title="Request study help for ${esc(niceCourse(c.name))}">${I.plus}${esc(niceCourse(c.name))}</button>`).join('')}<span class="sub">tap one to request it</span></div>` : ''}
-${state}${n ? `<div class="stl${list.length > 1 ? '' : ' one'}">
-${list.length > 1 ? `<nav class="scl">${navBtn('All', 'All classes', n)}${mineCount ? `<div class="lbl">Your classes</div>${list.filter(g => g.mine).map(g => navBtn(g.cls, g.cls, g.docs.length, g.color)).join('')}${list.some(g => !g.mine) ? '<div class="lbl">More classes</div>' : ''}` : '<div class="lbl">Classes</div>'}${list.filter(g => !g.mine).map(g => navBtn(g.cls, g.cls, g.docs.length, g.color)).join('')}</nav>` : ''}
-<div class="sres">${list.map(g => `<section class="ssec" data-sec="${esc(g.cls)}"><div class="ssh"><span class="ssi" style="background:${g.color}">${g.icon}</span>
-<div class="grow"><div class="t">${esc(g.cls)}</div><div class="sub">${g.docs.length} ${g.docs.length === 1 ? 'resource' : 'resources'}</div></div>${g.mine ? '<span class="chip ac">Your class</span>' : ''}</div>
-<div class="rgrid">${g.docs.slice().sort((a, b) => (isNewDoc(b) - isNewDoc(a)) || a.name.localeCompare(b.name, undefined, { numeric: true })).map(p => resCard(p)).join('')}</div></section>`).join('')}
-<div class="snone" hidden><div class="t">Nothing matches</div><div class="sub nmtxt"></div><button class="btn pri" data-reqtopic="1">${I.send}Request it</button></div></div></div>` : ''}
+${recent.length ? `<div class="scont"><div class="grp">Continue studying</div><div class="ccards">${recent.map(x => contCard(x.p, x.r.at)).join('')}</div></div>` : ''}
+${missing.length && n ? `<div class="sneed"><span class="t">Nothing yet for</span>${missing.map(c => `<button data-reqcls="${esc(niceCourse(c.name))}" title="Request study help for ${esc(niceCourse(c.name))}">${I.plus}${esc(niceCourse(c.name))}</button>`).join('')}</div>` : ''}
+${state}${n ? `<div class="spans">${list.map(g => `<section class="cpan" data-sec="${esc(g.cls)}" style="--c:${g.color}"><div class="cph"><span class="ssi">${g.icon}</span>
+<div class="grow"><div class="t">${esc(g.cls)}</div><div class="sub">${g.docs.length} ${g.docs.length === 1 ? 'resource' : 'resources'}</div></div>${g.mine ? '<span class="chip ac" title="You take this class">Yours</span>' : ''}</div>
+${sortDocs(g.docs).map(resRow).join('')}</section>`).join('')}</div>
+<div class="snone" hidden><div class="t">Nothing matches</div><div class="sub wrap nmtxt"></div><button class="btn pri" data-reqtopic="1">${I.send}Request it</button></div>` : ''}
 <div class="sreq"><div class="grp">Can't find what you need?</div>${reqCard('study')}</div>`;
 };
 function filterStudy() {
 const ct = $('.ct'), q = S.sq.trim().toLowerCase();
 let shown = 0;
-ct.querySelectorAll('.ssec').forEach(sec => {
+ct.querySelectorAll('.cpan').forEach(sec => {
 const inCls = !!q || S.scls === 'All' || sec.dataset.sec === S.scls;
 let inSec = 0;
-sec.querySelectorAll('.rc').forEach(t => {
+sec.querySelectorAll('.rr').forEach(t => {
 t.hidden = !inCls || (S.skind !== 'all' && t.dataset.kind !== S.skind) || (!!q && !q.split(/\s+/).every(w => t.dataset.name.includes(w)));
 if (!t.hidden) inSec++;
 });
@@ -1054,12 +1046,12 @@ const cont = ct.querySelector('.scont');
 if (cont) cont.hidden = !!q || S.skind !== 'all' || S.scls !== 'All';
 const nm = ct.querySelector('.snone');
 if (nm) {
-nm.hidden = shown > 0 || !ct.querySelector('.ssec');
+nm.hidden = shown > 0 || !ct.querySelector('.cpan');
 const what = [q && '"' + S.sq.trim() + '"', S.skind !== 'all' && (STUDY_KINDS.find(k => k[0] === S.skind) || [])[1], S.scls !== 'All' && !q && S.scls].filter(Boolean).join(' · ');
 nm.querySelector('.nmtxt').textContent = what ? 'No study resources for ' + what + ' yet. Ask for it and we\'ll most likely add it.' : '';
 }
 }
-const visibleDocs = () => [...$('.ct').querySelectorAll('.ssec .rc')].filter(t => !t.hidden);
+const visibleDocs = () => [...$('.ct').querySelectorAll('.cpan .rr')].filter(t => !t.hidden);
 async function showLicense(ct) {
 const box = ct.querySelector('.frame');
 const open = box.querySelector('.lic');
@@ -1760,7 +1752,7 @@ function onKey(e) {
 const down = e.type === 'keydown', study = S.view === 'study';
 if (root.activeElement === omniBox) { omniKey(e); e.stopPropagation(); return; }
 if (down && !LIB && (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); e.stopPropagation(); omniBox.focus(); return; }
-if (down && (e.key === 'Enter' || e.key === ' ') && root.activeElement && root.activeElement.matches('.rc')) { e.preventDefault(); e.stopPropagation(); root.activeElement.click(); return; }
+if (down && (e.key === 'Enter' || e.key === ' ') && root.activeElement && root.activeElement.matches('.rr,.ccard')) { e.preventDefault(); e.stopPropagation(); root.activeElement.click(); return; }
 const box = usesLib(S.view) && $('[data-search]'), typing = box && root.activeElement === box;
 const q = study ? S.sq : S.q;
 const inField = root.activeElement && root.activeElement.matches('input,textarea,select');
