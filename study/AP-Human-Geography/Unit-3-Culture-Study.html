@@ -1,0 +1,1097 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Unit 3 Culture Study (PRACTICE, NOT THE ACTUAL TEST)</title>
+<style>
+:root{
+  --paper:#F4F1EA; --surface:#FFFFFF; --sunk:#F9F7F2; --ink:#1D2130; --muted:#5B6172; --line:#DCD6CA; --line-2:#BBB3A3;
+  --pri:#2F4F7F; --pri-ink:#FFFFFF; --pri-soft:#E2E9F4;
+  --acc:#A84F24; --acc-ink:#FFFFFF; --acc-soft:#F7E5D9; --acc-line:#D98A5F;
+  --good:#2C7A4E; --good-soft:#DFF0E5; --bad:#B03A3A; --bad-soft:#F7E1DF;
+  --land:#E9E3D6;
+  --f-display:"Avenir Next","Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --f-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13151C; --surface:#1B1E27; --sunk:#171A22; --ink:#E5E7EE; --muted:#A1A7B5; --line:#2B2F3B; --line-2:#424857;
+    --pri:#93B2E6; --pri-ink:#0F1522; --pri-soft:#22304B;
+    --acc:#E8956A; --acc-ink:#24130A; --acc-soft:#3A2A20; --acc-line:#B8714C;
+    --good:#6BC892; --good-soft:#173826; --bad:#F08C82; --bad-soft:#3E2220;
+    --land:#252A35;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13151C; --surface:#1B1E27; --sunk:#171A22; --ink:#E5E7EE; --muted:#A1A7B5; --line:#2B2F3B; --line-2:#424857;
+  --pri:#93B2E6; --pri-ink:#0F1522; --pri-soft:#22304B;
+  --acc:#E8956A; --acc-ink:#24130A; --acc-soft:#3A2A20; --acc-line:#B8714C;
+  --good:#6BC892; --good-soft:#173826; --bad:#F08C82; --bad-soft:#3E2220;
+  --land:#252A35;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5}
+.wrap{max-width:780px;margin:0 auto;padding-block:16px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+figure{margin:0}
+button,textarea{font:inherit;color:inherit}
+button:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+.notice{margin:0 0 14px;background:var(--acc-soft);border:1px solid var(--acc-line);border-radius:10px;padding:10px 14px;font-size:15px}
+.hero{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;padding-block:8px 22px;border-bottom:2px solid var(--ink)}
+.hero h1{font-size:clamp(40px,8vw,62px);font-weight:800;letter-spacing:-.02em}
+.hero .lede{margin:10px 0 0;color:var(--muted);max-width:56ch}
+.mark{width:140px;height:auto}
+.mark text{font-family:var(--f-mono);font-size:10px;fill:var(--muted)}
+@media (max-width:560px){.hero{grid-template-columns:1fr}.mark{display:none}}
+.section{margin-top:30px;display:grid;gap:12px}
+.section > h2{font-size:24px;font-weight:800}
+.sub{margin:-4px 0 0;color:var(--muted);font-size:15px}
+.resume{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:var(--acc-soft);border:2px solid var(--acc-line);border-radius:10px;padding:14px 16px;margin-top:20px}
+.resume p{margin:0;min-width:0}
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:600px){.modes{grid-template-columns:1fr}}
+.mode{display:grid;gap:6px;align-content:start;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;cursor:pointer;min-width:0}
+.mode:hover:not([disabled]){border-color:var(--pri)}
+.mode h3{font-size:21px;font-weight:800}
+.mode p{margin:0;color:var(--muted);font-size:15px}
+.mode .meta{font-family:var(--f-mono);font-size:12px;color:var(--pri);letter-spacing:.04em;text-transform:uppercase}
+.mode.primary{grid-column:1/-1;background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.mode.primary p,.mode.primary .meta{color:var(--pri-ink);opacity:.9}
+.mode[disabled]{opacity:.5;cursor:not-allowed}
+.topicbox{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px;grid-column:1/-1}
+.topicbox h3{font-size:21px;font-weight:800}
+.topicbox p{margin:4px 0 0;color:var(--muted);font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line-2);background:var(--sunk);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.setting{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.setting p{margin:0;font-size:15px;color:var(--muted)}
+.setting strong{color:var(--ink)}
+.switch{flex:none;width:48px;height:28px;border-radius:999px;border:0;background:var(--line-2);position:relative;cursor:pointer;margin-top:2px}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--surface);transition:transform .15s}
+.switch[aria-checked="true"]{background:var(--pri)}
+.switch[aria-checked="true"]::after{transform:translateX(20px)}
+.tipbox{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:8px;padding:12px 16px;font-size:15px}
+.tipbox p{margin:0}
+.tipbox p + p{margin-top:6px}
+
+.gloss{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.gloss summary{cursor:pointer;padding:12px 16px;font-weight:700;display:flex;align-items:baseline;gap:12px;list-style:none}
+.gloss summary::-webkit-details-marker{display:none}
+.gloss summary > span:first-child{flex:1;min-width:0}
+.gloss summary::after{content:"+";font-family:var(--f-mono);color:var(--pri);font-size:18px;line-height:1;width:14px;text-align:center}
+.gloss[open] summary::after{content:"\2212"}
+.gloss summary .num{color:var(--muted);font-weight:500;font-size:13px}
+.gloss dl{margin:0;padding:0 16px 8px;display:grid}
+.gloss dl > div{padding:10px 0;border-top:1px solid var(--line)}
+.gloss dt{font-weight:700}
+.gloss dd{margin:2px 0 0;font-size:15px}
+.ex{display:block;color:var(--muted);font-size:14px;margin-top:2px}
+
+.hist{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:16px;min-width:0}
+.hist-empty{color:var(--muted);margin:0}
+.chart{overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto}
+.chart text{font-family:var(--f-mono);font-size:11px;fill:var(--muted)}
+.chart .gl{stroke:var(--line);stroke-width:1}
+.chart .ln{stroke:var(--pri);stroke-width:2.5;fill:none}
+.chart .ar{fill:var(--pri-soft)}
+.chart .pt{fill:var(--surface);stroke:var(--pri);stroke-width:2.5}
+.chart .pt.last{fill:var(--pri)}
+.chart .pass{stroke:var(--acc);stroke-dasharray:4 4;stroke-width:1.5}
+.chart .lbl{fill:var(--ink);font-weight:700}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+.hist th{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:6px 8px;border-bottom:1px solid var(--line)}
+.hist td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;font-family:var(--f-mono);font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px}
+.pill.hi{background:var(--good-soft);color:var(--good)}
+.pill.mid{background:var(--acc-soft);color:var(--ink)}
+.pill.lo{background:var(--bad-soft);color:var(--bad)}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 120px 48px;gap:10px;align-items:center;font-size:15px}
+.bar .track{height:10px;background:var(--sunk);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.bar .fill{display:block;height:100%;background:var(--good)}
+.bar .fill.lo{background:var(--bad)}
+.bar .fill.mid{background:var(--acc)}
+.bar .v{font-family:var(--f-mono);font-size:13px;text-align:right}
+@media (max-width:480px){.bar{grid-template-columns:minmax(0,1fr) 80px 44px}}
+.hist-head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.hist-head h3{font-size:18px}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:14px;padding:0}
+.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px}
+.savenote{margin:0;color:var(--muted);font-size:14px}
+
+.btn{border:0;border-radius:8px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--pri);color:var(--pri-ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-2)}
+.btn.acc{background:var(--acc);color:var(--acc-ink)}
+.btn.small{padding:8px 12px;font-size:14px}
+
+.bar-top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding-block:10px;border-bottom:1px solid var(--line);display:grid;gap:8px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.bar-row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.bar-row .count{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.prog{height:8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.prog > div{height:100%;background:var(--pri);transition:width .25s}
+.card{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:16px;min-width:0}
+@media (max-width:480px){.card{padding:16px}}
+.qmeta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--pri-soft);color:var(--ink)}
+.tag.src{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+.qtext{font-size:20px;line-height:1.4;font-weight:700;margin:0;text-wrap:pretty}
+.qhint{margin:-6px 0 0;color:var(--muted);font-size:15px}
+.opts{display:grid;gap:10px}
+.opt{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;align-items:center;text-align:left;background:var(--sunk);border:2px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;min-height:52px}
+.opt:hover:not([disabled]){border-color:var(--pri)}
+.opt .k{font-family:var(--f-mono);font-weight:700;font-size:13px;width:28px;height:28px;border-radius:6px;display:grid;place-items:center;border:1px solid var(--line-2);background:var(--surface)}
+.opt.sel{border-color:var(--pri);background:var(--pri-soft)}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt[disabled]{cursor:default}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.actions .spacer{flex:1}
+.keyhint{font-size:13px;color:var(--muted)}
+@media (hover:none){.keyhint{visibility:hidden}}
+.fb{border-radius:10px;padding:14px 16px;display:grid;gap:8px}
+.fb.ok{background:var(--good-soft);border:1px solid var(--good)}
+.fb.no{background:var(--bad-soft);border:1px solid var(--bad)}
+.fb.part{background:var(--acc-soft);border:1px solid var(--acc-line)}
+.fb h4{margin:0;font-family:var(--f-display);font-size:19px}
+.fb p{margin:0}
+.fb .ans{font-weight:700}
+.fb .trap{font-size:15px;padding-top:8px;border-top:1px solid var(--line-2)}
+
+.stim{background:var(--sunk);border:1px solid var(--line);border-left:4px solid var(--pri);border-radius:8px;padding:12px 14px;display:grid;gap:8px;min-width:0}
+.stim .cap{font-family:var(--f-mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.stim p{margin:0;font-size:16px}
+.stim table{font-size:14px;background:var(--surface);border:1px solid var(--line)}
+.stim th,.stim td{padding:7px 9px;border:1px solid var(--line);text-align:left;vertical-align:top}
+.stim thead th{background:var(--pri-soft);font-weight:700}
+.stim tbody th{font-weight:700}
+.fig{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:10px;overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:520px;height:auto;margin:0 auto}
+.fig .land{fill:var(--land);stroke:var(--line-2);stroke-width:1.5}
+.fig .city{fill:var(--pri)}
+.fig .bx{fill:var(--surface);stroke:var(--line-2);stroke-width:1.5}
+.fig .bx2{fill:var(--pri-soft);stroke:var(--pri);stroke-width:1.5}
+.fig .q{fill:var(--acc-soft);stroke:var(--acc);stroke-width:2}
+.fig .ln{stroke:var(--muted);stroke-width:1.5;fill:none}
+.fig .tx{fill:var(--ink);font-family:var(--f-body);font-size:13px}
+.fig .tx.b{font-weight:700}
+.fig .tx.s{font-size:12px;fill:var(--muted)}
+.fig .tx.qm{fill:var(--acc);font-weight:800;font-size:15px}
+.figcap{font-size:13px;color:var(--muted);margin:6px 2px 0}
+
+.mterms{display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--surface);padding-block:10px;margin-block:-10px;border-bottom:1px solid var(--line)}
+.mterms:empty{display:none}
+.mterm{border:2px solid var(--line-2);background:var(--surface);border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer}
+.mterm.sel{border-color:var(--acc);background:var(--acc-soft)}
+.mterm.used{opacity:.35}
+.mdefs{display:grid;gap:10px}
+.mdef{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;text-align:left;background:var(--sunk);border:2px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer}
+.mdef:hover:not([disabled]){border-color:var(--pri)}
+.mdef .slot{justify-self:start;font-weight:700;font-size:14px;border-radius:6px;padding:3px 10px;border:1px dashed var(--line-2);color:var(--muted)}
+.mdef .slot.filled{border:1px solid var(--pri);background:var(--pri-soft);color:var(--ink)}
+.mdef.right{border-color:var(--good);background:var(--good-soft)}
+.mdef.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.mdef .fix{font-size:14px;color:var(--bad);font-weight:700}
+.mdef[disabled]{cursor:default}
+
+.score{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:center;padding-block:10px 22px;border-bottom:2px solid var(--ink)}
+.big{font-family:var(--f-display);font-weight:800;font-size:clamp(64px,16vw,108px);line-height:.9;letter-spacing:-.03em}
+.score p{margin:4px 0 0;color:var(--muted)}
+.score h1{font-size:28px}
+@media (max-width:480px){.score{grid-template-columns:1fr;gap:6px}}
+.missed{display:grid;gap:10px}
+.miss{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:8px;padding:12px 14px;display:grid;gap:4px;min-width:0}
+.miss .q{font-weight:700}
+.miss .yours{color:var(--bad)}
+.miss .corr{color:var(--good);font-weight:700}
+.miss .why{color:var(--muted);font-size:15px}
+.rowbtns{display:flex;flex-wrap:wrap;gap:10px}
+.quitbox{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px}
+
+.frq-title{font-size:26px;font-weight:800}
+.card > p{margin:0}
+.frq textarea{width:100%;min-height:96px;resize:vertical;padding:10px 12px;border-radius:8px;border:2px solid var(--line-2);background:var(--sunk);font-size:16px;line-height:1.45}
+.model{background:var(--pri-soft);border:1px solid var(--pri);border-radius:10px;padding:12px 14px;display:grid;gap:4px}
+.rubric{background:var(--sunk);border:1px dashed var(--line-2);border-radius:10px;padding:12px 14px;display:grid;gap:4px}
+.model p,.rubric p{margin:0}
+.selfrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.check{display:inline-flex;gap:10px;align-items:center;background:var(--surface);border:2px solid var(--line-2);border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:700;font-size:15px}
+.check .box{width:20px;height:20px;border-radius:4px;border:2px solid var(--line-2);display:grid;place-items:center;font-size:14px;line-height:1}
+.check[aria-pressed="true"]{border-color:var(--good);background:var(--good-soft)}
+.check[aria-pressed="true"] .box{background:var(--good);border-color:var(--good);color:var(--surface)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+(() => {
+"use strict";
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+const LET = "ABCDE";
+
+// Storage throws inside a sandboxed iframe, so everything also lives in memory.
+const mem = {};
+let canStore = false;
+try { localStorage.setItem("ap3.t", "1"); localStorage.removeItem("ap3.t"); canStore = true; } catch (e) { canStore = false; }
+const store = {
+  get(k, d) {
+    if (canStore) { try { const v = localStorage.getItem(k); if (v != null) return JSON.parse(v); } catch (e) {} }
+    if (Object.prototype.hasOwnProperty.call(mem, k)) { try { return JSON.parse(mem[k]); } catch (e) {} }
+    return d;
+  },
+  set(k, v) { let s; try { s = JSON.stringify(v); } catch (e) { return; } mem[k] = s; if (canStore) { try { localStorage.setItem(k, s); } catch (e) {} } },
+  del(k) { delete mem[k]; if (canStore) { try { localStorage.removeItem(k); } catch (e) {} } }
+};
+const KEY = {run: "ap3.run", hist: "ap3.history", study: "ap3.study", topics: "ap3.topics", frq: "ap3.frq"};
+
+const TOPICS = {
+  t1: "3.1 Introduction to culture",
+  t2: "3.2 Cultural landscapes",
+  t3: "3.3 Cultural patterns",
+  t4: "3.4 Types of diffusion",
+  t5: "3.5 Historical causes of diffusion",
+  t6: "3.6 Contemporary causes of diffusion",
+  t7: "3.7 Diffusion of religion & language",
+  t8: "3.8 Effects of diffusion"
+};
+
+// [term, definition, topic, example]
+const VOCAB = [
+  ["Culture", "The shared practices, technologies, attitudes, and behaviors that a society learns and passes on to new generations", "t1", "Language, food customs, music, and religious beliefs are all parts of a group's culture."],
+  ["Cultural trait", "A single element of a culture, such as one food, garment, belief, or building style", "t1", "Wearing a turban or eating with chopsticks."],
+  ["Norm", "A shared, often unwritten, expectation about how people should behave", "t1", "Waiting your turn in line."],
+  ["Taboo", "A behavior a culture strongly forbids, often for religious or moral reasons", "t1", "Eating pork in Islam and Judaism; eating beef for many Hindus."],
+  ["Ethnocentrism", "Judging another culture by the standards of your own and treating your own as superior", "t1", "Calling another group's food “weird” or its customs “uncivilized.”"],
+  ["Cultural relativism", "Understanding a culture's practices through its own values and context rather than an outsider's standards", "t1", "Explaining arranged marriage through a society's family and inheritance customs."],
+  ["Cultural landscape", "The visible imprint that human activity and culture leave on the land", "t2", "Rice terraces, church steeples, billboards, and field patterns."],
+  ["Sequent occupance", "The layering of imprints left on one place by the different groups that occupied it over time", "t2", "Hagia Sophia in Istanbul: church, then mosque, then museum, then mosque again."],
+  ["Sacred space", "A place given special religious meaning by a group", "t2", "Mecca, the Western Wall in Jerusalem, or Varanasi on the Ganges."],
+  ["Sense of place", "The feelings, memories, and meanings people attach to a particular place", "t2", "A grandparent's hometown main street that still “feels like home.”"],
+  ["Placemaking", "Deliberately shaping a public space to strengthen people's connection to it", "t2", "Neighbors turning a vacant lot into a plaza with murals of local history."],
+  ["Traditional architecture", "Building styles based on local materials and long-standing customs, suited to the local climate", "t2", "Thick-walled adobe homes in the U.S. Southwest."],
+  ["Postmodern architecture", "A late-1900s building style that mixes historical references, playful shapes, and bold color in reaction to plain modern boxes", "t2", "The Portland Building in Oregon, with its oversized decorative features."],
+  ["Toponym", "A place name, which often reveals the culture of the people who gave it", "t2", "Los Angeles and San Antonio reflect Spanish colonization."],
+  ["Centripetal force", "A factor that unifies the people of a state", "t3", "A shared national language, national holidays, or a common outside threat."],
+  ["Centrifugal force", "A factor that divides the people of a state", "t3", "The Dutch-French language split between Flanders and Wallonia in Belgium."],
+  ["Ethnicity", "Identity with a group that shares ancestry, cultural traditions, and often a homeland", "t3", "Kurds share an identity across Turkey, Iraq, Iran, and Syria."],
+  ["Ethnic enclave", "A neighborhood where members of one group cluster and their culture is visible on the landscape", "t3", "Little Havana in Miami or Chinatown in San Francisco."],
+  ["Diffusion", "The spread of an idea, innovation, or cultural trait from one place to another", "t4", "Pizza spreading from Naples to cities around the world."],
+  ["Cultural hearth", "A place where cultural traits originate and from which they spread", "t4", "Mesopotamia for farming and writing; the South Bronx for hip-hop."],
+  ["Relocation diffusion", "Spread of a trait when people move and carry it with them to a new place", "t4", "Hmong refugees bringing New Year celebrations to Minnesota."],
+  ["Expansion diffusion", "Spread of a trait outward from its hearth while it stays strong in the original place", "t4", "A slang word spreading across a country while still used where it began."],
+  ["Contagious diffusion", "Rapid spread from person to person through contact, regardless of status", "t4", "A meme passed from friend to friend."],
+  ["Hierarchical diffusion", "Spread from larger or more influential places or people to smaller or less influential ones", "t4", "A fashion trend moving from Paris and New York to smaller cities."],
+  ["Reverse hierarchical diffusion", "Spread from smaller places or less powerful groups up to larger or more powerful ones", "t4", "Walmart expanding from small towns into big cities."],
+  ["Stimulus diffusion", "Spread of an underlying idea that is changed to fit the culture adopting it", "t4", "McDonald's in India selling a potato burger instead of beef."],
+  ["Distance decay", "The decline in interaction or diffusion as distance from the origin increases", "t4", "A local dish is common in its hometown and rare far away."],
+  ["Colonialism", "Taking control of a territory, often sending settlers, and imposing the colonizer's government and culture", "t5", "Spanish colonization spreading Catholicism and Spanish across Latin America."],
+  ["Imperialism", "Extending a country's power over other lands through political, military, or economic control, with or without settlement", "t5", "British rule over India."],
+  ["Lingua franca", "A language used for communication between people who have different native languages", "t5", "English in international business; Swahili in East Africa."],
+  ["Pidgin", "A simplified mix of languages used for limited purposes such as trade, with no native speakers", "t5", "Contact languages used between European and local traders in colonial ports."],
+  ["Creole language", "A language that began as a pidgin and became the native language of a community, with a full grammar", "t5", "Haitian Creole; Krio in Sierra Leone."],
+  ["Creolization", "The blending of different cultures into a new one, especially in colonial settings", "t5", "Louisiana Creole food and music, mixing French, African, Spanish, and Caribbean roots."],
+  ["Globalization", "The growing interconnection of the world's economies, cultures, and populations", "t6", "The same phones, brands, and streaming services used worldwide."],
+  ["Time-space compression", "The shrinking of the time it takes for people, goods, and information to move between places, so the world feels smaller", "t6", "A real-time video call between Tokyo and Chicago."],
+  ["Urbanization", "An increase in the share of a population living in cities, which brings diverse groups into close contact", "t6", "Migrants from many regions mixing foods and music in Lagos or São Paulo."],
+  ["Language family", "A large group of languages descended from a single ancestral language", "t7", "Indo-European; Sino-Tibetan; Afro-Asiatic."],
+  ["Language branch", "A major subdivision of a language family whose languages share an ancient common origin", "t7", "Germanic and Romance within Indo-European."],
+  ["Language group", "Closely related languages within a branch that share a fairly recent origin and similar grammar and vocabulary", "t7", "West Germanic: English, German, and Dutch."],
+  ["Dialect", "A regional variety of a language with its own vocabulary, spelling, or pronunciation", "t7", "Southern U.S. English; British vs. American English."],
+  ["Language isolate", "A language unrelated to any other known language", "t7", "Basque, in the western Pyrenees."],
+  ["Universalizing religion", "A religion that aims to appeal to all people everywhere, not just one group or place", "t7", "Christianity, Islam, Buddhism, and Sikhism."],
+  ["Ethnic religion", "A religion tied mainly to one group of people and their homeland, with little effort to convert others", "t7", "Hinduism, Judaism, and Shinto."],
+  ["Anatolian hypothesis", "The theory that Proto-Indo-European spread from present-day Turkey along with farming, more than 8,000 years ago", "t7", "Early farmers carrying their language into Europe as agriculture spread."],
+  ["Kurgan hypothesis", "The theory that Proto-Indo-European spread from the steppes north of the Black and Caspian Seas through migration and conquest by horse-riding herders", "t7", "Mounted herders expanding west into Europe and south into Asia about 6,000 years ago."],
+  ["Acculturation", "Adopting some traits of another culture while keeping much of your own", "t8", "An immigrant who learns English for work but keeps her religion and cooking."],
+  ["Assimilation", "Fully adopting the dominant culture so that a group's original traits largely disappear", "t8", "Great-grandchildren of immigrants who speak only English and keep few old customs."],
+  ["Syncretism", "The blending of traits from different cultures into a new practice or belief", "t8", "Día de los Muertos; Vodou in Haiti."],
+  ["Multiculturalism", "The coexistence of many cultural groups in one society, each keeping its own identity", "t8", "Canada's official policy of supporting cultural diversity."],
+  ["Cultural convergence", "The process of cultures becoming more alike through contact", "t8", "The same fast-food chains and jeans in cities worldwide."],
+  ["Cultural divergence", "The process of cultures becoming less alike, through isolation or deliberate resistance to outside influence", "t8", "The Amish limiting modern technology."],
+  ["Folk culture", "Traditional practices of small, close-knit, often rural groups that change slowly", "t8", "Amish quilting and barn raisings."],
+  ["Popular culture", "Widespread culture of large, diverse populations that changes quickly and spreads through mass media", "t8", "A song that tops streaming charts around the world."],
+  ["Placelessness", "The loss of a place's unique character, so its landscape looks like many other places", "t8", "Highway exits lined with the same chain stores across the country."]
+];
+const CONFLICTS = [
+  ["Colonialism", "Imperialism"], ["Creolization", "Syncretism"], ["Cultural convergence", "Placelessness", "Globalization"],
+  ["Language family", "Language branch", "Language group"], ["Diffusion", "Expansion diffusion", "Contagious diffusion"],
+  ["Culture", "Cultural trait"], ["Sense of place", "Placemaking"]
+];
+
+// Q(id, topic, question, five options, index of the correct option, why it is right, why the best distractor is wrong, extras)
+const B = [];
+const Q = (id, topic, q, o, a, x, d, extra) => B.push(Object.assign({id, topic, q, o, a, x, d}, extra || {}));
+
+/* 3.1 Introduction to culture */
+Q("c1", "t1", "While visiting a country where meals are eaten by hand from a shared dish, a tourist posts online that people there “haven't learned proper table manners yet.” The tourist's comment is an example of which of the following?",
+  ["Ethnocentrism", "Cultural relativism", "Acculturation", "Syncretism", "Cultural divergence"], 0,
+  "Ethnocentrism means judging another culture by the standards of your own and treating your own ways as the correct ones. Calling hand-eating a lack of manners does exactly that.",
+  "Cultural relativism is the opposite attitude: it would mean understanding eating by hand within that culture's own norms instead of ranking it against forks and plates.");
+Q("c2", "t1", "A geographer studying a farming village spends a year living with families, learning why marriages there are arranged by relatives and how the practice connects to land inheritance. She avoids comparing it to dating customs in her home country. Her approach best reflects",
+  ["cultural relativism", "ethnocentrism", "assimilation", "cultural convergence", "environmental determinism"], 0,
+  "Cultural relativism means understanding a practice through the values and context of the culture that holds it. Explaining arranged marriage through local inheritance and family structure is relativism.",
+  "Ethnocentrism would mean judging the practice by her home culture's dating norms, which is exactly what she avoids.");
+Q("c3", "t1", "Which of the following is the best example of a taboo?",
+  ["Many Hindus avoid eating beef because cows are considered sacred.", "Most families in the United States eat turkey on Thanksgiving.", "Shoppers in many countries form a line and wait their turn at a register.", "Students in Japan commonly bow to greet their teachers.", "Spanish speakers often use a formal form of “you” with elders."], 0,
+  "A taboo is a behavior a culture strongly forbids, usually on religious or moral grounds. For many Hindus, eating beef is forbidden because the cow is sacred.",
+  "Eating turkey on Thanksgiving is a norm: an expected, customary behavior. Skipping it breaks a tradition, but it is not a forbidden act the way a taboo is.");
+Q("c4", "t1", "Which of the following best describes a cultural trait?",
+  ["A single element of a culture, such as a style of dress, a food, or a type of house", "A cluster of related traits, such as all the customs tied to raising cattle", "The place where a set of cultural practices first developed", "The process by which a practice spreads from one place to another", "The belief that one's own culture is superior to others"], 0,
+  "A cultural trait is one individual element of a culture: a single food, garment, tool, belief, or building style.",
+  "A cluster of related traits that work together, like everything tied to cattle herding, is a culture complex. It is built out of many individual traits.");
+Q("c5", "t1", "Children adopted as infants by families in another country usually grow up speaking that country's language and following its customs, not those of their birth parents. This observation best supports which statement about culture?",
+  ["Culture is learned from society rather than inherited biologically.", "The physical environment determines which cultural traits a group develops.", "Cultural traits are passed on mainly through genetic ancestry.", "Ethnic identity cannot change once it is set at birth.", "Folk cultures diffuse faster than popular cultures."], 0,
+  "Culture is made of shared practices, attitudes, and behaviors that a society passes on by teaching and example. The children learn the culture of the people raising them, which shows culture is learned, not inherited.",
+  "The idea that the environment determines culture is environmental determinism, which geographers reject. The children adopt the culture of the families who raise them, not one produced by climate or landforms.");
+Q("c6", "t1", "In many countries, people are expected to stand in line and wait their turn. Someone who cuts ahead gets disapproving looks but faces no legal penalty. This unwritten expectation is best described as a",
+  ["norm", "taboo", "law", "cultural hearth", "lingua franca"], 0,
+  "A norm is a shared, often unwritten, expectation about how people should behave. Waiting in line is expected, and breaking that expectation brings social disapproval.",
+  "A taboo is a much stronger prohibition, usually tied to religion or morality, where the act is seen as unthinkable. Cutting in line is rude, not forbidden at that level.");
+Q("c7", "t1", "In the late 1800s and early 1900s, the U.S. government ran boarding schools that punished Native American children for speaking their own languages and required them to adopt Euro-American dress and customs. The attitude behind this policy is best described as",
+  ["ethnocentrism, because officials treated Euro-American culture as superior", "cultural relativism, because officials studied Native cultures closely", "multiculturalism, because several cultures were present in the schools", "syncretism, because the schools blended Native and Euro-American traditions", "cultural divergence, because the policy kept the cultures apart"], 0,
+  "The policy assumed Euro-American culture was the correct standard and tried to erase Native languages and customs. Treating your own culture as superior is ethnocentrism, and here it drove a policy of forced assimilation.",
+  "Multiculturalism means different cultures coexist and keep their identities. These schools did the opposite: they tried to replace Native cultures entirely.");
+
+/* 3.2 Cultural landscapes */
+Q("l1", "t2", "Which concept is best illustrated by the building described?",
+  ["Sequent occupance", "Syncretism", "Placelessness", "Stimulus diffusion", "Cultural relativism"], 0,
+  "Sequent occupance is the idea that successive groups who control a place each leave their own imprint, so the landscape builds up in layers. Byzantine Christians and then Ottoman Muslims each left visible marks on the same building.",
+  "Syncretism would mean the two religions blended into a new practice. Here they did not merge: one group replaced the other, and both layers remain visible.",
+  {stim: {k: "text", cap: "Described: a building in Istanbul, Turkey", body: "It was built in 537 CE as a cathedral of the Christian Byzantine Empire. After the Ottoman conquest in 1453 it became a mosque, and minarets were added around it over time. In 1934 it was made a museum, and in 2020 it became a mosque again. Christian mosaics and Islamic calligraphy are both visible inside."}});
+Q("l2", "t2", "The land-use pattern described most likely reflects the influence of",
+  ["the French long-lot system", "the U.S. township-and-range survey", "the metes-and-bounds system", "Dutch polder reclamation", "the British enclosure movement"], 0,
+  "French settlers in Quebec and Louisiana divided land into long lots: narrow strips running back from a river, so each farm had water access and a riverfront for transportation. The pattern still shows on the landscape.",
+  "Township and range divides land into a grid of square sections that ignores rivers. That system shaped much of the Midwest, not riverfront strips.",
+  {stim: {k: "text", cap: "Described: aerial photograph, southern Louisiana", body: "Farm properties along a river are long, narrow strips of land. Each strip begins at the riverbank, where farmhouses sit in a line, and stretches straight back from the water for a long distance."}});
+Q("l3", "t2", "Residents of a neighborhood turn a vacant lot into a plaza with benches, a community garden, and murals by local artists that celebrate the area's Puerto Rican heritage. This effort is best described as",
+  ["placemaking", "sense of place", "sequent occupance", "gentrification", "cultural convergence"], 0,
+  "Placemaking is the deliberate shaping of a public space to strengthen people's connection to it. Residents actively designed this plaza around their shared identity.",
+  "Sense of place is the feeling of attachment people have to a place. The plaza may strengthen that feeling, but building it is an action, which makes it placemaking.");
+Q("l4", "t2", "The building described is best classified as an example of",
+  ["postmodern architecture", "traditional (vernacular) architecture", "modern International Style architecture", "sacred space", "folk housing"], 0,
+  "Postmodern architecture, popular from the 1970s to the 1990s, reacted against plain modern boxes by mixing historical references, exaggerated decoration, and bold color, often playfully.",
+  "International Style buildings are the plain glass-and-steel boxes with little decoration that postmodernism was reacting against.",
+  {stim: {k: "text", cap: "Described: photograph of an office building", body: "A 1980s office building has a boxy shape, but its front is decorated with oversized, flattened versions of classical columns and a giant keystone, painted in bold contrasting colors. The design looks playful and deliberately exaggerated."}});
+Q("l5", "t2", "Pueblo homes in the American Southwest traditionally have thick adobe walls, flat roofs, and small windows. Which statement best explains this design?",
+  ["Builders used local materials and designs suited to a hot, dry climate.", "Architects copied a global style spread by international firms.", "The design was required by U.S. government building codes.", "The style diffused from colonial cities in western Europe.", "Postmodern designers chose the style for its playful look."], 0,
+  "Traditional architecture uses local materials and long-standing designs that fit the environment. Thick earthen walls keep interiors cool by day and warm at night, and small windows limit heat.",
+  "A style spread by international firms describes modern or postmodern global architecture. Pueblo building long predates that and grew out of local materials and climate.");
+Q("l6", "t2", "Few large cemeteries appear on the landscape in many Hindu communities in India. Which of the following best explains this?",
+  ["Hindus traditionally cremate the dead, often beside rivers such as the Ganges.", "Hinduism is a universalizing religion that discourages local sacred sites.", "Burial is forbidden by Indian national law.", "Hindus are buried in cemeteries shared with other religions.", "Most Hindus live in large cities where land is too expensive for burial."], 0,
+  "Cremation is the traditional Hindu funeral practice, and riverside cremation grounds (ghats), especially at Varanasi on the Ganges, are part of the sacred landscape. Religion shapes the landscape through how the dead are treated.",
+  "Hinduism is an ethnic religion, not a universalizing one, and it has many sacred sites tied to its landscape, including rivers, temples, and pilgrimage cities.");
+Q("l7", "t2", "Cities such as San Antonio, Los Angeles, and Santa Fe have Spanish names. These toponyms are best explained by",
+  ["Spanish colonial settlement and Catholic missions in the region centuries ago", "Spanish-speaking immigration to the United States since 2000", "a U.S. government program to rename cities after independence", "English-speaking settlers choosing Latin-sounding names", "trade between the United States and Spain in the 1900s"], 0,
+  "Toponyms (place names) record who controlled and named a place. Spain colonized the region from the 1500s to the early 1800s, and many missions and towns were named for saints and religious ideas.",
+  "Recent immigration has shaped these cities' cultures, but the names are much older: Santa Fe dates to about 1610, San Antonio to 1718, and Los Angeles to 1781.");
+Q("l8", "t2", "The Old City of Jerusalem, less than one square kilometer in area, has been the focus of repeated conflict. Which of the following best explains why?",
+  ["It holds sacred spaces of Judaism, Christianity, and Islam, so several groups claim the same small area.", "It is the hearth of every universalizing religion, including Buddhism and Sikhism.", "Its location on a coastal trade route made it the region's busiest port.", "It is the only place where ethnic religions are practiced.", "Its buildings are mostly postmodern, which local groups oppose."], 0,
+  "The Old City contains the Western Wall (Judaism), the Church of the Holy Sepulchre (Christianity), and the Al-Aqsa Mosque and Dome of the Rock (Islam). When one small space is sacred to several groups, control of it is contested.",
+  "Buddhism and Sikhism are universalizing religions with hearths in South Asia, not Jerusalem. Jerusalem is sacred to the three Abrahamic religions.");
+Q("l9", "t2", "Many mosques have separate prayer areas, and sometimes separate entrances, for men and women. In many cities, public statues depict far more men than women. Together, these examples show that",
+  ["cultural attitudes about gender are visible in the built landscape", "sequent occupance has layered several groups' buildings in one place", "postmodern architecture is spreading worldwide", "cultural convergence has erased gender differences in public space", "ethnic enclaves always form around places of worship"], 0,
+  "The cultural landscape reflects a society's beliefs, including beliefs about gender. Who gets which space, and who gets honored in public, is written into buildings and monuments.",
+  "Sequent occupance describes layers left by different groups over time. These features show one society's gender norms, not a series of occupants.");
+
+/* 3.3 Cultural patterns */
+Q("p1", "t3", "In Belgium, the northern region of Flanders is mainly Dutch-speaking and the southern region of Wallonia is mainly French-speaking. The regions have separate language-based governments, and political parties are largely organized by language. Which statement best describes the role of language in Belgium?",
+  ["Language is a centrifugal force that reinforces regional divisions.", "Language is a centripetal force because Belgium has more than one official language.", "Language is a lingua franca that unites both regions.", "Language shows cultural convergence between the regions.", "Language divisions are an example of sequent occupance."], 0,
+  "Centrifugal forces pull a state apart. Belgium's language divide lines up with regional governments, parties, and identities, and it has fed demands for more regional self-rule.",
+  "Having several official languages does not automatically unify people. In Belgium the language split divides the country, so it works as a centrifugal force, not a centripetal one.");
+Q("p2", "t3", "After independence in the 1960s, Tanzania, home to more than 100 ethnic groups, promoted Swahili as the national language in schools and government. This policy was most likely meant to",
+  ["create a centripetal force that builds national unity", "create a centrifugal force that separates ethnic groups", "replace Swahili with a European colonial language", "spread Swahili to Europe through relocation diffusion", "turn Swahili into a pidgin with no native speakers"], 0,
+  "Centripetal forces unify a state. Swahili was widely understood and not tied to any one large ethnic group, so promoting it gave Tanzanians a shared language and identity.",
+  "A centrifugal force divides people. This policy gave many groups one common language, which pulls the country together instead.");
+Q("p3", "t3", "Which concept best describes the area described?",
+  ["An ethnic enclave", "A cultural hearth", "A pidgin region", "A sacred space", "An example of assimilation"], 0,
+  "An ethnic enclave is an area where members of an ethnic group are concentrated and their culture is visible through language, food, businesses, and places of worship.",
+  "A cultural hearth is where a culture began. Vietnamese culture began in Vietnam; this neighborhood shows it after relocation diffusion.",
+  {stim: {k: "text", cap: "Described: a street in a large U.S. metropolitan area", body: "Store signs are written in Vietnamese and English. The block includes several pho restaurants, a Vietnamese-language newspaper office, a Buddhist temple, and a market selling imported Southeast Asian groceries."}});
+Q("p4", "t3", "Which of the following best explains why ethnic enclaves often form when immigrants arrive in a new country?",
+  ["Newcomers settle near people who share their language and culture and can help with housing, jobs, and support.", "National governments assign immigrants to neighborhoods by country of origin.", "Immigrants prefer to live as far as possible from others in their group.", "Ethnic enclaves form only where there are no jobs.", "Popular culture requires immigrants to live in separate neighborhoods."], 0,
+  "Chain migration and shared language draw newcomers to places where relatives and earlier migrants already live. These networks help with jobs, housing, and support, and discrimination or housing costs can also concentrate groups.",
+  "Countries like the United States do not usually assign immigrants to specific neighborhoods. Enclaves form mostly through migrant networks and choices, sometimes shaped by discrimination.");
+Q("p5", "t3", "This policy best illustrates which of the following?",
+  ["Attitudes about gender shaping how people use public space", "Cultural convergence toward one global set of transit rules", "Relocation diffusion of transit systems from Europe", "The role of ethnic enclaves in city planning", "Sequent occupance of urban transit systems"], 0,
+  "Women-only cars respond to concerns about harassment and to local gender norms. They show how cultural attitudes toward gender shape access to and use of public space.",
+  "If this were convergence, cities everywhere would adopt the same rules. These cars appear in some places and not others, reflecting local attitudes.",
+  {stim: {k: "text", cap: "Described: public transit policy", body: "In several large cities, including Tokyo, Mexico City, Cairo, and Mumbai, some train or subway cars are reserved for women, either all day or during rush hours."}});
+Q("p6", "t3", "Which conclusion is best supported by the data in the table?",
+  ["Women's role in public economic and political life is most limited in Country Y.", "A high share of women in the labor force always leads to a high share of women in the legislature.", "Women hold a majority of legislative seats in Country W.", "Country X has the lowest share of women in the paid labor force.", "Country Z has the most gender-balanced legislature."], 0,
+  "Country Y is lowest on both measures (21% and 5%), which suggests that cultural norms, laws, or both limit women's participation in work and politics more there than in the other three countries.",
+  "Country Z breaks that pattern: 66% of women work for pay, yet women hold only 12% of seats. Labor force participation and political representation don't always move together.",
+  {stim: {k: "table", cap: "Women's participation in four countries (hypothetical data)", head: ["Country", "Women in the paid labor force (% of working-age women)", "Seats in the national legislature held by women (%)"], rows: [["W", "72", "46"], ["X", "58", "31"], ["Y", "21", "5"], ["Z", "66", "12"]]}});
+Q("p7", "t3", "In a certain country, the north is mostly Muslim and the south is mostly Christian. After several northern states adopted Islamic law around 2000, tension between the regions increased. This situation best illustrates",
+  ["religion acting as a centrifugal force", "religion acting as a centripetal force", "syncretism between two universalizing religions", "the assimilation of a religious minority", "reverse hierarchical diffusion of religion"], 0,
+  "When religious differences line up with regions and with disputes over laws, religion pulls people apart. That makes it a centrifugal force. (This describes Nigeria.)",
+  "Both religions are universalizing and share Abrahamic roots, but that doesn't unify people here. The regional split and the dispute over law make religion divisive.");
+
+/* 3.4 Types of diffusion */
+Q("d1", "t4", "The map shows the year a new streaming service first became available in each settlement of Country R. The pattern shown best illustrates which type of diffusion?",
+  ["Hierarchical", "Contagious", "Relocation", "Stimulus", "Reverse hierarchical"], 0,
+  "The service reached the capital first, then the other large cities, then small towns, regardless of distance. Spreading from larger, more connected places down to smaller ones is hierarchical diffusion.",
+  "Contagious diffusion spreads to the nearest places first, like a ripple. Here, villages right next to the capital got the service last, which rules out contagious spread.",
+  {fig: "hier"});
+Q("d2", "t4", "Sequoyah, a Cherokee man, saw English speakers reading and writing in the early 1800s. Without learning to read English, he created a writing system for the Cherokee language in which each symbol stands for a syllable. Some symbols look like Latin letters but stand for completely different sounds. This is an example of",
+  ["stimulus diffusion", "relocation diffusion", "contagious diffusion", "hierarchical diffusion", "assimilation"], 0,
+  "In stimulus diffusion, the underlying idea spreads but the trait itself is changed. Sequoyah adopted the idea of writing, not the English alphabet, and built a new system for Cherokee.",
+  "Relocation diffusion happens when people move and bring a trait with them. Sequoyah didn't adopt English writing at all; he reinvented the concept for his own language.");
+Q("d3", "t4", "Which of the following best illustrates stimulus diffusion?",
+  ["McDonald's restaurants in India sell a potato-patty burger and no beef burgers.", "Hmong refugees bring their New Year festival to Minnesota.", "A dance video spreads from friend to friend at a high school.", "A fashion trend moves from Paris to smaller cities in France.", "A discount store chain expands from small towns into large cities."], 0,
+  "The fast-food burger concept spread to India, but the product was changed to respect the taboo against beef that many Hindus observe. The idea spread; the specific trait was modified. (Local adaptation like this is also called glocalization.)",
+  "Hmong refugees carrying their festival to Minnesota is relocation diffusion: the trait moved with people and wasn't redesigned for a new audience.");
+Q("d4", "t4", "A discount retail chain opened its first stores in small towns in the rural South in the 1960s. Only decades later did it open stores in the largest U.S. cities. This pattern is an example of",
+  ["reverse hierarchical diffusion", "hierarchical diffusion", "contagious diffusion", "stimulus diffusion", "relocation diffusion"], 0,
+  "Reverse hierarchical diffusion moves from smaller or less influential places up to larger, more powerful ones. Walmart is the classic example: small towns first, big cities later.",
+  "Hierarchical diffusion runs the other way, from big, influential places down to small ones.");
+Q("d5", "t4", "After the Vietnam War, thousands of Hmong refugees resettled in Minnesota and California, bringing their language, clan system, and New Year celebrations. This is best described as",
+  ["relocation diffusion", "contagious diffusion", "hierarchical diffusion", "stimulus diffusion", "time-space compression"], 0,
+  "Relocation diffusion happens when people physically move and carry their culture with them to a new place.",
+  "Contagious diffusion is expansion from person to person outward from a hearth. Here the traits arrived because the people themselves moved.");
+Q("d6", "t4", "Geographers call the Fertile Crescent, the Indus River valley, and the Huang He (Yellow River) valley cultural hearths because they",
+  ["were places where major innovations such as farming, writing, and cities developed and spread outward", "have the world's highest population densities today", "were the first places to adopt cultural traits from Europe", "are the only regions where folk cultures still exist", "are where several language families overlap"], 0,
+  "A cultural hearth is a place where cultural traits begin and from which they spread. These river valleys were early centers of agriculture, writing, and city life.",
+  "Some of these regions are crowded today, but present-day density isn't what makes a hearth. The term is about where innovations began.");
+Q("d7", "t4", "A regional dish is eaten in nearly every home in the town where it was invented, in some homes in nearby towns, and rarely in places hundreds of kilometers away. This pattern best illustrates",
+  ["distance decay", "time-space compression", "hierarchical diffusion", "sequent occupance", "stimulus diffusion"], 0,
+  "Distance decay is the decline in interaction and adoption as distance from the origin increases. The farther from the hearth, the less common the dish.",
+  "Time-space compression is the shrinking of effective distance through faster transportation and communication. It weakens distance decay; it doesn't describe it.");
+Q("d8", "t4", "A video of a new dance is posted online and spreads rapidly as people share it with friends, who share it with their own friends, until millions have seen it regardless of their age, income, or status. This spread best illustrates",
+  ["contagious diffusion", "hierarchical diffusion", "relocation diffusion", "stimulus diffusion", "reverse hierarchical diffusion"], 0,
+  "Contagious diffusion spreads rapidly from person to person, like a disease, without regard to social rank or the size of places.",
+  "Hierarchical diffusion moves through levels of importance, such as from celebrities or big cities first. This dance spread among everyday people regardless of status.");
+
+/* 3.5 Historical causes of diffusion */
+Q("h1", "t5", "Indonesia, thousands of kilometers from the Arabian Peninsula, has the largest Muslim population of any country. Which historical process best explains how Islam reached Indonesia?",
+  ["Muslim merchants and teachers traveling Indian Ocean trade routes spread Islam through commerce and personal ties.", "Arab armies conquered Southeast Asia in the 600s CE and required conversion.", "Dutch colonial rulers made Islam the official religion of their colony.", "Muslim migrants arrived through relocation diffusion in the 1900s.", "Islam reached Indonesia through stimulus diffusion from Hinduism."], 0,
+  "Islam spread to coastal Sumatra and Java mainly through trade, beginning by about the 1200s, as Muslim merchants from Arabia, Persia, and India settled in port cities and local rulers converted.",
+  "The early Arab conquests spread Islam across Southwest Asia and North Africa, but they never reached Southeast Asia. Trade carried Islam there centuries later.");
+Q("h2", "t5", "At a regional conference in Nairobi, delegates from Kenya, Tanzania, Uganda, and the eastern Democratic Republic of the Congo speak many different first languages, but they discuss the agenda in Swahili. In this setting, Swahili is functioning as a",
+  ["lingua franca", "creole", "pidgin", "dialect", "language isolate"], 0,
+  "A lingua franca is a language used for communication between people with different native languages. Swahili spread along East African trade routes and is now widely used as a shared second language.",
+  "A creole is a language that grew out of a pidgin and became the native language of a community. Here Swahili is serving as a shared second language between groups, which is the role of a lingua franca.");
+Q("h3", "t5", "Which of the following best explains the spread of Arabic across North Africa and Southwest Asia?",
+  ["Arabic spread with the expansion of Islam beginning in the 600s CE and became the language of religion, government, and trade.", "European colonial powers adopted Arabic to run their colonies.", "Arabic developed as a pidgin among traders crossing the Sahara.", "Arabic diffused hierarchically from Paris and London in the 1800s.", "Arabic spread because it belongs to the Indo-European language family."], 0,
+  "Arab Muslim armies, traders, and scholars carried Arabic across the region within about a century of Muhammad's death. Because the Quran is in Arabic, the language spread with the faith and became a lingua franca.",
+  "European colonizers mostly spread their own languages, such as French in North Africa. Arabic was established in the region more than 1,000 years before European colonization.");
+Q("h4", "t5", "English is now the most widely used lingua franca in the world. Which of the following best explains this?",
+  ["British colonialism spread English across a vast empire, and later U.S. economic and cultural power reinforced it.", "English has more native speakers than any other language.", "English is the oldest language in the Indo-European family.", "English is an official language of every member of the United Nations.", "English spread mainly through stimulus diffusion from Latin."], 0,
+  "The British Empire planted English on every inhabited continent, and in the 1900s American business, technology, science, and media made it the default shared language.",
+  "Mandarin Chinese has the most native speakers, and Spanish also has more than English. English dominates because so many people speak it as a second language.");
+Q("h5", "t5", "The language described is best classified as a",
+  ["creole", "pidgin", "dialect of French", "lingua franca with no native speakers", "language isolate"], 0,
+  "A creole develops when a pidgin becomes the native language of a community and grows a full grammar and vocabulary. Haitian Creole is the first language of nearly all Haitians and an official language of Haiti.",
+  "A pidgin is a simplified contact language that no one speaks natively. Haitian Creole may have begun that way, but once children grew up speaking it as a first language, it became a creole.",
+  {stim: {k: "text", cap: "Described: the origin of a language", body: "On French-run sugar plantations in colonial Haiti (then called Saint-Domingue), enslaved Africans who spoke many different languages developed a new way to communicate. Most of its words came from French, but its grammar shows West African influence. Today nearly all Haitians speak it as their first language."}});
+Q("h6", "t5", "Which conclusion is best supported by the table?",
+  ["Colonial history strongly influenced which languages became official after independence.", "Indigenous African languages are no longer spoken in these countries.", "Countries colonized by the same power always chose identical official languages.", "Each official language was chosen because it was the most common first language.", "Swahili is an official language in West Africa."], 0,
+  "In every case the former colonizer's language is official, showing how colonialism spread European languages that stayed useful for government, schooling, and international ties after independence.",
+  "Kenya and Nigeria were both British colonies, but Kenya also made Swahili official. Shared colonial history made outcomes similar, not identical.",
+  {stim: {k: "table", cap: "Official languages of selected African countries", head: ["Country", "Former colonial ruler", "Official language(s)"], rows: [["Senegal", "France", "French"], ["Nigeria", "United Kingdom", "English"], ["Mozambique", "Portugal", "Portuguese"], ["Angola", "Portugal", "Portuguese"], ["Kenya", "United Kingdom", "English, Swahili"]]}});
+Q("h7", "t5", "Most of Latin America speaks Spanish, but Brazil, its largest country, speaks Portuguese. Which of the following best explains this?",
+  ["Portugal colonized Brazil after the Treaty of Tordesillas divided newly claimed lands between Spain and Portugal.", "Portuguese immigrants arrived in the 1900s and replaced Spanish.", "Brazil chose Portuguese as a lingua franca after independence to unite Indigenous groups.", "Portuguese developed in Brazil as a creole of Spanish and Indigenous languages.", "Spanish speakers in Brazil assimilated into Portuguese culture during the 1800s."], 0,
+  "The 1494 Treaty of Tordesillas drew a line giving Portugal the lands to the east, which included the eastern bulge of South America. Portugal claimed Brazil in 1500 and began settling it in the 1530s, spreading Portuguese.",
+  "Portuguese was established in Brazil by colonization in the 1500s, centuries before 1900s immigration. Brazil was never Spanish-speaking to begin with.");
+Q("h8", "t5", "Buddhism reached China during the first centuries CE. Which of the following best explains this diffusion?",
+  ["Monks and merchants traveling Silk Road trade routes through Central Asia carried Buddhist teachings east.", "Chinese emperors conquered India and brought Buddhism back as a prize.", "European missionaries introduced Buddhism to China in the 1500s.", "Indian colonists seized Chinese territory and settled it.", "Buddhism developed separately in China at the same time it developed in India."], 0,
+  "Trade networks carry ideas as well as goods. Buddhist monks and merchants moved along the Silk Road through Central Asia, and Buddhism was established in China by around the 1st century CE.",
+  "India never colonized China. Buddhism spread through monks, traders, and converts, not through settlers seizing land.");
+
+/* 3.6 Contemporary causes of diffusion */
+Q("m1", "t6", "The trend shown in the table best illustrates",
+  ["time-space compression", "distance decay", "sequent occupance", "relocation diffusion", "cultural divergence"], 0,
+  "Time-space compression is the shrinking of the time needed for information, goods, and people to move between places. Each new technology made London and New York effectively closer.",
+  "Distance decay says interaction falls off with distance. The table shows technology weakening that effect, which is time-space compression.",
+  {stim: {k: "table", cap: "Approximate time to send a message from London to New York", head: ["Year", "Method", "Time"], rows: [["1840", "Letter by steamship", "About 2 weeks"], ["1870", "Transatlantic telegraph cable", "Minutes"], ["1990s", "Email", "Seconds"], ["2020s", "Video call", "Instant (real time)"]]}});
+Q("m2", "t6", "Somali families in Minneapolis use messaging apps and satellite television to follow news, music, and religious lectures from Somalia every day. Which statement best describes the effect of this technology?",
+  ["It helps migrants keep strong cultural ties to their homeland, which can slow assimilation.", "It forces migrants to assimilate faster into mainstream American culture.", "It prevents any cultural exchange between migrants and their neighbors.", "It shows hierarchical diffusion from small towns to large cities.", "It turns the migrants' native language into a pidgin."], 0,
+  "Communication technology lets migrants stay connected to their homeland's media, language, and religious life from far away, so they can keep their culture strong in a new country.",
+  "Constant contact with homeland media tends to reinforce the original culture rather than replace it, so it usually slows assimilation instead of speeding it up.");
+Q("m3", "t6", "Which of the following best explains how urbanization contributes to cultural diffusion?",
+  ["Cities bring together people from many backgrounds, increasing contact that spreads and blends cultural traits.", "Cities isolate each group so traditions stay exactly the same.", "Urbanization reduces access to media and communication technology.", "Urbanization makes folk cultures spread faster than popular cultures.", "Urbanization ends relocation diffusion because people stop moving."], 0,
+  "Cities concentrate migrants, businesses, and media. Daily contact among diverse groups speeds the spread and mixing of foods, music, language, and ideas, and migrants carry city culture back to their rural home areas.",
+  "Ethnic neighborhoods can preserve some traditions, but cities still increase contact between groups overall. Traditions in cities change and mix more, not less.");
+Q("m4", "t6", "Which contemporary process best explains why many minority languages around the world are losing speakers?",
+  ["Globalization and mass media reward speaking widely used languages, so younger generations shift to them.", "Colonial governments are banning Indigenous languages in schools today.", "Minority languages are spreading too quickly through contagious diffusion.", "Time-space compression has made minority-language communities more isolated.", "Popular culture now spreads mainly in minority languages."], 0,
+  "In a globalized economy, languages like English, Spanish, and Mandarin open doors to jobs, education, and media. Young people often shift toward them, and languages with few young speakers decline.",
+  "Colonial-era language bans were a major historical cause of language loss, but the question asks about a contemporary process. Today the main pressure comes from globalization and media.");
+Q("m5", "t6", "The worldwide popularity of K-pop since the 2010s, with large fan bases in Latin America, Europe, and the Middle East, best illustrates which of the following?",
+  ["Internet platforms let popular culture from outside the United States and Europe diffuse rapidly around the world.", "Relocation diffusion by Korean migrants is the main reason for its spread.", "Folk culture is diffusing slowly from rural Korean villages.", "Colonialism is spreading the Korean language.", "Cultural divergence is separating Korea from the rest of the world."], 0,
+  "Streaming and social media let fans anywhere discover and share music instantly. K-pop shows that, with these tools, popular culture can come from hearths beyond the United States and Europe.",
+  "Korean communities exist abroad, but most K-pop fans are not Korean. Its spread came through online media, not mainly through people moving.");
+Q("m6", "t6", "During the 2010–2011 protests known as the Arab Spring, activists in Tunisia and Egypt used social media to organize, and protest tactics spread quickly to other countries in the region. This best illustrates",
+  ["communication technology speeding up the diffusion of ideas across borders", "relocation diffusion as protesters migrated to Europe", "stimulus diffusion of a religion", "cultural divergence caused by isolation", "a lingua franca spreading through colonialism"], 0,
+  "Social media let images, messages, and tactics jump from person to person and country to country within days, a clear case of technology accelerating diffusion.",
+  "Some people did migrate during and after these events, but the protests spread across borders through communication, not because protesters moved.");
+Q("m7", "t6", "A survey finds that teenagers in remote villages of a country now follow the same streaming shows, sneaker brands, and music as teenagers in its capital, although their grandparents did not. Which factor best explains this change?",
+  ["Smartphones and internet access have reduced the effect of distance on the diffusion of popular culture.", "The villages have become more isolated from the capital.", "Folk culture from the villages has spread to the capital.", "The government has required villages to adopt the capital's culture.", "The grandparents spread popular culture through relocation diffusion."], 0,
+  "Mobile internet brings the same media to villages and cities at the same moment. Distance from the capital matters less, so popular culture reaches places that once kept more distinct folk traditions.",
+  "If village folk culture had spread to the capital, teens in the capital would be adopting village traditions. The survey shows the reverse: popular culture reaching the villages.");
+
+/* 3.7 Diffusion of religion and language */
+Q("r1", "t7", "The diagram shows part of the Indo-European language family. Which language belongs in the box marked “?”",
+  ["Dutch", "French", "Polish", "Persian", "Finnish"], 0,
+  "Dutch is a West Germanic language, closely related to English and German. All three descend from the Germanic branch.",
+  "English borrowed many French words after the Norman conquest of 1066, but French is a Romance language descended from Latin, so it belongs with Spanish and Italian. (Finnish isn't Indo-European at all; it is Uralic.)",
+  {fig: "tree"});
+Q("r2", "t7", "Which statement best distinguishes the Anatolian hypothesis from the Kurgan hypothesis about the spread of Indo-European languages?",
+  ["The Anatolian hypothesis ties the spread to farming from present-day Turkey; the Kurgan hypothesis ties it to horse-riding herders from the steppes north of the Black and Caspian Seas.", "The Anatolian hypothesis ties the spread to horse-riding warriors from the steppes; the Kurgan hypothesis ties it to farmers from present-day Turkey.", "Both hypotheses place the hearth in northern India and the spread in the 1500s CE.", "The Anatolian hypothesis explains Sino-Tibetan languages, while the Kurgan hypothesis explains Indo-European.", "Both hypotheses say Indo-European languages spread mainly through European colonialism."], 0,
+  "The Anatolian hypothesis (Colin Renfrew) says Proto-Indo-European spread peacefully with agriculture from Anatolia more than 8,000 years ago. The Kurgan hypothesis (Marija Gimbutas) says it spread later, about 6,000 years ago, through migration and conquest by horse-riding peoples of the steppe.",
+  "This choice swaps the two. Remember: Anatolia goes with farming; Kurgan (named for burial mounds) goes with horses on the steppe.");
+Q("r3", "t7", "Supporters of the Kurgan hypothesis point to evidence of early horse domestication and wheeled wagons on the steppes of present-day Ukraine and southern Russia. According to this hypothesis, Indo-European languages spread mainly through",
+  ["migration and conquest by mobile herders moving west and south", "the slow spread of farming communities out of Anatolia", "trade along the Silk Road in the first century CE", "colonialism by European empires", "stimulus diffusion of writing systems"], 0,
+  "Gimbutas argued that horse-riding peoples expanded out of the steppe in waves, carrying their language as they migrated and conquered, a form of relocation diffusion.",
+  "Spread with farming out of Anatolia is the rival Anatolian hypothesis, not the Kurgan hypothesis.");
+Q("r4", "t7", "Basque, spoken in the western Pyrenees of Spain and France, is not related to any other known language. Which statement best explains its survival?",
+  ["Basque is a language isolate that likely predates Indo-European languages in the region, and its mountainous homeland helped protect it.", "Basque is a Romance dialect that changed after the region was cut off.", "Basque developed recently as a creole of Spanish and French.", "Basque survived because it became Europe's lingua franca.", "Basque arrived through relocation diffusion from South Asia in the 1800s."], 0,
+  "Basque is a language isolate with no living relatives. It was probably spoken in the area before Indo-European languages arrived, and relative isolation in the mountains helped it endure while neighboring languages were replaced.",
+  "Basque is not Romance; its grammar and vocabulary are unrelated to Latin. Spanish and French are Romance, but Basque is entirely separate.");
+Q("r5", "t7", "In the United States, people in different regions may call a sweetened carbonated drink “soda,” “pop,” or “coke.” These regional differences in vocabulary are best described as",
+  ["differences in dialect", "an isogloss", "different language branches", "a pidgin", "stimulus diffusion"], 0,
+  "A dialect is a regional variety of a language with its own vocabulary, pronunciation, or grammar. Soda versus pop is a vocabulary difference within American English.",
+  "An isogloss is the boundary line on a map where one word or pronunciation gives way to another. The words themselves are dialect features; the isogloss is the line between them.");
+Q("r6", "t7", "Religion Q in the table is most likely",
+  ["Hinduism", "Buddhism", "Sikhism", "Islam", "Christianity"], 0,
+  "Hinduism has no single founder, developed over thousands of years in South Asia, does not actively seek converts, and most Hindus live in India. Those are traits of an ethnic religion.",
+  "Buddhism began in the same region, but it has a founder (Siddhartha Gautama) and spread widely across Asia, making it a universalizing religion.",
+  {stim: {k: "table", cap: "Characteristics of two religions", head: ["", "Religion P", "Religion Q"], rows: [["Founder", "A single founder whose teachings began the religion", "No single founder; developed over thousands of years"], ["Seeking converts", "Encourages spreading its message to others", "Little effort to convert others"], ["Distribution", "Followers on every inhabited continent", "Most followers live in one country in South Asia"]]}});
+Q("r7", "t7", "Buddhism began in northern India, yet today Buddhists make up less than 1 percent of India's population. Which statement best describes Buddhism's diffusion?",
+  ["It spread widely to East and Southeast Asia through missionaries and traders while declining in its hearth.", "It never spread beyond India because it is an ethnic religion.", "It spread only through relocation diffusion to Europe and North America.", "It spread mainly through European colonialism in the 1800s.", "It remained the majority religion of India until the 1900s."], 0,
+  "Missionaries, monks, and merchants carried Buddhism to Sri Lanka, Southeast Asia, China, Korea, and Japan. In India itself, Hinduism remained dominant and Buddhism faded.",
+  "Buddhism is a universalizing religion, with a founder and a message meant for everyone, and it spread far beyond India.");
+Q("r8", "t7", "In the 200s BCE, the Mauryan emperor Ashoka converted to Buddhism and promoted it across his empire, carving Buddhist teachings on stone pillars and supporting monasteries. After the emperor adopted it, the religion spread more widely among his subjects. This best illustrates which type of diffusion?",
+  ["Hierarchical", "Contagious", "Reverse hierarchical", "Stimulus", "Relocation"], 0,
+  "When a powerful ruler adopts a religion and promotes it from the top down, it spreads hierarchically, from people with power to the wider population.",
+  "Contagious diffusion spreads person to person regardless of status. Ashoka's influence came from his position at the top of society.");
+Q("r9", "t7", "Christianity spread first through the cities of the Roman Empire and grew rapidly after Emperor Constantine legalized it in 313 CE and later emperors made it the official religion. This spread best illustrates",
+  ["hierarchical diffusion through urban centers and political leaders", "reverse hierarchical diffusion from rural villages to cities", "stimulus diffusion that changed Christianity into a new religion", "relocation diffusion by European colonists in the Americas", "cultural divergence within the Roman Empire"], 0,
+  "Early Christianity moved through major cities along Roman roads and sea routes, then gained official support from emperors. Spreading through important places and powerful people is hierarchical diffusion.",
+  "Early Christianity was concentrated in cities and reached the countryside later, so it spread from cities outward, the opposite of reverse hierarchical diffusion.");
+Q("r10", "t7", "Which of the following countries has a majority belonging to the smaller of this religion's two main branches?",
+  ["Iran", "Saudi Arabia", "Indonesia", "Egypt", "Morocco"], 0,
+  "The map describes Islam. Most Muslims are Sunni, but Shia Muslims form the majority in a few countries, including Iran, Iraq, Azerbaijan, and Bahrain.",
+  "Saudi Arabia contains Islam's hearth and its holiest cities, Mecca and Medina, but its majority is Sunni. Its Shia minority lives mainly in the east.",
+  {stim: {k: "text", cap: "Described: a historical map", body: "A religion begins in the Arabian Peninsula in the 600s CE. Within about 100 years it covers North Africa, most of the Iberian Peninsula, and Persia. Later it reaches West Africa across the Sahara and Southeast Asia by sea."}});
+Q("r11", "t7", "Large Sikh communities live in Surrey, British Columbia; Brampton, Ontario; and parts of London, England, far from Sikhism's hearth in the Punjab region of South Asia. This distribution is mainly the result of",
+  ["relocation diffusion through migration", "hierarchical diffusion from political leaders", "missionaries converting large numbers of local people", "stimulus diffusion of Hindu beliefs", "colonial governments imposing Sikhism"], 0,
+  "Sikhs carried their faith with them when they migrated, especially during the 1900s, to Britain, Canada, and other countries. The religion spread because people moved: relocation diffusion.",
+  "Sikhism is classified as universalizing because its message is open to everyone, but Sikhs generally don't run missionary campaigns. Communities abroad grew mainly through migration.");
+Q("r12", "t7", "Judaism is classified as an ethnic religion even though Jewish communities exist on many continents. Which statement best explains this classification?",
+  ["Its spread came mainly from the relocation of Jewish people, not from efforts to convert others.", "Any religion with fewer than 20 million followers is automatically classified as ethnic.", "It is polytheistic, while universalizing religions are monotheistic.", "It has no sacred spaces or holy cities.", "It began in East Asia, far from other religious hearths."], 0,
+  "Judaism is tied to a people, their history, and a homeland. Its worldwide presence comes from diaspora, the relocation of Jewish communities over many centuries, rather than from missionary expansion.",
+  "Size doesn't decide the category. Sikhism has far fewer followers than Hinduism, yet Sikhism is universalizing and Hinduism is ethnic.");
+Q("r13", "t7", "Shrines marked by torii gates, often built near mountains, waterfalls, and old trees believed to hold spirits called kami, are common in Japan. These features reflect which religion?",
+  ["Shinto, an ethnic religion", "Shinto, a universalizing religion", "Buddhism, an ethnic religion", "Sikhism, a universalizing religion", "Hinduism, an ethnic religion"], 0,
+  "Shinto is Japan's ethnic religion. It centers on kami present in nature, is closely tied to Japan's landscape and people, and makes little effort to convert outsiders.",
+  "Shinto is right, but it is classified as ethnic, not universalizing: it is rooted in one people and place and doesn't seek converts.");
+Q("r14", "t7", "Hindu temples are a prominent part of the cultural landscape in Trinidad and Tobago, Guyana, Fiji, and Mauritius. Which of the following best explains this pattern?",
+  ["From the 1830s to about 1917, British colonial plantations brought indentured workers from India, who carried Hinduism with them.", "Hindu missionaries converted most of the local populations in the 1900s.", "Hinduism diffused hierarchically from London to the colonies.", "These countries were the original hearth of Hinduism.", "Hinduism spread through stimulus diffusion from Christianity."], 0,
+  "After slavery was abolished in the British Empire, planters recruited workers from India under indenture contracts. Those workers and their descendants brought Hinduism, an example of relocation diffusion tied to colonialism.",
+  "Hinduism is an ethnic religion that doesn't generally seek converts. These communities grew from the migration of Indian workers, not from missionary conversion.");
+Q("r15", "t7", "Malagasy, the main language of Madagascar off the east coast of Africa, belongs to the Austronesian family, and its closest relatives are spoken on the island of Borneo in Southeast Asia. Which of the following best explains this?",
+  ["Seafaring migrants from Southeast Asia crossed the Indian Ocean and settled Madagascar roughly 1,500 years ago.", "The Bantu migration carried Austronesian languages across southern Africa.", "French colonial rulers brought Malagasy from their Asian colonies.", "Malagasy developed as a pidgin among European traders.", "Malagasy is a language isolate unrelated to any other language."], 0,
+  "Austronesian speakers were expert sailors who spread from Taiwan across the Pacific and Indian Oceans. Settlers from the Borneo region reached Madagascar roughly 1,500 years ago, carrying their language: relocation diffusion.",
+  "The Bantu migration spread Niger-Congo (Bantu) languages across central, eastern, and southern Africa. Malagasy is Austronesian, not Bantu.");
+
+/* 3.8 Effects of diffusion */
+Q("e1", "t8", "Día de los Muertos in Mexico combines Indigenous traditions of honoring ancestors with the Catholic holidays of All Saints' Day and All Souls' Day on November 1 and 2. This is an example of",
+  ["syncretism", "assimilation", "cultural divergence", "ethnocentrism", "relocation diffusion"], 0,
+  "Syncretism is the blending of traits from different cultures into a new practice. Día de los Muertos fuses pre-Hispanic ancestor traditions with Catholic observances.",
+  "Assimilation would mean the Indigenous traditions disappeared into the dominant culture. Instead, they survived and merged with Catholic practice to form something new.");
+Q("e2", "t8", "A family moves from Vietnam to Houston. The parents learn English for work and the family celebrates Thanksgiving, but at home they speak Vietnamese, cook Vietnamese food, and attend a Vietnamese Buddhist temple. The family's experience best illustrates",
+  ["acculturation", "assimilation", "syncretism", "cultural divergence", "multiculturalism"], 0,
+  "Acculturation is adopting some traits of a new culture while keeping core traits of your own. The family takes on English and Thanksgiving while keeping its language, food, and religion.",
+  "Assimilation is the more complete process in which a group's original culture fades and it becomes culturally hard to tell apart from the dominant group. This family keeps its core traits.");
+Q("e3", "t8", "Since 1971, Canada has had an official policy encouraging immigrant and minority groups to keep their distinct cultural identities while participating fully in Canadian society. Canada's approach is best described as",
+  ["multiculturalism", "assimilation", "ethnocentrism", "cultural convergence", "sequent occupance"], 0,
+  "Multiculturalism is the coexistence of many cultural groups in one society, each keeping its own identity. Canada's approach is often called a “cultural mosaic.”",
+  "Assimilation expects groups to give up their distinct traits and blend into one dominant culture (the “melting pot” idea). Canada's policy encourages the opposite.");
+Q("e4", "t8", "Quebec's language laws require French on commercial signs and make French the main language of work and of schooling for most children. These laws are best described as",
+  ["an effort to resist cultural convergence with English-speaking North America", "an example of acculturation to English-speaking culture", "an example of multiculturalism that gives all languages equal status", "the result of time-space compression", "stimulus diffusion of the English language"], 0,
+  "Surrounded by hundreds of millions of English speakers, Quebec uses law to protect French and its distinct identity, pushing back against cultural convergence.",
+  "Multiculturalism treats many cultures as equal. Quebec's laws deliberately give French priority over other languages, including English.");
+Q("e5", "t8", "Which of the following is the best example of Culture A in the table?",
+  ["Old Order Amish families who travel by horse and buggy and make quilts by hand", "Country music concerts streamed to a national audience", "A global sneaker brand's newest release", "A video game played by millions of people online", "A fast-food chain opening restaurants in a new country"], 0,
+  "Culture A describes folk culture. The Old Order Amish are a small, rural, close-knit group whose traditions change slowly and spread mainly as families move to new farming areas.",
+  "Country music grew out of rural folk traditions, but a nationally streamed concert reaches a huge, diverse audience through mass media. That makes it popular culture (Culture B).",
+  {stim: {k: "table", cap: "Two types of culture", head: ["Feature", "Culture A", "Culture B"], rows: [["Group size", "Small, close-knit", "Large, diverse"], ["Setting", "Mostly rural", "Mostly urban and suburban"], ["Pace of change", "Slow; traditions last for generations", "Fast; trends change quickly"], ["Main way it spreads", "Relocation, as people move", "Mass media and the internet"]]}});
+Q("e6", "t8", "Business districts in Shanghai, Dubai, and São Paulo are filled with similar glass skyscrapers, international hotel chains, and the same coffee and fast-food brands. Which concept best describes this pattern?",
+  ["Cultural convergence", "Cultural divergence", "Sequent occupance", "Folk culture", "Syncretism"], 0,
+  "Cultural convergence is the process of cultures becoming more alike through contact and globalization. Similar landscapes in distant cities, sometimes called placelessness, are one result.",
+  "Sequent occupance describes layers left by different groups over time in one place. This pattern is about many places becoming alike at the same time.");
+Q("e7", "t8", "In 1982, Māori communities in New Zealand began “language nest” preschools where young children are immersed in the Māori language. These programs are best understood as a response to",
+  ["the decline of Māori caused by pressure to assimilate into English-speaking culture", "the spread of Māori as a global lingua franca", "syncretism between Māori and English", "the arrival of Māori through recent relocation diffusion", "the use of Māori as a pidgin by traders"], 0,
+  "For generations, schooling and social pressure pushed Māori families toward English, and fewer children learned Māori. Language nests are a revitalization effort to reverse that loss and keep a distinct culture alive.",
+  "Language nests don't blend anything; they immerse children fully in Māori to restore the language, not to create a new mixed one.");
+Q("e8", "t8", "Which of the following is the best example of syncretism?",
+  ["Vodou in Haiti, which links West African spirits with Catholic saints", "A Turkish immigrant in Germany who learns German while continuing to practice Islam", "A city that hosts separate festivals for each of its immigrant groups", "Grandchildren of immigrants who speak only the dominant language", "A rural community that rejects modern technology to keep its traditions"], 0,
+  "Syncretism blends elements of different cultures into something new. Haitian Vodou combines West African religious traditions with Catholic saints and rituals.",
+  "The Turkish immigrant adopts German while keeping Islam, but the two stay separate. Taking on new traits while keeping your own is acculturation, not blending.");
+
+const FIGCAP = {
+  hier: "Map of Country R (schematic). Each label shows the year the service arrived. Circle size shows population.",
+  tree: "Simplified: many branches and languages are left out."
+};
+const FIG = {
+  hier: () => {
+    const pts = [[150, 150, 16, 1], [470, 90, 11, 2], [500, 215, 11, 2], [320, 70, 6, 3], [360, 240, 6, 3], [570, 150, 6, 3], [400, 155, 6, 3], [95, 105, 3.5, 4], [215, 105, 3.5, 4], [215, 200, 3.5, 4], [100, 205, 3.5, 4]];
+    const dots = pts.map(([x, y, r, yr]) => `<circle class="city" cx="${x}" cy="${y}" r="${r}"/><text class="tx b" x="${x + r + 5}" y="${y + 4}">Yr ${yr}</text>`).join("");
+    const leg = [[16, "Capital"], [11, "Large city"], [6, "Small town"], [3.5, "Village"]].map(([r, t], i) => `<circle class="city" cx="${70 + i * 140}" cy="318" r="${r}"/><text class="tx s" x="${70 + i * 140 + r + 7}" y="322">${t}</text>`).join("");
+    return `<svg viewBox="0 0 640 340" role="img" aria-label="Schematic map. The capital got the service in year 1, two large cities far away in year 2, four small towns in year 3, and four villages right next to the capital in year 4."><path class="land" d="M40 80 Q 110 24 260 36 Q 420 20 560 52 Q 628 92 614 170 Q 602 258 470 280 Q 300 296 150 276 Q 44 254 32 170 Z"/>${dots}<text class="tx s" x="150" y="186" text-anchor="middle">Capital</text>${leg}</svg>`;
+  },
+  tree: () => {
+    const br = [["Germanic", ["English", "German", "?"]], ["Romance", ["Spanish", "Italian", "Portuguese"]], ["Balto-Slavic", ["Russian", "Czech", "Ukrainian"]], ["Indo-Iranian", ["Hindi", "Bengali", "Urdu"]]];
+    let s = `<rect class="bx2" x="205" y="10" width="230" height="36" rx="6"/><text class="tx b" x="320" y="33" text-anchor="middle">Indo-European family</text><path class="ln" d="M320 46 V66 M88 66 H556"/>`;
+    br.forEach(([name, langs], i) => {
+      const cx = 88 + i * 156;
+      s += `<path class="ln" d="M${cx} 66 V84 M${cx} 116 V132"/><rect class="bx2" x="${cx - 70}" y="84" width="140" height="32" rx="6"/><text class="tx b" x="${cx}" y="105" text-anchor="middle">${name}</text><rect class="bx" x="${cx - 70}" y="132" width="140" height="104" rx="6"/>`;
+      langs.forEach((l, j) => {
+        const y = 160 + j * 30;
+        s += l === "?" ? `<rect class="q" x="${cx - 26}" y="${y - 17}" width="52" height="24" rx="5"/><text class="tx qm" x="${cx}" y="${y}" text-anchor="middle">?</text>` : `<text class="tx" x="${cx}" y="${y}" text-anchor="middle">${l}</text>`;
+      });
+    });
+    return `<svg viewBox="0 0 640 250" role="img" aria-label="Tree diagram. Indo-European family splits into four branches. Germanic: English, German, and a box marked with a question mark. Romance: Spanish, Italian, Portuguese. Balto-Slavic: Russian, Czech, Ukrainian. Indo-Iranian: Hindi, Bengali, Urdu.">${s}</svg>`;
+  }
+};
+const MARK = `<svg class="mark" viewBox="0 0 140 112" aria-hidden="true"><defs><marker id="hm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs><path d="M14 34 Q 34 8 70 14 T 126 26 Q 136 56 120 82 T 62 102 Q 22 100 12 72 Z" fill="var(--pri-soft)" stroke="var(--line-2)"/><g stroke="var(--muted)" stroke-width="1.5" fill="none" marker-end="url(#hm)"><path d="M54 48 L92 32"/><path d="M56 58 L96 66"/><path d="M48 64 L64 84"/></g><circle cx="44" cy="54" r="10" fill="var(--acc)"/><circle cx="102" cy="30" r="6" fill="var(--pri)"/><circle cx="105" cy="68" r="5" fill="var(--pri)"/><circle cx="70" cy="90" r="4" fill="var(--pri)"/><text x="44" y="80" text-anchor="middle">hearth</text></svg>`;
+
+const FRQS = [
+  {id: "f1", title: "Religion: hearths, diffusion, and landscapes", tag: "Topics 3.2, 3.3, 3.7",
+   blurb: "Universalizing vs. ethnic religions, how they spread, how they show up on the landscape, and how they can divide a state.",
+   intro: "Religions differ in where they began, how they spread, and how they shape the places where their followers live.",
+   parts: [
+    {k: "A", q: "Define a universalizing religion.",
+     model: "A universalizing religion tries to appeal to all people, wherever they live and whatever their ethnicity, and its message is open to anyone who wants to join. Examples include Christianity, Islam, Buddhism, and Sikhism.",
+     pts: "Earns the point for stating that the religion seeks to appeal to all people or is open to anyone regardless of ethnicity or location (actively seeking converts is also accepted). Listing examples alone does not earn the point."},
+    {k: "B", q: "Identify the hearth of ONE universalizing religion.",
+     model: "Islam: the Arabian Peninsula, at Mecca and Medina in present-day Saudi Arabia.",
+     pts: "Earns the point for a correct religion-and-hearth pair: Christianity, the eastern Mediterranean (Bethlehem and Jerusalem, in present-day Israel and Palestine); Islam, the Arabian Peninsula (Mecca, Medina); Buddhism, northeastern India and southern Nepal (Lumbini, Bodh Gaya); Sikhism, the Punjab region of northwestern India and Pakistan."},
+    {k: "C", q: "Describe ONE way a universalizing religion diffused from its hearth.",
+     model: "Christianity spread hierarchically through the Roman Empire. Missionaries carried it first to major cities along Roman roads and sea routes, and after Emperor Constantine legalized it in 313 CE, support from rulers helped it spread to the wider population.",
+     pts: "Earns the point for describing how a specific universalizing religion spread: Christianity through Roman cities and emperors, or later with European colonization; Islam through conquest across North Africa and Persia and through trade to West Africa and Southeast Asia; Buddhism through Ashoka's support and missionaries and through Silk Road traders. Naming a diffusion type without describing how it happened does not earn the point."},
+    {k: "D", q: "Explain why ethnic religions such as Hinduism tend to remain concentrated in one region.",
+     model: "Hinduism is closely tied to the identity and landscape of South Asia. Its sacred rivers, mountains, and pilgrimage sites, such as the Ganges and Varanasi, are in India, and it does not actively seek converts. It grows mainly as children are born into Hindu families, so most Hindus remain in the region where it began.",
+     pts: "Earns the point for a reason that is linked to staying concentrated: little or no effort to convert outsiders; membership tied to ethnicity, ancestry, or birth; or rituals and sacred sites tied to the physical features of one homeland."},
+    {k: "E", q: "Explain how relocation diffusion has spread an ethnic religion beyond its hearth.",
+     model: "Judaism spread through the diaspora. Over many centuries, including after the Romans destroyed the Temple in Jerusalem in 70 CE, Jewish communities moved across the Mediterranean, into Europe, and later to the Americas, bringing their religion with them. Today the largest Jewish populations are in Israel and the United States.",
+     pts: "Earns the point for explaining that followers migrated and carried the religion with them, using a real example: the Jewish diaspora; Hindus who moved as indentured workers to Trinidad and Tobago, Guyana, Fiji, or Mauritius; or South Asian migration to the United Kingdom, Canada, or the United States."},
+    {k: "F", q: "Describe ONE way a religion is expressed in the cultural landscape.",
+     model: "In Muslim-majority cities, mosques with domes and tall minarets stand out on the skyline, and the call to prayer is broadcast from them five times a day. Mecca is a sacred space where millions of pilgrims gather each year for the hajj.",
+     pts: "Earns the point for describing a specific, visible landscape feature tied to a religion: places of worship (mosques, churches, Hindu temples, Sikh gurdwaras, Shinto shrines with torii gates); sacred spaces (Mecca, Jerusalem, Varanasi, Bodh Gaya, Amritsar); burial practices (cemeteries vs. cremation ghats); or religious place names (San Francisco, St. Louis)."},
+    {k: "G", q: "Explain ONE way religion can act as a centrifugal force within a state.",
+     model: "When a state's regions follow different religions, religion can pull the country apart. In Nigeria, the north is mostly Muslim and the south is mostly Christian. When northern states adopted Islamic law around 2000, disputes and violence between the groups deepened regional divisions and weakened national unity.",
+     pts: "Earns the point for explaining how religious differences divide people within a state: conflict between religious groups, demands for separate laws or territory, discrimination against a religious minority, or rival claims to sacred spaces. The 1947 partition of British India, Northern Ireland, and Sudan's split are also acceptable examples."}
+   ]},
+  {id: "f2", title: "Language: colonialism, lingua francas, and change", tag: "Topics 3.3, 3.5, 3.6, 3.7",
+   blurb: "A described map of Africa's official languages: colonial roots, Swahili and Arabic, creoles, technology, and language as a dividing force.",
+   intro: "Use the described map below to answer all parts of the question.",
+   stim: {k: "text", cap: "Described map: official languages of selected African countries", body: "French is an official language in many countries of West and Central Africa, including Senegal, Côte d'Ivoire, and the Democratic Republic of the Congo. English is official in countries such as Nigeria, Ghana, Zambia, and Kenya. Portuguese is official in Angola and Mozambique. Arabic is official across North Africa, from Morocco to Egypt. Swahili is official in Tanzania and Kenya and is widely spoken as a second language across East Africa. Cameroon has two official languages, French and English."},
+   parts: [
+    {k: "A", q: "Identify the historical process that best explains why English, French, and Portuguese are official languages in many of the countries described.",
+     model: "European colonialism. Portugal held colonies in Angola and Mozambique from the 1500s, and in the late 1800s Britain, France, Portugal, and other powers divided nearly all of Africa among themselves. The colonizers' languages became the languages of government, courts, and schools.",
+     pts: "Earns the point for colonialism or imperialism (European colonization, the Scramble for Africa, or the Berlin Conference are also accepted). “Globalization” or “trade” alone does not earn the point."},
+    {k: "B", q: "Define lingua franca.",
+     model: "A lingua franca is a language used for communication among people who speak different native languages, such as Swahili in East Africa or English in international business.",
+     pts: "Earns the point for stating that it is a common or shared language used between speakers of different first languages. Naming an example without a definition does not earn the point."},
+    {k: "C", q: "Explain why many African countries kept a former colonial language as an official language after independence.",
+     model: "Many African countries contain dozens or even hundreds of ethnic and language groups. Choosing one of those languages could favor one group over the others, so a colonial language served as a neutral common language. It was also already used in government, schools, and law, and it connects the country to international trade and diplomacy.",
+     pts: "Earns the point for a reason with an explanation, such as: it is neutral among many ethnic or language groups; government, education, and courts already ran in it; leaders were educated in it; or it gives access to international trade, diplomacy, and higher education."},
+    {k: "D", q: "Explain how the spread of Arabic across North Africa is connected to the diffusion of a religion.",
+     model: "Arabic spread with Islam. Beginning in the 600s CE, Arab Muslim armies, traders, and scholars carried Islam west across North Africa. Because the Quran is written and recited in Arabic, converts learned the language, and Arabic became the main language of religion, government, and daily life in much of the region.",
+     pts: "Earns the point for linking Arabic's spread to the expansion of Islam (by conquest, trade, or conversion) and explaining why the language followed the religion, such as the Quran and prayers being in Arabic or Arabic becoming the language of Muslim rulers."},
+    {k: "E", q: "Describe the process by which a creole language develops.",
+     model: "When groups with no shared language are brought together, such as on colonial plantations or in trading ports, they create a simplified pidgin for basic communication. When children grow up speaking that pidgin as their first language, it develops a full grammar and vocabulary and becomes a creole. Krio in Sierra Leone and Haitian Creole are examples.",
+     pts: "Earns the point for describing language contact that produces a new mixed language that becomes the first (native) language of a community, usually through a pidgin stage. A one-word answer or a definition with no process does not earn the point."},
+    {k: "F", q: "Explain ONE way contemporary communication technology affects the use of Indigenous African languages.",
+     model: "Much internet content, software, and global media is in English, French, or Arabic, so young people who want online access, education, and jobs may use those languages more and their local languages less, speeding up language shift. (Also acceptable: speakers use radio, social media, texting, and video platforms to create content in local languages, which helps keep those languages alive.)",
+     pts: "Earns the point for a clear effect with an explanation in either direction: technology spreads dominant global languages and speeds the decline of local ones, or technology gives local languages new platforms and helps revitalize them."},
+    {k: "G", q: "Explain ONE way language can act as a centrifugal force in a country such as Cameroon.",
+     model: "In Cameroon, the English-speaking Northwest and Southwest regions are a minority in a mostly French-speaking country. Many English speakers felt their schools and courts were being pushed toward French, and protests that began in 2016 grew into an armed separatist conflict. When language divisions line up with regions, they can weaken loyalty to the state and fuel calls for self-rule or independence.",
+     pts: "Earns the point for explaining how language differences divide a state: a linguistic minority feeling excluded, regional identities tied to language, conflict over the language of schools, courts, or government, or separatist movements. Belgium, Canada (Quebec), and Spain (Catalonia) are also acceptable examples."}
+   ]}
+];
+
+const BYID = Object.fromEntries(B.map(q => [q.id, q]));
+const VBY = Object.fromEntries(VOCAB.map(v => [v[0], v]));
+const conflict = (a, b) => CONFLICTS.some(g => g.includes(a) && g.includes(b));
+const ROUND = 6;
+const nRounds = n => Math.ceil(n / ROUND);
+
+function instance(q) {
+  const order = shuffle(q.o.map((_, i) => i));
+  return {id: q.id, t: "mc", topic: q.topic, q: q.q, stim: q.stim || null, fig: q.fig || null, opts: order.map(i => q.o[i]), ans: order.indexOf(q.a), x: q.x, d: q.d, pts: 1};
+}
+function matchItems(terms) {
+  const list = shuffle(terms), n = Math.max(1, nRounds(list.length)), rounds = Array.from({length: n}, () => []);
+  const cap = Math.ceil(list.length / n);
+  for (const term of list) {
+    const ok = rounds.filter(rd => rd.length < cap && !rd.some(x => conflict(x, term)));
+    const pool = ok.length ? ok : rounds.filter(rd => rd.length < cap);
+    (pool.length ? pool : rounds).reduce((m, rd) => rd.length < m.length ? rd : m).push(term);
+  }
+  return rounds.filter(r => r.length).map(r => ({id: "match", t: "match", topic: "vocab", q: "Match each term to its definition.", terms: shuffle(r), defs: shuffle(r), pts: r.length}));
+}
+function vocabRounds(terms) {
+  terms = [...new Set(terms)].filter(t => VBY[t]);
+  if (!terms.length) return [];
+  if (terms.length < 4) terms = terms.concat(shuffle(VOCAB.map(v => v[0]).filter(t => !terms.includes(t))).slice(0, 4 - terms.length));
+  return matchItems(terms);
+}
+function spread(n) {
+  const byTopic = {};
+  for (const q of shuffle(B)) (byTopic[q.topic] = byTopic[q.topic] || []).push(q);
+  const keys = shuffle(Object.keys(byTopic)), out = [];
+  while (out.length < n && keys.some(k => byTopic[k].length)) for (const k of keys) if (byTopic[k].length && out.length < n) out.push(byTopic[k].pop());
+  return shuffle(out);
+}
+const MODES = {
+  practice: {label: "Practice test", mc: 30, terms: 12},
+  quick: {label: "Quick quiz", mc: 12, terms: 6}
+};
+function buildRun(mode, opts = {}) {
+  let items = [], label = "";
+  if (mode === "full") {
+    label = "Full test";
+    items = shuffle(B).map(instance).concat(vocabRounds(VOCAB.map(v => v[0])));
+  } else if (MODES[mode]) {
+    const m = MODES[mode]; label = m.label;
+    items = spread(m.mc).map(instance).concat(vocabRounds(shuffle(VOCAB).slice(0, m.terms).map(v => v[0])));
+  } else if (mode === "vocab") {
+    label = "Vocab match";
+    items = vocabRounds(VOCAB.map(v => v[0]));
+  } else if (mode === "topics") {
+    const ts = opts.topics;
+    label = ts.length === 1 ? TOPICS[ts[0]] : `Topics (${ts.length})`;
+    items = shuffle(B.filter(q => ts.includes(q.topic))).map(instance).concat(vocabRounds(VOCAB.filter(v => ts.includes(v[2])).map(v => v[0])));
+  } else if (mode === "missed") {
+    label = "Missed questions";
+    const ids = opts.missed || [];
+    items = shuffle(ids.filter(id => BYID[id])).map(id => instance(BYID[id])).concat(vocabRounds(ids.filter(id => id.startsWith("v:")).map(id => id.slice(2))));
+  }
+  return {id: uid(), mode, label, study: S.study, items, resp: [], res: [], i: 0, started: Date.now(), elapsed: 0};
+}
+
+function grade(it, r) {
+  if (it.t === "mc") { const ok = r === it.ans; return {earned: ok ? 1 : 0, possible: 1, ok, given: r == null ? "" : `${LET[r]}. ${it.opts[r]}`, correct: `${LET[it.ans]}. ${it.opts[it.ans]}`}; }
+  const parts = it.defs.map((d, k) => r[k] === d), e = parts.filter(Boolean).length;
+  return {earned: e, possible: it.defs.length, ok: e === it.defs.length, parts, given: `${e} of ${it.defs.length} matched`, correct: it.defs.filter((d, k) => !parts[k]).map(d => `${d}: ${VBY[d][1]}`).join(" • "), missedTerms: it.defs.filter((d, k) => !parts[k])};
+}
+
+const S = {view: "home", study: store.get(KEY.study, true), topics: store.get(KEY.topics, []), run: null, history: store.get(KEY.hist, []), confirmClear: false, confirmQuit: false, confirmFrq: false, frq: 0, frqData: store.get(KEY.frq, {}), gloss: new Set()};
+if (!Array.isArray(S.history)) S.history = [];
+if (!Array.isArray(S.topics)) S.topics = [];
+let cur = null, qStart = Date.now();
+const app = document.getElementById("app");
+function saveRun() { if (S.run) store.set(KEY.run, S.run); else store.del(KEY.run); }
+const pctCls = p => p >= 85 ? "hi" : p >= 70 ? "mid" : "lo";
+const topicName = k => TOPICS[k] || "Vocab matching";
+const barRow = (k, p) => `<div class="bar"><span>${esc(topicName(k))}</span><span class="track"><span class="fill ${pctCls(p) === "hi" ? "" : pctCls(p)}" style="width:${p}%"></span></span><span class="v">${p}%</span></div>`;
+
+function renderHome() {
+  S.view = "home";
+  const resumable = store.get(KEY.run, null);
+  const lastMissed = [...S.history].reverse().find(h => h.missed && h.missed.length);
+  const chips = Object.entries(TOPICS).map(([k, v]) => `<button class="chip" data-topic="${k}" aria-pressed="${S.topics.includes(k)}">${esc(v)}</button>`).join("");
+  const vr = nRounds(VOCAB.length);
+  const gloss = Object.entries(TOPICS).map(([k, v]) => {
+    const vs = VOCAB.filter(x => x[2] === k);
+    return `<details class="gloss" data-g="${k}"${S.gloss.has(k) ? " open" : ""}><summary><span>${esc(v)}</span><span class="num">${vs.length} terms</span></summary><dl>${vs.map(x => `<div><dt>${esc(x[0])}</dt><dd>${esc(x[1])}.<span class="ex">Example: ${esc(x[3])}</span></dd></div>`).join("")}</dl></details>`;
+  }).join("");
+  app.innerHTML = `
+  <p class="notice"><strong>Practice resource, not the actual test.</strong> These are original review questions for AP Human Geography Unit 3. Your class test and the AP exam will use different questions.</p>
+  <header class="hero">
+    <div><p class="eyebrow">AP Human Geography · Unit 3</p><h1>Culture Study</h1>
+    <p class="lede">Cultural Patterns and Processes, topics 3.1 to 3.8: landscapes, diffusion, language, religion, and what happens when cultures meet. Questions and answer choices shuffle every time.</p></div>
+    ${MARK}
+  </header>
+  ${resumable && resumable.items && resumable.i < resumable.items.length ? `<div class="resume"><p><strong>${esc(resumable.label)} in progress</strong> · item ${resumable.i + 1} of ${resumable.items.length}</p><div class="rowbtns"><button class="btn acc" data-act="resume">Resume</button><button class="btn ghost" data-act="discard">Discard</button></div></div>` : ""}
+  <section class="section" aria-label="Start practicing">
+    <div class="modes">
+      <button class="mode primary" data-start="full"><span class="meta">${B.length} questions + ${vr} vocab rounds · about 80 min</span><h3>Full test</h3><p>Every multiple-choice question in the bank, then every vocab term. Exit anytime and your spot is saved.</p></button>
+      <button class="mode" data-start="practice"><span class="meta">${MODES.practice.mc} questions + ${nRounds(MODES.practice.terms)} vocab rounds · about 35 min</span><h3>Practice test</h3><p>A test-length random mix, spread evenly across all eight topics.</p></button>
+      <button class="mode" data-start="quick"><span class="meta">${MODES.quick.mc} questions + 1 vocab round · about 12 min</span><h3>Quick quiz</h3><p>A short random mix from the whole unit.</p></button>
+      <button class="mode" data-start="vocab"><span class="meta">${VOCAB.length} terms · ${vr} rounds</span><h3>Vocab match</h3><p>Match every term to its definition, six at a time. Examples appear after you check.</p></button>
+      <button class="mode" data-start="missed" ${lastMissed ? "" : "disabled"}><span class="meta">${lastMissed ? "From your " + esc(lastMissed.mode.toLowerCase()) : "Nothing yet"}</span><h3>Redo what I missed</h3><p>${lastMissed ? "Questions and vocab you got wrong on your most recent attempt that had misses." : "Finish a test first. Anything you miss shows up here."}</p></button>
+      <div class="topicbox">
+        <div><h3>Practice by topic</h3><p>Pick one or more topics. You get every question and vocab term for them.</p></div>
+        <div class="chips">${chips}</div>
+        <div><button class="btn" data-start="topics" ${S.topics.length ? "" : "disabled"}>Start topic practice</button></div>
+      </div>
+    </div>
+    <div class="setting"><button class="switch" id="studySwitch" role="switch" aria-checked="${S.study}" aria-labelledby="studyLbl"></button><p id="studyLbl"><strong>Show the answer after each question</strong><br>${S.study ? "On: you see if you're right and why, right away (best for studying)." : "Off: test mode. You only see your score and explanations at the end."}</p></div>
+  </section>
+  <section class="section"><h2>FRQ practice</h2>
+    <p class="sub">Two AP-style free-response questions, parts A to G. Write your answers, then reveal a model answer and what earns each point.</p>
+    <div class="modes">${FRQS.map((f, i) => { const st = S.frqData[f.id] || {}; const got = f.parts.filter(p => st[p.k] && st[p.k].got).length; const any = f.parts.some(p => st[p.k] && (st[p.k].text || st[p.k].shown)); return `<button class="mode" data-openfrq="${i}"><span class="meta">FRQ ${i + 1} · 7 points · ${esc(f.tag)}${any ? ` · self-check ${got}/7` : ""}</span><h3>${esc(f.title)}</h3><p>${esc(f.blurb)}</p></button>`; }).join("")}</div>
+    <div class="tipbox"><p><strong>How AP FRQs are scored:</strong> each lettered part is worth 1 point, and a point is all-or-nothing.</p><p><strong>Identify</strong> = name it. <strong>Define</strong> = give the meaning. <strong>Describe</strong> = give specific characteristics. <strong>Explain</strong> = say how or why, with reasoning. Use full sentences and real examples.</p></div>
+  </section>
+  <section class="section"><h2>Vocab list</h2>
+    <p class="sub">All ${VOCAB.length} terms with definitions and examples, grouped by topic.</p>
+    ${gloss}
+  </section>
+  <section class="section" aria-label="Score history"><h2>Your scores</h2>${renderHistory()}</section>`;
+}
+
+function renderHistory() {
+  const H = S.history;
+  const note = `<p class="savenote">${canStore ? "Scores are saved in this browser." : "This view can't save to your browser, so scores last until you close or reload the page. Open the page on its own to keep a history."}</p>`;
+  if (!H.length) return `<div class="hist"><p class="hist-empty">No attempts yet. Finish any test and your score, date, and time show up here, with a chart of how you're improving.</p>${note}</div>`;
+  const pts = H.slice(-20);
+  const W = Math.round(Math.max(300, Math.min(620, (app.clientWidth || 686) - 66))), Ht = 200, L = 36, Rr = 14, T = 16, Bt = 28;
+  const x = i => pts.length === 1 ? (L + W - Rr) / 2 : L + i * (W - L - Rr) / (pts.length - 1);
+  const y = p => T + (100 - p) * (Ht - T - Bt) / 100;
+  let g = ""; for (const v of [0, 25, 50, 75, 100]) g += `<line class="gl" x1="${L}" x2="${W - Rr}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}%</text>`;
+  const line = pts.map((h, i) => `${x(i)},${y(h.pct)}`).join(" ");
+  const area = `${x(0)},${y(0)} ${line} ${x(pts.length - 1)},${y(0)}`;
+  const dots = pts.map((h, i) => `<circle class="pt${i === pts.length - 1 ? " last" : ""}" cx="${x(i)}" cy="${y(h.pct)}" r="4.5"><title>${esc(h.mode)}: ${h.pct}%</title></circle>`).join("");
+  const lastP = pts[pts.length - 1];
+  const xl = pts.map((h, i) => (pts.length <= 10 || i % Math.ceil(pts.length / 10) === 0 || i === pts.length - 1) ? `<text x="${x(i)}" y="${Ht - 8}" text-anchor="middle">#${H.length - pts.length + i + 1}</text>` : "").join("");
+  const chart = `<div class="chart"><svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Line chart of your last ${pts.length} scores. Latest: ${lastP.pct}%.">${g}<line class="pass" x1="${L}" x2="${W - Rr}" y1="${y(70)}" y2="${y(70)}"/>${pts.length > 1 ? `<polygon class="ar" points="${area}" opacity=".6"/><polyline class="ln" points="${line}"/>` : ""}${dots}<text class="lbl" x="${Math.min(x(pts.length - 1), W - 40)}" y="${Math.max(y(lastP.pct) - 10, 12)}" text-anchor="middle">${lastP.pct}%</text>${xl}</svg></div>`;
+  const agg = {}; for (const h of H) for (const [k, v] of Object.entries(h.topics || {})) { agg[k] = agg[k] || [0, 0]; agg[k][0] += v[0]; agg[k][1] += v[1]; }
+  const bars = Object.entries(agg).filter(([k, v]) => v[1] > 0 && (TOPICS[k] || k === "vocab")).map(([k, v]) => [k, Math.round(100 * v[0] / v[1])]).sort((a, b) => a[1] - b[1]);
+  const best = Math.max(...H.map(h => h.pct));
+  const rows = [...H].reverse().slice(0, 25).map(h => `<tr><td>${new Date(h.at).toLocaleDateString(undefined, {month: "short", day: "numeric"})} <span style="color:var(--muted)">${new Date(h.at).toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"})}</span></td><td>${esc(h.mode)}${h.study ? "" : ` <span class="pill mid" title="Answers hidden until the end">test mode</span>`}</td><td class="n">${h.earned}/${h.possible}</td><td class="n"><span class="pill ${pctCls(h.pct)}">${h.pct}%</span></td><td class="n">${Math.max(1, Math.round(h.secs / 60))} min</td></tr>`).join("");
+  return `<div class="hist">
+    <div class="hist-head"><h3>${H.length} attempt${H.length === 1 ? "" : "s"} · best ${best}% · latest ${lastP.pct}%</h3><span class="eyebrow">dashed line = 70%</span></div>
+    ${chart}
+    ${bars.length ? `<div><h3 style="font-size:18px;margin-bottom:10px">By topic, all attempts (weakest first)</h3><div class="bars">${bars.map(([k, p]) => barRow(k, p)).join("")}</div></div>` : ""}
+    <div class="tbl"><table><thead><tr><th>When</th><th>Test</th><th>Points</th><th>Score</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div>${S.confirmClear ? `<div class="confirm"><span>Delete all ${H.length} saved scores? This can't be undone.</span><button class="btn small acc" data-act="clear-yes">Delete scores</button><button class="btn small ghost" data-act="clear-no">Keep them</button></div>` : `<button class="linkbtn" data-act="clear">Clear score history</button>`}</div>
+    ${note}
+  </div>`;
+}
+
+function stimHtml(s) {
+  if (!s) return "";
+  if (s.k === "table") return `<figure class="stim"><figcaption class="cap">${esc(s.cap)}</figcaption><div class="tbl"><table><thead><tr>${s.head.map(h => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${s.rows.map(r => `<tr>${r.map((c, j) => j ? `<td>${esc(c)}</td>` : `<th scope="row">${esc(c)}</th>`).join("")}</tr>`).join("")}</tbody></table></div></figure>`;
+  return `<figure class="stim"><figcaption class="cap">${esc(s.cap)}</figcaption><p>${esc(s.body)}</p></figure>`;
+}
+
+function renderTest() {
+  S.view = "test";
+  const run = S.run, it = run.items[run.i];
+  const done = run.res.filter(Boolean);
+  const earned = done.reduce((a, r) => a + r.earned, 0), possible = done.reduce((a, r) => a + r.possible, 0);
+  const revealed = !!run.res[run.i];
+  if (!revealed) { cur = it.t === "mc" ? null : {sel: null, map: it.defs.map(() => null)}; qStart = Date.now(); } else cur = run.resp[run.i];
+  const pct = Math.round(100 * run.i / run.items.length);
+  app.innerHTML = `
+  <div class="bar-top">
+    <div class="bar-row"><span class="count">${esc(run.label)} · ${run.i + 1} / ${run.items.length}</span>
+      <span class="count">${run.study && possible ? `${earned}/${possible} pts · ${Math.round(100 * earned / possible)}%` : run.study ? "" : "Test mode"}</span>
+      ${S.confirmQuit ? `<span class="quitbox">Leave? Your spot is saved.<button class="btn small" data-act="quit-yes">Save & exit</button><button class="btn small ghost" data-act="quit-no">Stay</button></span>` : `<button class="btn small ghost" data-act="quit">Exit</button>`}</div>
+    <div class="prog" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="${run.items.length}" aria-valuenow="${run.i}"><div style="width:${pct}%"></div></div>
+  </div>
+  <article class="card" id="card">
+    <div class="qmeta"><span class="tag">${esc(topicName(it.topic))}</span>${it.stim || it.fig ? `<span class="tag src">Stimulus</span>` : ""}</div>
+    ${stimHtml(it.stim)}
+    ${it.fig && FIG[it.fig] ? `<figure><div class="fig">${FIG[it.fig]()}</div><figcaption class="figcap">${esc(FIGCAP[it.fig])}</figcaption></figure>` : ""}
+    <p class="qtext">${esc(it.q)}</p>
+    ${it.t === "match" ? `<p class="qhint">Tap a term, then tap its definition. Tap a filled definition to clear it.</p>` : ""}
+    <div id="ans">${it.t === "mc" ? `<div class="opts">${it.opts.map((o, k) => `<button class="opt" data-k="${k}"><span class="k">${LET[k]}</span><span>${esc(o)}</span></button>`).join("")}</div>` : `<div class="mterms" id="mterms"></div><div class="mdefs" id="mdefs"></div>`}</div>
+    <div id="fb"></div>
+    <div class="actions" id="actions"></div>
+  </article>`;
+  paint();
+}
+const complete = it => it.t === "mc" ? cur !== null : cur.map.every(v => v !== null);
+function paint() {
+  const run = S.run, it = run.items[run.i], res = run.res[run.i];
+  const card = document.getElementById("card"); if (!card) return;
+  if (it.t === "mc") card.querySelectorAll(".opt").forEach(b => {
+    const k = +b.dataset.k; let c = "opt";
+    if (res && run.study) { if (k === it.ans) c += " right"; else if (k === cur) c += " wrong"; }
+    else if (k === cur) c += " sel";
+    b.className = c; b.disabled = !!res; b.setAttribute("aria-pressed", String(k === cur));
+  });
+  if (it.t === "match") {
+    const used = new Set(cur.map.filter(Boolean));
+    document.getElementById("mterms").innerHTML = res ? "" : it.terms.map(t => `<button class="mterm${cur.sel === t ? " sel" : ""}${used.has(t) ? " used" : ""}" data-mt="${esc(t)}">${esc(t)}</button>`).join("");
+    document.getElementById("mdefs").innerHTML = it.defs.map((d, k) => `<button class="mdef${res && run.study ? (res.parts[k] ? " right" : " wrong") : ""}" data-md="${k}" ${res ? "disabled" : ""}><span>${esc(VBY[d][1])}</span><span class="slot${cur.map[k] ? " filled" : ""}">${cur.map[k] ? esc(cur.map[k]) : "tap to place a term"}</span>${res && run.study && !res.parts[k] ? `<span class="fix">Answer: ${esc(d)}</span>` : ""}${res && run.study ? `<span class="ex">${esc(d)}, for example: ${esc(VBY[d][3])}</span>` : ""}</button>`).join("");
+  }
+  const fb = document.getElementById("fb");
+  if (res && run.study) {
+    if (it.t === "mc") fb.innerHTML = `<div class="fb ${res.ok ? "ok" : "no"}" role="status"><h4>${res.ok ? pick(["Correct", "Yes", "Right", "Got it"]) : "Not quite"}</h4>${res.ok ? "" : `<p>Answer: <span class="ans">${esc(res.correct)}</span></p>`}<p><strong>Why:</strong> ${esc(it.x)}</p><p class="trap"><strong>Best distractor:</strong> ${esc(it.d)}</p></div>`;
+    else fb.innerHTML = `<div class="fb ${res.ok ? "ok" : res.earned ? "part" : "no"}" role="status"><h4>${res.ok ? "All matched" : `${res.earned} of ${res.possible} matched`}</h4><p>Each card now shows an example of its term.</p></div>`;
+  } else fb.innerHTML = "";
+  const actions = document.getElementById("actions");
+  const last = run.i === run.items.length - 1;
+  if (res) actions.innerHTML = `<span class="spacer"></span><button class="btn" data-act="next" id="nextBtn">${last ? "See my score" : "Next"}</button>`;
+  else actions.innerHTML = `<span class="keyhint">${it.t === "mc" ? "Keys: A–E or 1–5 to choose, Enter to check" : ""}</span><button class="btn" data-act="submit" ${complete(it) ? "" : "disabled"}>${run.study ? "Check answer" : last ? "Finish" : "Next"}</button>`;
+}
+function submit() {
+  const run = S.run, it = run.items[run.i];
+  if (run.res[run.i] || !complete(it)) return;
+  run.elapsed += Math.min(Date.now() - qStart, 300000);
+  run.resp[run.i] = it.t === "match" ? {sel: null, map: cur.map.slice()} : cur;
+  run.res[run.i] = grade(it, it.t === "match" ? cur.map : cur);
+  saveRun();
+  if (!run.study) { next(); return; }
+  paint();
+  const nb = document.getElementById("nextBtn"); if (nb) nb.focus({preventScroll: true});
+}
+function next() {
+  const run = S.run;
+  if (run.i < run.items.length - 1) { run.i++; saveRun(); renderTest(); window.scrollTo(0, 0); }
+  else finish();
+}
+
+function finish() {
+  const run = S.run;
+  const earned = run.res.reduce((a, r) => a + (r ? r.earned : 0), 0), possible = run.items.reduce((a, it) => a + it.pts, 0);
+  const topics = {}, missed = [];
+  run.items.forEach((it, k) => {
+    const r = run.res[k], tp = it.topic;
+    topics[tp] = topics[tp] || [0, 0]; topics[tp][0] += r ? r.earned : 0; topics[tp][1] += it.pts;
+    if (!r || !r.ok) { if (it.t === "match") (r ? r.missedTerms : it.defs).forEach(t => missed.push("v:" + t)); else missed.push(it.id); }
+  });
+  const entry = {id: run.id, at: Date.now(), mode: run.label, study: run.study, earned, possible, pct: possible ? Math.round(100 * earned / possible) : 0, secs: Math.round(run.elapsed / 1000), topics, missed: [...new Set(missed)]};
+  if (!S.history.some(h => h.id === entry.id)) S.history.push(entry);
+  S.history = S.history.slice().sort((a, b) => a.at - b.at).slice(-200).map((h, i, H) => i < H.length - 10 ? Object.assign({}, h, {missed: []}) : h);
+  store.set(KEY.hist, S.history);
+  S.run = null; saveRun();
+  renderResults(run, entry);
+}
+function renderResults(run, entry) {
+  S.view = "results";
+  const tb = Object.entries(entry.topics).map(([k, v]) => [k, Math.round(100 * v[0] / v[1])]).sort((a, b) => a[1] - b[1]);
+  const misses = run.items.map((it, k) => [it, run.res[k]]).filter(([it, r]) => r && !r.ok);
+  const missHtml = misses.map(([it, r]) => it.t === "match"
+    ? `<div class="miss"><span class="q">Vocab matching round</span><span class="yours">You: ${esc(r.given)}</span><span class="corr">Fix: ${esc(r.correct)}</span></div>`
+    : `<div class="miss"><span class="tag" style="justify-self:start">${esc(topicName(it.topic))}</span><span class="q">${esc(it.q)}</span><span class="yours">You: ${esc(r.given || "(blank)")}</span><span class="corr">Answer: ${esc(r.correct)}</span><span class="why">${esc(it.x)}</span></div>`).join("");
+  const prev = S.history.filter(h => h.id !== entry.id && h.mode === entry.mode).pop();
+  app.innerHTML = `
+  <section class="score">
+    <div class="big num">${entry.pct}%</div>
+    <div><p class="eyebrow">${esc(entry.mode)}</p><h1>${entry.pct >= 90 ? "You're ready for this unit." : entry.pct >= 80 ? "Strong. Clean up the misses below." : entry.pct >= 70 ? "Solid base. Review your weakest topics." : "Keep going. Start with your weakest topic."}</h1>
+    <p class="num">${entry.earned} of ${entry.possible} points · ${Math.max(1, Math.round(entry.secs / 60))} min${prev ? ` · last time ${prev.pct}% (${entry.pct - prev.pct >= 0 ? "+" : ""}${entry.pct - prev.pct})` : ""}</p></div>
+  </section>
+  <section class="section"><h2>By topic</h2><div class="hist"><div class="bars">${tb.map(([k, p]) => barRow(k, p)).join("")}</div></div></section>
+  <div class="rowbtns" style="margin-top:20px">${entry.missed.length ? `<button class="btn acc" data-act="redo">Redo what I missed</button>` : ""}<button class="btn" data-act="home">Back to start</button></div>
+  <section class="section"><h2>${misses.length ? `What you missed (${misses.length})` : "You missed nothing."}</h2><div class="missed">${missHtml}</div></section>`;
+  window.scrollTo(0, 0);
+}
+
+function frqState(id) { return S.frqData[id] || (S.frqData[id] = {}); }
+function saveFrq() { store.set(KEY.frq, S.frqData); }
+function renderFrq() {
+  S.view = "frq";
+  const f = FRQS[S.frq], st = frqState(f.id);
+  const got = f.parts.filter(p => st[p.k] && st[p.k].got).length, shown = f.parts.filter(p => st[p.k] && st[p.k].shown).length;
+  app.innerHTML = `
+  <div class="bar-top"><div class="bar-row"><span class="count">FRQ ${S.frq + 1} · ${shown}/7 answers open</span><span class="count">Self-check: ${got}/7</span><button class="btn small ghost" data-act="home">Back</button></div></div>
+  <article class="card frq">
+    <p class="eyebrow">Free-response practice · ${esc(f.tag)}</p>
+    <h2 class="frq-title">${esc(f.title)}</h2>
+    <p>${esc(f.intro)}</p>
+    ${stimHtml(f.stim)}
+    <p class="qhint" style="margin:0">Write your answer to each part first, then open the model answer and decide honestly whether yours earns the point. ${canStore ? "Your drafts are saved in this browser." : "Drafts last until you close this page."}</p>
+  </article>
+  ${f.parts.map(p => { const s = st[p.k] || {}; return `<section class="card frq">
+    <div class="qmeta"><span class="tag">Part ${p.k}</span><span class="tag src">1 point</span></div>
+    <p class="qtext">${esc(p.q)}</p>
+    <textarea data-frq="${p.k}" rows="4" aria-label="Your answer to part ${p.k}" placeholder="Your answer">${esc(s.text || "")}</textarea>
+    ${s.shown ? `<div class="model"><p class="eyebrow">Model answer</p><p>${esc(p.model)}</p></div><div class="rubric"><p class="eyebrow">What earns the point</p><p>${esc(p.pts)}</p></div>
+    <div class="selfrow"><button class="check" data-frqgot="${p.k}" aria-pressed="${!!s.got}"><span class="box">${s.got ? "✓" : ""}</span>My answer earns this point</button><button class="linkbtn" data-frqshow="${p.k}">Hide model answer</button></div>` : `<div><button class="btn ghost small" data-frqshow="${p.k}">Show model answer</button></div>`}
+  </section>`; }).join("")}
+  <div class="rowbtns" style="margin-top:18px"><button class="btn" data-act="frq-all">Show all model answers</button>${S.confirmFrq ? `<span class="confirm">Erase your answers and self-checks for this FRQ?<button class="btn small acc" data-act="frq-reset-yes">Erase</button><button class="btn small ghost" data-act="frq-reset-no">Keep</button></span>` : `<button class="btn ghost" data-act="frq-reset">Start over</button>`}<button class="btn ghost" data-act="home">Back to start</button></div>`;
+}
+function rerender(fn) { const y = window.scrollY; fn(); window.scrollTo(0, y); }
+function startRun(mode, opts) {
+  const run = buildRun(mode, opts);
+  if (!run.items.length) return;
+  S.run = run; S.confirmQuit = false; saveRun(); renderTest(); window.scrollTo(0, 0);
+}
+
+app.addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t || t.disabled) return;
+  if (t.dataset.start) {
+    const mode = t.dataset.start, opts = {};
+    if (mode === "missed") { const lm = [...S.history].reverse().find(h => h.missed && h.missed.length); if (!lm) return; opts.missed = lm.missed; }
+    if (mode === "topics") opts.topics = S.topics.slice();
+    startRun(mode, opts); return;
+  }
+  if (t.dataset.topic) { const k = t.dataset.topic; S.topics = S.topics.includes(k) ? S.topics.filter(x => x !== k) : [...S.topics, k]; store.set(KEY.topics, S.topics); rerender(renderHome); const c = app.querySelector(`[data-topic="${k}"]`); if (c) c.focus({preventScroll: true}); return; }
+  if (t.id === "studySwitch") { S.study = !S.study; store.set(KEY.study, S.study); rerender(renderHome); document.getElementById("studySwitch").focus({preventScroll: true}); return; }
+  if (t.dataset.openfrq !== undefined) { S.frq = +t.dataset.openfrq; S.confirmFrq = false; renderFrq(); window.scrollTo(0, 0); return; }
+  if (t.dataset.frqshow) { const st = frqState(FRQS[S.frq].id), k = t.dataset.frqshow; st[k] = st[k] || {}; st[k].shown = !st[k].shown; saveFrq(); rerender(renderFrq); return; }
+  if (t.dataset.frqgot) { const st = frqState(FRQS[S.frq].id), k = t.dataset.frqgot; st[k] = st[k] || {}; st[k].got = !st[k].got; saveFrq(); rerender(renderFrq); const b = app.querySelector(`[data-frqgot="${k}"]`); if (b) b.focus({preventScroll: true}); return; }
+  const act = t.dataset.act;
+  if (act === "frq-all") { const st = frqState(FRQS[S.frq].id); for (const p of FRQS[S.frq].parts) { st[p.k] = st[p.k] || {}; st[p.k].shown = true; } saveFrq(); rerender(renderFrq); return; }
+  if (act === "frq-reset") { S.confirmFrq = true; rerender(renderFrq); return; }
+  if (act === "frq-reset-no") { S.confirmFrq = false; rerender(renderFrq); return; }
+  if (act === "frq-reset-yes") { S.confirmFrq = false; S.frqData[FRQS[S.frq].id] = {}; saveFrq(); renderFrq(); window.scrollTo(0, 0); return; }
+  if (act === "resume") { const r = store.get(KEY.run, null); if (r && r.items && r.i < r.items.length) { S.run = r; S.confirmQuit = false; renderTest(); window.scrollTo(0, 0); } return; }
+  if (act === "discard") { S.run = null; saveRun(); rerender(renderHome); return; }
+  if (act === "clear") { S.confirmClear = true; rerender(renderHome); return; }
+  if (act === "clear-no") { S.confirmClear = false; rerender(renderHome); return; }
+  if (act === "clear-yes") { S.confirmClear = false; S.history = []; store.set(KEY.hist, []); rerender(renderHome); return; }
+  if (act === "home") { S.confirmQuit = false; renderHome(); window.scrollTo(0, 0); return; }
+  if (act === "redo") { const lm = S.history[S.history.length - 1]; if (lm && lm.missed.length) startRun("missed", {missed: lm.missed}); return; }
+  if (act === "quit") { S.confirmQuit = true; keepRender(); return; }
+  if (act === "quit-no") { S.confirmQuit = false; keepRender(); return; }
+  if (act === "quit-yes") { S.confirmQuit = false; saveRun(); S.run = null; renderHome(); window.scrollTo(0, 0); return; }
+  if (act === "submit") { submit(); return; }
+  if (act === "next") { next(); return; }
+  if (!S.run || S.view !== "test" || S.run.res[S.run.i]) return;
+  if (t.classList.contains("opt")) { cur = +t.dataset.k; paint(); return; }
+  if (t.dataset.mt !== undefined) {
+    const term = t.dataset.mt, at = cur.map.indexOf(term);
+    if (at >= 0) { cur.map[at] = null; cur.sel = term; } else cur.sel = cur.sel === term ? null : term;
+    paint(); return;
+  }
+  if (t.dataset.md !== undefined) {
+    const k = +t.dataset.md;
+    if (cur.sel) { const prevAt = cur.map.indexOf(cur.sel); if (prevAt >= 0) cur.map[prevAt] = null; cur.map[k] = cur.sel; cur.sel = null; }
+    else if (cur.map[k]) cur.map[k] = null;
+    paint();
+  }
+});
+function keepRender() { const keep = cur, was = !!S.run.res[S.run.i], y = window.scrollY; renderTest(); if (!was) { cur = keep; paint(); } window.scrollTo(0, y); }
+app.addEventListener("input", e => {
+  if (S.view !== "frq" || !e.target.dataset.frq) return;
+  const st = frqState(FRQS[S.frq].id), k = e.target.dataset.frq;
+  st[k] = st[k] || {}; st[k].text = e.target.value; saveFrq();
+});
+app.addEventListener("toggle", e => {
+  const d = e.target; if (!d.dataset || !d.dataset.g) return;
+  if (d.open) S.gloss.add(d.dataset.g); else S.gloss.delete(d.dataset.g);
+}, true);
+document.addEventListener("keydown", e => {
+  if (S.view !== "test" || !S.run || e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = e.target.tagName; if (tag === "TEXTAREA" || tag === "INPUT") return;
+  const it = S.run.items[S.run.i], res = S.run.res[S.run.i];
+  if (e.key === "Enter") {
+    if (tag === "BUTTON" && !e.target.matches('[data-act="next"],[data-act="submit"],.opt')) return;
+    e.preventDefault(); if (res) next(); else submit(); return;
+  }
+  if (!res && it.t === "mc") {
+    const key = e.key.toLowerCase();
+    let k = "12345".indexOf(key); if (k < 0) k = "abcde".indexOf(key);
+    if (k >= 0 && k < it.opts.length) { cur = k; paint(); }
+  }
+});
+
+renderHome();
+})();
+</script>
+</body>
+</html>
