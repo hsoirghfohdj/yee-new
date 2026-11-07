@@ -1,0 +1,70 @@
+# Keeps library.json (the list of games and study files Class Dash reads) in step with the repo.
+# Class Dash loads that one file instead of asking GitHub's API, so a whole school on one network
+# never hits GitHub's 60-requests-an-hour limit. It also records when each game was added, for "New this week".
+name: Update game list
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: library-json
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rebuild library.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import base64, datetime, json, os, re, urllib.error, urllib.request
+
+          api = 'https://api.github.com/repos/' + os.environ['REPO']
+          headers = {'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json'}
+
+          def call(path, method='GET', body=None):
+              data = json.dumps(body).encode() if body is not None else None
+              req = urllib.request.Request(api + path, method=method, headers=headers, data=data)
+              try:
+                  with urllib.request.urlopen(req) as r:
+                      return json.load(r)
+              except urllib.error.HTTPError as e:
+                  if e.code == 404:
+                      return None
+                  raise
+
+          tree = call('/git/trees/main?recursive=1')
+          files = sorted(t['path'] for t in tree['tree'] if t['type'] == 'blob' and t['path'].startswith(('offline/', 'study/')))
+          game = re.compile(r'^offline/([^/]+\.html?|[^/]+/index\.html?)$', re.I)
+
+          old = call('/contents/library.json?ref=main')
+          prev = json.loads(base64.b64decode(old['content'])) if old else {}
+          had = set(prev.get('files', []))
+          now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+          keep = set(files)
+          added = {p: d for p, d in prev.get('added', {}).items() if p in keep}
+          for p in files:
+              if game.match(p) and p not in added and old is not None and p not in had:
+                  added[p] = now
+
+          if old is not None and prev.get('files') == files and prev.get('added') == added:
+              print('library.json is already up to date')
+              raise SystemExit(0)
+
+          doc = {'generated': now, 'files': files, 'added': added}
+          content = base64.b64encode((json.dumps(doc, indent=0) + '\n').encode()).decode()
+          body = {'message': 'Update game list [skip ci]', 'content': content, 'branch': 'main'}
+          if old:
+              body['sha'] = old['sha']
+          call('/contents/library.json', 'PUT', body)
+          print('library.json updated:', len(files), 'files,', len(added), 'games with dates')
+          PY
