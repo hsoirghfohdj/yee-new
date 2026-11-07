@@ -8,7 +8,7 @@ const KEY = 'classdash_code', bust = '?t=' + Date.now();
 const toast = msg => {
 const d = document.createElement('div');
 d.textContent = msg;
-d.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2147483647;max-width:90vw;background:#161a22;color:#e9ecf2;border:1px solid #262c39;border-radius:12px;padding:12px 18px;font:14px/1.4 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.45)';
+d.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2147483647;max-width:90vw;background:#121018;color:#f1eef5;border:1px solid #24202d;border-radius:12px;padding:12px 18px;font:14px/1.4 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.45)';
 document.body.appendChild(d);
 setTimeout(() => d.remove(), 6000);
 };
@@ -18,7 +18,7 @@ const cached = () => { try { return localStorage.getItem(KEY); } catch (e) { ret
 const viaTag = () => {
 const s = document.createElement('script');
 s.src = PAGES + bust;
-s.onerror = () => toast("Class Dash couldn't load on this page.");
+s.onerror = () => toast("Classboard couldn't load on this page.");
 document.head.appendChild(s);
 };
 window.__classDashBusy = true;
@@ -30,7 +30,7 @@ else if (!(run instanceof EvalError)) {
 const old = cached();
 if (old) { if (code) toast('bookmarklet.js on GitHub has an error, so the last working version was used.'); run = compile(old); }
 }
-if (!run) return toast("Class Dash couldn't reach GitHub. Check your connection and try again.");
+if (!run) return toast("Classboard couldn't reach GitHub. Check your connection and try again.");
 if (run instanceof EvalError) return viaTag();
 if (run instanceof Error) return toast('bookmarklet.js on GitHub has an error: ' + run.message);
 run();

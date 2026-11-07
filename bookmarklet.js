@@ -25,7 +25,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Make your own flashcards in Study, report broken games, see your play time, and game names are easier to read. Games that won\'t load try another copy automatically.';
+const WHATSNEW = 'Class Dash is now Classboard: a new name, a new look and a new website.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -70,6 +70,7 @@ cal: svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3
 game: svg('<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15 12h.01M18 14h.01"/>'),
 refresh: svg('<path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/>'),
 x: svg('<path d="M6 6l12 12M18 6 6 18"/>'),
+board: svg('<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M12 3.5v17M3.5 12h17"/><path d="M12 3.5h3.5a5 5 0 0 1 5 5V12H12z" fill="currentColor" stroke="none"/>'),
 cap: svg('<path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/>'),
 search: svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'),
 shuffle: svg('<path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>'),
@@ -109,19 +110,19 @@ tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="curre
 const CSS = `
 :host{all:initial}
 *{box-sizing:border-box;margin:0;padding:0}
-.bd{--bg:#0f1218;--p1:#161a22;--p2:#1d222c;--p3:#272d3a;--ln:#262c39;--tx:#e9ecf2;--mu:#8c93a5;--ac:#7c9cff;--act:var(--ac);--gd:#3ecf8e;--wn:#f5b546;--bad:#f2637a;
-position:fixed;inset:0;background:rgba(6,8,12,.62);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;
-font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tx);animation:fd .18s ease}
+.bd{--bg:#0b0a10;--p1:#121018;--p2:#1a1721;--p3:#252130;--ln:#24202d;--tx:#f1eef5;--mu:#918aa0;--ac:#a78bfa;--act:var(--ac);--gd:#3ecf8e;--wn:#f5b546;--bad:#f2637a;
+position:fixed;inset:0;background:radial-gradient(55% 45% at 18% 12%,color-mix(in srgb,var(--ac) 16%,transparent),transparent 70%),radial-gradient(50% 45% at 85% 92%,rgba(226,85,155,.13),transparent 70%),rgba(5,4,9,.64);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;
+font:14px/1.45 Geist,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tx);animation:fd .3s ease}
 @keyframes fd{from{opacity:0}}
 @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.985)}}
 @keyframes sp{to{transform:rotate(360deg)}}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit}
-.win{zoom:var(--z,1);width:min(1200px,calc((100vw - 32px) / var(--z,1)));height:min(780px,calc((100vh - 32px) / var(--z,1)));background:var(--bg);border:1px solid var(--ln);border-radius:16px;
-display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55);animation:pop .22s ease}
+.win{zoom:var(--z,1);width:min(1200px,calc((100vw - 32px) / var(--z,1)));height:min(780px,calc((100vh - 32px) / var(--z,1)));background:var(--bg);border:1px solid var(--ln);border-radius:20px;
+display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 40px 100px -20px rgba(0,0,0,.7),0 0 120px -40px color-mix(in srgb,var(--ac) 45%,transparent);animation:pop .5s cubic-bezier(.2,.8,.2,1)}
 .sb{background:var(--p1);border-right:1px solid var(--ln);display:flex;flex-direction:column;padding:16px 10px;gap:2px}
 .brand{font-weight:700;font-size:16px;padding:2px 10px 18px;display:flex;gap:10px;align-items:center}
-.logo{width:30px;height:30px;border-radius:9px;background:var(--ac);display:grid;place-items:center;color:#0f1218}
+.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 35%,#e2559b));display:grid;place-items:center;color:#0b0a10}
 .nav{display:flex;flex-direction:column;gap:2px}
 .nav button{all:unset;display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:9px;color:var(--mu);cursor:pointer;font-weight:550;white-space:nowrap}
 .nav button:hover{background:var(--p2);color:var(--tx)}
@@ -142,7 +143,7 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .hd{display:flex;align-items:center;gap:10px;padding:14px 20px 14px 24px;border-bottom:1px solid var(--ln)}
 .hd h1{font-size:18px;font-weight:650;flex:0 1 auto;max-width:28%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .omni{position:relative;flex:1;max-width:580px;margin:0 auto;display:flex;align-items:center;gap:8px;height:38px;padding:0 8px 0 12px;border-radius:11px;background:var(--p2);border:1px solid var(--ln);color:var(--mu);transition:border-color .12s,box-shadow .12s}
-.omni:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px rgba(124,156,255,.18);background:var(--bg)}
+.omni:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 18%,transparent);background:var(--bg)}
 .omni .oi{display:grid}
 .omni input{all:unset;flex:1;min-width:0;color:var(--tx);font-size:14px}
 .omni input::placeholder{color:var(--mu)}
@@ -159,9 +160,9 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .ohint{padding:8px 10px;color:var(--mu);font-size:12px}
 .ohint b{font:12px ui-monospace,monospace;color:var(--tx);background:var(--p3);border-radius:5px;padding:1px 5px}
 .bd.lib .omni{display:none}
-.ubar{display:flex;align-items:center;gap:12px;margin:12px 24px 0;padding:10px 12px 10px 14px;border-radius:12px;background:rgba(124,156,255,.12);border:1px solid rgba(124,156,255,.35);animation:pop .22s ease}
+.ubar{display:flex;align-items:center;gap:12px;margin:12px 24px 0;padding:10px 12px 10px 14px;border-radius:12px;background:color-mix(in srgb,var(--ac) 12%,transparent);border:1px solid color-mix(in srgb,var(--ac) 35%,transparent);animation:pop .22s ease}
 .ubar[hidden]{display:none}
-.ubar .uic{width:32px;height:32px;border-radius:9px;background:var(--ac);color:#0f1218;display:grid;place-items:center;flex:none}
+.ubar .uic{width:32px;height:32px;border-radius:9px;background:var(--ac);color:#0b0a10;display:grid;place-items:center;flex:none}
 .ubar .sub{white-space:normal}
 .pcls{color:var(--act);font-weight:600}
 .sched .sl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -169,7 +170,7 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .cupd{all:unset;cursor:pointer;display:inline-flex;align-items:center;margin-top:10px;font-size:11.5px;font-weight:650;color:var(--act)}
 .cupd:hover{text-decoration:underline}
 .req{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 16px;border-radius:14px;background:var(--p1);border:1px solid var(--ln);margin-bottom:16px}
-.req .ric{width:36px;height:36px;border-radius:10px;background:var(--gd);color:#0f1218;display:grid;place-items:center;flex:none}
+.req .ric{width:36px;height:36px;border-radius:10px;background:var(--gd);color:#0b0a10;display:grid;place-items:center;flex:none}
 .rtxt{flex:1 1 230px;min-width:0}
 .rtxt .sub{white-space:normal}
 .rfields{display:flex;flex-wrap:wrap;gap:8px;flex:2 1 360px}
@@ -184,9 +185,9 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .bnrs{display:flex;flex-direction:column;gap:8px;margin:12px 24px 0}
 .bnrs:empty{display:none}
 .bnr{display:flex;align-items:center;gap:12px;padding:9px 8px 9px 12px;border-radius:12px;background:color-mix(in srgb,var(--bc) 13%,transparent);border:1px solid color-mix(in srgb,var(--bc) 45%,transparent);animation:pop .22s ease}
-.bnr .bic{width:30px;height:30px;border-radius:9px;background:var(--bc);color:#0f1218;display:grid;place-items:center;flex:none}
+.bnr .bic{width:30px;height:30px;border-radius:9px;background:var(--bc);color:#0b0a10;display:grid;place-items:center;flex:none}
 .bnr .grow{font-size:13.5px}
-.bnr .btn{background:var(--bc);color:#0f1218}
+.bnr .btn{background:var(--bc);color:#0b0a10}
 .ib.bx{width:28px;height:28px;background:transparent}
 .adm{margin-bottom:16px}
 .adm select{height:34px;padding:0 8px;border-radius:9px;background:var(--p2);border:1px solid var(--ln);color:var(--tx);font:13px system-ui,sans-serif;color-scheme:dark;min-width:160px}
@@ -256,7 +257,7 @@ a.row:hover,.row.click:hover{background:var(--p2);border-radius:10px;border-top-
 .chip.bad{background:rgba(242,99,122,.15);color:var(--bad)}
 .chip.wn{background:rgba(245,181,70,.15);color:var(--wn)}
 .chip.gd{background:rgba(62,207,142,.15);color:var(--gd)}
-.chip.ac{background:rgba(124,156,255,.15);color:var(--act)}
+.chip.ac{background:color-mix(in srgb,var(--ac) 15%,transparent);color:var(--act)}
 .due{font-size:12px;text-align:right;white-space:nowrap;min-width:118px}
 .gr{text-align:right;min-width:64px}
 .big{font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
@@ -273,17 +274,17 @@ a.row:hover,.row.click:hover{background:var(--p2);border-radius:10px;border-top-
 .links{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .btn{all:unset;cursor:pointer;padding:7px 14px;border-radius:9px;background:var(--p2);color:var(--tx);font-weight:600;font-size:13px;white-space:nowrap}
 .btn:hover{background:var(--p3)}
-.btn.pri{background:var(--ac);color:#0f1218}
+.btn.pri{background:var(--ac);color:#0b0a10}
 .empty{color:var(--mu);padding:22px 8px;text-align:center}
 .spin{width:28px;height:28px;border:3px solid var(--p3);border-top-color:var(--ac);border-radius:50%;animation:sp .8s linear infinite;margin:48px auto}
 .seg{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
 .seg button{all:unset;cursor:pointer;padding:6px 13px;border-radius:20px;background:var(--p2);color:var(--mu);font-size:13px;font-weight:550}
 .seg button:hover{color:var(--tx)}
-.seg button.on{background:var(--ac);color:#0f1218}
+.seg button.on{background:var(--ac);color:#0b0a10}
 .seg b{font-weight:700;margin-left:4px;opacity:.8}
 .grp{font-size:12px;font-weight:650;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin:18px 0 4px}
 .grp:first-child{margin-top:0}
-.cb{all:unset;cursor:pointer;width:18px;height:18px;border-radius:6px;border:2px solid var(--p3);flex:none;display:grid;place-items:center;color:#0f1218}
+.cb{all:unset;cursor:pointer;width:18px;height:18px;border-radius:6px;border:2px solid var(--p3);flex:none;display:grid;place-items:center;color:#0b0a10}
 .cb:hover{border-color:var(--gd)}
 .cb.on{background:var(--gd);border-color:var(--gd)}
 .cbx{width:18px;flex:none}
@@ -299,14 +300,14 @@ a.row:hover,.row.click:hover{background:var(--p2);border-radius:10px;border-top-
 .ev:hover{background:var(--p3)}
 .ev.dn2{opacity:.5;text-decoration:line-through}
 .ghero{padding:22px;border-radius:18px;border:1px solid var(--ln);margin-bottom:16px;
-background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 55%),radial-gradient(120% 160% at 100% 100%,rgba(62,207,142,.12),transparent 55%),var(--p1)}
+background:radial-gradient(120% 160% at 0% 0%,color-mix(in srgb,var(--ac) 20%,transparent),transparent 55%),radial-gradient(120% 160% at 100% 100%,rgba(62,207,142,.12),transparent 55%),var(--p1)}
 .ghero .gh{font-size:24px;font-weight:750;letter-spacing:-.02em}
 .ghead{display:flex;align-items:flex-start;gap:12px}
 .ghead .btn{display:inline-flex;align-items:center;gap:7px;flex:none}
 .ghero .sub{margin:2px 0 16px}
 .gfind{display:flex;gap:10px;flex-wrap:wrap}
 .gsearch{flex:1;min-width:220px;display:flex;align-items:center;gap:10px;height:50px;padding:0 14px;border-radius:14px;background:var(--bg);border:1px solid var(--ln);color:var(--mu);transition:border-color .12s,box-shadow .12s}
-.gsearch:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px rgba(124,156,255,.18)}
+.gsearch:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 18%,transparent)}
 .gsearch input{all:unset;flex:1;min-width:0;color:var(--tx);font-size:15px}
 .gsearch input::placeholder{color:var(--mu)}
 .kbd{font:12px ui-monospace,monospace;background:var(--p3);color:var(--mu);border-radius:6px;padding:2px 8px}
@@ -335,7 +336,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .nc h3{font-size:18px;margin-bottom:6px}
 .nc p{margin-bottom:18px;white-space:normal}
 .ann .sub{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.ghero.shero{background:radial-gradient(120% 160% at 0% 0%,rgba(62,207,142,.18),transparent 55%),radial-gradient(120% 160% at 100% 100%,rgba(124,156,255,.14),transparent 55%),var(--p1)}
+.ghero.shero{background:radial-gradient(120% 160% at 0% 0%,rgba(62,207,142,.18),transparent 55%),radial-gradient(120% 160% at 100% 100%,color-mix(in srgb,var(--ac) 14%,transparent),transparent 55%),var(--p1)}
 .shead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
 .shead .gh{font-size:22px;font-weight:750;letter-spacing:-.02em}
 .shead .sub{margin-top:1px}
@@ -344,7 +345,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .sbar button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;background:var(--p1);border:1px solid var(--ln);color:var(--mu);font-size:12.5px;font-weight:550}
 .sbar button svg{width:14px;height:14px}
 .sbar button:hover{color:var(--tx)}
-.sbar button.on{background:var(--ac);border-color:var(--ac);color:#0f1218}
+.sbar button.on{background:var(--ac);border-color:var(--ac);color:#0b0a10}
 .sbar b{font-weight:700;opacity:.75}
 .sbar .sep{width:1px;align-self:stretch;background:var(--ln);margin:2px 4px}
 .scont{margin-bottom:16px}
@@ -358,7 +359,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .cpan{min-width:0;background:var(--p1);border:1px solid var(--ln);border-radius:14px;overflow:hidden}
 .cpan[hidden]{display:none}
 .cph{display:flex;align-items:center;gap:10px;padding:11px 12px 9px;border-top:3px solid var(--c)}
-.cph .ssi{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#0f1218;flex:none;background:var(--c)}
+.cph .ssi{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#0b0a10;flex:none;background:var(--c)}
 .cph .ssi svg{width:17px;height:17px}
 .cph .chip{font-size:10.5px;padding:1px 8px}
 .cph .t{white-space:normal;line-height:1.25}
@@ -369,7 +370,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .rri svg{width:16px;height:16px}
 .rr .t,.ccard .t{font-size:13.5px;line-height:1.3}
 .rr .sub{font-size:11.5px;display:flex;gap:6px;align-items:center}
-.chip.new{background:var(--ac);color:#0f1218;font-size:10px;padding:0 7px}
+.chip.new{background:var(--ac);color:#0b0a10;font-size:10px;padding:0 7px}
 .rnt{width:28px;height:28px;flex:none;background:transparent;opacity:0;transition:opacity .12s}
 .rr:hover .rnt,.rr:focus-within .rnt{opacity:1}
 .sneed{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:9px 12px;border-radius:12px;border:1px dashed var(--p3);margin-bottom:14px;font-size:12.5px}
@@ -391,7 +392,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .rep .seg{margin:0}
 .fcp{margin-bottom:16px}
 .fcslim{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:9px 12px;border-radius:12px;background:var(--p1);border:1px solid var(--ln);margin-bottom:16px;font-size:13px}
-.fcslim .ssi{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#0f1218;flex:none}
+.fcslim .ssi{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#0b0a10;flex:none}
 .fcslim .ssi svg{width:15px;height:15px}
 .fcslim .fcimp{flex-basis:100%;margin-top:4px;padding-top:8px}
 .gmw{position:relative}
@@ -408,7 +409,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .bnr .bic svg{width:15px;height:15px}
 .bnr .grow{font-size:13px}
 .fch{display:flex;align-items:center;gap:12px}
-.fch .ssi{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:#0f1218;flex:none}
+.fch .ssi{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:#0b0a10;flex:none}
 .fcrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 0 0;margin-top:10px;border-top:1px solid var(--ln)}
 .fcshare{padding:8px 0 0}
 .fcshare textarea{width:100%;height:70px;margin:8px 0;padding:8px;border-radius:9px;background:var(--p2);border:1px solid var(--ln);color:var(--tx);font:11px/1.4 ui-monospace,monospace;resize:vertical;box-sizing:border-box}
@@ -427,7 +428,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .fcbar{display:flex;justify-content:center;gap:8px;margin-top:14px;flex-wrap:wrap}
 .btn.snd[hidden]{display:none}
 .btn.snd svg{width:15px;height:15px;margin:0}
-.gt .nb{position:absolute;top:8px;left:8px;z-index:3;padding:2px 7px;border-radius:7px;background:var(--ac);color:#0f1218;font-size:10px;font-weight:800;letter-spacing:.06em;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.gt .nb{position:absolute;top:8px;left:8px;z-index:3;padding:2px 7px;border-radius:7px;background:var(--ac);color:#0b0a10;font-size:10px;font-weight:800;letter-spacing:.06em;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .grp .grpn{margin-left:8px;font-weight:550;text-transform:none;letter-spacing:0;opacity:.8}
 .gload{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:var(--p1);transition:opacity .25s}
 .gload.done{opacity:0;pointer-events:none}
@@ -450,7 +451,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .atabs button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:10px;background:var(--p1);border:1px solid var(--ln);color:var(--mu);font-weight:600;font-size:13px}
 .atabs button svg{width:15px;height:15px}
 .atabs button:hover{color:var(--tx)}
-.atabs button.on{background:var(--ac);border-color:var(--ac);color:#0f1218}
+.atabs button.on{background:var(--ac);border-color:var(--ac);color:#0b0a10}
 .atabs .badge{margin-left:2px}
 .adraft{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;margin-bottom:14px;background:color-mix(in srgb,var(--wn) 14%,transparent);border:1px solid color-mix(in srgb,var(--wn) 45%,transparent)}
 .adrop{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px;margin-top:12px;border-radius:12px;border:2px dashed var(--p3);text-align:center;cursor:pointer;color:var(--mu)}
@@ -462,7 +463,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .afiles{font-size:12px;color:var(--act);font-weight:600}
 .acat{border-top:1px solid var(--ln);padding:12px 0 6px}
 .acath{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.acath .ssi{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#0f1218;flex:none}
+.acath .ssi{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#0b0a10;flex:none}
 .acath .ssi svg{width:17px;height:17px}
 .acat .ares{margin-left:42px;flex-wrap:wrap}
 .aempty{padding:6px 0 4px 42px}
@@ -488,10 +489,10 @@ a.ares:hover .t{color:var(--act)}
 .cupd.on{color:var(--tx)}
 .ib.sset{display:none}
 .bd.cd-full .win{width:calc(100vw / var(--z,1));height:calc(100vh / var(--z,1));border:0;border-radius:0}
-.bd.th-light{--bg:#f4f6fa;--p1:#fff;--p2:#eef1f6;--p3:#e1e6ef;--ln:#dde2eb;--tx:#151922;--mu:#5c6476;--gd:#16955a;--wn:#c47f0a;--bad:#d63f5a;--act:color-mix(in srgb,var(--ac) 58%,#000)}
+.bd.th-light{--bg:#f6f4fa;--p1:#fff;--p2:#f0edf6;--p3:#e4dfee;--ln:#e0dbe9;--tx:#17141f;--mu:#625b70;--gd:#16955a;--wn:#c47f0a;--bad:#d63f5a;--act:color-mix(in srgb,var(--ac) 58%,#000)}
 .bd.th-light .win{box-shadow:0 30px 80px rgba(0,0,0,.28)}
 .bd.th-light .adm select,.bd.th-light .adm input[type=datetime-local]{color-scheme:light}
-.bd.th-mid{--bg:#000;--p1:#0b0c10;--p2:#13151b;--p3:#1d2029;--ln:#1b1e26}
+.bd.th-mid{--bg:#000;--p1:#0b0a0f;--p2:#131119;--p3:#1d1a24;--ln:#1b1922}
 .bd.cd-still,.bd.cd-still *{animation:none!important;transition:none!important}
 .bd.cd-blur .gr,.bd.cd-blur .gtile .v,.bd.cd-blur .cg,.bd.cd-blur .row .bar,.bd.cd-blur .cc .bar,.bd.cd-blur .pts{filter:blur(7px);transition:filter .15s}
 .bd.cd-blur .gr:hover,.bd.cd-blur .gtile:hover .v,.bd.cd-blur .cg:hover,.bd.cd-blur .row:hover .bar,.bd.cd-blur .cc:hover .bar,.bd.cd-blur .pts:hover{filter:none}
@@ -553,7 +554,7 @@ const empty = t => `<div class="empty">${t}</div>`;
 const LETTERS = [[93, 'A', 4], [90, 'A-', 3.7], [87, 'B+', 3.3], [83, 'B', 3], [80, 'B-', 2.7], [77, 'C+', 2.3], [73, 'C', 2], [70, 'C-', 1.7], [67, 'D+', 1.3], [63, 'D', 1], [60, 'D-', 0.7], [-1e9, 'F', 0]];
 const letterOf = s => LETTERS.find(l => s >= l[0]);
 const scoreColor = s => s == null ? 'var(--mu)' : s >= 90 ? 'var(--gd)' : s >= 80 ? 'var(--ac)' : s >= 70 ? 'var(--wn)' : 'var(--bad)';
-const PAL = ['#7c9cff', '#3ecf8e', '#f5b546', '#f2637a', '#b48cff', '#4cc9f0', '#ff8f5a', '#e46fd0'];
+const PAL = ['#a78bfa', '#3ecf8e', '#f5b546', '#f2637a', '#7c9cff', '#4cc9f0', '#ff8f5a', '#e46fd0'];
 const TYPE = { assignment: 'Assignment', quiz: 'Quiz', discussion_topic: 'Discussion', wiki_page: 'Page', planner_note: 'Note' };
 const byId = id => S.courses.find(c => c.id === Number(id));
 const sortWork = l => l.slice().sort((a, b) => (a.due ? +new Date(a.due) : 9e15) - (b.due ? +new Date(b.due) : 9e15));
@@ -679,15 +680,16 @@ host.id = ID;
 host.style.cssText = 'position:fixed;inset:0;z-index:2147483647';
 const root = host.attachShadow({ mode: 'open' });
 root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div class="win">
-<aside class="sb"><div class="brand"><span class="logo">${I.cap}</span><span class="bname">Class Dash</span></div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><div class="sbl"><button class="cupd" data-act="settings" title="Settings (saved in this browser)">${I.gear.replace('width="18" height="18"', 'width="13" height="13"')}Settings</button><button class="cupd" data-act="checkupd">Check for updates</button><button class="cupd" data-act="admin" hidden title="Admin (only shows on your computers)">${I.key.replace('width="18" height="18"', 'width="13" height="13"')}Admin</button></div><div class="ver"></div></div></aside>
+<aside class="sb"><div class="brand"><span class="logo">${I.board}</span><span class="bname">Classboard</span></div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><div class="sbl"><button class="cupd" data-act="settings" title="Settings (saved in this browser)">${I.gear.replace('width="18" height="18"', 'width="13" height="13"')}Settings</button><button class="cupd" data-act="checkupd">Check for updates</button><button class="cupd" data-act="admin" hidden title="Admin (only shows on your computers)">${I.key.replace('width="18" height="18"', 'width="13" height="13"')}Admin</button></div><div class="ver"></div></div></aside>
 <main class="mn"><header class="hd"><h1></h1>
-<div class="omni"><span class="oi">${I.search}</span><input data-omni placeholder="Search Class Dash, or go to study.ecology-study" autocomplete="off" spellcheck="false" aria-label="Search or go to"><span class="kbd">Ctrl K</span><div class="odrop" hidden></div></div><span class="upd"></span>
+<div class="omni"><span class="oi">${I.search}</span><input data-omni placeholder="Search Classboard, or go to study.ecology-study" autocomplete="off" spellcheck="false" aria-label="Search or go to"><span class="kbd">Ctrl K</span><div class="odrop" hidden></div></div><span class="upd"></span>
 <button class="ib qsw" data-act="qswitch" title="Jump to a Canvas assignment">${I.brief}</button><button class="ib" data-act="refresh" title="Refresh">${I.refresh}</button><button class="ib sset" data-act="settings" title="Settings">${I.gear}</button><button class="ib" data-act="close" title="Close (Esc)">${I.x}</button></header>
 <div class="bnrs"></div>
 <div class="ubar" hidden><span class="uic">${I.refresh}</span><div class="grow"><div class="t">Update available</div><div class="sub unote"></div></div>
 <button class="btn" data-act="later">Later</button><button class="btn pri" data-act="update">Update now</button></div>
 <div class="ct"></div></main></div></div>`;
 document.body.appendChild(host);
+if (!document.getElementById('classboard-font')) { const fl = document.createElement('link'); fl.id = 'classboard-font'; fl.rel = 'stylesheet'; fl.href = 'https://fonts.googleapis.com/css2?family=Geist:wght@400..700&display=swap'; (document.head || document.documentElement).appendChild(fl); }
 const $ = s => root.querySelector(s);
 const NAV = [['home', 'Overview', I.home], ['todo', 'To-Do', I.check], ['grades', 'Grades', I.chart], ['classes', 'Classes', I.book], ['calendar', 'Calendar', I.cal], ['schedule', 'Schedule', I.clock], ['hallpass', 'Hall Pass', I.pass], ['study', 'Study', I.study], ['games', 'Games', I.game]];
 const navOf = v => v === 'course' ? 'classes' : v === 'play' ? 'games' : v === 'read' || v === 'cards' ? 'study' : v;
@@ -888,7 +890,7 @@ return `<div class="calh">${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].ma
 <p class="note" style="margin-top:8px">Faded and crossed out = already done. Hover an item for details.</p>`;
 }
 const vNoCanvas = () => `<div class="card nc"><div class="logo">${I.cap}</div><h3>Open Canvas to see your classes</h3>
-<p class="sub wrap">Class Dash reads your grades, to-dos and announcements straight from Canvas while you're logged in. Go to your school's Canvas site, then click the bookmark again.</p>
+<p class="sub wrap">Classboard reads your grades, to-dos and announcements straight from Canvas while you're logged in. Go to your school's Canvas site, then click the bookmark again.</p>
 <button class="btn pri" data-go="games">Play games instead</button></div>`;
 const vError = () => `<div class="card nc"><div class="logo" style="background:var(--bad)">${I.x}</div><h3>Couldn't load Canvas</h3><p class="sub wrap">${esc(S.error)}</p><button class="btn pri" data-act="refresh">Try again</button></div>`;
 const IMG = /\.(png|jpe?g|webp|gif|svg)$/i;
@@ -938,7 +940,7 @@ const art = p => {
 const h = hash(p.name), c1 = PAL[h % PAL.length], c2 = PAL[(h >>> 3) % PAL.length], deg = 100 + (h >>> 6) % 140;
 const longest = Math.max(...p.name.split(' ').map(w => w.length));
 const size = Math.max(12, Math.min(p.name.length <= 6 ? 27 : p.name.length <= 12 ? 21 : 17, Math.floor(150 / longest)));
-return `<div class="art gen" style="background:linear-gradient(rgba(6,8,12,0),rgba(6,8,12,.38)),linear-gradient(${deg}deg,${c1},${c2})">
+return `<div class="art gen" style="background:linear-gradient(rgba(5,4,9,0),rgba(5,4,9,.38)),linear-gradient(${deg}deg,${c1},${c2})">
 <svg class="pat" aria-hidden="true"><rect width="100%" height="100%" fill="url(#cdp${(h >>> 9) % 5})"/></svg>
 <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${p.theme[2]}</svg>
 <span class="gtitle" style="font-size:${size}px">${esc(p.name)}</span>${p.img ? `<img class="aimg" src="${esc(p.img)}" alt="" loading="lazy">` : ''}</div>`;
@@ -1083,7 +1085,7 @@ if (Date.now() - store.get('reqAt', 0) < 30000) return say('Thanks! Give it a fe
 say('Sending…');
 fetch('https://api.web3forms.com/submit', {
 method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-body: JSON.stringify({ access_key: W3F_KEY, subject: 'Class Dash: broken game - ' + p.name, from_name: 'Class Dash', Request: 'Broken game', Game: p.name, Problem: S.rep.why, File: p.id, 'Loaded from': SRC_LABEL[S.gameMode] || 'unknown', Browser: navigator.userAgent.slice(0, 160), Details: 'Sent from the Report button on the game page' })
+body: JSON.stringify({ access_key: W3F_KEY, subject: 'Classboard: broken game - ' + p.name, from_name: 'Classboard', Request: 'Broken game', Game: p.name, Problem: S.rep.why, File: p.id, 'Loaded from': SRC_LABEL[S.gameMode] || 'unknown', Browser: navigator.userAgent.slice(0, 160), Details: 'Sent from the Report button on the game page' })
 }).then(r => r.json()).then(j => {
 if (String(j.success) !== 'true') throw new Error('failed');
 store.set('reqAt', Date.now());
@@ -1136,7 +1138,7 @@ tick();
 f.addEventListener('load', () => { w.clearInterval(iv); ov.classList.add('done'); w.setTimeout(() => ov.remove(), 300); }, { once: true });
 }
 // Runs first inside every game loaded from the repo: a sound switch, saved progress (games can't use the browser's
-// own storage in their sandbox, so Class Dash keeps it for them), and passing key presses up for the quick-switch shortcut.
+// own storage in their sandbox, so Classboard keeps it for them), and passing key presses up for the quick-switch shortcut.
 function cdShim(startMuted, saved) {
 var muted = !!startMuted, gains = [];
 var send = function (m) { try { parent.postMessage(m, '*'); } catch (e) {} };
@@ -1280,11 +1282,11 @@ function docView(d, p) {
 const FILL = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
 const mk = (tag, css) => { const e = d.createElement(tag); e.className = 'gframe'; e.style.cssText = FILL + (css || ''); return e; };
 const panel = (title, sub, href, label, dl) => {
-const box = mk('div', 'display:grid;place-items:center;background:#0f1218;color:#e9ecf2;font:15px system-ui,sans-serif;text-align:center;padding:20px;box-sizing:border-box');
-box.innerHTML = `<div><div style="font-size:18px;font-weight:700;margin-bottom:6px">${esc(title)}</div><div style="color:#8c93a5;margin-bottom:16px">${esc(sub)}</div></div>`;
+const box = mk('div', 'display:grid;place-items:center;background:#0b0a10;color:#f1eef5;font:15px system-ui,sans-serif;text-align:center;padding:20px;box-sizing:border-box');
+box.innerHTML = `<div><div style="font-size:18px;font-weight:700;margin-bottom:6px">${esc(title)}</div><div style="color:#918aa0;margin-bottom:16px">${esc(sub)}</div></div>`;
 if (href) {
 const a = d.createElement('a');
-a.style.cssText = 'display:inline-block;padding:10px 18px;border-radius:10px;background:#7c9cff;color:#0f1218;font-weight:700;text-decoration:none';
+a.style.cssText = 'display:inline-block;padding:10px 18px;border-radius:10px;background:#a78bfa;color:#0b0a10;font-weight:700;text-decoration:none';
 a.href = href; a.textContent = label;
 if (dl) a.download = dl; else { a.target = '_blank'; a.rel = 'noopener'; }
 box.firstChild.appendChild(a);
@@ -1295,7 +1297,7 @@ if (p.kind === 'html') { const f = mk('iframe', 'background:#fff'); f.setAttribu
 if (p.kind === 'link') return docLinkUrl(p.id).then(u => u ? panel(p.name, 'This study resource is a link to another website.', u, 'Open link') : panel(p.name, "This link doesn't have a web address in it.", ''));
 return docBlob(p.id).then(url => {
 if (p.kind === 'pdf') { const f = mk('iframe', 'background:#fff'); f.src = url; return f; }
-if (p.kind === 'image') { const box = mk('div', 'overflow:auto;display:grid;place-items:center;background:#0f1218'); const img = d.createElement('img'); img.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain'; img.src = url; box.appendChild(img); return box; }
+if (p.kind === 'image') { const box = mk('div', 'overflow:auto;display:grid;place-items:center;background:#0b0a10'); const img = d.createElement('img'); img.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain'; img.src = url; box.appendChild(img); return box; }
 return panel(p.name, (p.ext ? p.ext.toUpperCase() + ' files' : 'These files') + " can't be shown here, but you can download it.", url, 'Download', p.id.split('/').pop());
 });
 }
@@ -1566,17 +1568,17 @@ let fields, subject;
 if (kind === 'games') {
 const g = (r.game || '').trim();
 if (!g) return reqSay(kind, 'Type the name of the game first.', 'err');
-fields = { Request: 'Game', Game: g, Details: 'Sent from the Class Dash games page' }; subject = 'Class Dash request: ' + g;
+fields = { Request: 'Game', Game: g, Details: 'Sent from the Classboard games page' }; subject = 'Classboard request: ' + g;
 } else {
 const c = (r.scls || '').trim();
 if (!c) return reqSay(kind, "Type which class it's for first.", 'err');
-fields = { Request: 'Study resource', Class: c, Topic: (r.stopic || '').trim() || '-', Details: 'Sent from the Class Dash study page' }; subject = 'Class Dash request: ' + c;
+fields = { Request: 'Study resource', Class: c, Topic: (r.stopic || '').trim() || '-', Details: 'Sent from the Classboard study page' }; subject = 'Classboard request: ' + c;
 }
 if (Date.now() - store.get('reqAt', 0) < 30000) return reqSay(kind, 'Thanks! Give it a few seconds before sending another.', 'err');
 reqSay(kind, 'Sending…', '');
 fetch('https://api.web3forms.com/submit', {
 method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-body: JSON.stringify(Object.assign({ access_key: W3F_KEY, subject, from_name: 'Class Dash' }, fields))
+body: JSON.stringify(Object.assign({ access_key: W3F_KEY, subject, from_name: 'Classboard' }, fields))
 }).then(res => res.json()).then(j => {
 if (String(j.success) !== 'true') throw new Error(j.message || 'failed');
 store.set('reqAt', Date.now());
@@ -1600,7 +1602,7 @@ docView(d, p).then(el => d.body.appendChild(el)).catch(() => { d.body.style.colo
 return true;
 }
 const st = d.createElement('style');
-st.textContent = '@keyframes cdsp{to{transform:rotate(360deg)}}.gload{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;background:#0f1218;color:#e9ecf2;font:14px/1.45 system-ui,sans-serif;transition:opacity .25s}.gload.done{opacity:0;pointer-events:none}.spin{width:30px;height:30px;border:3px solid #272d3a;border-top-color:#7c9cff;border-radius:50%;animation:cdsp .8s linear infinite}.glt{font-size:18px;font-weight:700}.gls{max-width:420px;color:#8c93a5}.gltime{font-size:12px;color:#8c93a5;min-height:1em}';
+st.textContent = '@keyframes cdsp{to{transform:rotate(360deg)}}.gload{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;background:#0b0a10;color:#f1eef5;font:14px/1.45 system-ui,sans-serif;transition:opacity .25s}.gload.done{opacity:0;pointer-events:none}.spin{width:30px;height:30px;border:3px solid #252130;border-top-color:#a78bfa;border-radius:50%;animation:cdsp .8s linear infinite}.glt{font-size:18px;font-weight:700}.gls{max-width:420px;color:#918aa0}.gltime{font-size:12px;color:#918aa0;min-height:1em}';
 d.head.appendChild(st);
 const f = d.createElement('iframe');
 f.setAttribute('allow', 'fullscreen; autoplay; gamepad');
@@ -1624,7 +1626,7 @@ var f = document.querySelector('iframe'), muted = c.muted;
 var tell = function () { try { f.contentWindow.postMessage({ cdMute: muted }, '*'); } catch (e) {} };
 if (c.repo) {
 var b = document.createElement('button');
-b.style.cssText = 'position:fixed;top:10px;right:10px;z-index:5;border:0;border-radius:9px;padding:7px 12px;font:600 13px system-ui,sans-serif;background:rgba(15,18,24,.78);color:#e9ecf2;cursor:pointer;opacity:.6';
+b.style.cssText = 'position:fixed;top:10px;right:10px;z-index:5;border:0;border-radius:9px;padding:7px 12px;font:600 13px system-ui,sans-serif;background:rgba(15,18,24,.78);color:#f1eef5;cursor:pointer;opacity:.6';
 b.onmouseenter = function () { b.style.opacity = 1; };
 b.onmouseleave = function () { b.style.opacity = .6; };
 var paint = function () { b.textContent = muted ? 'Sound off' : 'Sound on'; };
@@ -1654,7 +1656,7 @@ var a = JSON.parse(localStorage.getItem('classdash_playAll') || '{}'); a[c.id] =
 } catch (x) {}
 }, 15000);
 }
-// Opens a game inside Class Dash, or in a new about:blank tab if that's picked in Settings
+// Opens a game inside Classboard, or in a new about:blank tab if that's picked in Settings
 function playGame(id) {
 S.soundOn = !P.gameMute;
 S.rep = { open: false, why: '' };
@@ -1669,15 +1671,15 @@ const w = window.open(blankUrl(), '_blank');
 if (!w) return;
 w.opener = null;
 const d = w.document;
-d.title = 'Class Games';
-d.body.style.cssText = 'margin:0;height:100vh;display:grid;place-items:center;background:#0f1218;color:#8c93a5;font:15px system-ui,sans-serif';
+d.title = 'Classboard games';
+d.body.style.cssText = 'margin:0;height:100vh;display:grid;place-items:center;background:#0b0a10;color:#918aa0;font:15px system-ui,sans-serif';
 d.body.textContent = 'Loading games…';
 const get = url => fetch(url + '?t=' + Date.now(), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); });
 let saved = (store.get('installed', null) || {}).code || null;
 if (!saved) try { saved = localStorage.getItem('classdash_code'); } catch (e) {}
 (saved ? Promise.resolve(saved) : get('https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/bookmarklet.js').catch(() => get(PAGES + 'bookmarklet.js')))
 .then(code => { d.body.removeAttribute('style'); d.body.textContent = ''; w.__classDashMode = 'library'; new w.Function(code)(); })
-.catch(() => { d.body.textContent = "Couldn't load the games library. Try again from Class Dash."; });
+.catch(() => { d.body.textContent = "Couldn't load the games library. Try again from Classboard."; });
 }
 const findItem = key => key.startsWith('pack:') ? PACK.find(p => p.id === key.slice(5)) : null;
 const addRecent = key => store.set('recent', [key, ...store.get('recent', []).filter(x => x !== key)].slice(0, 7));
@@ -1772,14 +1774,14 @@ return `<div class="row${done ? ' past' : ''}"><span class="dot" style="backgrou
 <div class="grow"><div class="t">${esc(p.name)}${clsHtml}</div><div class="sub">${hm(p.a)} – ${ampm(p.b)}</div></div>
 ${on ? `<span class="chip ac">Now · ${span(p.b - m)} left</span>` : done ? '<span class="chip">Done</span>' : `<span class="chip">${p.b - p.a} min</span>`}</div>`;
 }).join('')}</div>
-<div class="card" style="margin-top:16px"><h2>My periods<span>Saved on this computer · stays when Class Dash updates</span></h2>
+<div class="card" style="margin-top:16px"><h2>My periods<span>Saved on this computer · stays when Classboard updates</span></h2>
 <datalist id="cdcourses">${S.courses.map(c => `<option value="${esc(c.name)}"></option>`).join('')}</datalist>
 <div class="pgrid">${PERIOD_KEYS.map(k => `<div class="pset"><label for="cdp-${slug(k)}">${esc(k)}</label><input id="cdp-${slug(k)}" data-period="${esc(k)}" list="cdcourses" value="${esc(S.periods[k] || '')}" placeholder="${/Period/.test(k) ? 'e.g. Biology' : 'Optional'}" autocomplete="off" spellcheck="false"></div>`).join('')}</div></div>`;
 };
 // ---- Site settings: site.json in the repo (name, icon, colour, banners, hidden pages, hall pass link) ----
-const ICON_CHOICES = ['cap', 'book', 'study', 'star', 'bolt', 'rocket', 'heart', 'news', 'leaf', 'flask', 'atom', 'math', 'globe', 'talk', 'code', 'game', 'cal', 'clock', 'pass', 'chart'];
-const COLOR_CHOICES = ['#7c9cff', '#3ecf8e', '#f5b546', '#f2637a', '#b48cff', '#4cc9f0', '#ff8f5a', '#e46fd0'];
-const SITE_DEFAULT = { name: 'Class Dash', icon: 'cap', accent: '#7c9cff', banners: [], hidden: [], hallpass: PASS, featured: [], hiddenGames: [] };
+const ICON_CHOICES = ['board', 'cap', 'book', 'study', 'star', 'bolt', 'rocket', 'heart', 'news', 'leaf', 'flask', 'atom', 'math', 'globe', 'talk', 'code', 'game', 'cal', 'clock', 'pass', 'chart'];
+const COLOR_CHOICES = ['#a78bfa', '#3ecf8e', '#f5b546', '#f2637a', '#7c9cff', '#4cc9f0', '#ff8f5a', '#e46fd0'];
+const SITE_DEFAULT = { name: 'Classboard', icon: 'board', accent: '#a78bfa', banners: [], hidden: [], hallpass: PASS, featured: [], hiddenGames: [] };
 const clone = o => JSON.parse(JSON.stringify(o));
 const hexOk = c => /^#[0-9a-f]{6}$/i.test(c || '');
 function fixSite(j) {
@@ -1807,10 +1809,11 @@ ${b.button && b.link ? `<button class="btn" data-banner="${esc(b.id)}">${esc(b.b
 function applySite() {
 const s = curSite();
 setPack();
-$('.bd').style.setProperty('--ac', !S.draft && hexOk(P.accent) ? P.accent : hexOk(s.accent) ? s.accent : '#7c9cff');
-$('.brand .logo').innerHTML = I[s.icon] || I.cap;
-$('.bname').textContent = s.name || 'Class Dash';
-$('[data-omni]').placeholder = 'Search ' + (s.name || 'Class Dash') + ', or go to study.ecology-study';
+$('.bd').style.setProperty('--ac', !S.draft && hexOk(P.accent) ? P.accent : hexOk(s.accent) ? s.accent : '#a78bfa');
+const nm = !s.name || /^class dash$/i.test(s.name) ? 'Classboard' : s.name;
+$('.brand .logo').innerHTML = I[s.icon] || I.board;
+$('.bname').textContent = nm;
+$('[data-omni]').placeholder = 'Search ' + nm + ', or go to study.ecology-study';
 paintBanners();
 }
 function loadSite() {
@@ -1949,7 +1952,7 @@ const dirs = new Set([...((S.lib && S.lib.dirs) || []), ...DOCS.map(d => d.dir).
 const cats = [...dirs].map(dir => { const name = pretty(dir), h = hash(name.toLowerCase()); return { dir, name, docs: DOCS.filter(d => d.dir === dir), color: PAL[h % PAL.length], icon: (SUBJECTS.find(s => s[0].test(name)) || [, I.study])[1] }; })
 .sort((a, b) => a.name.localeCompare(b.name));
 const other = DOCS.filter(d => !d.dir);
-if (other.length) cats.push({ dir: '', name: 'Not in a category', docs: other, color: '#8c93a5', icon: I.study });
+if (other.length) cats.push({ dir: '', name: 'Not in a category', docs: other, color: '#918aa0', icon: I.study });
 return cats;
 }
 const editRow = (save, attrs, ph, saveLabel) => `<input class="grow" data-av="edit" value="${esc(A.vals.edit || '')}" placeholder="${esc(ph || '')}" maxlength="120"><button class="btn sm pri" data-act="${save}" ${attrs}>${saveLabel || 'Save'}</button><button class="btn sm" data-act="adm-cancel">Cancel</button>`;
@@ -2021,7 +2024,7 @@ const icons = (cur, attr) => ICON_CHOICES.map(k => `<button class="icn${cur === 
 return `<div class="card adm"><h2>Look<span>preview right away · publish to save</span></h2>
 <label class="alab" style="margin-top:0">Name</label><input data-site="name" value="${esc(s.name)}" maxlength="40" style="width:100%;max-width:360px">
 <label class="alab">Icon</label><div class="icons">${icons(s.icon, k => `data-sicon="${k}"`)}</div>
-<label class="alab">Accent colour</label><div class="sws">${sw(s.accent, c => `data-saccent="${c}"`)}<input type="color" data-site="accent" value="${hexOk(s.accent) ? s.accent : '#7c9cff'}" title="Pick any colour"></div>
+<label class="alab">Accent colour</label><div class="sws">${sw(s.accent, c => `data-saccent="${c}"`)}<input type="color" data-site="accent" value="${hexOk(s.accent) ? s.accent : '#a78bfa'}" title="Pick any colour"></div>
 <p class="sub wrap" style="margin-top:12px">People who picked their own accent colour in Settings keep theirs.</p></div>`;
 }
 function aBanners() {
@@ -2066,7 +2069,7 @@ const key = hasKey();
 return `<div class="card adm"><h2>GitHub key<span>${key ? 'saved on this computer' : 'not set up yet'}</span></h2>
 <p class="sub wrap">Admin needs a GitHub key to save changes to the yee-new repo. It's stored only on this computer.</p>
 <ol class="asteps"><li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Open GitHub's new key page</a> (signed in as you).</li>
-<li>Name it <b>Class Dash</b>. Under <b>Repository access</b>, pick <b>Only select repositories</b>, then <b>yee-new</b>.</li>
+<li>Name it <b>Classboard</b>. Under <b>Repository access</b>, pick <b>Only select repositories</b>, then <b>yee-new</b>.</li>
 <li>Under <b>Permissions</b>, set <b>Contents</b> to <b>Read and write</b>. Click <b>Generate token</b> and copy it.</li>
 <li>Paste it below and click <b>Save key</b>.</li></ol>
 ${key ? '<div class="arow"><button class="btn" data-act="adm-testkey">Test the key</button><button class="btn" data-act="adm-forget">Remove key from this computer</button></div>'
@@ -2091,7 +2094,7 @@ function keepFolder(files, dir, removing) {
 if (!dir) return [];
 const gone = new Set(removing.filter(e => e.sha === null).map(e => e.path));
 const left = files.filter(f => f.path.startsWith(STUDY + dir + '/') && !gone.has(f.path));
-return left.length ? [] : [{ path: STUDY + dir + '/.keep', b64: b64enc('Class Dash study category\n') }];
+return left.length ? [] : [{ path: STUDY + dir + '/.keep', b64: b64enc('Classboard study category\n') }];
 }
 const aOnStudy = () => { if (S.view === 'admin') renderMain(true); };
 async function adminAct(d, t) {
@@ -2141,7 +2144,7 @@ case 'adm-newcat': {
 const cat = cleanSeg(A.vals.newcat);
 if (!cat) return aSay('Type a name for the new category first.', 'err');
 return aRun('Creating category', async () => {
-await ghChange('Add study category: ' + cat, async files => { if (taken(files, STUDY + cat)) throw new Error('There is already a category called ' + pretty(cat) + '.'); return [{ path: STUDY + cat + '/.keep', b64: b64enc('Class Dash study category\n') }]; });
+await ghChange('Add study category: ' + cat, async files => { if (taken(files, STUDY + cat)) throw new Error('There is already a category called ' + pretty(cat) + '.'); return [{ path: STUDY + cat + '/.keep', b64: b64enc('Classboard study category\n') }]; });
 A.vals.newcat = ''; A.up = { kind: 'file', cat };
 return 'Created ' + pretty(cat) + '. Add files to it whenever you like.';
 });
@@ -2330,7 +2333,7 @@ window.__classDashUpdate = null;
 function showUpdate(code) {
 pendingUpdate = { code };
 const m = code.match(/const WHATSNEW = (['"])(.*?)\1;/);
-$('.unote').textContent = m && m[2] ? "What's new: " + m[2] : 'A newer version of Class Dash is on GitHub.';
+$('.unote').textContent = m && m[2] ? "What's new: " + m[2] : 'A newer version of Classboard is on GitHub.';
 $('.ubar').hidden = false;
 }
 if (pendingUpdate) showUpdate(pendingUpdate.code);
@@ -2405,15 +2408,15 @@ function vSettings() {
 const seg = (k, opts) => `<div class="seg mini">${opts.map(([v, l]) => `<button type="button" data-pref="${k}" data-val="${esc(v)}" class="${P[k] === v ? 'on' : ''}">${l}</button>`).join('')}</div>`;
 const row = (label, sub, ctl) => `<div class="srow"><div class="grow"><div class="t">${label}</div>${sub ? `<div class="sub wrap">${sub}</div>` : ''}</div>${ctl}</div>`;
 const tog = (k, label, sub) => `<label class="stog"><span class="grow"><span class="t">${label}</span>${sub ? `<span class="sub wrap">${sub}</span>` : ''}</span><input type="checkbox" data-ptog="${k}"${P[k] ? ' checked' : ''}><i></i></label>`;
-const themes = [['dark', 'Dark', ['#161a22', '#1d222c', '#272d3a']], ['light', 'Light', ['#ffffff', '#eef1f6', '#e1e6ef']], ['midnight', 'Midnight', ['#0b0c10', '#13151b', '#000000']]];
+const themes = [['dark', 'Dark', ['#121018', '#1a1721', '#252130']], ['light', 'Light', ['#ffffff', '#eef1f6', '#e1e6ef']], ['midnight', 'Midnight', ['#0b0c10', '#13151b', '#000000']]];
 const ac = hexOk(P.accent) ? P.accent.toLowerCase() : '';
-const siteAc = hexOk(SITE.accent) ? SITE.accent : '#7c9cff';
+const siteAc = hexOk(SITE.accent) ? SITE.accent : '#a78bfa';
 const starts = shownNav().filter(n => n[0] !== 'hallpass').map(n => [n[0], n[1]]).concat([['last', 'Last page I had open']]);
 const m = S.setMsg;
-return `<div class="card adm sset-c"><h2>Appearance<span>saved in this browser · stays when Class Dash updates</span></h2>
+return `<div class="card adm sset-c"><h2>Appearance<span>saved in this browser · stays when Classboard updates</span></h2>
 ${row('Theme', '', `<div class="thms">${themes.map(([k, l, c]) => `<button type="button" class="thc${P.theme === k ? ' on' : ''}" data-pref="theme" data-val="${k}"><div class="pv" style="background:${c[2]}">${c.slice(0, 2).map(x => `<i style="background:${x}"></i>`).join('')}<i style="background:${ac || siteAc};flex:.3"></i></div><span>${l}</span></button>`).join('')}</div>`)}
 ${row('Accent colour', 'Buttons, highlights and links', `<div class="sws"><button type="button" class="btn${ac ? '' : ' pri'}" data-pacc="" style="padding:4px 10px;font-size:12px">Default</button>${COLOR_CHOICES.map(c => `<button type="button" class="sw${ac === c ? ' on' : ''}" style="background:${c}" data-pacc="${c}" title="${c}"></button>`).join('')}<input type="color" data-pcolor value="${ac || siteAc}" title="Pick any colour"></div>`)}
-${row('Text size', 'Makes everything in Class Dash bigger or smaller', seg('size', [['small', 'Small'], ['normal', 'Normal'], ['large', 'Large']]))}
+${row('Text size', 'Makes everything in Classboard bigger or smaller', seg('size', [['small', 'Small'], ['normal', 'Normal'], ['large', 'Large']]))}
 ${tog('full', 'Fill the whole screen', 'Use the full browser window instead of a floating box')}
 ${tog('motion', 'Animations', 'Turn off to stop things sliding and fading')}</div>
 <div class="card adm sset-c"><h2>General</h2>
@@ -2422,9 +2425,9 @@ ${row('Quick switch shortcut', 'Jumps to one of your current Canvas assignments,
 ${row('Clock', '', seg('clock24', [[false, '12-hour'], [true, '24-hour']]))}
 ${tog('seconds', 'Show seconds on the clock')}
 ${tog('blurGrades', 'Hide grades', 'Blurs scores and GPA until you hover over them, so people walking by can\'t see')}
-${tog('outside', 'Close when clicking outside', 'Turn off so a stray click outside the box doesn\'t close Class Dash')}</div>
+${tog('outside', 'Close when clicking outside', 'Turn off so a stray click outside the box doesn\'t close Classboard')}</div>
 <div class="card adm sset-c"><h2>Games</h2>
-${row('Open games', '', seg('gameOpen', [['here', 'Inside Class Dash'], ['tab', 'In a new tab']]))}
+${row('Open games', '', seg('gameOpen', [['here', 'Inside Classboard'], ['tab', 'In a new tab']]))}
 ${row('Game tile size', '', seg('tiles', [['small', 'Small'], ['medium', 'Medium'], ['large', 'Large']]))}
 ${tog('gameMute', 'Start games with the sound off', 'Use the Sound button above a game to turn it on')}
 ${tog('recent', 'Show "Jump back in"', 'Your recently played games at the top of the library')}</div>
@@ -2477,7 +2480,7 @@ const drop = $('.odrop'), q = box.value;
 S.omni = omniSearch(q === S.omniFrom ? '' : q);
 if (S.omniSel >= S.omni.length) S.omniSel = 0;
 drop.hidden = false;
-drop.innerHTML = S.omni.map((x, i) => `<div class="oit${i === S.omniSel ? ' on' : ''}" data-oi="${i}"><span class="oic"${x.color ? ` style="background:${esc(x.color)};color:#0f1218"` : ''}>${x.icon || I.search}</span>
+drop.innerHTML = S.omni.map((x, i) => `<div class="oit${i === S.omniSel ? ' on' : ''}" data-oi="${i}"><span class="oic"${x.color ? ` style="background:${esc(x.color)};color:#0b0a10"` : ''}>${x.icon || I.search}</span>
 <div class="grow"><div class="t">${esc(x.name)}</div><div class="sub">${esc(x.kind)}</div></div>${x.addr ? `<span class="addr">${esc(x.addr)}</span>` : ''}</div>`).join('')
 + (S.omni.length ? '' : `<div class="ohint">Nothing matches “${esc(q.trim())}”.</div>`)
 + (q === S.omniFrom || !q.trim() ? `<div class="ohint">Type to search everything, or jump straight there with <b>study.</b> <b>games.</b> <b>classes.</b></div>` : '');
