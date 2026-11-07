@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sketchbook</title>
+<style>
+html,body{margin:0;height:100%;background:#111;overflow:hidden}
+#cd-load{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#ddd;font:15px system-ui,sans-serif}
+#cd-load .bar{width:min(320px,70vw);height:6px;border-radius:6px;background:#333;overflow:hidden}
+#cd-load .bar i{display:block;height:100%;width:0;background:#9ecbff;transition:width .2s}
+</style>
+</head>
+<body>
+<div id="cd-load"><div>Loading the world…</div><div class="bar"><i></i></div><div class="pct">0%</div></div>
+<script>
+(function () {
+  var parts = ['build/assets/world.glb.part1', 'build/assets/world.glb.part2', 'build/assets/world.glb.part3'];
+  var total = 26389488, got = [0, 0, 0];
+  var box = document.getElementById('cd-load'), fill = box.querySelector('.bar i'), pct = box.querySelector('.pct');
+  function show() {
+    var p = Math.min(100, Math.round((got[0] + got[1] + got[2]) / total * 100));
+    fill.style.width = p + '%'; pct.textContent = p + '%';
+  }
+  function grab(url, i) {
+    return fetch(url).then(function (r) {
+      if (!r.ok) throw new Error(url);
+      if (!r.body || !r.body.getReader) return r.arrayBuffer().then(function (b) { got[i] = b.byteLength; show(); return b; });
+      var reader = r.body.getReader(), chunks = [];
+      function pump() {
+        return reader.read().then(function (s) {
+          if (s.done) return new Blob(chunks).arrayBuffer();
+          chunks.push(s.value); got[i] += s.value.length; show();
+          return pump();
+        });
+      }
+      return pump();
+    });
+  }
+  Promise.all(parts.map(grab)).then(function (bufs) {
+    var url = URL.createObjectURL(new Blob(bufs, { type: 'model/gltf-binary' }));
+    var s = document.createElement('script');
+    s.src = 'build/sketchbook.min.js';
+    s.onload = function () { box.remove(); window.world = new Sketchbook.World(url); };
+    s.onerror = function () { box.firstChild.textContent = "Couldn't load the game. Refresh to try again."; };
+    document.body.appendChild(s);
+  }).catch(function () {
+    box.firstChild.textContent = "Couldn't load the world. Refresh to try again.";
+  });
+})();
+</script>
+</body>
+</html>
