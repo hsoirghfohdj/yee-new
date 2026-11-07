@@ -25,7 +25,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Everything now loads straight from the repo. Games start muted (Sound button above each game), and the new briefcase button or Alt+Q jumps to a Canvas assignment.';
+const WHATSNEW = 'Make your own flashcards in Study, report broken games, see your play time, and game names are easier to read. Games that won\'t load try another copy automatically.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -57,7 +57,8 @@ doc: null, sq: '', scls: 'All', skind: 'all',
 periods: store.get('periods', {}),
 req: {}, reqMsg: {},
 delArm: null,
-resetArm: false, setMsg: null
+resetArm: false, setMsg: null,
+fc: { id: null, mode: 'study' }, rep: { open: false, why: '' }
 };
 const svg = p => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
 const I = {
@@ -96,6 +97,9 @@ chain: svg('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d
 pic: svg('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>'),
 file: svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>'),
 plus: svg('<path d="M12 5v14M5 12h14"/>'),
+cards: svg('<rect x="2" y="6" width="15" height="13" rx="2"/><path d="M7 3h13a2 2 0 0 1 2 2v11"/>'),
+flag: svg('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'),
+dots: svg('<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>'),
 brief: svg('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>'),
 vol: svg('<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>'),
 mute: svg('<path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/>'),
@@ -314,7 +318,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .gt .art{position:absolute;inset:0;display:grid;place-items:center;font-size:36px;font-weight:800;letter-spacing:-.02em;color:rgba(15,18,24,.78)}
 .gt .art img{width:100%;height:100%;object-fit:cover;display:block}
 .gt .art .aimg{position:absolute;inset:0;z-index:1}
-.gt .tn{position:absolute;left:0;right:0;bottom:0;padding:26px 11px 10px;background:linear-gradient(transparent,rgba(6,8,12,.88));color:#fff;font-weight:650;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gt .tn{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:38px 10px 9px;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.62) 38%,rgba(0,0,0,.92));color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.85);line-height:1.2;font-weight:650;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gt .art.gen{color:#fff}
 .art .pat{position:absolute;inset:0;width:100%;height:100%;opacity:.14}
 .art .ico{position:absolute;right:-16%;bottom:-16%;width:74%;height:74%;fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.3;transform:rotate(-14deg)}
@@ -378,9 +382,52 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .snone .btn{margin-top:12px;display:inline-flex;gap:6px;align-items:center}
 .sreq{margin-top:6px}
 .btn.snd{display:inline-flex;align-items:center;gap:6px}
+.gt .tn{font-size:14px;font-weight:750;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bd.tl-s .gt .tn{font-size:12px;padding:30px 8px 7px}
+.gbar .btn{display:inline-flex;align-items:center;gap:6px}
+.gbar .btn svg{width:15px;height:15px;margin:0}
+.rep{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:10px 12px;border-radius:12px;background:var(--p1);border:1px solid var(--ln)}
+.rep[hidden]{display:none}
+.rep .seg{margin:0}
+.fcp{margin-bottom:16px}
+.fcslim{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:9px 12px;border-radius:12px;background:var(--p1);border:1px solid var(--ln);margin-bottom:16px;font-size:13px}
+.fcslim .ssi{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#0f1218;flex:none}
+.fcslim .ssi svg{width:15px;height:15px}
+.fcslim .fcimp{flex-basis:100%;margin-top:4px;padding-top:8px}
+.gmw{position:relative}
+.gmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:5;min-width:230px;padding:6px;border-radius:12px;background:var(--p1);border:1px solid var(--ln);box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.gmenu[hidden]{display:none}
+.gmenu button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:550}
+.gmenu button:hover{background:var(--p2)}
+.gmenu svg{width:15px;height:15px;color:var(--mu)}
+.tgrid.one{grid-auto-rows:0;grid-template-rows:auto;overflow:hidden;row-gap:0}
+.bmore{all:unset;cursor:pointer;align-self:flex-start;font-size:12px;font-weight:600;color:var(--mu);padding:0 4px}
+.bmore:hover{color:var(--tx)}
+.bnr{padding:7px 8px 7px 10px}
+.bnr .bic{width:26px;height:26px;border-radius:8px}
+.bnr .bic svg{width:15px;height:15px}
+.bnr .grow{font-size:13px}
+.fch{display:flex;align-items:center;gap:12px}
+.fch .ssi{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:#0f1218;flex:none}
+.fcrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 0 0;margin-top:10px;border-top:1px solid var(--ln)}
+.fcshare{padding:8px 0 0}
+.fcshare textarea{width:100%;height:70px;margin:8px 0;padding:8px;border-radius:9px;background:var(--p2);border:1px solid var(--ln);color:var(--tx);font:11px/1.4 ui-monospace,monospace;resize:vertical;box-sizing:border-box}
+.fcimp{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--ln)}
+.fcimp input{all:unset;box-sizing:border-box;flex:1 1 240px;height:34px;padding:0 10px;border-radius:9px;background:var(--p2);border:1px solid var(--ln);color:var(--tx);font-size:13px}
+.fcimp input:focus{border-color:var(--ac)}
+.fced{display:flex;align-items:center;gap:8px;margin-top:8px}
+.fced .fcn{width:22px;text-align:right;color:var(--mu);font-size:12px;flex:none}
+.adm .fced input:not([type=checkbox]){flex:1 1 0;min-width:0}
+.fcard{perspective:1200px;cursor:pointer;height:min(340px,48vh);margin:0 auto;max-width:720px}
+.fcard .fin{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.fcard.flip .fin{transform:rotateY(180deg)}
+.fcf,.fcb{position:absolute;inset:0;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;border-radius:18px;background:var(--p1);border:1px solid var(--ln);font-size:clamp(18px,2.6vw,28px);font-weight:650;text-align:center;overflow:auto;white-space:pre-wrap}
+.fcb{transform:rotateY(180deg);font-size:clamp(15px,2vw,21px);font-weight:500;border-color:var(--ac)}
+.fcl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+.fcbar{display:flex;justify-content:center;gap:8px;margin-top:14px;flex-wrap:wrap}
 .btn.snd[hidden]{display:none}
 .btn.snd svg{width:15px;height:15px;margin:0}
-.gt .nb{position:absolute;top:8px;left:8px;z-index:1;padding:2px 7px;border-radius:7px;background:var(--ac);color:#0f1218;font-size:10px;font-weight:800;letter-spacing:.06em;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.gt .nb{position:absolute;top:8px;left:8px;z-index:3;padding:2px 7px;border-radius:7px;background:var(--ac);color:#0f1218;font-size:10px;font-weight:800;letter-spacing:.06em;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .grp .grpn{margin-left:8px;font-weight:550;text-transform:none;letter-spacing:0;opacity:.8}
 .gload{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:var(--p1);transition:opacity .25s}
 .gload.done{opacity:0;pointer-events:none}
@@ -643,13 +690,13 @@ root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div 
 document.body.appendChild(host);
 const $ = s => root.querySelector(s);
 const NAV = [['home', 'Overview', I.home], ['todo', 'To-Do', I.check], ['grades', 'Grades', I.chart], ['classes', 'Classes', I.book], ['calendar', 'Calendar', I.cal], ['schedule', 'Schedule', I.clock], ['hallpass', 'Hall Pass', I.pass], ['study', 'Study', I.study], ['games', 'Games', I.game]];
-const navOf = v => v === 'course' ? 'classes' : v === 'play' ? 'games' : v === 'read' ? 'study' : v;
+const navOf = v => v === 'course' ? 'classes' : v === 'play' ? 'games' : v === 'read' || v === 'cards' ? 'study' : v;
 const usesLib = v => v === 'games' || v === 'study';
 function paintChrome() {
 const overdue = S.work.filter(x => x.open && x.due && new Date(x.due) < Date.now()).length;
 $('.nav').innerHTML = shownNav().map(([v, label, icon]) => `<button data-go="${v}" class="${navOf(S.view) === v ? 'on' : ''}">${icon}${label}${v === 'todo' && overdue ? `<span class="badge">${overdue}</span>` : ''}</button>`).join('');
 const c = S.view === 'course' && byId(S.courseId), g = S.view === 'play' && PACK.find(x => x.id === S.game), dc = S.view === 'read' && DOCS.find(x => x.id === S.doc);
-$('.hd h1').textContent = c ? c.name : g ? g.name : dc ? dc.name : S.view === 'admin' ? 'Admin' : S.view === 'settings' ? 'Settings' : (NAV.find(n => n[0] === S.view) || [, ''])[1];
+$('.hd h1').textContent = c ? c.name : g ? g.name : dc ? dc.name : S.view === 'admin' ? 'Admin' : S.view === 'settings' ? 'Settings' : S.view === 'cards' ? ((fcFind(S.fc.id) || {}).title || 'Flashcards') : (NAV.find(n => n[0] === S.view) || [, ''])[1];
 root.querySelectorAll('[data-act="settings"]').forEach(b => b.classList.toggle('on', S.view === 'settings'));
 root.querySelectorAll('[data-act="admin"]').forEach(b => b.classList.toggle('on', S.view === 'admin'));
 $('.qsw').title = 'Jump to a Canvas assignment' + (P.qsKey ? ' (' + keyLabel(P.qsKey) + ')' : '');
@@ -675,6 +722,7 @@ loadLib();
 else if (v === 'hallpass') ct.innerHTML = vHallPass();
 else if (v === 'admin') ct.innerHTML = S.draft ? vAdmin() : empty('Nothing here.');
 else if (v === 'settings') ct.innerHTML = vSettings();
+else if (v === 'cards') ct.innerHTML = vCards();
 else if (v === 'play') { ct.innerHTML = vPlay(); startPack(ct); }
 else if (v === 'read') { ct.innerHTML = vRead(); startDoc(ct, S.doc); }
 else if (v === 'schedule') ct.innerHTML = vSchedule();
@@ -683,7 +731,7 @@ else if (!S.loadedAt) ct.innerHTML = S.error ? vError() : '<div class="spin"></d
 else ct.innerHTML = { home: vHome, todo: vTodo, grades: vGrades, classes: vClasses, calendar: vCal, course: vCourse }[v]();
 ct.scrollTop = keepScroll ? top : 0;
 }
-const go = v => { S.view = v; if (VIEWS.includes(v)) store.set('lastView', v); renderMain(); };
+const go = v => { if (S.view === 'play') flushPlay(); S.view = v; if (VIEWS.includes(v)) store.set('lastView', v); renderMain(); };
 const tile = (k, v, s, color, g) => `<div class="card tile${g ? ' gtile' : ''}"><div class="k">${k}</div><div class="v" style="color:${color || 'var(--tx)'}">${v}</div><div class="sub">${s}</div></div>`;
 function status(x) {
 const now = Date.now(), d = x.due ? new Date(x.due) : null;
@@ -963,7 +1011,10 @@ return { at: Date.now(), paths, art: pics, study: files.filter(isDoc), dirs, fro
 }
 // Games added to the repo in the last 7 days, worked out from GitHub (compare last week's commit with now). Cached for an hour.
 let NEWG = store.get('newGames', null);
-const newSet = () => new Set(NEWG && Array.isArray(NEWG.ids) ? NEWG.ids : []);
+const newSet = () => {
+if (S.lib && S.lib.added) { const cut = Date.now() - 7 * DAY; return new Set(Object.keys(S.lib.added).filter(p => Date.parse(S.lib.added[p]) > cut)); }
+return new Set(NEWG && Array.isArray(NEWG.ids) ? NEWG.ids : []);
+};
 async function loadNewGames(force) {
 if (!force && NEWG && Date.now() - NEWG.at < 36e5) return;
 try {
@@ -985,17 +1036,24 @@ if (S.libLoading || (!force && Date.now() - Math.max(S.libTried, S.lib ? S.lib.a
 S.libLoading = true; S.libError = null; S.libTried = Date.now();
 paintChrome();
 try {
+// The game list comes from library.json in the repo (kept up to date by a GitHub Action), so it doesn't
+// count against GitHub's 60-an-hour limit for a school network. The GitHub API is only a backup.
+let files = [], added = null;
+const lj = await fetch(RAW + 'library.json?t=' + Math.floor(Date.now() / 6e4), { cache: 'no-store' }).then(x => x.ok ? x.json() : null).catch(() => null);
+if (lj && Array.isArray(lj.files) && lj.files.length) { files = lj.files.filter(p => typeof p === 'string'); added = lj.added && typeof lj.added === 'object' ? lj.added : {}; }
+else {
 const r = await fetch('https://api.github.com/repos/' + REPO + '/git/trees/' + BRANCH + '?recursive=1');
-let files = [];
 if (r.status !== 409 && r.status !== 404) {
 if (!r.ok) throw new Error(r.status === 403 || r.status === 429 ? 'GitHub is rate-limiting this network. Try again in a few minutes.' : 'GitHub returned an error (' + r.status + ').');
 files = ((await r.json()).tree || []).filter(t => t.type === 'blob' && (t.path.startsWith(DIR) || t.path.startsWith(STUDY))).map(t => t.path);
 }
+}
 S.lib = libFrom(files);
+if (added) S.lib.added = added;
 store.set('lib', S.lib);
 noteSeen(S.lib.study);
 setPack();
-loadNewGames(force);
+if (!added) loadNewGames(force);
 } catch (e) {
 S.libError = e.message === 'Failed to fetch' ? "Couldn't reach GitHub. Check you're online, then refresh." : e.message || String(e);
 }
@@ -1007,10 +1065,52 @@ const vPlay = () => {
 const p = PACK.find(x => x.id === S.game);
 if (!p) return `<div class="gbar"><button class="btn" data-go="games">← Games</button></div>` + empty('That game is no longer in the repo.');
 return `<div class="play"><div class="gbar wide"><button class="btn" data-go="games">← Games</button>
-<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${esc(p.desc)} · ${p.repo ? 'straight from the repo' : 'from GitHub Pages'}</div></div>
-<button class="btn snd" data-act="sound" title="Turn the game's sound on or off">${soundBtn()}</button><button class="btn" data-act="license">License</button><button class="btn" data-act="newtab">New tab</button><button class="btn" data-act="full">Full screen</button><button class="btn" data-act="reload">Restart</button></div>
+<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${esc(p.desc)} · <span class="gsrc">loading…</span><span class="ptime">${playLine(true)}</span></div></div>
+<button class="btn snd" data-act="sound" title="Turn the game's sound on or off">${soundBtn()}</button><button class="btn" data-act="full">Full screen</button>
+<div class="gmw"><button class="btn" data-act="gmore" title="More options" aria-label="More options">${I.dots}</button><div class="gmenu" hidden>
+<button data-act="newtab">${I.ext}Open in a new tab</button><button data-act="reload">${I.refresh}Restart</button><button data-act="altsrc">${I.shuffle}Try another way to load it</button><button data-act="report">${I.flag}Report a problem</button><button data-act="license">${I.doc}License</button></div></div></div>
+<div class="rep" hidden><span class="t">What's wrong with ${esc(p.name)}?</span><div class="seg mini">${REPORT_WHY.map(w => `<button type="button" data-why="${esc(w)}">${esc(w)}</button>`).join('')}</div>
+<button class="btn pri" data-act="reportsend">Send report</button><button class="btn" data-act="altsrc" title="Load it from a different copy of the game">Try another way</button><span class="amsg"></span></div>
 <div class="frame"><div class="spin"></div></div></div>`;
 };
+const SRC_LABEL = { repo: 'straight from the repo', pages: 'from GitHub Pages', vercel: 'from Vercel' };
+const REPORT_WHY = ["Won't load", 'Black or blank screen', 'Freezes or crashes', "Controls don't work", 'Something else'];
+function sendReport() {
+const p = PACK.find(x => x.id === S.game), box = root.querySelector('.rep'), say = (t, c) => { const m = box && box.querySelector('.amsg'); if (m) { m.textContent = t; m.className = 'amsg ' + (c || ''); } };
+if (!p) return;
+if (!S.rep.why) return say('Pick what\'s wrong first.', 'err');
+if (Date.now() - store.get('reqAt', 0) < 30000) return say('Thanks! Give it a few seconds before sending another.', 'err');
+say('Sending…');
+fetch('https://api.web3forms.com/submit', {
+method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+body: JSON.stringify({ access_key: W3F_KEY, subject: 'Class Dash: broken game - ' + p.name, from_name: 'Class Dash', Request: 'Broken game', Game: p.name, Problem: S.rep.why, File: p.id, 'Loaded from': SRC_LABEL[S.gameMode] || 'unknown', Browser: navigator.userAgent.slice(0, 160), Details: 'Sent from the Report button on the game page' })
+}).then(r => r.json()).then(j => {
+if (String(j.success) !== 'true') throw new Error('failed');
+store.set('reqAt', Date.now());
+say('Thanks! We got your report.', 'ok');
+}).catch(() => say("Couldn't send right now. Try again in a bit.", 'err'));
+}
+// Load the open game from the next copy: repo -> GitHub Pages -> Vercel -> repo
+function altSource() {
+if (!S.game) return;
+const next = { repo: 'pages', pages: 'vercel', vercel: 'repo' }[S.gameMode] || 'pages';
+rememberSrc(S.game, next === 'repo' ? null : next);
+renderMain();
+}
+// Play time: counted while a game is open and on screen. Today's total shows on the Games page and above the game.
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
+let playPending = 0;
+function playStats() { const p = store.get('playtime', null); return p && p.day === today() ? p : { day: today(), ms: 0, games: {} }; }
+function flushPlay() {
+if (!playPending || !S.game) { playPending = 0; return; }
+const p = playStats();
+p.ms += playPending; p.games[S.game] = (p.games[S.game] || 0) + playPending;
+store.set('playtime', p);
+const all = store.get('playAll', {}); all[S.game] = (all[S.game] || 0) + playPending; store.set('playAll', all);
+playPending = 0;
+}
+const fmtPlay = ms => { const m = Math.floor(ms / 6e4); return m < 1 ? 'under a minute' : m < 60 ? m + ' min' : Math.floor(m / 60) + ' h ' + (m % 60) + ' min'; };
+const playLine = inGame => { const p = playStats(), ms = (inGame ? (p.games[S.game] || 0) : p.ms) + (inGame ? playPending : 0); return ms < 6e4 ? '' : inGame ? ' · played ' + fmtPlay(ms) + ' today' : ' · you\'ve played ' + fmtPlay(ms) + ' today'; };
 // Loading screen shown over a game until its page has finished downloading
 const LOAD_TIPS = [
 [0, "Getting it ready. Keep this open and it'll start by itself."],
@@ -1093,15 +1193,28 @@ const jsonIn = v => JSON.stringify(v).replace(/</g, '\\u003c').replace(/\u2028/g
 // Points the frame at the game: straight from the repo (fetched, then shown in a sandbox with the shim above),
 // or GitHub Pages for LOAD-FROM-PAGES games and if the repo can't be reached. Resolves to 'repo' or 'pages'.
 const GAME_SANDBOX = 'allow-scripts allow-pointer-lock allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads allow-orientation-lock';
+// If a game won't load from the repo, this computer remembers to use GitHub Pages for it (for 3 days),
+// and if Pages doesn't answer either, the copy on Vercel.
+const VERCEL = 'https://jamesahmad.vercel.app/';
+const vercelUrl = p => VERCEL + p.split('/').map(encodeURIComponent).join('/');
+const memSrc = id => { const m = store.get('gameSrc', {})[id]; return m && Date.now() - m.at < 3 * DAY ? m.src : null; };
+const rememberSrc = (id, src) => { const m = store.get('gameSrc', {}); if (src) m[id] = { src, at: Date.now() }; else delete m[id]; store.set('gameSrc', m); };
+const headOk = u => fetch(u, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok).catch(() => false);
 function frameGame(f, path, muted) {
-if (!repoGame(path)) { f.src = gameUrl(path); return Promise.resolve('pages'); }
+const want = memSrc(path) || (repoGame(path) ? 'repo' : 'pages');
+const viaPages = () => headOk(gameUrl(path)).then(ok => {
+if (ok) { if (want === 'repo') rememberSrc(path, 'pages'); f.src = gameUrl(path); return 'pages'; }
+rememberSrc(path, 'vercel'); f.src = vercelUrl(path); return 'vercel';
+});
+if (want === 'vercel') { f.src = vercelUrl(path); return Promise.resolve('vercel'); }
+if (want === 'pages') return viaPages();
 const raw = rawOf(path);
 return fetch(raw).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); }).then(html => {
 const add = '<base href="' + esc(raw.replace(/[^/]*$/, '')) + '"><script>(' + cdShim.toString() + ')(' + (muted ? 1 : 0) + ',' + jsonIn(store.get('save:' + path, {}) || {}) + ');<\/script>';
 f.setAttribute('sandbox', GAME_SANDBOX);
 f.srcdoc = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + add) : /<html[^>]*>/i.test(html) ? html.replace(/<html[^>]*>/i, m => m + add) : add + html;
 return 'repo';
-}).catch(() => { f.removeAttribute('sandbox'); f.removeAttribute('srcdoc'); f.src = gameUrl(path); return 'pages'; });
+}).catch(() => { f.removeAttribute('sandbox'); f.removeAttribute('srcdoc'); return viaPages(); });
 }
 const saveGame = (id, data) => { try { const t = JSON.stringify(data); if (t.length < 2e6) localStorage.setItem('classdash_save:' + id, t); } catch (e) {} };
 const soundBtn = () => (S.soundOn ? I.vol + 'Sound on' : I.mute + 'Sound off');
@@ -1109,7 +1222,7 @@ function paintSound() {
 const b = root.querySelector('[data-act="sound"]');
 if (!b) return;
 b.innerHTML = soundBtn();
-b.hidden = S.gameMode === 'pages';
+b.hidden = !!S.gameMode && S.gameMode !== 'repo';
 }
 function startFrame(ct, path) {
 const box = ct.querySelector('.frame');
@@ -1122,7 +1235,7 @@ f.addEventListener('load', () => { try { f.contentWindow.focus(); } catch (e) {}
 box.innerHTML = gameLoader(p, true);
 watchLoad(f, box.querySelector('.gload'));
 S.gameMode = null;
-frameGame(f, path, !S.soundOn).then(mode => { S.gameMode = mode; paintSound(); if (box.isConnected) box.appendChild(f); });
+frameGame(f, path, !S.soundOn).then(mode => { S.gameMode = mode; paintSound(); const sub = root.querySelector('.gbar .gsrc'); if (sub) sub.textContent = SRC_LABEL[mode] || ''; if (box.isConnected) box.appendChild(f); });
 }
 const startPack = ct => startFrame(ct, S.game);
 // Study pages load straight from the repo (raw.githubusercontent.com), so a new upload shows up
@@ -1200,6 +1313,135 @@ return `<div class="play"><div class="gbar wide"><button class="btn" data-go="st
 <button class="btn" data-act="newtab">New tab</button><button class="btn" data-act="full">Full screen</button></div>
 <div class="frame"><div class="spin"></div></div></div>`;
 };
+// ---- My flashcards (saved in this browser; shared with a code that holds the whole set) ----
+const fcSets = () => store.get('cards', []);
+const fcSave = sets => store.set('cards', sets);
+const fcFind = id => fcSets().find(x => x.id === id);
+function fcUpdate(id, fn) { const sets = fcSets(), s = sets.find(x => x.id === id); if (!s) return null; fn(s); s.at = Date.now(); fcSave(sets); return s; }
+const fcNew = (title, cards) => { const s = { id: 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), title: title || 'New set', cards: cards || [{ t: '', d: '' }], at: Date.now() }; fcSave([s, ...fcSets()]); return s; };
+const b64url = u8 => { let s = ''; u8.forEach(b => { s += String.fromCharCode(b); }); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+async function packSet(set) {
+const json = JSON.stringify({ t: set.title, c: set.cards.filter(c => c.t || c.d).map(c => [c.t, c.d]) });
+const z = new Blob([json]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+return 'CD1-' + b64url(new Uint8Array(await new Response(z).arrayBuffer()));
+}
+async function unpackSet(code) {
+const m = String(code || '').trim().match(/CD1-([A-Za-z0-9_-]+)/);
+if (!m) throw new Error('code');
+let b = m[1].replace(/-/g, '+').replace(/_/g, '/');
+while (b.length % 4) b += '=';
+const u8 = Uint8Array.from(atob(b), ch => ch.charCodeAt(0));
+const j = JSON.parse(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text());
+const cards = (Array.isArray(j.c) ? j.c : []).slice(0, 500).map(x => ({ t: String((x && x[0]) || '').slice(0, 500), d: String((x && x[1]) || '').slice(0, 1500) })).filter(c => c.t || c.d);
+if (!cards.length) throw new Error('empty');
+return { title: String(j.t || 'Shared set').slice(0, 80), cards };
+}
+function fcPanel() {
+const sets = fcSets(), F = S.fc;
+const imp = F.impOpen || F.msg ? `<div class="fcimp"><input data-fcimp placeholder="Paste a flashcard code here (starts with CD1-)" value="${esc(F.imp || '')}" autocomplete="off" spellcheck="false"><button class="btn" data-act="fcimport">Import</button><span class="amsg ${F.msg ? F.msg.cls : ''}">${esc(F.msg ? F.msg.text : '')}</span></div>` : '';
+if (!sets.length) return `<div class="fcslim"><span class="ssi" style="background:var(--ac)">${I.cards}</span><div class="grow"><b>Make your own flashcards</b> <span class="sub">Saved in this browser. Share them with a code.</span></div><button class="btn sm pri" data-act="fcnew">${I.plus}New set</button><button class="btn sm" data-act="fcimpopen">Import a code</button>${imp}</div>`;
+return `<div class="card fcp"><div class="fch"><span class="ssi" style="background:var(--ac)">${I.cards}</span><div class="grow"><div class="t">My flashcards</div><div class="sub">${sets.length ? sets.length + ' ' + (sets.length === 1 ? 'set' : 'sets') + ' · saved in this browser' : 'Make your own sets, study them, and share them with a code'}</div></div>
+<button class="btn pri" data-act="fcnew">${I.plus}New set</button></div>
+${sets.map(s => `<div class="fcrow"><div class="grow"><div class="t">${esc(s.title || 'Untitled')}</div><div class="sub">${s.cards.filter(c => c.t || c.d).length} cards${s.cards.some(c => c.k) ? ' · ' + s.cards.filter(c => c.k).length + ' known' : ''}</div></div>
+<button class="btn sm pri" data-act="fcstudy" data-set="${s.id}">Study</button><button class="btn sm" data-act="fcedit" data-set="${s.id}">Edit</button><button class="btn sm" data-act="fcshare" data-set="${s.id}">Share</button>
+<button class="btn sm${F.arm === s.id ? ' danger' : ''}" data-act="fcdel" data-set="${s.id}">${F.arm === s.id ? 'Click again to delete' : 'Delete'}</button></div>
+${F.share && F.share.id === s.id ? `<div class="fcshare"><div class="sub wrap">Send this code to a friend. They paste it into <b>Import a set</b> on their Study page. Anyone with the code can copy the set.</div><textarea readonly data-fccode>${esc(F.share.code)}</textarea><div class="sacts"><button class="btn sm pri" data-act="fccopy">Copy code</button><span class="amsg ok">${esc(F.copied ? 'Copied!' : '')}</span></div></div>` : ''}`).join('')}
+${imp || '<div class="fcimp"><button class="btn sm" data-act="fcimpopen">Import a code</button></div>'}</div>`;
+}
+function vCards() {
+const s = fcFind(S.fc.id), F = S.fc;
+if (!s) return `<button class="btn" data-go="study">← Study</button>` + empty('That set is gone.');
+if (F.mode === 'edit') {
+return `<div class="gbar wide" style="margin-bottom:14px"><button class="btn" data-go="study">← Study</button><div class="grow"></div><button class="btn pri" data-act="fcstudy" data-set="${s.id}">Study this set</button></div>
+<div class="card adm"><label class="alab" style="margin-top:0">Set name</label><input data-fct value="${esc(s.title)}" maxlength="80" placeholder="e.g. Unit 3 vocab" style="width:100%;max-width:420px">
+<label class="alab">Cards <span class="sub" style="display:inline">· saves as you type</span></label>
+${s.cards.map((c, i) => `<div class="fced"><span class="fcn">${i + 1}</span><input data-fcc="${i}:t" value="${esc(c.t)}" placeholder="Term" maxlength="500"><input data-fcc="${i}:d" value="${esc(c.d)}" placeholder="Definition" maxlength="1500"><button class="ib bx" data-act="fcrm" data-i="${i}" title="Remove card">${I.x}</button></div>`).join('')}
+<div class="arow"><button class="btn" data-act="fcadd">${I.plus}Add card</button></div>
+<label class="alab">Paste a list <span class="sub" style="display:inline">· one card per line: term - definition (a tab or : also works)</span></label>
+<textarea data-fcpaste placeholder="mitochondria - powerhouse of the cell&#10;photosynthesis - how plants make food from light" style="height:110px;white-space:pre-wrap"></textarea>
+<div class="arow"><button class="btn" data-act="fcpaste">Add these cards</button></div></div>`;
+}
+const all = fcAll(s), order = fcOrder(s);
+const known = all.filter(i => s.cards[i].k).length;
+if (!all.length) return `<button class="btn" data-go="study">← Study</button>` + empty('This set has no cards yet. <a data-act="fcedit" data-set="' + s.id + '" style="color:var(--act);cursor:pointer">Add some</a>');
+if (!order.length) return `<div class="gbar wide"><button class="btn" data-go="study">← Study</button></div><div class="card nc"><div class="logo" style="background:var(--gd)">${I.tick}</div><h3>You know all ${all.length} cards!</h3><p class="sub">Nice work.</p><button class="btn pri" data-act="fcreset">Start over</button></div>`;
+const pos = Math.min(F.idx || 0, order.length - 1), c = s.cards[order[pos]];
+return `<div class="gbar wide" style="margin-bottom:14px"><button class="btn" data-go="study">← Study</button><div class="grow"><div class="t">${esc(s.title)}</div><div class="sub">Card ${pos + 1} of ${order.length} · ${known} of ${all.length} known</div></div>
+<button class="btn${F.shuffle ? ' pri' : ''}" data-act="fcshuffle">${I.shuffle}Shuffle</button><button class="btn${F.learning ? ' pri' : ''}" data-act="fclearn">Only still learning</button><button class="btn" data-act="fcedit" data-set="${s.id}">Edit</button></div>
+<div class="fcard${F.flip ? ' flip' : ''}" data-act="fcflip" title="Click or press Space to flip"><div class="fin"><div class="fcf"><span class="fcl">Term</span>${esc(c.t)}</div><div class="fcb"><span class="fcl">Definition</span>${esc(c.d)}</div></div></div>
+<div class="fcbar"><button class="btn" data-act="fcprev" title="Previous (←)">←</button><button class="btn" data-act="fcno">Still learning</button><button class="btn pri" data-act="fcyes">${I.tick} Got it</button><button class="btn" data-act="fcnext" title="Next (→)">→</button></div>
+<p class="note" style="margin-top:12px">Space flips · ← → move · 1 still learning · 2 got it</p>`;
+}
+function fcGo(id, mode) { S.fc = Object.assign(S.fc, { id, mode, idx: 0, flip: false, order: null, shuffle: false, learning: false, share: null, arm: null, msg: null }); go('cards'); }
+function fcMove(step) { S.fc.idx = Math.max(0, (S.fc.idx || 0) + step); S.fc.flip = false; renderMain(true); }
+const fcAll = s => s.cards.map((c, i) => i).filter(i => s.cards[i].t || s.cards[i].d);
+const fcOrder = s => { const all = fcAll(s); let o = (S.fc.order || all).filter(i => all.includes(i)); if (S.fc.learning) o = o.filter(i => !s.cards[i].k); return o; };
+function fcMark(k) {
+const s = fcFind(S.fc.id);
+if (!s) return;
+const ord = fcOrder(s), i = ord[Math.min(S.fc.idx || 0, ord.length - 1)];
+if (i == null) return;
+fcUpdate(s.id, x => { x.cards[i].k = k; });
+const leaves = S.fc.learning && k;
+if (!leaves) S.fc.idx = (S.fc.idx || 0) + 1;
+if (S.fc.idx >= ord.length - (leaves ? 1 : 0)) S.fc.idx = 0;
+S.fc.flip = false;
+renderMain(true);
+}
+async function fcAct(d) {
+const F = S.fc;
+switch (d.act) {
+case 'fcimpopen': F.impOpen = true; renderMain(true); { const i = root.querySelector('[data-fcimp]'); if (i) i.focus(); } return;
+case 'fcnew': { const s = fcNew('', [{ t: '', d: '' }, { t: '', d: '' }, { t: '', d: '' }]); fcGo(s.id, 'edit'); const i = root.querySelector('[data-fct]'); if (i) { i.focus(); i.select(); } return; }
+case 'fcstudy': return fcGo(d.set, 'study');
+case 'fcedit': return fcGo(d.set, 'edit');
+case 'fcdel':
+if (F.arm !== d.set) { F.arm = d.set; return renderMain(true); }
+F.arm = null; fcSave(fcSets().filter(x => x.id !== d.set)); if (F.share && F.share.id === d.set) F.share = null; return renderMain(true);
+case 'fcshare': {
+if (F.share && F.share.id === d.set) { F.share = null; return renderMain(true); }
+const s = fcFind(d.set);
+if (!s) return;
+try { F.share = { id: s.id, code: await packSet(s) }; F.copied = false; } catch (e) { F.msg = { text: "Couldn't make a code in this browser.", cls: 'err' }; }
+return renderMain(true);
+}
+case 'fccopy': {
+const t = root.querySelector('[data-fccode]');
+try { await navigator.clipboard.writeText(F.share.code); } catch (e) { if (t) { t.select(); try { document.execCommand('copy'); } catch (x) {} } }
+F.copied = true; const m = root.querySelector('.fcshare .amsg'); if (m) m.textContent = 'Copied!';
+return;
+}
+case 'fcimport': {
+const code = (root.querySelector('[data-fcimp]') || {}).value || F.imp || '';
+try { const got = await unpackSet(code); fcNew(got.title, got.cards); F.imp = ''; F.msg = { text: 'Imported "' + got.title + '" (' + got.cards.length + ' cards).', cls: 'ok' }; }
+catch (e) { F.msg = { text: "That code doesn't look right. Make sure you copied all of it.", cls: 'err' }; }
+return renderMain(true);
+}
+case 'fcadd': fcUpdate(F.id, s => { s.cards.push({ t: '', d: '' }); }); renderMain(true); { const l = root.querySelectorAll('[data-fcc$=":t"]'); if (l.length) l[l.length - 1].focus(); } return;
+case 'fcrm': fcUpdate(F.id, s => { s.cards.splice(Number(d.i), 1); if (!s.cards.length) s.cards.push({ t: '', d: '' }); }); return renderMain(true);
+case 'fcpaste': {
+const txt = (root.querySelector('[data-fcpaste]') || {}).value || '';
+const add = txt.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(l => { const m = l.match(/^(.*?)\s*(?:\t|\s-\s|\s–\s|:\s)\s*(.*)$/); return m ? { t: m[1].trim(), d: m[2].trim() } : { t: l, d: '' }; });
+if (add.length) fcUpdate(F.id, s => { s.cards = s.cards.filter(c => c.t || c.d).concat(add); });
+return renderMain(true);
+}
+case 'fcflip': F.flip = !F.flip; { const el = root.querySelector('.fcard'); if (el) el.classList.toggle('flip', F.flip); } return;
+case 'fcnext': return fcMove(1);
+case 'fcprev': return fcMove(-1);
+case 'fcyes': return fcMark(true);
+case 'fcno': return fcMark(false);
+case 'fcshuffle': {
+const s = fcFind(F.id); if (!s) return;
+F.shuffle = !F.shuffle;
+const all = fcAll(s);
+for (let j = all.length - 1; j > 0; j--) { const r = Math.floor(Math.random() * (j + 1)); [all[j], all[r]] = [all[r], all[j]]; }
+F.order = F.shuffle ? all : null; F.idx = 0; F.flip = false;
+return renderMain(true);
+}
+case 'fclearn': F.learning = !F.learning; F.idx = 0; F.flip = false; return renderMain(true);
+case 'fcreset': fcUpdate(F.id, s => { s.cards.forEach(c => { c.k = false; }); }); F.learning = false; F.idx = 0; return renderMain(true);
+}
+}
 // ---- Study page layout ----
 const STUDY_KINDS = [['all', 'All', null], ['html', 'Practice & quizzes', I.quiz], ['pdf', 'PDFs', I.doc], ['link', 'Links', I.chain], ['image', 'Images', I.pic], ['file', 'Files', I.file]];
 const kindIcon = p => ({ html: I.quiz, pdf: I.doc, link: I.chain, image: I.pic })[p.kind] || I.file;
@@ -1237,13 +1479,14 @@ return `<div class="shead"><div><div class="gh">Study</div>
 <label class="gsearch">${I.search}<input data-search placeholder="Search by class, unit or topic…" value="${esc(S.sq)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label></div>
 ${kindBtns || clsBtns ? `<div class="sbar">${kindBtns}${kindBtns && clsBtns ? '<span class="sep"></span>' : ''}${clsBtns}</div>` : ''}
 ${S.libError && n ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
+${fcPanel()}
 ${recent.length ? `<div class="scont"><div class="grp">Continue studying</div><div class="ccards">${recent.map(x => contCard(x.p, x.r.at)).join('')}</div></div>` : ''}
-${missing.length && n ? `<div class="sneed"><span class="t">Nothing yet for</span>${missing.map(c => `<button data-reqcls="${esc(niceCourse(c.name))}" title="Request study help for ${esc(niceCourse(c.name))}">${I.plus}${esc(niceCourse(c.name))}</button>`).join('')}</div>` : ''}
 ${state}${n ? `<div class="spans">${list.map(g => `<section class="cpan" data-sec="${esc(g.cls)}" style="--c:${g.color}"><div class="cph"><span class="ssi">${g.icon}</span>
 <div class="grow"><div class="t">${esc(g.cls)}</div><div class="sub">${g.docs.length} ${g.docs.length === 1 ? 'resource' : 'resources'}</div></div>${g.mine ? '<span class="chip ac" title="You take this class">Yours</span>' : ''}</div>
 ${sortDocs(g.docs).map(resRow).join('')}</section>`).join('')}</div>
 <div class="snone" hidden><div class="t">Nothing matches</div><div class="sub wrap nmtxt"></div><button class="btn pri" data-reqtopic="1">${I.send}Request it</button></div>` : ''}
-<div class="sreq"><div class="grp">Can't find what you need?</div>${reqCard('study')}</div>`;
+<div class="sreq"><div class="grp">Can't find what you need?</div>${missing.length && n ? `<div class="sneed"><span class="t">Nothing yet for</span>${missing.map(c => `<button data-reqcls="${esc(niceCourse(c.name))}" title="Request study help for ${esc(niceCourse(c.name))}">${I.plus}${esc(niceCourse(c.name))}</button>`).join('')}</div>` : ''}
+${reqCard('study')}</div>`;
 };
 function filterStudy() {
 const ct = $('.ct'), q = S.sq.trim().toLowerCase();
@@ -1399,10 +1642,22 @@ else if (d.cdKey && same(d.cdKey)) go();
 else if (d.cdSave && typeof d.cdSave === 'object') { try { var t = JSON.stringify(d.cdSave); if (t.length < 2e6) localStorage.setItem('classdash_save:' + c.id, t); } catch (x) {} }
 });
 window.addEventListener('keydown', function (e) { if (same({ code: e.code, alt: e.altKey, ctrl: e.ctrlKey, shift: e.shiftKey, meta: e.metaKey })) { e.preventDefault(); go(); } }, true);
+setInterval(function () {
+if (document.visibilityState !== 'visible') return;
+try {
+var d = new Date(), day = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+var p = JSON.parse(localStorage.getItem('classdash_playtime') || 'null');
+if (!p || p.day !== day) p = { day: day, ms: 0, games: {} };
+p.ms += 15000; p.games[c.id] = (p.games[c.id] || 0) + 15000;
+localStorage.setItem('classdash_playtime', JSON.stringify(p));
+var a = JSON.parse(localStorage.getItem('classdash_playAll') || '{}'); a[c.id] = (a[c.id] || 0) + 15000; localStorage.setItem('classdash_playAll', JSON.stringify(a));
+} catch (x) {}
+}, 15000);
 }
 // Opens a game inside Class Dash, or in a new about:blank tab if that's picked in Settings
 function playGame(id) {
 S.soundOn = !P.gameMute;
+S.rep = { open: false, why: '' };
 addRecent('pack:' + id);
 S.game = id;
 const p = PACK.find(x => x.id === id);
@@ -1436,18 +1691,18 @@ const featured = (curSite().featured || []).map(id => PACK.find(p => p.id === id
 const fresh = [...newSet()].map(id => PACK.find(p => p.id === id)).filter(Boolean).sort((a, b) => a.name.localeCompare(b.name));
 const libState = PACK.length ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoading ? empty('No games yet. Add an .html file to the offline folder, then hit refresh.') : '<div class="spin"></div>';
 return `${PATTERNS}<div class="ghero"><div class="ghead"><div class="grow"><div class="gh">Game library</div>
-<div class="sub">${PACK.length} ${PACK.length === 1 ? 'game' : 'games'} · press <span class="kbd">/</span> to search</div></div>
-${LIB ? '' : `<button class="btn" data-act="libtab" title="Open the games library in a new about:blank tab">${I.ext}Open in new tab</button>`}</div>
+<div class="sub">${PACK.length} ${PACK.length === 1 ? 'game' : 'games'}${playLine(false)} · press <span class="kbd">/</span> to search</div></div>
+${LIB ? '' : `<button class="ib" data-act="libtab" title="Open the games library in a new tab">${I.ext}</button>`}</div>
 <div class="gfind"><label class="gsearch">${I.search}<input data-search placeholder="Search games…" value="${esc(S.q)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label>
 <button class="btn pri big" data-act="random">${I.shuffle}Random</button></div></div>
-${reqCard('games')}
 ${cats.length > 2 ? `<div class="seg">${cats.map(([l, n]) => `<button data-cat="${l}" class="${S.cat === l ? 'on' : ''}">${l}<b>${n}</b></button>`).join('')}</div>` : ''}
 ${S.libError && PACK.length ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
-${featured.length ? `<div class="rec"><div class="grp">Featured</div><div class="tgrid">${featured.map(gameTile).join('')}</div></div>` : ''}
-${fresh.length ? `<div class="rec"><div class="grp">New this week<span class="grpn">added in the last 7 days</span></div><div class="tgrid">${fresh.map(gameTile).join('')}</div></div>` : ''}
-${recent.length ? `<div class="rec"><div class="grp">Jump back in</div><div class="tgrid">${recent.map(gameTile).join('')}</div></div>` : ''}
+${recent.length ? `<div class="rec"><div class="grp">Jump back in</div><div class="tgrid one">${recent.slice(0, 6).map(gameTile).join('')}</div></div>` : ''}
+${featured.length ? `<div class="rec"><div class="grp">Featured</div><div class="tgrid one">${featured.slice(0, 6).map(gameTile).join('')}</div></div>` : ''}
+${fresh.length ? `<div class="rec"><div class="grp">New this week</div><div class="tgrid one">${fresh.slice(0, 6).map(gameTile).join('')}</div></div>` : ''}
 <div class="grp">${S.cat === 'All' ? 'All games' : esc(S.cat)}</div>
-${libState}<div class="tgrid all">${list.map(gameTile).join('')}</div><div class="empty nomatch" hidden></div>`;
+${libState}<div class="tgrid all">${list.map(gameTile).join('')}</div><div class="empty nomatch" hidden></div>
+<div class="sreq"><div class="grp">Can't find a game?</div>${reqCard('games')}</div>`;
 };
 function filterGames() {
 const ct = $('.ct'), q = S.q.trim().toLowerCase();
@@ -1543,9 +1798,11 @@ const inWindow = b => { const now = Date.now(), a = b.start ? new Date(b.start).
 function paintBanners() {
 const s = curSite(), gone = store.get('bannersClosed', []);
 const list = LIB ? [] : s.banners.filter(b => (b.title || b.text) && b.where !== 'website' && inWindow(b) && (S.draft || !gone.includes(b.id)));
-$('.bnrs').innerHTML = list.map(b => `<div class="bnr" style="--bc:${hexOk(b.color) ? b.color : '#3ecf8e'}"><span class="bic">${I[b.icon] || I.news}</span>
+const shown = S.bnrAll ? list : list.slice(0, 1);
+$('.bnrs').innerHTML = shown.map(b => `<div class="bnr" style="--bc:${hexOk(b.color) ? b.color : '#3ecf8e'}"><span class="bic">${I[b.icon] || I.news}</span>
 <div class="grow wrap">${b.title ? `<b>${esc(b.title)}</b> ` : ''}${esc(b.text)}</div>
-${b.button && b.link ? `<button class="btn" data-banner="${esc(b.id)}">${esc(b.button)}</button>` : ''}<button class="ib bx" data-bclose="${esc(b.id)}" title="Hide this">${I.x}</button></div>`).join('');
+${b.button && b.link ? `<button class="btn" data-banner="${esc(b.id)}">${esc(b.button)}</button>` : ''}<button class="ib bx" data-bclose="${esc(b.id)}" title="Hide this">${I.x}</button></div>`).join('')
++ (list.length > shown.length ? `<button class="bmore" data-act="bnrall">Show ${list.length - shown.length} more ${list.length - shown.length === 1 ? 'message' : 'messages'}</button>` : '');
 }
 function applySite() {
 const s = curSite();
@@ -1625,7 +1882,8 @@ const nc = await ghJ('/git/commits', { method: 'POST', body: JSON.stringify({ me
 try { await ghJ('/git/refs/heads/' + BRANCH, { method: 'PATCH', body: JSON.stringify({ sha: nc.sha }) }); }
 catch (e) { if (e.status === 422 && !retry) return ghChange(message, plan, true); throw e; }
 const after = await ghFiles(nt.sha);
-S.lib = libFrom(after.map(f => f.path)); store.set('lib', S.lib); noteSeen(S.lib.study); setPack();
+const keepAdded = S.lib && S.lib.added;
+S.lib = libFrom(after.map(f => f.path)); if (keepAdded) S.lib.added = keepAdded; store.set('lib', S.lib); noteSeen(S.lib.study); setPack();
 Object.keys(docCache).forEach(k => delete docCache[k]); Object.keys(blobCache).forEach(k => delete blobCache[k]);
 A.log = null;
 return after;
@@ -1991,6 +2249,7 @@ catch (e) { return aSay(e.message, 'err'); }
 return aRun('Adding games', async () => {
 await ghChange(entries.length === 1 ? 'Add game: ' + entries[0].path.slice(DIR.length) : 'Add ' + entries.length + ' games', async () => entries);
 NEWG = { at: Date.now(), ids: [...new Set([...newSet(), ...entries.map(e => e.path)])] }; store.set('newGames', NEWG);
+if (S.lib.added) { entries.forEach(e => { S.lib.added[e.path] = new Date().toISOString(); }); store.set('lib', S.lib); }
 return (entries.length === 1 ? 'Added ' + pretty(entries[0].path.slice(DIR.length).replace(/\.html$/, '')) : 'Added ' + entries.length + ' games') + '. Give GitHub Pages a few minutes before playing.';
 });
 }
@@ -2049,7 +2308,7 @@ const t = e.target.closest('[data-sicon],[data-saccent],[data-bwhere],[data-bcol
 if (!t) return;
 const d = t.dataset, s = S.draft;
 if (d.banner) { const b = curSite().banners.find(x => x.id === d.banner); if (b) openLink(b.link); return; }
-if (d.bclose) { if (!S.draft) store.set('bannersClosed', [...store.get('bannersClosed', []).filter(x => x !== d.bclose), d.bclose].slice(-50)); t.closest('.bnr').remove(); return; }
+if (d.bclose) { if (!S.draft) store.set('bannersClosed', [...store.get('bannersClosed', []).filter(x => x !== d.bclose), d.bclose].slice(-50)); paintBanners(); return; }
 if (d.act && d.act.startsWith('adm-') && !['adm-addb', 'adm-rmb', 'adm-bup', 'adm-bdup'].includes(d.act)) { if (!/del$/.test(d.act)) A.arm = null; adminAct(d, t); return; }
 if (!s) return;
 const pair = v => { const k = v.indexOf(':'); return [Number(v.slice(0, k)), v.slice(k + 1)]; };
@@ -2116,6 +2375,7 @@ if (v === 'course') { const c = byId(S.courseId); return c ? 'classes.' + slug(c
 if (v === 'play') { const g = PACK.find(x => x.id === S.game); return g ? 'games.' + slug(g.name) : 'games'; }
 if (v === 'read') { const d = DOCS.find(x => x.id === S.doc); return d ? 'study.' + slug(d.cls) + '.' + slug(d.name) : 'study'; }
 if (v === 'study' && S.scls !== 'All') return 'study.' + slug(S.scls);
+if (v === 'cards') return 'study';
 return v === 'admin' ? '' : v;
 }
 // ---- Settings page (personal, saved in this browser) ----
@@ -2256,6 +2516,10 @@ else if (e.key === 'Escape') { e.preventDefault(); omniBox.blur(); omniClose(); 
 }
 root.addEventListener('click', e => {
 if (e.target === $('.bd')) return LIB || !P.outside ? null : close();
+const gm = root.querySelector('.gmenu');
+if (gm && !gm.hidden && !e.target.closest('[data-act="gmore"]')) gm.hidden = true;
+const why = e.target.closest('[data-why]');
+if (why) { S.rep.why = why.dataset.why; root.querySelectorAll('[data-why]').forEach(b => b.classList.toggle('on', b === why)); return; }
 const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-skind],[data-reqcls],[data-reqtopic],[data-sched],[data-lunch],[data-pack],[data-docnew],[data-doc],[data-pref],[data-pacc],[data-act]');
 if (!t) return;
 const d = t.dataset;
@@ -2271,6 +2535,12 @@ else if (d.reqtopic) { S.req.stopic = S.sq.trim(); if (S.scls !== 'All') S.req.s
 else if (d.pref) setPref(d.pref, d.val === 'true' ? true : d.val === 'false' ? false : d.val);
 else if (d.pacc != null) setPref('accent', d.pacc);
 else if (d.act === 'settings') go('settings');
+else if (d.act && d.act.startsWith('fc')) fcAct(d);
+else if (d.act === 'gmore') { const m = root.querySelector('.gmenu'); if (m) m.hidden = !m.hidden; }
+else if (d.act === 'report') { const b = root.querySelector('.rep'); if (b) b.hidden = !b.hidden; const m = root.querySelector('.gmenu'); if (m) m.hidden = true; }
+else if (d.act === 'reportsend') sendReport();
+else if (d.act === 'altsrc') altSource();
+else if (d.act === 'bnrall') { S.bnrAll = true; paintBanners(); }
 else if (d.act === 'admin') openAdmin();
 else if (d.act === 'qswitch') quickSwitch();
 else if (d.act === 'qsrec') { S.qsRec = !S.qsRec; renderMain(true); }
@@ -2311,6 +2581,12 @@ else if (d.act === 'checkupd') checkUpdates();
 else if (d.act === 'update') applyUpdate();
 else if (d.act === 'refresh') { if (usesLib(S.view)) loadLib(true); else { S.courseCache = {}; load(); } }
 });
+root.addEventListener('input', e => {
+const t = e.target;
+if (t.matches('[data-fct]')) fcUpdate(S.fc.id, x => { x.title = t.value; });
+else if (t.matches('[data-fcc]')) { const [i, f] = t.dataset.fcc.split(':'); fcUpdate(S.fc.id, x => { if (x.cards[i]) x.cards[i][f] = t.value; }); }
+else if (t.matches('[data-fcimp]')) S.fc.imp = t.value;
+});
 root.addEventListener('change', e => {
 const t = e.target;
 if (t.matches('[data-ptog]')) setPref(t.dataset.ptog, t.checked);
@@ -2349,6 +2625,10 @@ if (e.key === 'Backspace' || e.key === 'Delete') return setPref('qsKey', null);
 return setPref('qsKey', keyOf(e));
 }
 if (down && !e.repeat && P.qsKey && keyMatch(keyOf(e), P.qsKey)) { e.preventDefault(); e.stopPropagation(); quickSwitch(); return; }
+if (down && S.view === 'cards' && S.fc.mode === 'study' && !(root.activeElement && root.activeElement.matches('input,textarea,select'))) {
+const act = { ' ': 'fcflip', ArrowRight: 'fcnext', ArrowLeft: 'fcprev', '1': 'fcno', '2': 'fcyes' }[e.key];
+if (act) { e.preventDefault(); e.stopPropagation(); fcAct({ act }); return; }
+}
 if (root.activeElement === omniBox) { omniKey(e); e.stopPropagation(); return; }
 if (down && !LIB && (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); e.stopPropagation(); omniBox.focus(); return; }
 if (down && (e.key === 'Enter' || e.key === ' ') && root.activeElement && root.activeElement.matches('.rr,.ccard')) { e.preventDefault(); e.stopPropagation(); root.activeElement.click(); return; }
@@ -2370,13 +2650,17 @@ return;
 }
 if (down && e.key === 'Escape') {
 e.preventDefault(); e.stopPropagation();
-if (S.view === 'play') go('games'); else if (S.view === 'read') go('study'); else if (!LIB) close();
+if (S.view === 'play') go('games'); else if (S.view === 'read' || S.view === 'cards') go('study'); else if (!LIB) close();
 return;
 }
 e.stopPropagation();
 }
 const tick = () => {
 const n = new Date();
+if (S.view === 'play' && S.game && document.visibilityState === 'visible') {
+playPending += 1000;
+if (playPending >= 15000) { flushPlay(); const el = root.querySelector('.gbar .ptime'); if (el) el.textContent = playLine(true); }
+}
 $('.clock').textContent = fmtTime(n, P.seconds);
 $('.date').textContent = n.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
 paintSched();
@@ -2396,6 +2680,7 @@ window.addEventListener('keydown', onKey, true);
 window.addEventListener('keyup', onKey, true);
 window.addEventListener('message', onMsg);
 function close() {
+flushPlay();
 window.removeEventListener('message', onMsg);
 clearInterval(clockT);
 window.removeEventListener('keydown', onKey, true);
