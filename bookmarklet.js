@@ -8,6 +8,7 @@ const LIB = window.__classDashMode === 'library';
 const DAY = 864e5;
 const REPO = 'hsoirghfohdj/yee-new', BRANCH = 'main', DIR = 'offline/', STUDY = 'study/';
 const PAGES = 'https://hsoirghfohdj.github.io/yee-new/';
+const rawOf = p => 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + p.split('/').map(encodeURIComponent).join('/');
 const store = {
 get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
 set(k, v) { try { localStorage.setItem('classdash_' + k, JSON.stringify(v)); } catch (e) {} }
@@ -24,7 +25,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'A redesigned Study page (classes on the side, filters, Continue studying, one-tap requests) and a new Settings page next to Check for updates.';
+const WHATSNEW = 'Games now have a loading screen and a New this week row, plus Sketchbook, a new Settings page and a cleaner Study page.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -372,6 +373,18 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .snone[hidden]{display:none}
 .snone .btn{margin-top:12px;display:inline-flex;gap:6px;align-items:center}
 .sreq{margin-top:6px}
+.gt .nb{position:absolute;top:8px;left:8px;z-index:1;padding:2px 7px;border-radius:7px;background:var(--ac);color:#0f1218;font-size:10px;font-weight:800;letter-spacing:.06em;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.grp .grpn{margin-left:8px;font-weight:550;text-transform:none;letter-spacing:0;opacity:.8}
+.gload{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:var(--p1);transition:opacity .25s}
+.gload.done{opacity:0;pointer-events:none}
+.gload .gla{width:104px;flex:none;pointer-events:none;margin-bottom:4px;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.gload .gla .gtitle{font-size:15px!important}
+.gload .spin{margin:4px 0 0;width:26px;height:26px}
+.gload .glt{font-size:17px;font-weight:700}
+.gload .gls{max-width:430px;color:var(--mu);font-size:13px;line-height:1.5;white-space:normal}
+.gload .gltime{font-size:12px;color:var(--mu);font-variant-numeric:tabular-nums;min-height:1em}
+.gload .glb{display:flex;gap:8px;margin-top:2px}
+.gload .glb[hidden]{display:none}
 .cupd[hidden]{display:none}
 .atop{margin-bottom:12px}
 .ahd{display:flex;align-items:center;gap:12px}
@@ -829,12 +842,16 @@ if (!p.startsWith(DIR) || !/\.html?$/i.test(p)) return false;
 const parts = p.slice(DIR.length).split('/');
 return parts.length === 1 || (parts.length === 2 && /^index\.html?$/i.test(parts[1]));
 };
+// A game loads straight from the repo (raw.githubusercontent.com) instead of GitHub Pages when it has a
+// LOAD-FROM-REPO.txt next to it: offline/<game>/LOAD-FROM-REPO.txt, or offline/<game>.LOAD-FROM-REPO.txt
+const repoMarker = p => /\/index\.html?$/i.test(p) ? p.replace(/index\.html?$/i, 'LOAD-FROM-REPO.txt') : p.replace(/\.html?$/i, '.LOAD-FROM-REPO.txt');
+const repoGame = id => !!(S.lib && (S.lib.fromRepo || []).includes(id));
 const toPack = path => {
 const rel = path.slice(DIR.length), parts = rel.split('/');
 const base = parts.length === 2 ? parts[0] : parts[0].replace(/\.html?$/i, '');
 const pic = S.lib && S.lib.art && S.lib.art[path];
 const name = pretty(base);
-return { id: path, name, desc: rel, img: pic ? gameUrl(pic) : null, theme: themeOf(name) };
+return { id: path, name, desc: rel, img: pic ? (repoGame(path) ? rawOf(pic) : gameUrl(pic)) : null, theme: themeOf(name), repo: repoGame(path) };
 };
 const artFor = (path, imgs) => {
 const stem = path.replace(/\.html?$/i, '').toLowerCase();
@@ -914,7 +931,26 @@ files.filter(p => IMG.test(p)).forEach(p => { imgs[p.replace(IMG, '').toLowerCas
 const paths = files.filter(isGame);
 paths.forEach(p => { const a = artFor(p, imgs); if (a) pics[p] = a; });
 const dirs = [...new Set(files.filter(p => p.startsWith(STUDY)).map(p => p.slice(STUDY.length).split('/')).filter(a => a.length > 1).map(a => a[0]))];
-return { at: Date.now(), paths, art: pics, study: files.filter(isDoc), dirs };
+const fromRepo = paths.filter(p => files.includes(repoMarker(p)));
+return { at: Date.now(), paths, art: pics, study: files.filter(isDoc), dirs, fromRepo };
+}
+// Games added to the repo in the last 7 days, worked out from GitHub (compare last week's commit with now). Cached for an hour.
+let NEWG = store.get('newGames', null);
+const newSet = () => new Set(NEWG && Array.isArray(NEWG.ids) ? NEWG.ids : []);
+async function loadNewGames(force) {
+if (!force && NEWG && Date.now() - NEWG.at < 36e5) return;
+try {
+const api = 'https://api.github.com/repos/' + REPO;
+const before = await fetch(api + '/commits?sha=' + BRANCH + '&per_page=1&until=' + new Date(Date.now() - 7 * DAY).toISOString()).then(r => r.ok ? r.json() : Promise.reject(r.status));
+let ids = [];
+if (before.length) {
+const cmp = await fetch(api + '/compare/' + before[0].sha + '...' + BRANCH).then(r => r.ok ? r.json() : Promise.reject(r.status));
+ids = (cmp.files || []).filter(f => f.status === 'added' || f.status === 'copied').map(f => f.filename).filter(isGame);
+}
+NEWG = { at: Date.now(), ids };
+store.set('newGames', NEWG);
+if (S.view === 'games') renderMain(true);
+} catch (e) {}
 }
 async function loadLib(force) {
 if (S.lib && !S.lib.study && !S.libTried) force = true;
@@ -932,6 +968,7 @@ S.lib = libFrom(files);
 store.set('lib', S.lib);
 noteSeen(S.lib.study);
 setPack();
+loadNewGames(force);
 } catch (e) {
 S.libError = e.message === 'Failed to fetch' ? "Couldn't reach GitHub. Check you're online, then refresh." : e.message || String(e);
 }
@@ -943,20 +980,56 @@ const vPlay = () => {
 const p = PACK.find(x => x.id === S.game);
 if (!p) return `<div class="gbar"><button class="btn" data-go="games">← Games</button></div>` + empty('That game is no longer in the repo.');
 return `<div class="play"><div class="gbar wide"><button class="btn" data-go="games">← Games</button>
-<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${esc(p.desc)} · from GitHub</div></div>
+<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${esc(p.desc)} · ${p.repo ? 'straight from the repo' : 'from GitHub Pages'}</div></div>
 <button class="btn" data-act="license">License</button><button class="btn" data-act="newtab">New tab</button><button class="btn" data-act="full">Full screen</button><button class="btn" data-act="reload">Restart</button></div>
 <div class="frame"><div class="spin"></div></div></div>`;
 };
+// Loading screen shown over a game until its page has finished downloading
+const LOAD_TIPS = [
+[0, "Getting it ready. Keep this open and it'll start by itself."],
+[6, 'Some games are big downloads (3D games can be 30 MB or more), so the first time can take up to a minute. After that they open much faster.'],
+[20, "Still downloading. School Wi-Fi can be slow with big games, so hang tight. It's working."],
+[45, "This one's taking a while. You can keep waiting, or try Restart or New tab."]
+];
+const gameLoader = (p, buttons) => `<div class="gload">${p.img !== undefined ? `<div class="gt gla">${art(p)}</div>` : ''}<div class="spin"></div><div class="glt">Loading ${esc(p.name)}</div><div class="gls"></div><div class="gltime"></div>${buttons ? '<div class="glb" hidden><button class="btn" data-act="reload">Restart</button><button class="btn" data-act="newtab">New tab</button></div>' : ''}</div>`;
+function watchLoad(f, ov, w) {
+w = w || window;
+const t0 = Date.now();
+const tick = () => {
+if (!ov.isConnected) return w.clearInterval(iv);
+const sec = Math.floor((Date.now() - t0) / 1000);
+const tip = LOAD_TIPS.filter(x => sec >= x[0]).pop()[1], el = ov.querySelector('.gls');
+if (el.textContent !== tip) el.textContent = tip;
+ov.querySelector('.gltime').textContent = sec < 3 ? '' : sec + ' seconds';
+const b = ov.querySelector('.glb');
+if (b) b.hidden = sec < 45;
+};
+const iv = w.setInterval(tick, 1000);
+tick();
+f.addEventListener('load', () => { w.clearInterval(iv); ov.classList.add('done'); w.setTimeout(() => ov.remove(), 300); }, { once: true });
+}
+// Points the frame at the game: GitHub Pages normally, or the repo itself (fetched and shown in a sandbox) for LOAD-FROM-REPO games
+const GAME_SANDBOX = 'allow-scripts allow-pointer-lock allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads allow-orientation-lock';
+function frameGame(f, path) {
+if (!repoGame(path)) { f.src = gameUrl(path); return Promise.resolve(); }
+const raw = rawOf(path);
+return fetch(raw + '?t=' + Date.now(), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); }).then(html => {
+const base = '<base href="' + esc(raw.replace(/[^/]*$/, '')) + '">';
+f.setAttribute('sandbox', GAME_SANDBOX);
+f.srcdoc = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + base) : base + html;
+}).catch(() => { f.src = gameUrl(path); });
+}
 function startFrame(ct, path) {
 const box = ct.querySelector('.frame');
 if (!box) return;
+const p = PACK.find(x => x.id === path) || toPack(path);
 const f = document.createElement('iframe');
 f.className = 'gframe';
 f.setAttribute('allow', 'fullscreen; autoplay; gamepad');
 f.addEventListener('load', () => { try { f.contentWindow.focus(); } catch (e) {} });
-f.src = gameUrl(path);
-box.innerHTML = '';
-box.appendChild(f);
+box.innerHTML = gameLoader(p, true);
+watchLoad(f, box.querySelector('.gload'));
+frameGame(f, path).then(() => { if (box.isConnected) box.appendChild(f); });
 }
 const startPack = ct => startFrame(ct, S.game);
 // Study pages load straight from the repo (raw.githubusercontent.com), so a new upload shows up
@@ -1190,12 +1263,15 @@ d.body.style.position = 'relative';
 docView(d, p).then(el => d.body.appendChild(el)).catch(() => { d.body.style.color = '#fff'; d.body.textContent = "Couldn't load this resource."; });
 return true;
 }
+const st = d.createElement('style');
+st.textContent = '@keyframes cdsp{to{transform:rotate(360deg)}}.gload{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;background:#0f1218;color:#e9ecf2;font:14px/1.45 system-ui,sans-serif;transition:opacity .25s}.gload.done{opacity:0;pointer-events:none}.spin{width:30px;height:30px;border:3px solid #272d3a;border-top-color:#7c9cff;border-radius:50%;animation:cdsp .8s linear infinite}.glt{font-size:18px;font-weight:700}.gls{max-width:420px;color:#8c93a5}.gltime{font-size:12px;color:#8c93a5;min-height:1em}';
+d.head.appendChild(st);
 const f = d.createElement('iframe');
 f.setAttribute('allow', 'fullscreen; autoplay; gamepad');
 f.style.cssText = 'border:0;width:100%;height:100%;display:block';
-f.src = gameUrl(p.id);
-d.body.appendChild(f);
-f.focus();
+d.body.insertAdjacentHTML('beforeend', gameLoader({ name: p.name }));
+watchLoad(f, d.body.querySelector('.gload'), w);
+frameGame(f, p.id).then(() => { d.body.appendChild(f); f.focus(); });
 return true;
 }
 // Opens a game inside Class Dash, or in a new about:blank tab if that's picked in Settings
@@ -1223,13 +1299,14 @@ if (!saved) try { saved = localStorage.getItem('classdash_code'); } catch (e) {}
 }
 const findItem = key => key.startsWith('pack:') ? PACK.find(p => p.id === key.slice(5)) : null;
 const addRecent = key => store.set('recent', [key, ...store.get('recent', []).filter(x => x !== key)].slice(0, 7));
-const gameTile = p => `<button class="gt" data-pack="${esc(p.id)}" data-name="${esc(p.name.toLowerCase())}" title="${esc(p.name)}">${art(p)}${p.img ? `<div class="tn">${esc(p.name)}</div>` : ''}</button>`;
+const gameTile = p => `<button class="gt" data-pack="${esc(p.id)}" data-name="${esc(p.name.toLowerCase())}" title="${esc(p.name)}">${art(p)}${newSet().has(p.id) ? '<span class="nb">NEW</span>' : ''}${p.img ? `<div class="tn">${esc(p.name)}</div>` : ''}</button>`;
 const vGames = () => {
 const cats = [['All', PACK.length], ...[...THEMES, ARCADE].map(t => [t[0], PACK.filter(p => p.theme === t).length]).filter(c => c[1])];
 if (!cats.some(c => c[0] === S.cat)) S.cat = 'All';
 const list = S.cat === 'All' ? PACK : PACK.filter(p => p.theme[0] === S.cat);
 const recent = P.recent ? store.get('recent', []).map(findItem).filter(Boolean) : [];
 const featured = (curSite().featured || []).map(id => PACK.find(p => p.id === id)).filter(Boolean);
+const fresh = [...newSet()].map(id => PACK.find(p => p.id === id)).filter(Boolean).sort((a, b) => a.name.localeCompare(b.name));
 const libState = PACK.length ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoading ? empty('No games yet. Add an .html file to the offline folder, then hit refresh.') : '<div class="spin"></div>';
 return `${PATTERNS}<div class="ghero"><div class="ghead"><div class="grow"><div class="gh">Game library</div>
 <div class="sub">${PACK.length} ${PACK.length === 1 ? 'game' : 'games'} · press <span class="kbd">/</span> to search</div></div>
@@ -1240,6 +1317,7 @@ ${reqCard('games')}
 ${cats.length > 2 ? `<div class="seg">${cats.map(([l, n]) => `<button data-cat="${l}" class="${S.cat === l ? 'on' : ''}">${l}<b>${n}</b></button>`).join('')}</div>` : ''}
 ${S.libError && PACK.length ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
 ${featured.length ? `<div class="rec"><div class="grp">Featured</div><div class="tgrid">${featured.map(gameTile).join('')}</div></div>` : ''}
+${fresh.length ? `<div class="rec"><div class="grp">New this week<span class="grpn">added in the last 7 days</span></div><div class="tgrid">${fresh.map(gameTile).join('')}</div></div>` : ''}
 ${recent.length ? `<div class="rec"><div class="grp">Jump back in</div><div class="tgrid">${recent.map(gameTile).join('')}</div></div>` : ''}
 <div class="grp">${S.cat === 'All' ? 'All games' : esc(S.cat)}</div>
 ${libState}<div class="tgrid all">${list.map(gameTile).join('')}</div><div class="empty nomatch" hidden></div>`;
@@ -1525,14 +1603,14 @@ ${list || '<p class="sub">No study resources yet.</p>'}</div>`;
 const gameFiles = (files, id) => {
 if (/\/index\.html?$/i.test(id)) { const dir = id.replace(/\/index\.html?$/i, ''); return { dir, list: files.filter(f => f.path.startsWith(dir + '/')) }; }
 const stem = id.replace(/\.html?$/i, '');
-return { stem, list: files.filter(f => f.path === id || (f.path.startsWith(stem + '.') && /^(license\.txt|png|jpe?g|webp|gif|svg)$/i.test(f.path.slice(stem.length + 1)))) };
+return { stem, list: files.filter(f => f.path === id || (f.path.startsWith(stem + '.') && /^(license\.txt|load-from-repo\.txt|png|jpe?g|webp|gif|svg)$/i.test(f.path.slice(stem.length + 1)))) };
 };
 function gameRowA(p, hid, fea) {
 const at = `data-id="${esc(p.id)}"`, ek = 'game:' + p.id, h = hash(p.name);
 const thumb = `<span class="gthumb" style="background:linear-gradient(135deg,${PAL[h % PAL.length]},${PAL[(h >>> 3) % PAL.length]})">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : esc(p.name.charAt(0))}</span>`;
 if (A.edit === ek) return `<div class="ares">${thumb}${editRow('adm-gsave', at, 'Game name')}</div>`;
-return `<div class="ares${hid ? ' dim' : ''}">${thumb}<span class="grow"><span class="t">${esc(p.name)}</span>${fea ? '<span class="chip ac">Featured</span>' : ''}${hid ? '<span class="chip">Hidden</span>' : ''}</span>
-<button class="btn sm" data-act="adm-gplay" ${at}>Play</button><button class="btn sm" data-act="adm-gedit" ${at}>Rename</button><button class="btn sm" data-act="adm-gcover" ${at}>${p.img ? 'Change cover' : 'Add cover'}</button>
+return `<div class="ares${hid ? ' dim' : ''}">${thumb}<span class="grow"><span class="t">${esc(p.name)}</span>${fea ? '<span class="chip ac">Featured</span>' : ''}${hid ? '<span class="chip">Hidden</span>' : ''}${p.repo ? '<span class="chip gd" title="Loads straight from the repo, not GitHub Pages">From repo</span>' : ''}</span>
+<button class="btn sm" data-act="adm-gplay" ${at}>Play</button><button class="btn sm" data-act="adm-grepo" ${at} title="${p.repo ? 'Load it from GitHub Pages again' : 'Load it straight from the repo, so changes work right away'}">${p.repo ? 'Use Pages' : 'Use repo'}</button><button class="btn sm" data-act="adm-gedit" ${at}>Rename</button><button class="btn sm" data-act="adm-gcover" ${at}>${p.img ? 'Change cover' : 'Add cover'}</button>
 <button class="btn sm" data-act="adm-gfeat" ${at}>${fea ? 'Unfeature' : 'Feature'}</button><button class="btn sm" data-act="adm-ghide" ${at}>${hid ? 'Show' : 'Hide'}</button>
 ${delBtn(ek, 'adm-gdel', at, 'Delete', 'Click again to delete')}</div>`;
 }
@@ -1545,7 +1623,7 @@ return `<div class="card adm sset-c"><h2>Add games</h2>
 <label class="adrop"><input type="file" data-gfile multiple accept=".html,.htm"><span>${I.plus}<b>Choose game files</b> or drop them here</span><span class="sub wrap">Single-file .html games. The file name becomes the game's name. A brand-new game can take a few minutes to start working while GitHub Pages updates.</span><span class="afiles"></span></label>
 <div class="arow"><button class="btn pri" data-act="adm-gupload">Add games</button></div></div>
 <div class="card adm"><h2>All games<span>${all.length} games · ${fea.size} featured · ${hid.size} hidden</span></h2>
-<p class="sub wrap" style="margin-bottom:10px"><b>Feature</b> pins a game to the top of the library. <b>Hide</b> takes it out of the library without deleting it.</p>
+<p class="sub wrap" style="margin-bottom:10px"><b>Feature</b> pins a game to the top of the library. <b>Hide</b> takes it out of the library without deleting it. <b>Use repo</b> loads a game straight from the repo, so it works without waiting for GitHub Pages.</p>
 <div class="arow" style="margin-top:0"><input class="wide" data-agq value="${esc(A.gq)}" placeholder="Search games to rename, hide or delete…" autocomplete="off"></div>
 ${shown.map(p => gameRowA(p, hid.has(p.id), fea.has(p.id))).join('') || '<p class="sub" style="padding:10px 0">No games match.</p>'}
 ${list.length > shown.length ? `<div class="arow"><button class="btn" data-act="adm-gmore">Show more</button><span class="sub">${list.length - shown.length} more</span></div>` : ''}
@@ -1747,6 +1825,14 @@ store.set('recent', store.get('recent', []).map(k => k === 'pack:' + d.id ? 'pac
 return 'Renamed to ' + pretty(name) + '. It can take a few minutes to start working under the new name.';
 });
 }
+case 'adm-grepo': {
+const on = repoGame(d.id), mk = repoMarker(d.id);
+return aRun(on ? 'Switching to GitHub Pages' : 'Switching to the repo', async () => {
+await ghChange((on ? 'Load from GitHub Pages: ' : 'Load from the repo: ') + game.name, async files => on ? files.filter(f => f.path === mk).map(f => ({ path: f.path, sha: null }))
+: [{ path: mk, b64: b64enc('This game loads straight from the repo (raw.githubusercontent.com) instead of GitHub Pages,\nso changes work right away. Delete this file to load it from GitHub Pages again.\n') }]);
+return on ? game.name + ' loads from GitHub Pages again.' : game.name + ' now loads straight from the repo. Games with separate script files may need a small change to work this way.';
+});
+}
 case 'adm-gcover': { A.coverFor = d.id; const inp = root.querySelector('[data-acover]'); if (inp) { inp.value = ''; inp.click(); } return; }
 case 'adm-gfeat': {
 const on = curSite().featured.includes(d.id);
@@ -1777,6 +1863,7 @@ try { for (const f of files) entries.push({ path: DIR + (cleanSeg(f.name.replace
 catch (e) { return aSay(e.message, 'err'); }
 return aRun('Adding games', async () => {
 await ghChange(entries.length === 1 ? 'Add game: ' + entries[0].path.slice(DIR.length) : 'Add ' + entries.length + ' games', async () => entries);
+NEWG = { at: Date.now(), ids: [...new Set([...newSet(), ...entries.map(e => e.path)])] }; store.set('newGames', NEWG);
 return (entries.length === 1 ? 'Added ' + pretty(entries[0].path.slice(DIR.length).replace(/\.html$/, '')) : 'Added ' + entries.length + ' games') + '. Give GitHub Pages a few minutes before playing.';
 });
 }
