@@ -55,7 +55,7 @@ lunch: store.get('lunch', 1), schedKey: null,
 doc: null, sq: '', scls: 'All', skind: 'all',
 periods: store.get('periods', {}),
 req: {}, reqMsg: {},
-up: { kind: 'file' }, upMsg: null, delArm: null,
+delArm: null,
 resetArm: false, setMsg: null
 };
 const svg = p => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
@@ -95,6 +95,7 @@ chain: svg('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d
 pic: svg('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>'),
 file: svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>'),
 plus: svg('<path d="M12 5v14M5 12h14"/>'),
+key: svg('<circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 9.2-9.2M16 7l3 3M14 9l2 2"/>'),
 tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
 };
 const CSS = `
@@ -371,6 +372,47 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .snone[hidden]{display:none}
 .snone .btn{margin-top:12px;display:inline-flex;gap:6px;align-items:center}
 .sreq{margin-top:6px}
+.cupd[hidden]{display:none}
+.atop{margin-bottom:12px}
+.ahd{display:flex;align-items:center;gap:12px}
+.ahd .logo{width:40px;height:40px;border-radius:11px;flex:none}
+.atop .amsg{margin-top:10px;display:flex;align-items:center;gap:8px;font-size:13px}
+.atop .amsg:empty{display:none}
+.aspin{width:14px;height:14px;border:2px solid var(--p3);border-top-color:var(--ac);border-radius:50%;animation:sp .8s linear infinite;flex:none}
+.atabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.atabs button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:10px;background:var(--p1);border:1px solid var(--ln);color:var(--mu);font-weight:600;font-size:13px}
+.atabs button svg{width:15px;height:15px}
+.atabs button:hover{color:var(--tx)}
+.atabs button.on{background:var(--ac);border-color:var(--ac);color:#0f1218}
+.atabs .badge{margin-left:2px}
+.adraft{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;margin-bottom:14px;background:color-mix(in srgb,var(--wn) 14%,transparent);border:1px solid color-mix(in srgb,var(--wn) 45%,transparent)}
+.adrop{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px;margin-top:12px;border-radius:12px;border:2px dashed var(--p3);text-align:center;cursor:pointer;color:var(--mu)}
+.adrop:hover{border-color:var(--ac)}
+.adrop.pulse{border-color:var(--ac);box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 25%,transparent)}
+.adm .adrop input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.adrop b{color:var(--tx)}
+.adrop svg{width:16px;height:16px;vertical-align:-3px;margin-right:4px}
+.afiles{font-size:12px;color:var(--act);font-weight:600}
+.acat{border-top:1px solid var(--ln);padding:12px 0 6px}
+.acath{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.acath .ssi{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#0f1218;flex:none}
+.acath .ssi svg{width:17px;height:17px}
+.acat .ares{margin-left:42px;flex-wrap:wrap}
+.aempty{padding:6px 0 4px 42px}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn.danger{background:var(--bad);color:#fff}
+.btn svg{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+.adm .ares select{height:28px;min-width:0;width:auto;font-size:12px;padding:0 6px}
+.adm .ares input.grow:not([type=checkbox]):not([type=color]):not([type=file]),.adm .acath input.grow:not([type=checkbox]):not([type=color]):not([type=file]){flex:1 1 200px;height:30px}
+.adm .arow>input:not([type=checkbox]):not([type=color]):not([type=file]):not([type=datetime-local]){flex:1 1 180px}
+.adm .arow>input.wide:not([type=checkbox]):not([type=color]):not([type=file]){flex:3 1 280px}
+.ares.dim .t{opacity:.55}
+.ares .grow .chip{flex:none}
+a.ares:hover .t{color:var(--act)}
+.gthumb{width:34px;height:34px;border-radius:9px;overflow:hidden;flex:none;display:grid;place-items:center;font-weight:800;color:#fff;font-size:14px}
+.gthumb img{width:100%;height:100%;object-fit:cover}
+.asteps{margin:10px 0 4px 20px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.asteps a{color:var(--act);text-decoration:underline}
 .bd.lib{background:var(--bg);backdrop-filter:none;animation:none}
 .bd.lib .win{width:calc(100vw / var(--z,1));height:calc(100vh / var(--z,1));border:0;border-radius:0;box-shadow:none;animation:none;grid-template-columns:1fr;grid-template-rows:1fr}
 .bd.lib .sb,.bd.lib [data-act="close"]{display:none}
@@ -550,7 +592,7 @@ host.id = ID;
 host.style.cssText = 'position:fixed;inset:0;z-index:2147483647';
 const root = host.attachShadow({ mode: 'open' });
 root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div class="win">
-<aside class="sb"><div class="brand"><span class="logo">${I.cap}</span><span class="bname">Class Dash</span></div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><div class="sbl"><button class="cupd" data-act="settings" title="Settings (saved in this browser)">${I.gear.replace('width="18" height="18"', 'width="13" height="13"')}Settings</button><button class="cupd" data-act="checkupd">Check for updates</button></div><div class="ver"></div></div></aside>
+<aside class="sb"><div class="brand"><span class="logo">${I.cap}</span><span class="bname">Class Dash</span></div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><div class="sbl"><button class="cupd" data-act="settings" title="Settings (saved in this browser)">${I.gear.replace('width="18" height="18"', 'width="13" height="13"')}Settings</button><button class="cupd" data-act="checkupd">Check for updates</button><button class="cupd" data-act="admin" hidden title="Admin (only shows on your computers)">${I.key.replace('width="18" height="18"', 'width="13" height="13"')}Admin</button></div><div class="ver"></div></div></aside>
 <main class="mn"><header class="hd"><h1></h1>
 <div class="omni"><span class="oi">${I.search}</span><input data-omni placeholder="Search Class Dash, or go to study.ecology-study" autocomplete="off" spellcheck="false" aria-label="Search or go to"><span class="kbd">Ctrl K</span><div class="odrop" hidden></div></div><span class="upd"></span>
 <button class="ib" data-act="refresh" title="Refresh">${I.refresh}</button><button class="ib sset" data-act="settings" title="Settings">${I.gear}</button><button class="ib" data-act="close" title="Close (Esc)">${I.x}</button></header>
@@ -567,8 +609,9 @@ function paintChrome() {
 const overdue = S.work.filter(x => x.open && x.due && new Date(x.due) < Date.now()).length;
 $('.nav').innerHTML = shownNav().map(([v, label, icon]) => `<button data-go="${v}" class="${navOf(S.view) === v ? 'on' : ''}">${icon}${label}${v === 'todo' && overdue ? `<span class="badge">${overdue}</span>` : ''}</button>`).join('');
 const c = S.view === 'course' && byId(S.courseId), g = S.view === 'play' && PACK.find(x => x.id === S.game), dc = S.view === 'read' && DOCS.find(x => x.id === S.doc);
-$('.hd h1').textContent = c ? c.name : g ? g.name : dc ? dc.name : S.view === 'admin' ? 'Site editor' : S.view === 'settings' ? 'Settings' : (NAV.find(n => n[0] === S.view) || [, ''])[1];
+$('.hd h1').textContent = c ? c.name : g ? g.name : dc ? dc.name : S.view === 'admin' ? 'Admin' : S.view === 'settings' ? 'Settings' : (NAV.find(n => n[0] === S.view) || [, ''])[1];
 root.querySelectorAll('[data-act="settings"]').forEach(b => b.classList.toggle('on', S.view === 'settings'));
+root.querySelectorAll('[data-act="admin"]').forEach(b => b.classList.toggle('on', S.view === 'admin'));
 $('.upd').textContent = usesLib(S.view) ? (S.libLoading ? 'Checking GitHub…' : S.lib ? 'Updated ' + fmtTime(new Date(S.lib.at)) : '')
 : S.loading && S.loadedAt ? 'Refreshing…' : S.loadedAt && isCanvas && S.view !== 'play' && S.view !== 'read' ? 'Updated ' + fmtTime(S.loadedAt) : '';
 const rb = $('[data-act="refresh"]');
@@ -835,7 +878,7 @@ const parts = path.slice(STUDY.length).split('/');
 const cls = parts.length === 1 ? 'Other' : pretty(parts[0]);
 const file = parts.length === 3 ? parts[1] : parts[parts.length - 1];
 const h = hash(cls.toLowerCase());
-return { id: path, name: pretty(file.replace(/\.[a-z0-9]+$/i, '')), cls, file: parts.slice(1).join('/') || parts[0], kind: kindOf(path), ext: extOf(path),
+return { id: path, dir: parts.length === 1 ? '' : parts[0], name: pretty(file.replace(/\.[a-z0-9]+$/i, '')), cls, file: parts.slice(1).join('/') || parts[0], kind: kindOf(path), ext: extOf(path),
 color: PAL[h % PAL.length], icon: (SUBJECTS.find(s => s[0].test(cls)) || [, I.study])[1] };
 };
 const clsMatch = (cls, name) => { const n = (name || '').toLowerCase(), k = cls.toLowerCase(); return n.includes(k) || k.split(/[^a-z0-9]+/).some(w => w.length > 3 && n.includes(w)); };
@@ -859,10 +902,20 @@ if (changed) store.set('seenDocs', map);
 const isNewDoc = p => !!SEEN && SEEN[p.id] > Date.now() - 7 * DAY;
 let PACK = [], DOCS = [];
 const setPack = () => {
-PACK = (S.lib ? S.lib.paths : []).map(toPack).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+const hiddenG = new Set(((S.draft || SITE || {}).hiddenGames) || []);
+PACK = (S.lib ? S.lib.paths : []).filter(p => !hiddenG.has(p)).map(toPack).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 DOCS = (S.lib && S.lib.study || []).map(toDoc).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 };
 setPack();
+function libFrom(files) {
+files = files.filter(p => p.startsWith(DIR) || p.startsWith(STUDY));
+const imgs = {}, pics = {};
+files.filter(p => IMG.test(p)).forEach(p => { imgs[p.replace(IMG, '').toLowerCase()] = p; });
+const paths = files.filter(isGame);
+paths.forEach(p => { const a = artFor(p, imgs); if (a) pics[p] = a; });
+const dirs = [...new Set(files.filter(p => p.startsWith(STUDY)).map(p => p.slice(STUDY.length).split('/')).filter(a => a.length > 1).map(a => a[0]))];
+return { at: Date.now(), paths, art: pics, study: files.filter(isDoc), dirs };
+}
 async function loadLib(force) {
 if (S.lib && !S.lib.study && !S.libTried) force = true;
 if (S.libLoading || (!force && Date.now() - Math.max(S.libTried, S.lib ? S.lib.at : 0) < 5 * 6e4)) return;
@@ -875,11 +928,7 @@ if (r.status !== 409 && r.status !== 404) {
 if (!r.ok) throw new Error(r.status === 403 || r.status === 429 ? 'GitHub is rate-limiting this network. Try again in a few minutes.' : 'GitHub returned an error (' + r.status + ').');
 files = ((await r.json()).tree || []).filter(t => t.type === 'blob' && (t.path.startsWith(DIR) || t.path.startsWith(STUDY))).map(t => t.path);
 }
-const imgs = {}, pics = {};
-files.filter(p => IMG.test(p)).forEach(p => { imgs[p.replace(IMG, '').toLowerCase()] = p; });
-const paths = files.filter(isGame);
-paths.forEach(p => { const a = artFor(p, imgs); if (a) pics[p] = a; });
-S.lib = { at: Date.now(), paths, art: pics, study: files.filter(isDoc) };
+S.lib = libFrom(files);
 store.set('lib', S.lib);
 noteSeen(S.lib.study);
 setPack();
@@ -888,7 +937,7 @@ S.libError = e.message === 'Failed to fetch' ? "Couldn't reach GitHub. Check you
 }
 S.libLoading = false;
 paintChrome();
-if (usesLib(S.view)) renderMain(true);
+if (usesLib(S.view) || (S.view === 'admin' && !(root.activeElement && root.activeElement.matches('input,textarea,select')))) renderMain(true);
 }
 const vPlay = () => {
 const p = PACK.find(x => x.id === S.game);
@@ -1180,6 +1229,7 @@ const cats = [['All', PACK.length], ...[...THEMES, ARCADE].map(t => [t[0], PACK.
 if (!cats.some(c => c[0] === S.cat)) S.cat = 'All';
 const list = S.cat === 'All' ? PACK : PACK.filter(p => p.theme[0] === S.cat);
 const recent = P.recent ? store.get('recent', []).map(findItem).filter(Boolean) : [];
+const featured = (curSite().featured || []).map(id => PACK.find(p => p.id === id)).filter(Boolean);
 const libState = PACK.length ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoading ? empty('No games yet. Add an .html file to the offline folder, then hit refresh.') : '<div class="spin"></div>';
 return `${PATTERNS}<div class="ghero"><div class="ghead"><div class="grow"><div class="gh">Game library</div>
 <div class="sub">${PACK.length} ${PACK.length === 1 ? 'game' : 'games'} · press <span class="kbd">/</span> to search</div></div>
@@ -1189,6 +1239,7 @@ ${LIB ? '' : `<button class="btn" data-act="libtab" title="Open the games librar
 ${reqCard('games')}
 ${cats.length > 2 ? `<div class="seg">${cats.map(([l, n]) => `<button data-cat="${l}" class="${S.cat === l ? 'on' : ''}">${l}<b>${n}</b></button>`).join('')}</div>` : ''}
 ${S.libError && PACK.length ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
+${featured.length ? `<div class="rec"><div class="grp">Featured</div><div class="tgrid">${featured.map(gameTile).join('')}</div></div>` : ''}
 ${recent.length ? `<div class="rec"><div class="grp">Jump back in</div><div class="tgrid">${recent.map(gameTile).join('')}</div></div>` : ''}
 <div class="grp">${S.cat === 'All' ? 'All games' : esc(S.cat)}</div>
 ${libState}<div class="tgrid all">${list.map(gameTile).join('')}</div><div class="empty nomatch" hidden></div>`;
@@ -1197,8 +1248,7 @@ function filterGames() {
 const ct = $('.ct'), q = S.q.trim().toLowerCase();
 let shown = 0;
 ct.querySelectorAll('.tgrid.all .gt').forEach(t => { t.hidden = !!q && !t.dataset.name.includes(q); if (!t.hidden) shown++; });
-const rec = ct.querySelector('.rec');
-if (rec) rec.hidden = !!q;
+ct.querySelectorAll('.rec').forEach(rec => { rec.hidden = !!q; });
 const nm = ct.querySelector('.nomatch');
 if (nm) { nm.hidden = !q || shown > 0; nm.textContent = 'No games match "' + S.q.trim() + '".'; }
 }
@@ -1269,17 +1319,19 @@ ${on ? `<span class="chip ac">Now · ${span(p.b - m)} left</span>` : done ? '<sp
 // ---- Site settings: site.json in the repo (name, icon, colour, banners, hidden pages, hall pass link) ----
 const ICON_CHOICES = ['cap', 'book', 'study', 'star', 'bolt', 'rocket', 'heart', 'news', 'leaf', 'flask', 'atom', 'math', 'globe', 'talk', 'code', 'game', 'cal', 'clock', 'pass', 'chart'];
 const COLOR_CHOICES = ['#7c9cff', '#3ecf8e', '#f5b546', '#f2637a', '#b48cff', '#4cc9f0', '#ff8f5a', '#e46fd0'];
-const SITE_DEFAULT = { name: 'Class Dash', icon: 'cap', accent: '#7c9cff', banners: [], hidden: [], hallpass: PASS };
+const SITE_DEFAULT = { name: 'Class Dash', icon: 'cap', accent: '#7c9cff', banners: [], hidden: [], hallpass: PASS, featured: [], hiddenGames: [] };
 const clone = o => JSON.parse(JSON.stringify(o));
 const hexOk = c => /^#[0-9a-f]{6}$/i.test(c || '');
 function fixSite(j) {
 const s = Object.assign(clone(SITE_DEFAULT), j && typeof j === 'object' && !Array.isArray(j) ? j : {});
 if (!Array.isArray(s.banners)) s.banners = [];
 if (!Array.isArray(s.hidden)) s.hidden = [];
+if (!Array.isArray(s.featured)) s.featured = [];
+if (!Array.isArray(s.hiddenGames)) s.hiddenGames = [];
 s.banners = s.banners.filter(b => b && typeof b === 'object').map(b => Object.assign({ id: 'b' + Math.random().toString(36).slice(2, 8), title: '', text: '', button: '', link: '', color: '#3ecf8e', icon: 'news', where: 'both', start: '', end: '' }, b));
 return s;
 }
-let SITE = fixSite(store.get('site', null));
+var SITE = fixSite(store.get('site', null));
 const curSite = () => S.draft || SITE;
 function shownNav() { const h = curSite().hidden || []; return NAV.filter(n => !h.includes(n[0])); }
 const inWindow = b => { const now = Date.now(), a = b.start ? new Date(b.start).getTime() : -Infinity, z = b.end ? new Date(b.end).getTime() : Infinity; return now >= a && now < z; };
@@ -1292,6 +1344,7 @@ ${b.button && b.link ? `<button class="btn" data-banner="${esc(b.id)}">${esc(b.b
 }
 function applySite() {
 const s = curSite();
+setPack();
 $('.bd').style.setProperty('--ac', !S.draft && hexOk(P.accent) ? P.accent : hexOk(s.accent) ? s.accent : '#7c9cff');
 $('.brand .logo').innerHTML = I[s.icon] || I.cap;
 $('.bname').textContent = s.name || 'Class Dash';
@@ -1304,7 +1357,7 @@ if (!j) return;
 const s = fixSite(j);
 if (JSON.stringify(s) === JSON.stringify(SITE)) return;
 SITE = s; store.set('site', j);
-if (!S.draft) { applySite(); paintChrome(); }
+if (!S.draft) { applySite(); paintChrome(); if (usesLib(S.view)) renderMain(true); }
 }).catch(() => {});
 }
 // A banner button can point at a study page or game in the repo, a web address, or a dashboard address like study.biology
@@ -1320,142 +1373,462 @@ if (/\//.test(link) || /\.html?$/i.test(link)) return void window.open(PAGES + l
 const hit = omniSearch(link).find(x => x.s >= 1000);
 if (hit) hit.open(); else if (NAV.some(n => n[0] === link)) go(link);
 }
-// ---- Site editor (hidden page) ----
+// ---- Admin (hidden page: type the passphrase in the search bar once, then use the Admin button) ----
 const SEAL = 'b1b303b405163284c0f00b8e4bd9e1e85816f6e6b882e11d49dab44868b39375';
 async function sealed(v) {
 try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('') === SEAL; } catch (e) { return false; }
 }
-function openAdmin() { S.draft = clone(SITE); S.adminMsg = null; S.upMsg = null; S.delArm = null; go('admin'); applySite(); loadLib(); }
+const A = { tab: 'study', msg: null, busy: '', arm: null, edit: null, vals: {}, gq: '', gshow: 80, up: { kind: 'file', cat: '' }, log: null, logErr: '', coverFor: null };
+const hasKey = () => !!store.get('admintoken', '');
+const dirty = () => !!S.draft && JSON.stringify(S.draft) !== JSON.stringify(SITE);
+function paintAdminLink() { const b = $('.sbl [data-act="admin"]'); if (b) b.hidden = !store.get('admin', false); }
+function openAdmin() { store.set('admin', true); paintAdminLink(); S.draft = clone(SITE); A.msg = null; A.arm = null; A.edit = null; go('admin'); applySite(); loadLib(); }
 const NEW_BANNER = () => ({ id: 'b' + Date.now().toString(36), title: '', text: '', button: '', link: '', color: '#3ecf8e', icon: 'news', where: 'both', start: '', end: '' });
+const ATABS = [['study', 'Study', I.study], ['games', 'Games', I.game], ['look', 'Look', I.star], ['banners', 'Banners', I.news], ['pages', 'Pages & links', I.book], ['activity', 'Activity', I.clock], ['advanced', 'Advanced', I.code], ['key', 'GitHub key', I.key]];
+function aSay(text, cls) {
+A.msg = { text, cls };
+const el = root.querySelector('.atop .amsg');
+if (el) { el.className = 'amsg ' + (cls || ''); el.innerHTML = (A.busy ? '<span class="aspin"></span>' : '') + esc(text); }
+}
+// ---- GitHub: every Study/Games change is one commit made with the Git Data API ----
+const GH = 'https://api.github.com/repos/' + REPO;
+const b64enc = t => btoa(unescape(encodeURIComponent(t)));
+const b64dec = b => decodeURIComponent(escape(atob(String(b || '').replace(/\s/g, ''))));
+const fileB64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(new Error("Couldn't read " + f.name + '.')); r.readAsDataURL(f); });
+const ghErr = st => st === 401 ? 'GitHub rejected the key. Check it in the GitHub key tab, or make a new one.' : st === 403 || st === 404 ? "That key can't change the repo. It needs Contents: Read and write on yee-new." : st === 409 ? 'GitHub was busy. Try again.' : st === 422 ? "GitHub didn't accept that (a file may be too big)." : 'GitHub error ' + st + '.';
+async function ghJ(path, opt = {}) {
+const tok = store.get('admintoken', '');
+const r = await fetch(GH + path, Object.assign({ cache: 'no-store' }, opt, { headers: Object.assign({ Accept: 'application/vnd.github+json' }, tok ? { Authorization: 'Bearer ' + tok } : {}, opt.body ? { 'Content-Type': 'application/json' } : {}) }));
+if (!r.ok) { const e = new Error(ghErr(r.status)); e.status = r.status; throw e; }
+return r.status === 204 ? null : r.json();
+}
+async function ghHead() { const ref = await ghJ('/git/ref/heads/' + BRANCH); const c = await ghJ('/git/commits/' + ref.object.sha); return { commit: ref.object.sha, tree: c.tree.sha }; }
+async function ghFiles(tree) { return ((await ghJ('/git/trees/' + tree + '?recursive=1')).tree || []).filter(x => x.type === 'blob'); }
+// plan(files) returns tree entries: { path, sha } to keep a blob at a new path, { path, sha: null } to delete, { path, b64 } for new content
+async function ghChange(message, plan, retry) {
+const head = await ghHead();
+const files = await ghFiles(head.tree);
+const entries = await plan(files);
+if (!entries.length) throw new Error('Nothing to change.');
+const tree = [];
+for (const e of entries) {
+const sha = e.b64 != null ? (await ghJ('/git/blobs', { method: 'POST', body: JSON.stringify({ content: e.b64, encoding: 'base64' }) })).sha : e.sha;
+tree.push({ path: e.path, mode: e.mode || '100644', type: 'blob', sha });
+}
+const nt = await ghJ('/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: head.tree, tree }) });
+const nc = await ghJ('/git/commits', { method: 'POST', body: JSON.stringify({ message, tree: nt.sha, parents: [head.commit] }) });
+try { await ghJ('/git/refs/heads/' + BRANCH, { method: 'PATCH', body: JSON.stringify({ sha: nc.sha }) }); }
+catch (e) { if (e.status === 422 && !retry) return ghChange(message, plan, true); throw e; }
+const after = await ghFiles(nt.sha);
+S.lib = libFrom(after.map(f => f.path)); store.set('lib', S.lib); noteSeen(S.lib.study); setPack();
+Object.keys(docCache).forEach(k => delete docCache[k]); Object.keys(blobCache).forEach(k => delete blobCache[k]);
+A.log = null;
+return after;
+}
+const taken = (files, p) => files.some(f => f.path === p || f.path.startsWith(p + '/'));
+function moveFiles(files, from, to, exact) {
+const out = [];
+files.forEach(f => {
+const np = f.path === from ? to : !exact && f.path.startsWith(from + '/') ? to + f.path.slice(from.length) : null;
+if (np && np !== f.path) out.push({ path: np, sha: f.sha, mode: f.mode }, { path: f.path, sha: null });
+});
+return out;
+}
+const dropFiles = (files, from, exact) => files.filter(f => f.path === from || (!exact && f.path.startsWith(from + '/'))).map(f => ({ path: f.path, sha: null }));
+// Runs one admin action: shows progress, then the result
+async function aRun(label, fn) {
+if (A.busy) return;
+if (!hasKey()) { A.tab = 'key'; A.msg = { text: 'Add your GitHub key first. It only takes a minute.', cls: 'err' }; return renderMain(true); }
+A.busy = label; A.arm = null; A.msg = { text: label + '…', cls: '' };
+renderMain(true);
+try { const ok = await fn(); A.edit = null; A.msg = { text: ok || 'Done.', cls: 'ok' }; }
+catch (e) { A.msg = { text: e.message || 'Something went wrong.', cls: 'err' }; }
+A.busy = '';
+if (S.view === 'admin') renderMain(true);
+}
+function armed(key) { if (A.arm === key) { A.arm = null; return true; } A.arm = key; renderMain(true); return false; }
+const delBtn = (key, act, attrs, label, ask) => `<button class="btn sm${A.arm === key ? ' danger' : ''}" data-act="${act}" ${attrs}>${A.arm === key ? ask : label}</button>`;
+// Updates site.json on GitHub straight away (used for hiding and featuring games)
+async function quickSite(fn, message) {
+let next;
+await ghChange(message, async files => {
+const f = files.find(x => x.path === 'site.json');
+let cur = {};
+if (f) { try { cur = JSON.parse(b64dec((await ghJ('/git/blobs/' + f.sha)).content)); } catch (e) { cur = {}; } }
+next = fixSite(cur); fn(next);
+return [{ path: 'site.json', b64: b64enc(JSON.stringify(next, null, 2) + '\n') }];
+});
+SITE = fixSite(next); store.set('site', SITE);
+if (S.draft) fn(S.draft);
+applySite();
+}
+async function publishSite() {
+const draft = clone(S.draft);
+await ghChange('Update site settings', async () => [{ path: 'site.json', b64: b64enc(JSON.stringify(draft, null, 2) + '\n') }]);
+SITE = fixSite(draft); store.set('site', SITE);
+return 'Published! Everyone gets it within about 5 minutes.';
+}
+// ---- Admin page ----
 function vAdmin() {
-const s = S.draft, tok = !!store.get('admintoken', ''), m = S.adminMsg || { text: '', cls: '' };
+const m = A.msg || { text: '', cls: '' }, key = hasKey();
+const head = `<div class="card adm atop"><div class="ahd"><span class="logo">${I.gear}</span><div class="grow"><div class="t" style="font-size:17px">Admin</div>
+<div class="sub wrap">Changes here are for everyone. Study and Games changes save to GitHub as soon as you make them.</div></div>
+${key ? '<span class="chip gd">GitHub key saved</span>' : '<button class="btn pri" data-act="adm-tab" data-t="key">Add GitHub key</button>'}</div>
+<div class="amsg ${m.cls}">${A.busy ? '<span class="aspin"></span>' : ''}${esc(m.text)}</div></div>`;
+const tabs = `<div class="atabs">${ATABS.map(([k, l, ic]) => `<button data-act="adm-tab" data-t="${k}" class="${A.tab === k ? 'on' : ''}">${ic}${l}${k === 'key' && !key ? ' <span class="badge">!</span>' : ''}</button>`).join('')}</div>`;
+const draftBar = dirty() ? `<div class="adraft"><span class="grow wrap"><b>Unpublished changes</b> to the look, banners or pages. Only you can see them until you publish.</span><button class="btn" data-act="adm-discard">Discard</button><button class="btn pri" data-act="adm-publish">Publish for everyone</button></div>` : '';
+const body = { study: aStudy, games: aGames, look: aLook, banners: aBanners, pages: aPages, activity: aActivity, advanced: aAdvanced, key: aKey }[A.tab] || aStudy;
+return head + tabs + draftBar + body();
+}
+const cleanSeg = s => String(s || '').trim().replace(/[\\/:*?"<>|#%[\]\u0000-\u001f]+/g, '').replace(/\s+/g, '-').replace(/^[.-]+/, '').slice(0, 60);
+function studyCats() {
+const dirs = new Set([...((S.lib && S.lib.dirs) || []), ...DOCS.map(d => d.dir).filter(Boolean)]);
+const cats = [...dirs].map(dir => { const name = pretty(dir), h = hash(name.toLowerCase()); return { dir, name, docs: DOCS.filter(d => d.dir === dir), color: PAL[h % PAL.length], icon: (SUBJECTS.find(s => s[0].test(name)) || [, I.study])[1] }; })
+.sort((a, b) => a.name.localeCompare(b.name));
+const other = DOCS.filter(d => !d.dir);
+if (other.length) cats.push({ dir: '', name: 'Not in a category', docs: other, color: '#8c93a5', icon: I.study });
+return cats;
+}
+const editRow = (save, attrs, ph, saveLabel) => `<input class="grow" data-av="edit" value="${esc(A.vals.edit || '')}" placeholder="${esc(ph || '')}" maxlength="120"><button class="btn sm pri" data-act="${save}" ${attrs}>${saveLabel || 'Save'}</button><button class="btn sm" data-act="adm-cancel">Cancel</button>`;
+function docRowA(p, cats) {
+const at = `data-path="${esc(p.id)}"`, ek = 'doc:' + p.id;
+if (A.edit === ek) return `<div class="ares"><span class="chip">${esc(docLabel(p))}</span>${editRow('adm-docsave', at, 'New name')}</div>`;
+if (A.edit === 'link:' + p.id) return `<div class="ares"><span class="chip">Link</span>${editRow('adm-linksave', at, 'https://…', 'Save link')}</div>`;
+const moves = cats.filter(c => c.dir && c.dir !== p.dir);
+return `<div class="ares"><span class="chip">${esc(docLabel(p))}</span><span class="grow"><span class="t">${esc(p.name)}</span>${isNewDoc(p) ? '<span class="chip new">New</span>' : ''}</span>
+<button class="btn sm" data-act="adm-docopen" ${at}>Open</button><button class="btn sm" data-act="adm-docedit" ${at}>Rename</button>
+${p.kind === 'link' ? `<button class="btn sm" data-act="adm-linkedit" ${at}>Edit link</button>` : ''}
+${moves.length ? `<select data-amove="${esc(p.id)}" title="Move to another category"><option value="">Move to…</option>${moves.map(c => `<option value="${esc(c.dir)}">${esc(c.name)}</option>`).join('')}</select>` : ''}
+${delBtn(ek, 'adm-docdel', at, 'Delete', 'Click again to delete')}</div>`;
+}
+function aStudy() {
+const cats = studyCats(), up = A.up;
+const sel = up.cat && (up.cat === '__new' || cats.some(c => c.dir === up.cat)) ? up.cat : (cats.find(c => c.dir) || { dir: '__new' }).dir;
+const add = `<div class="card adm sset-c"><h2>Add to Study<span>shows up for everyone right away</span></h2>
+<div class="arow" style="margin-top:0"><span class="alab">Category</span><select data-upcat>${cats.filter(c => c.dir).map(c => `<option value="${esc(c.dir)}"${sel === c.dir ? ' selected' : ''}>${esc(c.name)}</option>`).join('')}<option value="__new"${sel === '__new' ? ' selected' : ''}>+ New category…</option></select>
+${sel === '__new' ? `<input data-up="newcat" value="${esc(up.newcat || '')}" placeholder="New category name (e.g. Chemistry)" maxlength="40">` : ''}
+<div class="seg mini"><button data-upkind="file" class="${up.kind !== 'link' ? 'on' : ''}">Files</button><button data-upkind="link" class="${up.kind === 'link' ? 'on' : ''}">A web link</button></div></div>
+${up.kind === 'link' ? `<div class="arow"><input class="wide" data-up="url" value="${esc(up.url || '')}" placeholder="https://quizlet.com/…"><input data-up="name" value="${esc(up.name || '')}" placeholder="Name shown in Study" maxlength="80"></div>`
+: `<label class="adrop"><input type="file" data-upfile multiple><span>${I.plus}<b>Choose files</b> or drop them here</span><span class="sub wrap">PDFs, practice tests (.html), images or any file, up to 25 MB each. The file name becomes the title, and you can rename it after.</span><span class="afiles"></span></label>`}
+<div class="arow"><button class="btn pri" data-act="adm-upload">Add to Study</button></div></div>`;
+const list = cats.map(c => {
+const ek = 'cat:' + c.dir, at = `data-dir="${esc(c.dir)}"`;
+const headRow = A.edit === ek ? `<span class="ssi" style="background:${c.color}">${c.icon}</span>${editRow('adm-catsave', at, 'Category name')}`
+: `<span class="ssi" style="background:${c.color}">${c.icon}</span><div class="grow"><div class="t">${esc(c.name)}</div><div class="sub">${c.docs.length} ${c.docs.length === 1 ? 'resource' : 'resources'}</div></div>
+${c.dir ? `<button class="btn sm" data-act="adm-addto" ${at}>Add files</button><button class="btn sm" data-act="adm-catedit" ${at}>Rename</button>${delBtn(ek, 'adm-catdel', at, 'Delete', c.docs.length ? 'Delete it and ' + c.docs.length + ' file' + (c.docs.length === 1 ? '' : 's') + '?' : 'Click again to delete')}` : ''}`;
+return `<div class="acat"><div class="acath">${headRow}</div>${c.docs.map(p => docRowA(p, cats)).join('') || '<div class="sub aempty">Empty. Use "Add files" to put something in it.</div>'}</div>`;
+}).join('');
+return add + `<div class="card adm"><h2>Categories<span>${cats.filter(c => c.dir).length} categories · ${DOCS.length} resources</span></h2>
+<div class="arow" style="margin-top:0"><input data-av="newcat" value="${esc(A.vals.newcat || '')}" placeholder="New category name (e.g. Chemistry)" maxlength="40"><button class="btn" data-act="adm-newcat">${I.plus}Create category</button></div>
+${list || '<p class="sub">No study resources yet.</p>'}</div>`;
+}
+const gameFiles = (files, id) => {
+if (/\/index\.html?$/i.test(id)) { const dir = id.replace(/\/index\.html?$/i, ''); return { dir, list: files.filter(f => f.path.startsWith(dir + '/')) }; }
+const stem = id.replace(/\.html?$/i, '');
+return { stem, list: files.filter(f => f.path === id || (f.path.startsWith(stem + '.') && /^(license\.txt|png|jpe?g|webp|gif|svg)$/i.test(f.path.slice(stem.length + 1)))) };
+};
+function gameRowA(p, hid, fea) {
+const at = `data-id="${esc(p.id)}"`, ek = 'game:' + p.id, h = hash(p.name);
+const thumb = `<span class="gthumb" style="background:linear-gradient(135deg,${PAL[h % PAL.length]},${PAL[(h >>> 3) % PAL.length]})">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : esc(p.name.charAt(0))}</span>`;
+if (A.edit === ek) return `<div class="ares">${thumb}${editRow('adm-gsave', at, 'Game name')}</div>`;
+return `<div class="ares${hid ? ' dim' : ''}">${thumb}<span class="grow"><span class="t">${esc(p.name)}</span>${fea ? '<span class="chip ac">Featured</span>' : ''}${hid ? '<span class="chip">Hidden</span>' : ''}</span>
+<button class="btn sm" data-act="adm-gplay" ${at}>Play</button><button class="btn sm" data-act="adm-gedit" ${at}>Rename</button><button class="btn sm" data-act="adm-gcover" ${at}>${p.img ? 'Change cover' : 'Add cover'}</button>
+<button class="btn sm" data-act="adm-gfeat" ${at}>${fea ? 'Unfeature' : 'Feature'}</button><button class="btn sm" data-act="adm-ghide" ${at}>${hid ? 'Show' : 'Hide'}</button>
+${delBtn(ek, 'adm-gdel', at, 'Delete', 'Click again to delete')}</div>`;
+}
+function aGames() {
+const all = (S.lib ? S.lib.paths : []).map(toPack).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+const s = curSite(), hid = new Set(s.hiddenGames), fea = new Set(s.featured), q = A.gq.trim().toLowerCase();
+const list = q ? all.filter(p => p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q)) : all.slice().sort((a, b) => (fea.has(b.id) - fea.has(a.id)) || (hid.has(b.id) - hid.has(a.id)));
+const shown = list.slice(0, q ? 200 : A.gshow);
+return `<div class="card adm sset-c"><h2>Add games</h2>
+<label class="adrop"><input type="file" data-gfile multiple accept=".html,.htm"><span>${I.plus}<b>Choose game files</b> or drop them here</span><span class="sub wrap">Single-file .html games. The file name becomes the game's name. A brand-new game can take a few minutes to start working while GitHub Pages updates.</span><span class="afiles"></span></label>
+<div class="arow"><button class="btn pri" data-act="adm-gupload">Add games</button></div></div>
+<div class="card adm"><h2>All games<span>${all.length} games · ${fea.size} featured · ${hid.size} hidden</span></h2>
+<p class="sub wrap" style="margin-bottom:10px"><b>Feature</b> pins a game to the top of the library. <b>Hide</b> takes it out of the library without deleting it.</p>
+<div class="arow" style="margin-top:0"><input class="wide" data-agq value="${esc(A.gq)}" placeholder="Search games to rename, hide or delete…" autocomplete="off"></div>
+${shown.map(p => gameRowA(p, hid.has(p.id), fea.has(p.id))).join('') || '<p class="sub" style="padding:10px 0">No games match.</p>'}
+${list.length > shown.length ? `<div class="arow"><button class="btn" data-act="adm-gmore">Show more</button><span class="sub">${list.length - shown.length} more</span></div>` : ''}
+<input type="file" data-acover accept="image/*" hidden></div>`;
+}
+function aLook() {
+const s = S.draft;
+const sw = (cur, attr) => COLOR_CHOICES.map(c => `<button class="sw${(cur || '').toLowerCase() === c ? ' on' : ''}" style="background:${c}" ${attr(c)} title="${c}"></button>`).join('');
+const icons = (cur, attr) => ICON_CHOICES.map(k => `<button class="icn${cur === k ? ' on' : ''}" ${attr(k)} title="${k}">${I[k]}</button>`).join('');
+return `<div class="card adm"><h2>Look<span>preview right away · publish to save</span></h2>
+<label class="alab" style="margin-top:0">Name</label><input data-site="name" value="${esc(s.name)}" maxlength="40" style="width:100%;max-width:360px">
+<label class="alab">Icon</label><div class="icons">${icons(s.icon, k => `data-sicon="${k}"`)}</div>
+<label class="alab">Accent colour</label><div class="sws">${sw(s.accent, c => `data-saccent="${c}"`)}<input type="color" data-site="accent" value="${hexOk(s.accent) ? s.accent : '#7c9cff'}" title="Pick any colour"></div>
+<p class="sub wrap" style="margin-top:12px">People who picked their own accent colour in Settings keep theirs.</p></div>`;
+}
+function aBanners() {
+const s = S.draft;
 const sw = (cur, attr) => COLOR_CHOICES.map(c => `<button class="sw${(cur || '').toLowerCase() === c ? ' on' : ''}" style="background:${c}" ${attr(c)} title="${c}"></button>`).join('');
 const icons = (cur, attr) => ICON_CHOICES.map(k => `<button class="icn${cur === k ? ' on' : ''}" ${attr(k)} title="${k}">${I[k]}</button>`).join('');
 const when = b => { const now = Date.now(); if (b.end && new Date(b.end) <= now) return '<span class="chip">Ended</span>'; if (b.start && new Date(b.start) > now) return '<span class="chip wn">Scheduled</span>'; return '<span class="chip gd">Showing now</span>'; };
-return `<div class="card adm"><h2>Publish<span>${tok ? 'GitHub key saved on this computer' : 'No GitHub key on this computer yet'}</span></h2>
-<p class="sub wrap">Your edits preview right away, just for you. <b>Publish</b> saves them to site.json in the repo so everyone gets them: the dashboard within about 5 minutes, the website once it redeploys.</p>
-${tok ? '' : `<div class="arow"><input type="password" data-tok class="wide" placeholder="Paste a GitHub fine-grained token (Contents: read and write on yee-new)" autocomplete="off"><button class="btn" data-act="adm-savetok">Save key</button></div>`}
-<div class="arow"><button class="btn pri" data-act="adm-publish">Publish changes</button><button class="btn" data-act="adm-discard">Discard changes</button>${tok ? '<button class="btn" data-act="adm-forget">Remove key from this computer</button>' : ''}<span class="amsg ${m.cls}">${esc(m.text)}</span></div></div>
-${studyCard()}
-<div class="card adm"><h2>Look</h2>
-<label class="alab">Name</label><input data-site="name" value="${esc(s.name)}" maxlength="40" style="width:100%;max-width:360px">
-<label class="alab">Icon</label><div class="icons">${icons(s.icon, k => `data-sicon="${k}"`)}</div>
-<label class="alab">Accent colour</label><div class="sws">${sw(s.accent, c => `data-saccent="${c}"`)}<input type="color" data-site="accent" value="${hexOk(s.accent) ? s.accent : '#7c9cff'}" title="Pick any colour"></div></div>
-<div class="card adm"><h2>Banners<span>shown at the top of the dashboard and/or the website</span></h2>
-${s.banners.map((b, i) => `<div class="abn"><div class="arow" style="margin-top:0">${when(b)}<span class="grow"></span><button class="btn" data-act="adm-rmb" data-i="${i}">Delete</button></div>
+return `<div class="card adm"><h2>Banners<span>shown at the top of the dashboard and/or the website</span></h2>
+${s.banners.map((b, i) => `<div class="abn"><div class="arow" style="margin-top:0">${when(b)}<span class="grow"></span>${i ? `<button class="btn sm" data-act="adm-bup" data-i="${i}" title="Move up">↑</button>` : ''}<button class="btn sm" data-act="adm-bdup" data-i="${i}">Duplicate</button>${delBtn('ban:' + b.id, 'adm-rmb', `data-i="${i}"`, 'Delete', 'Click again to delete')}</div>
 <div class="arow"><input data-bf="${i}:title" value="${esc(b.title)}" placeholder="Bold start (e.g. Taking Bio?)" maxlength="60"><input class="wide" data-bf="${i}:text" value="${esc(b.text)}" placeholder="Message" maxlength="240"></div>
 <div class="arow"><input data-bf="${i}:button" value="${esc(b.button)}" placeholder="Button text (optional)" maxlength="40"><input class="wide" data-bf="${i}:link" value="${esc(b.link)}" placeholder="Button link: https://…, study/Biology/file.html, or study.biology"></div>
 <div class="arow"><span class="alab">Show on</span><div class="seg mini">${[['dashboard', 'Dashboard'], ['website', 'Website'], ['both', 'Both']].map(([k, l]) => `<button data-bwhere="${i}:${k}" class="${b.where === k ? 'on' : ''}">${l}</button>`).join('')}</div>
 <span class="alab">From</span><input type="datetime-local" data-bf="${i}:start" value="${esc(b.start)}"><span class="alab">Until</span><input type="datetime-local" data-bf="${i}:end" value="${esc(b.end)}"></div>
 <div class="arow"><span class="alab">Colour</span><div class="sws">${sw(b.color, c => `data-bcolor="${i}:${c}"`)}</div></div>
 <div class="arow"><span class="alab">Icon</span><div class="icons">${icons(b.icon, k => `data-bicon="${i}:${k}"`)}</div></div></div>`).join('') || '<p class="sub">No banners yet.</p>'}
-<div class="arow"><button class="btn" data-act="adm-addb">+ Add banner</button></div></div>
-<div class="card adm"><h2>Pages<span>untick to hide a page from the sidebar</span></h2>
+<div class="arow"><button class="btn" data-act="adm-addb">${I.plus}Add banner</button></div></div>`;
+}
+function aPages() {
+const s = S.draft;
+return `<div class="card adm"><h2>Pages<span>untick to hide a page from the sidebar</span></h2>
 ${NAV.map(([v, label]) => `<label class="chk"><input type="checkbox" data-shide="${v}"${(s.hidden || []).includes(v) ? '' : ' checked'}>${esc(label)}</label>`).join('')}</div>
-<div class="card adm"><h2>Links</h2><label class="alab">Hall pass link</label><input data-site="hallpass" value="${esc(s.hallpass)}" style="width:100%;max-width:460px"></div>
-<div class="card adm"><h2>Everything (advanced)<span>edit the raw settings, then Apply</span></h2>
-<textarea data-sitejson spellcheck="false">${esc(JSON.stringify(s, null, 2))}</textarea><div class="arow"><button class="btn" data-act="adm-json">Apply</button></div></div>`;
+<div class="card adm" style="margin-top:16px"><h2>Links</h2><label class="alab" style="margin-top:0">Hall pass link</label><input data-site="hallpass" value="${esc(s.hallpass)}" style="width:100%;max-width:460px"></div>`;
 }
-// ---- Site editor: study resources (uploads go straight into study/<category>/ in the repo) ----
-const studyFolders = () => [...new Set(DOCS.map(d => d.id.slice(STUDY.length).split('/')).filter(a => a.length > 1).map(a => a[0]))].sort((a, b) => a.localeCompare(b));
-const cleanSeg = s => String(s || '').trim().replace(/[\\/:*?"<>|#%[\]\u0000-\u001f]+/g, '').replace(/\s+/g, '-').replace(/^[.-]+/, '').slice(0, 60);
-function studyCard() {
-const up = S.up, um = S.upMsg || { text: '', cls: '' }, folders = studyFolders();
-const sel = up.cat && (up.cat === '__new' || folders.includes(up.cat)) ? up.cat : (folders[0] || '__new');
-const docs = DOCS.slice().sort((a, b) => a.cls.localeCompare(b.cls) || a.name.localeCompare(b.name));
-return `<div class="card adm"><h2>Study resources<span>PDFs, interactive HTML pages, images, links or any file</span></h2>
-<div class="arow"><span class="alab">Category</span><select data-upcat>${folders.map(f => `<option value="${esc(f)}"${sel === f ? ' selected' : ''}>${esc(pretty(f))}</option>`).join('')}<option value="__new"${sel === '__new' ? ' selected' : ''}>+ New category…</option></select>
-${sel === '__new' ? `<input data-up="newcat" value="${esc(up.newcat || '')}" placeholder="New category name (e.g. Chemistry)" maxlength="40">` : ''}</div>
-<div class="arow"><span class="alab">Add</span><div class="seg mini"><button data-upkind="file" class="${up.kind !== 'link' ? 'on' : ''}">A file</button><button data-upkind="link" class="${up.kind === 'link' ? 'on' : ''}">A web link</button></div>
-${up.kind === 'link' ? `<input class="wide" data-up="url" value="${esc(up.url || '')}" placeholder="https://quizlet.com/…">` : '<input type="file" data-upfile>'}</div>
-<div class="arow"><input class="wide" data-up="name" value="${esc(up.name || '')}" placeholder="Name shown in Study (optional: uses the file name)" maxlength="80"><button class="btn pri" data-act="adm-upload">Add to Study</button></div>
-<div class="arow"><span class="amsg upmsg ${um.cls}">${esc(um.text)}</span></div>
-${docs.length ? `<label class="alab">In Study now</label>${docs.map(p => `<div class="ares"><span class="chip">${esc(kindLabel(p))}</span><span class="grow"><span class="t">${esc(p.name)}</span><span class="sub">${esc(p.cls)}</span></span><button class="btn" data-act="adm-delres" data-path="${esc(p.id)}">${S.delArm === p.id ? 'Confirm delete' : 'Delete'}</button></div>`).join('')}` : ''}</div>`;
+function aActivity() {
+if (!A.log && !A.logErr) loadLog();
+return `<div class="card adm"><h2>Recent changes<span>the last 20 saves to the repo</span></h2>
+${A.logErr ? `<p class="sub">${esc(A.logErr)}</p>` : !A.log ? '<div class="spin"></div>' : A.log.map(c => `<a class="ares" href="${esc(c.url)}" target="_blank" rel="noopener"><span class="grow"><span class="t">${esc(c.msg)}</span><span class="sub">${esc(c.who)} · ${esc(rel(c.at))}</span></span><span class="sub">${I.ext}</span></a>`).join('')}
+<div class="arow"><button class="btn" data-act="adm-logrefresh">Refresh</button><a class="btn" href="https://github.com/${REPO}" target="_blank" rel="noopener">Open the repo on GitHub</a></div></div>`;
 }
-function upSay(text, cls) { S.upMsg = { text, cls }; const el = root.querySelector('.upmsg'); if (el) { el.textContent = text; el.className = 'amsg upmsg ' + cls; } }
-const ghApi = (path, opt = {}) => fetch('https://api.github.com/repos/' + REPO + '/contents/' + path.split('/').map(encodeURIComponent).join('/') + (opt.method ? '' : '?ref=' + BRANCH + '&t=' + Date.now()),
-Object.assign({ cache: 'no-store' }, opt, { headers: Object.assign({ Authorization: 'Bearer ' + store.get('admintoken', ''), Accept: 'application/vnd.github+json' }, opt.body ? { 'Content-Type': 'application/json' } : {}) }));
-const ghErr = st => st === 401 ? 'GitHub rejected the key. Check it, or make a new one.' : st === 403 || st === 404 ? "That key can't write to the repo. It needs Contents: read and write on yee-new." : st === 409 ? 'GitHub was busy. Try again.' : st === 422 ? "GitHub didn't accept that file (it may be too big)." : 'GitHub error ' + st + '.';
-async function ghSha(path) { const r = await ghApi(path); if (r.ok) return (await r.json()).sha; if (r.status === 404) return null; throw new Error(ghErr(r.status)); }
-async function uploadStudy() {
-if (!store.get('admintoken', '')) return upSay('Save your GitHub key first (in the Publish box above).', 'err');
-const up = S.up, folders = studyFolders();
-const pick = up.cat && (up.cat === '__new' || folders.includes(up.cat)) ? up.cat : (folders[0] || '__new');
+async function loadLog() {
+A.log = null; A.logErr = '';
+try { A.log = (await ghJ('/commits?sha=' + BRANCH + '&per_page=20')).map(c => ({ msg: c.commit.message.split('\n')[0], who: (c.author && c.author.login) || c.commit.author.name, at: c.commit.author.date, url: c.html_url })); }
+catch (e) { A.logErr = e.message || "Couldn't load recent changes."; }
+if (S.view === 'admin' && A.tab === 'activity') renderMain(true);
+}
+function aAdvanced() {
+return `<div class="card adm"><h2>Everything (advanced)<span>edit the raw site settings, then Apply</span></h2>
+<textarea data-sitejson spellcheck="false">${esc(JSON.stringify(S.draft, null, 2))}</textarea><div class="arow"><button class="btn" data-act="adm-json">Apply</button></div></div>`;
+}
+function aKey() {
+const key = hasKey();
+return `<div class="card adm"><h2>GitHub key<span>${key ? 'saved on this computer' : 'not set up yet'}</span></h2>
+<p class="sub wrap">Admin needs a GitHub key to save changes to the yee-new repo. It's stored only on this computer.</p>
+<ol class="asteps"><li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Open GitHub's new key page</a> (signed in as you).</li>
+<li>Name it <b>Class Dash</b>. Under <b>Repository access</b>, pick <b>Only select repositories</b>, then <b>yee-new</b>.</li>
+<li>Under <b>Permissions</b>, set <b>Contents</b> to <b>Read and write</b>. Click <b>Generate token</b> and copy it.</li>
+<li>Paste it below and click <b>Save key</b>.</li></ol>
+${key ? '<div class="arow"><button class="btn" data-act="adm-testkey">Test the key</button><button class="btn" data-act="adm-forget">Remove key from this computer</button></div>'
+: '<div class="arow"><input type="password" data-tok class="wide" placeholder="Paste your key (starts with github_pat_)" autocomplete="off"><button class="btn pri" data-act="adm-savetok">Save key</button></div>'}</div>
+<div class="card adm" style="margin-top:16px"><h2>This computer</h2><p class="sub wrap">The Admin button shows in the sidebar on computers where you've opened Admin.</p>
+<div class="arow"><button class="btn" data-act="adm-lock">Hide the Admin button here</button></div></div>`;
+}
+// ---- Admin actions ----
+function docMove(files, p, toDir, toBase) {
+const parts = p.id.slice(STUDY.length).split('/');
+const folder = parts.length === 3 && /^index\.html?$/i.test(parts[2]);
+const fromDir = parts.length > 1 ? parts[0] : '';
+const base = toBase || (folder ? parts[1] : parts[parts.length - 1]);
+const toDirPath = STUDY + (toDir == null ? fromDir : toDir) + ((toDir == null ? fromDir : toDir) ? '/' : '');
+const from = folder ? STUDY + parts.slice(0, 2).join('/') : p.id;
+const to = toDirPath + base;
+if (from === to) throw new Error("That's already its name.");
+if (taken(files, to)) throw new Error('Something with that name is already there.');
+return moveFiles(files, from, to, !folder);
+}
+function keepFolder(files, dir, removing) {
+if (!dir) return [];
+const gone = new Set(removing.filter(e => e.sha === null).map(e => e.path));
+const left = files.filter(f => f.path.startsWith(STUDY + dir + '/') && !gone.has(f.path));
+return left.length ? [] : [{ path: STUDY + dir + '/.keep', b64: b64enc('Class Dash study category\n') }];
+}
+const aOnStudy = () => { if (S.view === 'admin') renderMain(true); };
+async function adminAct(d, t) {
+const doc = d.path && DOCS.find(x => x.id === d.path);
+const game = d.id && toPack(d.id);
+switch (d.act) {
+case 'adm-tab': A.tab = d.t; A.arm = null; A.edit = null; if (d.t === 'activity') A.log = null, A.logErr = ''; return renderMain(true);
+case 'adm-cancel': A.edit = null; A.arm = null; return renderMain(true);
+case 'adm-publish': return aRun('Publishing', publishSite);
+case 'adm-discard': S.draft = clone(SITE); A.msg = { text: 'Changes discarded.', cls: '' }; applySite(); return renderMain(true);
+case 'adm-savetok': { const v = ((root.querySelector('[data-tok]') || {}).value || '').trim(); if (!v) return aSay('Paste the key first.', 'err'); store.set('admintoken', v); A.msg = { text: 'Key saved on this computer. Click "Test the key" to check it.', cls: 'ok' }; return renderMain(true); }
+case 'adm-forget': try { localStorage.removeItem('classdash_admintoken'); } catch (err) {} A.msg = { text: 'Key removed from this computer.', cls: '' }; return renderMain(true);
+case 'adm-testkey': return aRun('Testing the key', async () => { await ghHead(); return 'The key works and can see the repo.'; });
+case 'adm-lock': store.set('admin', false); paintAdminLink(); S.draft = null; applySite(); return go(isCanvas ? 'home' : 'games');
+case 'adm-json': try { S.draft = fixSite(JSON.parse(root.querySelector('[data-sitejson]').value)); A.msg = { text: 'Applied. Publish to save it for everyone.', cls: 'ok' }; } catch (err) { return aSay("That isn't valid JSON: " + err.message, 'err'); } applySite(); return renderMain(true);
+case 'adm-logrefresh': A.log = null; A.logErr = ''; return renderMain(true);
+// Study
+case 'adm-addto': A.up = Object.assign({}, A.up, { cat: d.dir, kind: 'file' }); renderMain(true); { const z = root.querySelector('.adrop'); if (z) { z.scrollIntoView({ block: 'center', behavior: P.motion ? 'smooth' : 'auto' }); z.classList.add('pulse'); } } return;
+case 'adm-upload': {
+const up = A.up, cats = studyCats().filter(c => c.dir);
+const pick = up.cat && (up.cat === '__new' || cats.some(c => c.dir === up.cat)) ? up.cat : (cats[0] ? cats[0].dir : '__new');
 const cat = cleanSeg(pick === '__new' ? up.newcat : pick);
-if (!cat) return upSay('Pick a category, or type a name for the new one.', 'err');
-let name = (up.name || '').trim(), ext, b64;
+if (!cat) return aSay('Pick a category, or type a name for the new one.', 'err');
+let entries = [];
 if (up.kind === 'link') {
 const url = (up.url || '').trim();
-if (!/^https?:\/\/\S+$/i.test(url)) return upSay('Paste a full web address starting with https://', 'err');
-if (!name) { try { name = new URL(url).hostname.replace(/^www\./, ''); } catch (e) { name = 'Link'; } }
-ext = 'url'; b64 = btoa(unescape(encodeURIComponent('[InternetShortcut]\r\nURL=' + url + '\r\n')));
+if (!/^https?:\/\/\S+$/i.test(url)) return aSay('Paste a full web address starting with https://', 'err');
+let name = (up.name || '').trim(); if (!name) { try { name = new URL(url).hostname.replace(/^www\./, ''); } catch (e) { name = 'Link'; } }
+entries.push({ path: STUDY + cat + '/' + cleanSeg(name) + '.url', b64: b64enc('[InternetShortcut]\r\nURL=' + url + '\r\n'), name });
 } else {
-const input = root.querySelector('[data-upfile]'), file = input && input.files && input.files[0];
-if (!file) return upSay('Choose a file first.', 'err');
-if (file.size > 25 * 1024 * 1024) return upSay('That file is over 25 MB, which is too big to upload here.', 'err');
-ext = extOf(file.name) || 'bin';
-if (!name) name = file.name.replace(/\.[^.]+$/, '');
-upSay('Reading the file…', '');
-b64 = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(new Error('read')); r.readAsDataURL(file); }).catch(() => null);
-if (b64 == null) return upSay("Couldn't read that file.", 'err');
+const input = root.querySelector('[data-upfile]'), files = input && input.files ? [...input.files] : [];
+if (!files.length) return aSay('Choose at least one file first.', 'err');
+const big = files.find(f => f.size > 25 * 1024 * 1024);
+if (big) return aSay('"' + big.name + '" is over 25 MB, which is too big.', 'err');
+aSay('Reading ' + (files.length === 1 ? 'the file' : files.length + ' files') + '…', '');
+try { for (const f of files) entries.push({ path: STUDY + cat + '/' + (cleanSeg(f.name.replace(/\.[^.]+$/, '')) || 'file') + '.' + (extOf(f.name) || 'bin'), b64: await fileB64(f), name: f.name.replace(/\.[^.]+$/, '') }); }
+catch (e) { return aSay(e.message, 'err'); }
 }
-const base = cleanSeg(name);
-if (!base) return upSay('Give it a name.', 'err');
-const path = STUDY + cat + '/' + base + '.' + ext;
-upSay('Uploading…', '');
-try {
-const sha = await ghSha(path);
-const r = await ghApi(path, { method: 'PUT', body: JSON.stringify(Object.assign({ message: (sha ? 'Update' : 'Add') + ' study resource: ' + cat + '/' + base + '.' + ext, content: b64, branch: BRANCH }, sha ? { sha } : {})) });
-if (!r.ok) throw new Error(ghErr(r.status));
-delete docCache[path]; delete blobCache[path];
-if (S.lib) { S.lib.study = S.lib.study || []; if (!S.lib.study.includes(path)) S.lib.study.push(path); store.set('lib', S.lib); setPack(); }
-S.up = { kind: up.kind, cat };
-S.upMsg = { text: (sha ? 'Replaced' : 'Added') + ' "' + pretty(base) + '" in ' + pretty(cat) + '. Everyone can see it in Study now.', cls: 'ok' };
-if (S.view === 'admin') renderMain(true);
-} catch (e) { upSay(e.message || "Couldn't upload.", 'err'); }
+return aRun('Adding to Study', async () => {
+await ghChange((entries.length === 1 ? 'Add study resource: ' + cat + '/' + entries[0].path.split('/').pop() : 'Add ' + entries.length + ' study resources to ' + cat),
+async files => entries.map(e => ({ path: e.path, b64: e.b64 })).concat(files.filter(f => f.path === STUDY + cat + '/.keep').map(f => ({ path: f.path, sha: null }))));
+A.up = { kind: up.kind, cat };
+return (entries.length === 1 ? 'Added "' + pretty(entries[0].path.split('/').pop().replace(/\.[^.]+$/, '')) + '"' : 'Added ' + entries.length + ' files') + ' to ' + pretty(cat) + '. Everyone can see it in Study now.';
+});
 }
-async function deleteStudy(path) {
-if (S.delArm !== path) { S.delArm = path; return renderMain(true); }
-S.delArm = null;
-if (!store.get('admintoken', '')) return upSay('Save your GitHub key first (in the Publish box above).', 'err');
-upSay('Deleting…', '');
-try {
-const sha = await ghSha(path);
-if (sha) { const r = await ghApi(path, { method: 'DELETE', body: JSON.stringify({ message: 'Remove study resource: ' + path.slice(STUDY.length), sha, branch: BRANCH }) }); if (!r.ok) throw new Error(ghErr(r.status)); }
-if (S.lib) { S.lib.study = (S.lib.study || []).filter(x => x !== path); store.set('lib', S.lib); setPack(); }
-S.upMsg = { text: 'Deleted.', cls: 'ok' };
-if (S.view === 'admin') renderMain(true);
-} catch (e) { upSay(e.message || "Couldn't delete.", 'err'); }
+case 'adm-newcat': {
+const cat = cleanSeg(A.vals.newcat);
+if (!cat) return aSay('Type a name for the new category first.', 'err');
+return aRun('Creating category', async () => {
+await ghChange('Add study category: ' + cat, async files => { if (taken(files, STUDY + cat)) throw new Error('There is already a category called ' + pretty(cat) + '.'); return [{ path: STUDY + cat + '/.keep', b64: b64enc('Class Dash study category\n') }]; });
+A.vals.newcat = ''; A.up = { kind: 'file', cat };
+return 'Created ' + pretty(cat) + '. Add files to it whenever you like.';
+});
 }
-function adminSay(text, cls) { S.adminMsg = { text, cls }; const el = root.querySelector('.amsg'); if (el) { el.textContent = text; el.className = 'amsg ' + cls; } }
-async function publishSite() {
-const tok = store.get('admintoken', '');
-if (!tok) return adminSay('Save a GitHub key first.', 'err');
-adminSay('Publishing…', '');
-const api = 'https://api.github.com/repos/' + REPO + '/contents/site.json';
-const h = { Authorization: 'Bearer ' + tok, Accept: 'application/vnd.github+json' };
-try {
-let sha;
-const g = await fetch(api + '?ref=' + BRANCH + '&t=' + Date.now(), { headers: h, cache: 'no-store' });
-if (g.ok) sha = (await g.json()).sha;
-else if (g.status === 401) throw new Error('GitHub rejected the key. Check it, or make a new one.');
-else if (g.status !== 404) throw new Error('GitHub error ' + g.status + '.');
-const text = JSON.stringify(S.draft, null, 2) + '\n';
-const put = await fetch(api, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, h),
-body: JSON.stringify({ message: 'Update site settings', content: btoa(unescape(encodeURIComponent(text))), branch: BRANCH, sha }) });
-if (!put.ok) throw new Error(put.status === 403 || put.status === 404 ? "That key can't write to the repo. It needs Contents: read and write on yee-new." : 'GitHub error ' + put.status + '.');
-SITE = fixSite(clone(S.draft)); store.set('site', SITE);
-adminSay("Published! Everyone gets it within about 5 minutes.", 'ok');
-} catch (e) { adminSay(e.message || "Couldn't publish.", 'err'); }
+case 'adm-catedit': A.edit = 'cat:' + d.dir; A.vals.edit = pretty(d.dir); A.arm = null; return renderMain(true);
+case 'adm-catsave': {
+const to = cleanSeg(A.vals.edit);
+if (!to) return aSay('Type a name first.', 'err');
+return aRun('Renaming category', async () => {
+await ghChange('Rename study category: ' + d.dir + ' to ' + to, async files => { if (to !== d.dir && taken(files, STUDY + to)) throw new Error('There is already a category called ' + pretty(to) + '.'); return moveFiles(files, STUDY + d.dir, STUDY + to); });
+if (S.scls === pretty(d.dir)) S.scls = 'All';
+return 'Renamed to ' + pretty(to) + '.';
+});
+}
+case 'adm-catdel':
+if (!armed('cat:' + d.dir)) return;
+return aRun('Deleting category', async () => { await ghChange('Delete study category: ' + d.dir, async files => dropFiles(files, STUDY + d.dir)); return 'Deleted ' + pretty(d.dir) + '.'; });
+case 'adm-docopen': if (doc) openDoc(doc.id); return;
+case 'adm-docedit': A.edit = 'doc:' + d.path; A.vals.edit = doc ? doc.name : ''; A.arm = null; return renderMain(true);
+case 'adm-docsave': {
+if (!doc) return;
+const name = cleanSeg(A.vals.edit);
+if (!name) return aSay('Type a name first.', 'err');
+const folder = /\/index\.html?$/i.test(doc.id) && doc.id.slice(STUDY.length).split('/').length === 3;
+return aRun('Renaming', async () => { await ghChange('Rename study resource: ' + doc.name + ' to ' + pretty(name), async files => docMove(files, doc, null, folder ? name : name + (doc.ext ? '.' + doc.ext : ''))); return 'Renamed to ' + pretty(name) + '.'; });
+}
+case 'adm-linkedit':
+A.edit = 'link:' + d.path; A.vals.edit = ''; A.arm = null; renderMain(true);
+docLinkUrl(d.path).then(u => { if (A.edit === 'link:' + d.path) { A.vals.edit = u || ''; const i = root.querySelector('[data-av="edit"]'); if (i && !i.value) i.value = A.vals.edit; } }).catch(() => {});
+return;
+case 'adm-linksave': {
+const url = (A.vals.edit || '').trim();
+if (!/^https?:\/\/\S+$/i.test(url)) return aSay('Paste a full web address starting with https://', 'err');
+return aRun('Saving link', async () => { await ghChange('Update study link: ' + d.path.slice(STUDY.length), async () => [{ path: d.path, b64: b64enc('[InternetShortcut]\r\nURL=' + url + '\r\n') }]); return 'Link updated.'; });
+}
+case 'adm-docdel':
+if (!doc || !armed('doc:' + d.path)) return;
+return aRun('Deleting', async () => {
+await ghChange('Remove study resource: ' + d.path.slice(STUDY.length), async files => {
+const folder = /\/index\.html?$/i.test(doc.id) && doc.id.slice(STUDY.length).split('/').length === 3;
+const out = folder ? dropFiles(files, doc.id.replace(/\/index\.html?$/i, '')) : dropFiles(files, doc.id, true);
+return out.concat(keepFolder(files, doc.dir, out));
+});
+return 'Deleted "' + doc.name + '".';
+});
+// Games
+case 'adm-gmore': A.gshow += 100; return renderMain(true);
+case 'adm-gplay': return playGame(d.id);
+case 'adm-gedit': A.edit = 'game:' + d.id; A.vals.edit = game ? game.name : ''; A.arm = null; return renderMain(true);
+case 'adm-gsave': {
+const name = cleanSeg(A.vals.edit);
+if (!name) return aSay('Type a name first.', 'err');
+return aRun('Renaming game', async () => {
+let newId = '';
+await ghChange('Rename game: ' + game.name + ' to ' + pretty(name), async files => {
+const g = gameFiles(files, d.id);
+if (g.dir) { const to = DIR + name; if (taken(files, to)) throw new Error('A game with that name already exists.'); newId = to + '/index.html'; return moveFiles(files, g.dir, to); }
+const to = DIR + name;
+if (files.some(f => f.path === to + '.html' || f.path === to + '.htm')) throw new Error('A game with that name already exists.');
+newId = to + d.id.slice(g.stem.length);
+return g.list.flatMap(f => [{ path: to + f.path.slice(g.stem.length), sha: f.sha, mode: f.mode }, { path: f.path, sha: null }]);
+});
+const s = curSite();
+if (s.featured.includes(d.id) || s.hiddenGames.includes(d.id)) await quickSite(x => { x.featured = x.featured.map(i => i === d.id ? newId : i); x.hiddenGames = x.hiddenGames.map(i => i === d.id ? newId : i); }, 'Keep game settings after rename');
+store.set('recent', store.get('recent', []).map(k => k === 'pack:' + d.id ? 'pack:' + newId : k));
+return 'Renamed to ' + pretty(name) + '. It can take a few minutes to start working under the new name.';
+});
+}
+case 'adm-gcover': { A.coverFor = d.id; const inp = root.querySelector('[data-acover]'); if (inp) { inp.value = ''; inp.click(); } return; }
+case 'adm-gfeat': {
+const on = curSite().featured.includes(d.id);
+return aRun(on ? 'Unfeaturing' : 'Featuring', async () => { await quickSite(x => { x.featured = on ? x.featured.filter(i => i !== d.id) : [d.id, ...x.featured.filter(i => i !== d.id)]; }, (on ? 'Unfeature game: ' : 'Feature game: ') + game.name); return on ? game.name + ' is no longer featured.' : game.name + ' is now featured at the top of the library.'; });
+}
+case 'adm-ghide': {
+const on = curSite().hiddenGames.includes(d.id);
+return aRun(on ? 'Showing' : 'Hiding', async () => { await quickSite(x => { x.hiddenGames = on ? x.hiddenGames.filter(i => i !== d.id) : [...x.hiddenGames.filter(i => i !== d.id), d.id]; }, (on ? 'Show game: ' : 'Hide game: ') + game.name); return on ? game.name + ' is back in the library.' : game.name + ' is hidden. It stays in the repo, so you can show it again anytime.'; });
+}
+case 'adm-gdel':
+if (!armed('game:' + d.id)) return;
+return aRun('Deleting game', async () => {
+await ghChange('Remove game: ' + game.name, async files => { const g = gameFiles(files, d.id); return g.dir ? dropFiles(files, g.dir) : g.list.map(f => ({ path: f.path, sha: null })); });
+const s = curSite();
+if (s.featured.includes(d.id) || s.hiddenGames.includes(d.id)) await quickSite(x => { x.featured = x.featured.filter(i => i !== d.id); x.hiddenGames = x.hiddenGames.filter(i => i !== d.id); }, 'Clean up game settings');
+return 'Deleted ' + game.name + '.';
+});
+case 'adm-gupload': {
+const input = root.querySelector('[data-gfile]'), files = input && input.files ? [...input.files] : [];
+if (!files.length) return aSay('Choose at least one .html game file first.', 'err');
+const bad = files.find(f => !/\.html?$/i.test(f.name));
+if (bad) return aSay('"' + bad.name + '" isn\'t an .html file.', 'err');
+const big = files.find(f => f.size > 50 * 1024 * 1024);
+if (big) return aSay('"' + big.name + '" is over 50 MB, which is too big to add from here.', 'err');
+aSay('Reading ' + (files.length === 1 ? 'the file' : files.length + ' files') + '…', '');
+const entries = [];
+try { for (const f of files) entries.push({ path: DIR + (cleanSeg(f.name.replace(/\.html?$/i, '')) || 'game') + '.html', b64: await fileB64(f) }); }
+catch (e) { return aSay(e.message, 'err'); }
+return aRun('Adding games', async () => {
+await ghChange(entries.length === 1 ? 'Add game: ' + entries[0].path.slice(DIR.length) : 'Add ' + entries.length + ' games', async () => entries);
+return (entries.length === 1 ? 'Added ' + pretty(entries[0].path.slice(DIR.length).replace(/\.html$/, '')) : 'Added ' + entries.length + ' games') + '. Give GitHub Pages a few minutes before playing.';
+});
+}
+}
+}
+async function uploadCover(file) {
+const id = A.coverFor; A.coverFor = null;
+if (!id || !file) return;
+if (!/^image\//.test(file.type)) return aSay('Pick an image file (PNG, JPG, WebP or GIF).', 'err');
+if (file.size > 5 * 1024 * 1024) return aSay('That image is over 5 MB. Pick a smaller one.', 'err');
+const ext = (extOf(file.name) || 'png').replace('jpeg', 'jpg');
+let b64;
+try { b64 = await fileB64(file); } catch (e) { return aSay(e.message, 'err'); }
+const g0 = toPack(id);
+return aRun('Saving cover', async () => {
+await ghChange('Set cover image: ' + g0.name, async files => {
+const g = gameFiles(files, id);
+const base = g.dir ? g.dir + '/cover' : g.stem;
+const old = files.filter(f => IMG.test(f.path) && (g.dir ? new RegExp('^' + g.dir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '/(cover|preview)\\.', 'i').test(f.path) : f.path.replace(IMG, '') === g.stem));
+return old.filter(f => f.path !== base + '.' + ext).map(f => ({ path: f.path, sha: null })).concat([{ path: base + '.' + ext, b64 }]);
+});
+return 'Cover saved for ' + g0.name + '.';
+});
 }
 root.addEventListener('input', e => {
-const t = e.target, s = S.draft;
+const t = e.target;
+if (t.matches('[data-av]')) { A.vals[t.dataset.av] = t.value; return; }
+if (t.matches('[data-agq]')) { A.gq = t.value; A.gshow = 80; renderMain(true); const b = root.querySelector('[data-agq]'); if (b) { b.focus(); b.setSelectionRange(b.value.length, b.value.length); } return; }
+const s = S.draft;
 if (!s) return;
-if (t.matches('[data-site]')) { s[t.dataset.site] = t.value; applySite(); }
-else if (t.matches('[data-bf]')) { const [i, f] = t.dataset.bf.split(':'); if (s.banners[i]) s.banners[i][f] = t.value; paintBanners(); }
-else if (t.matches('[data-shide]')) { const v = t.dataset.shide; s.hidden = s.hidden.filter(x => x !== v); if (!t.checked) s.hidden.push(v); paintChrome(); }
-else if (t.matches('[data-upcat]')) { S.up.cat = t.value; renderMain(true); }
-else if (t.matches('[data-up]')) S.up[t.dataset.up] = t.value;
+if (t.matches('[data-site]')) { s[t.dataset.site] = t.value; applySite(); paintDraftBar(); }
+else if (t.matches('[data-bf]')) { const [i, f] = t.dataset.bf.split(':'); if (s.banners[i]) s.banners[i][f] = t.value; paintBanners(); paintDraftBar(); }
+else if (t.matches('[data-shide]')) { const v = t.dataset.shide; s.hidden = s.hidden.filter(x => x !== v); if (!t.checked) s.hidden.push(v); paintChrome(); paintDraftBar(); }
+else if (t.matches('[data-upcat]')) { A.up.cat = t.value; renderMain(true); }
+else if (t.matches('[data-up]')) A.up[t.dataset.up] = t.value;
+});
+// The "Unpublished changes" bar appears without re-rendering (so typing isn't interrupted)
+function paintDraftBar() {
+if (S.view !== 'admin') return;
+const has = !!root.querySelector('.adraft');
+if (has === dirty()) return;
+if (has) root.querySelector('.adraft').remove();
+else { const tabs = root.querySelector('.atabs'); if (tabs) tabs.insertAdjacentHTML('afterend', `<div class="adraft"><span class="grow wrap"><b>Unpublished changes</b> to the look, banners or pages. Only you can see them until you publish.</span><button class="btn" data-act="adm-discard">Discard</button><button class="btn pri" data-act="adm-publish">Publish for everyone</button></div>`); }
+}
+root.addEventListener('change', e => {
+const t = e.target;
+if (t.matches('[data-amove]') && t.value) {
+const p = DOCS.find(x => x.id === t.dataset.amove), dir = t.value;
+if (p) aRun('Moving', async () => { await ghChange('Move study resource: ' + p.name + ' to ' + dir, async files => { const out = docMove(files, p, dir); return out.concat(keepFolder(files, p.dir, out)); }); return 'Moved "' + p.name + '" to ' + pretty(dir) + '.'; });
+}
+else if (t.matches('[data-upfile],[data-gfile]')) { const n = [...(t.files || [])].map(f => f.name); const out = t.closest('.adrop') && t.closest('.adrop').querySelector('.afiles'); if (out) out.textContent = n.length ? n.length + ' chosen: ' + n.slice(0, 4).join(', ') + (n.length > 4 ? '…' : '') : ''; }
+else if (t.matches('[data-acover]')) uploadCover(t.files && t.files[0]);
 });
 root.addEventListener('click', e => {
 const t = e.target.closest('[data-sicon],[data-saccent],[data-bwhere],[data-bcolor],[data-bicon],[data-upkind],[data-banner],[data-bclose],[data-act^="adm-"]');
@@ -1463,6 +1836,7 @@ if (!t) return;
 const d = t.dataset, s = S.draft;
 if (d.banner) { const b = curSite().banners.find(x => x.id === d.banner); if (b) openLink(b.link); return; }
 if (d.bclose) { if (!S.draft) store.set('bannersClosed', [...store.get('bannersClosed', []).filter(x => x !== d.bclose), d.bclose].slice(-50)); t.closest('.bnr').remove(); return; }
+if (d.act && d.act.startsWith('adm-') && !['adm-addb', 'adm-rmb', 'adm-bup', 'adm-bdup'].includes(d.act)) { if (!/del$/.test(d.act)) A.arm = null; adminAct(d, t); return; }
 if (!s) return;
 const pair = v => { const k = v.indexOf(':'); return [Number(v.slice(0, k)), v.slice(k + 1)]; };
 if (d.sicon) s.icon = d.sicon;
@@ -1470,16 +1844,11 @@ else if (d.saccent) s.accent = d.saccent;
 else if (d.bwhere) { const [i, v] = pair(d.bwhere); s.banners[i].where = v; }
 else if (d.bcolor) { const [i, v] = pair(d.bcolor); s.banners[i].color = v; }
 else if (d.bicon) { const [i, v] = pair(d.bicon); s.banners[i].icon = v; }
+else if (d.upkind) A.up.kind = d.upkind;
 else if (d.act === 'adm-addb') s.banners.push(NEW_BANNER());
-else if (d.act === 'adm-rmb') s.banners.splice(Number(d.i), 1);
-else if (d.act === 'adm-publish') return void publishSite();
-else if (d.upkind) S.up.kind = d.upkind;
-else if (d.act === 'adm-upload') return void uploadStudy();
-else if (d.act === 'adm-delres') return void deleteStudy(d.path);
-else if (d.act === 'adm-discard') { S.draft = clone(SITE); S.adminMsg = { text: 'Changes discarded.', cls: '' }; }
-else if (d.act === 'adm-savetok') { const v = (root.querySelector('[data-tok]') || {}).value || ''; if (!v.trim()) return adminSay('Paste the key first.', 'err'); store.set('admintoken', v.trim()); S.adminMsg = { text: 'Key saved on this computer.', cls: 'ok' }; }
-else if (d.act === 'adm-forget') { try { localStorage.removeItem('classdash_admintoken'); } catch (err) {} S.adminMsg = { text: 'Key removed from this computer.', cls: '' }; }
-else if (d.act === 'adm-json') { try { S.draft = fixSite(JSON.parse(root.querySelector('[data-sitejson]').value)); S.adminMsg = { text: 'Applied. Publish to save it for everyone.', cls: 'ok' }; } catch (err) { return adminSay("That isn't valid JSON: " + err.message, 'err'); } }
+else if (d.act === 'adm-bdup') { const b = s.banners[Number(d.i)]; if (b) s.banners.splice(Number(d.i) + 1, 0, Object.assign(clone(b), { id: 'b' + Date.now().toString(36) })); }
+else if (d.act === 'adm-bup') { const i = Number(d.i); if (i > 0) { const b = s.banners.splice(i, 1)[0]; s.banners.splice(i - 1, 0, b); } }
+else if (d.act === 'adm-rmb') { const b = s.banners[Number(d.i)]; if (!b || !armed('ban:' + b.id)) return; s.banners.splice(Number(d.i), 1); }
 applySite(); renderMain(true);
 });
 // ---- Update prompt ----
@@ -1686,6 +2055,7 @@ else if (d.reqtopic) { S.req.stopic = S.sq.trim(); if (S.scls !== 'All') S.req.s
 else if (d.pref) setPref(d.pref, d.val === 'true' ? true : d.val === 'false' ? false : d.val);
 else if (d.pacc != null) setPref('accent', d.pacc);
 else if (d.act === 'settings') go('settings');
+else if (d.act === 'admin') openAdmin();
 else if (d.act === 'pclear') { store.set('recent', []); S.setMsg = { text: 'Recently played cleared.', cls: 'ok' }; renderMain(true); }
 else if (d.act === 'preset') {
 if (!S.resetArm) { S.resetArm = true; S.setMsg = null; renderMain(true); return; }
@@ -1799,6 +2169,7 @@ host.__close = close;
 if (S.view !== 'games' && !shownNav().some(n => n[0] === S.view)) S.view = isCanvas && !LIB ? 'home' : 'games';
 tick();
 applyPrefs();
+paintAdminLink();
 loadSite();
 renderMain();
 load();
