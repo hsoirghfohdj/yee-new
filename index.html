@@ -110,8 +110,7 @@ main, footer { position: relative; z-index: 2; }
 .meta span + span::before { content: "·"; margin: 0 10px; }
 
 /* Floating dashboard */
-.stage { position: relative; max-width: 1140px; margin: clamp(60px, 10vh, 96px) auto 0; padding: 0 var(--pad); perspective: 1700px; }
-.stage::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 46%; pointer-events: none; background: linear-gradient(transparent, var(--bg) 92%); z-index: 3; }
+.stage { position: relative; max-width: 1140px; margin: clamp(60px, 10vh, 96px) auto 0; padding: 0 var(--pad) clamp(40px, 8vh, 90px); perspective: 1700px; }
 .device { position: relative; container-type: inline-size; transform-origin: 50% 0; will-change: transform;
   transform: translateY(var(--ty, 30px)) rotateX(var(--rx, 24deg)) rotateY(var(--ry, 0deg)) scale(var(--s, .93));
   border-radius: 22px; background: linear-gradient(180deg, rgba(22,19,30,.92), rgba(12,10,17,.96));
