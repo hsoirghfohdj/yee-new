@@ -1,20 +1,8 @@
 {
   "name": "Class Dash",
   "icon": "cap",
-  "accent": "#f5b546",
+  "accent": "#b48cff",
   "banners": [
-    {
-      "id": "bio-ecology",
-      "title": "Taking Bio?",
-      "text": "Before the test, get study resources and practice tests for the ecology unit.",
-      "button": "Start studying →",
-      "link": "study/Biology/ecology-study.html",
-      "color": "#3ecf8e",
-      "icon": "leaf",
-      "where": "both",
-      "start": "",
-      "end": "2026-11-06T14:52"
-    },
     {
       "id": "bmw4887gs",
       "title": "Anything to add? ",
@@ -26,6 +14,18 @@
       "where": "both",
       "start": "",
       "end": ""
+    },
+    {
+      "id": "bmw5t6m6s",
+      "title": "New games!",
+      "text": "We are currently in the process of adding your requested games!",
+      "button": "",
+      "link": "",
+      "color": "#e46fd0",
+      "icon": "game",
+      "where": "both",
+      "start": "2026-11-06T18:54",
+      "end": "2026-11-07T20:55"
     }
   ],
   "hidden": [],
