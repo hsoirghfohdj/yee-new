@@ -1,0 +1,2 @@
+This game loads straight from the repo (raw.githubusercontent.com) instead of GitHub Pages,
+so changes work right away. Delete this file to load it from GitHub Pages again.
