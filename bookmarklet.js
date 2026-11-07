@@ -12,8 +12,19 @@ const store = {
 get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
 set(k, v) { try { localStorage.setItem('classdash_' + k, JSON.stringify(v)); } catch (e) {} }
 };
+// Personal settings (the Settings page). Saved in this browser as classdash_prefs, so updates never reset them.
+const PREF_DEFAULT = { theme: 'dark', accent: '', size: 'normal', full: false, motion: true, start: 'home', clock24: false, seconds: false, outside: true, blurGrades: false, gameOpen: 'here', recent: true, tiles: 'medium' };
+let P = Object.assign({}, PREF_DEFAULT, store.get('prefs', {}));
+const VIEWS = ['home', 'todo', 'grades', 'classes', 'calendar', 'schedule', 'hallpass', 'study', 'games'];
+const CANVAS_VIEWS = ['home', 'todo', 'grades', 'classes', 'calendar'];
+function startView() {
+if (LIB) return 'games';
+let v = P.start === 'last' ? store.get('lastView', 'home') : P.start;
+if (!VIEWS.includes(v)) v = 'home';
+return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
+}
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Study resources can now be PDFs, images, links or any file';
+const WHATSNEW = 'New Settings page: themes, text size, 24-hour clock, start page, hide grades and more. Open it next to Check for updates.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -34,7 +45,7 @@ store.set('installed', { code: fresh, at: Date.now() });
 }
 }
 const S = {
-view: isCanvas && !LIB ? 'home' : 'games', back: 'classes', seg: 'all',
+view: startView(), back: 'classes', seg: 'all',
 loading: false, error: null, loadedAt: null,
 me: null, courses: [], work: [], grades: [], ann: [],
 done: new Set(store.get('done', [])), courseCache: {}, courseId: null,
@@ -44,7 +55,8 @@ lunch: store.get('lunch', 1), schedKey: null,
 doc: null, sq: '', scls: 'All',
 periods: store.get('periods', {}),
 req: {}, reqMsg: {},
-up: { kind: 'file' }, upMsg: null, delArm: null
+up: { kind: 'file' }, upMsg: null, delArm: null,
+resetArm: false, setMsg: null
 };
 const svg = p => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
 const I = {
@@ -82,7 +94,7 @@ tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="curre
 const CSS = `
 :host{all:initial}
 *{box-sizing:border-box;margin:0;padding:0}
-.bd{--bg:#0f1218;--p1:#161a22;--p2:#1d222c;--p3:#272d3a;--ln:#262c39;--tx:#e9ecf2;--mu:#8c93a5;--ac:#7c9cff;--gd:#3ecf8e;--wn:#f5b546;--bad:#f2637a;
+.bd{--bg:#0f1218;--p1:#161a22;--p2:#1d222c;--p3:#272d3a;--ln:#262c39;--tx:#e9ecf2;--mu:#8c93a5;--ac:#7c9cff;--act:var(--ac);--gd:#3ecf8e;--wn:#f5b546;--bad:#f2637a;
 position:fixed;inset:0;background:rgba(6,8,12,.62);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;
 font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tx);animation:fd .18s ease}
 @keyframes fd{from{opacity:0}}
@@ -90,7 +102,7 @@ font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--
 @keyframes sp{to{transform:rotate(360deg)}}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit}
-.win{width:min(1200px,calc(100vw - 32px));height:min(780px,calc(100vh - 32px));background:var(--bg);border:1px solid var(--ln);border-radius:16px;
+.win{zoom:var(--z,1);width:min(1200px,calc((100vw - 32px) / var(--z,1)));height:min(780px,calc((100vh - 32px) / var(--z,1)));background:var(--bg);border:1px solid var(--ln);border-radius:16px;
 display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55);animation:pop .22s ease}
 .sb{background:var(--p1);border-right:1px solid var(--ln);display:flex;flex-direction:column;padding:16px 10px;gap:2px}
 .brand{font-weight:700;font-size:16px;padding:2px 10px 18px;display:flex;gap:10px;align-items:center}
@@ -99,7 +111,7 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .nav button{all:unset;display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:9px;color:var(--mu);cursor:pointer;font-weight:550;white-space:nowrap}
 .nav button:hover{background:var(--p2);color:var(--tx)}
 .nav button.on{background:var(--p3);color:var(--tx)}
-.nav button.on svg{color:var(--ac)}
+.nav button.on svg{color:var(--act)}
 .badge{margin-left:auto;background:var(--bad);color:#fff;font-size:11px;font-weight:700;border-radius:10px;padding:0 7px;line-height:18px}
 .sbf{margin-top:auto;padding:10px 12px;color:var(--mu);font-size:12px}
 .clock{font-size:26px;color:var(--tx);font-weight:650;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
@@ -128,7 +140,7 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .oit .oic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex:none;background:var(--p3);color:var(--tx)}
 .oit .oic svg{width:16px;height:16px}
 .oit .addr{font:12px ui-monospace,monospace;color:var(--mu);white-space:nowrap;max-width:45%;overflow:hidden;text-overflow:ellipsis}
-.oit.on .addr{color:var(--ac)}
+.oit.on .addr{color:var(--act)}
 .ohint{padding:8px 10px;color:var(--mu);font-size:12px}
 .ohint b{font:12px ui-monospace,monospace;color:var(--tx);background:var(--p3);border-radius:5px;padding:1px 5px}
 .bd.lib .omni{display:none}
@@ -136,10 +148,10 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 30px 8
 .ubar[hidden]{display:none}
 .ubar .uic{width:32px;height:32px;border-radius:9px;background:var(--ac);color:#0f1218;display:grid;place-items:center;flex:none}
 .ubar .sub{white-space:normal}
-.pcls{color:var(--ac);font-weight:600}
+.pcls{color:var(--act);font-weight:600}
 .sched .sl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ver{margin-top:4px;font-size:11px;opacity:.75}
-.cupd{all:unset;cursor:pointer;display:inline-flex;align-items:center;margin-top:10px;font-size:11.5px;font-weight:650;color:var(--ac)}
+.cupd{all:unset;cursor:pointer;display:inline-flex;align-items:center;margin-top:10px;font-size:11.5px;font-weight:650;color:var(--act)}
 .cupd:hover{text-decoration:underline}
 .req{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 16px;border-radius:14px;background:var(--p1);border:1px solid var(--ln);margin-bottom:16px}
 .req .ric{width:36px;height:36px;border-radius:10px;background:var(--gd);color:#0f1218;display:grid;place-items:center;flex:none}
@@ -207,7 +219,7 @@ a.pcls:hover{text-decoration:underline}
 .hello .h{font-size:24px;font-weight:700;letter-spacing:-.01em}
 .card{background:var(--p1);border:1px solid var(--ln);border-radius:14px;padding:16px 18px}
 .card h2{font-size:12px;font-weight:650;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-.card h2 a,.card h2 span{text-transform:none;letter-spacing:0;font-weight:550;color:var(--ac);cursor:pointer;font-size:13px}
+.card h2 a,.card h2 span{text-transform:none;letter-spacing:0;font-weight:550;color:var(--act);cursor:pointer;font-size:13px}
 .card h2 span{color:var(--mu);cursor:default}
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}
 .card{min-width:0}
@@ -219,7 +231,7 @@ a.pcls:hover{text-decoration:underline}
 .row:first-of-type{border-top:0}
 a.row:hover,.row.click:hover{background:var(--p2);border-radius:10px;border-top-color:transparent}
 .row.click{cursor:pointer}
-.row a.grow:hover .t{color:var(--ac)}
+.row a.grow:hover .t{color:var(--act)}
 .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .grow{flex:1;min-width:0}
 .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -229,7 +241,7 @@ a.row:hover,.row.click:hover{background:var(--p2);border-radius:10px;border-top-
 .chip.bad{background:rgba(242,99,122,.15);color:var(--bad)}
 .chip.wn{background:rgba(245,181,70,.15);color:var(--wn)}
 .chip.gd{background:rgba(62,207,142,.15);color:var(--gd)}
-.chip.ac{background:rgba(124,156,255,.15);color:var(--ac)}
+.chip.ac{background:rgba(124,156,255,.15);color:var(--act)}
 .due{font-size:12px;text-align:right;white-space:nowrap;min-width:118px}
 .gr{text-align:right;min-width:64px}
 .big{font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
@@ -267,7 +279,7 @@ a.row:hover,.row.click:hover{background:var(--p2);border-radius:10px;border-top-
 .day.past{opacity:.55}
 .day.today{border-color:var(--ac)}
 .day .dn{font-size:13px;font-weight:650;color:var(--mu);margin:0 0 6px 2px}
-.day.today .dn{color:var(--ac)}
+.day.today .dn{color:var(--act)}
 .ev{display:block;font-size:12px;padding:4px 7px;border-radius:7px;margin-bottom:4px;background:var(--p2);border-left:3px solid;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ev:hover{background:var(--p3)}
 .ev.dn2{opacity:.5;text-decoration:line-through}
@@ -319,12 +331,50 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .sdoc:hover,.sdoc:focus-visible{border-color:var(--ac);transform:translateY(-2px)}
 .sdoc .sic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;color:#0f1218;flex:none}
 .sdoc .go{color:var(--mu);flex:none}
-.sdoc:hover .go{color:var(--ac)}
+.sdoc:hover .go{color:var(--act)}
 .bd.lib{background:var(--bg);backdrop-filter:none;animation:none}
-.bd.lib .win{width:100vw;height:100vh;border:0;border-radius:0;box-shadow:none;animation:none;grid-template-columns:1fr;grid-template-rows:1fr}
+.bd.lib .win{width:calc(100vw / var(--z,1));height:calc(100vh / var(--z,1));border:0;border-radius:0;box-shadow:none;animation:none;grid-template-columns:1fr;grid-template-rows:1fr}
 .bd.lib .sb,.bd.lib [data-act="close"]{display:none}
+.sbl{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:10px}
+.sbl .cupd{margin-top:0;gap:5px}
+.cupd.on{color:var(--tx)}
+.ib.sset{display:none}
+.bd.cd-full .win{width:calc(100vw / var(--z,1));height:calc(100vh / var(--z,1));border:0;border-radius:0}
+.bd.th-light{--bg:#f4f6fa;--p1:#fff;--p2:#eef1f6;--p3:#e1e6ef;--ln:#dde2eb;--tx:#151922;--mu:#5c6476;--gd:#16955a;--wn:#c47f0a;--bad:#d63f5a;--act:color-mix(in srgb,var(--ac) 58%,#000)}
+.bd.th-light .win{box-shadow:0 30px 80px rgba(0,0,0,.28)}
+.bd.th-light .adm select,.bd.th-light .adm input[type=datetime-local]{color-scheme:light}
+.bd.th-mid{--bg:#000;--p1:#0b0c10;--p2:#13151b;--p3:#1d2029;--ln:#1b1e26}
+.bd.cd-still,.bd.cd-still *{animation:none!important;transition:none!important}
+.bd.cd-blur .gr,.bd.cd-blur .gtile .v,.bd.cd-blur .cg,.bd.cd-blur .row .bar,.bd.cd-blur .cc .bar,.bd.cd-blur .pts{filter:blur(7px);transition:filter .15s}
+.bd.cd-blur .gr:hover,.bd.cd-blur .gtile:hover .v,.bd.cd-blur .cg:hover,.bd.cd-blur .row:hover .bar,.bd.cd-blur .cc:hover .bar,.bd.cd-blur .pts:hover{filter:none}
+.bd.tl-s .tgrid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.bd.tl-l .tgrid{grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:16px}
+.sset-c{margin-bottom:16px}
+.srow,.stog{display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid var(--ln)}
+.card h2+.srow,.card h2+.stog{border-top:0;padding-top:4px}
+.srow>.grow .sub,.stog>.grow .sub{display:block;margin-top:1px}
+.stog{cursor:pointer}
+.stog input{position:absolute;opacity:0;width:1px;height:1px}
+.stog i{position:relative;flex:none;width:40px;height:23px;border-radius:12px;background:var(--p3);transition:background .15s}
+.stog i::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
+.stog input:checked+i{background:var(--ac)}
+.stog input:checked+i::after{transform:translateX(17px)}
+.stog input:focus-visible+i{outline:2px solid var(--ac);outline-offset:2px}
+.srow .seg.mini{flex-wrap:wrap;justify-content:flex-end}
+.srow .sws{justify-content:flex-end}
+.thms{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.thc{all:unset;box-sizing:border-box;cursor:pointer;width:92px;border-radius:12px;border:2px solid var(--ln);overflow:hidden;font-size:12px;font-weight:650;text-align:center;color:var(--tx)}
+.thc.on{border-color:var(--ac)}
+.thc .pv{display:flex;gap:4px;height:44px;padding:6px}
+.thc .pv i{flex:1;border-radius:5px}
+.thc .pv i:first-child{flex:.45}
+.thc span{display:block;padding:5px 0 6px}
+.sacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 @media (max-width:780px){
-.win{grid-template-columns:1fr;grid-template-rows:auto 1fr;width:100vw;height:100vh;border-radius:0}
+.ib.sset{display:grid}
+.upd,.sset-c h2 span{display:none}
+.srow{flex-wrap:wrap}
+.win{grid-template-columns:1fr;grid-template-rows:auto 1fr;width:calc(100vw / var(--z,1));height:calc(100vh / var(--z,1));border-radius:0}
 .sb{flex-direction:row;padding:8px;border-right:0;border-bottom:1px solid var(--ln);overflow-x:auto}
 .brand,.sbf{display:none}.nav{flex-direction:row}
 .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.cols{grid-template-columns:minmax(0,1fr)}
@@ -335,7 +385,7 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const plain = html => { try { return new DOMParser().parseFromString(html || '', 'text/html').body.textContent.replace(/\s+/g, ' ').trim(); } catch (e) { return ''; } };
 const sod = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
-const fmtTime = d => d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+const fmtTime = (d, sec) => d.toLocaleTimeString([], Object.assign({ hour: 'numeric', minute: '2-digit', hour12: !P.clock24 }, sec ? { second: '2-digit' } : {}));
 const fmtNum = n => Math.round(n * 100) / 100;
 const fmtDue = iso => {
 if (!iso) return 'No due date';
@@ -447,7 +497,7 @@ S.error = e.message || String(e);
 }
 S.loading = false;
 paintChrome();
-if (!['games', 'play', 'read'].includes(S.view)) renderMain(true);
+if (!['games', 'play', 'read', 'settings'].includes(S.view)) renderMain(true);
 }
 function loadCourse(id) {
 S.courseCache[id] = { loading: true };
@@ -461,10 +511,10 @@ host.id = ID;
 host.style.cssText = 'position:fixed;inset:0;z-index:2147483647';
 const root = host.attachShadow({ mode: 'open' });
 root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div class="win">
-<aside class="sb"><div class="brand"><span class="logo">${I.cap}</span><span class="bname">Class Dash</span></div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><button class="cupd" data-act="checkupd">Check for updates</button><div class="ver"></div></div></aside>
+<aside class="sb"><div class="brand"><span class="logo">${I.cap}</span><span class="bname">Class Dash</span></div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><div class="sbl"><button class="cupd" data-act="settings" title="Settings (saved in this browser)">${I.gear.replace('width="18" height="18"', 'width="13" height="13"')}Settings</button><button class="cupd" data-act="checkupd">Check for updates</button></div><div class="ver"></div></div></aside>
 <main class="mn"><header class="hd"><h1></h1>
 <div class="omni"><span class="oi">${I.search}</span><input data-omni placeholder="Search Class Dash, or go to study.ecology-study" autocomplete="off" spellcheck="false" aria-label="Search or go to"><span class="kbd">Ctrl K</span><div class="odrop" hidden></div></div><span class="upd"></span>
-<button class="ib" data-act="refresh" title="Refresh">${I.refresh}</button><button class="ib" data-act="close" title="Close (Esc)">${I.x}</button></header>
+<button class="ib" data-act="refresh" title="Refresh">${I.refresh}</button><button class="ib sset" data-act="settings" title="Settings">${I.gear}</button><button class="ib" data-act="close" title="Close (Esc)">${I.x}</button></header>
 <div class="bnrs"></div>
 <div class="ubar" hidden><span class="uic">${I.refresh}</span><div class="grow"><div class="t">Update available</div><div class="sub unote"></div></div>
 <button class="btn" data-act="later">Later</button><button class="btn pri" data-act="update">Update now</button></div>
@@ -478,7 +528,8 @@ function paintChrome() {
 const overdue = S.work.filter(x => x.open && x.due && new Date(x.due) < Date.now()).length;
 $('.nav').innerHTML = shownNav().map(([v, label, icon]) => `<button data-go="${v}" class="${navOf(S.view) === v ? 'on' : ''}">${icon}${label}${v === 'todo' && overdue ? `<span class="badge">${overdue}</span>` : ''}</button>`).join('');
 const c = S.view === 'course' && byId(S.courseId), g = S.view === 'play' && PACK.find(x => x.id === S.game), dc = S.view === 'read' && DOCS.find(x => x.id === S.doc);
-$('.hd h1').textContent = c ? c.name : g ? g.name : dc ? dc.name : S.view === 'admin' ? 'Site editor' : (NAV.find(n => n[0] === S.view) || [, ''])[1];
+$('.hd h1').textContent = c ? c.name : g ? g.name : dc ? dc.name : S.view === 'admin' ? 'Site editor' : S.view === 'settings' ? 'Settings' : (NAV.find(n => n[0] === S.view) || [, ''])[1];
+root.querySelectorAll('[data-act="settings"]').forEach(b => b.classList.toggle('on', S.view === 'settings'));
 $('.upd').textContent = usesLib(S.view) ? (S.libLoading ? 'Checking GitHub…' : S.lib ? 'Updated ' + fmtTime(new Date(S.lib.at)) : '')
 : S.loading && S.loadedAt ? 'Refreshing…' : S.loadedAt && isCanvas && S.view !== 'play' && S.view !== 'read' ? 'Updated ' + fmtTime(S.loadedAt) : '';
 const rb = $('[data-act="refresh"]');
@@ -500,6 +551,7 @@ loadLib();
 }
 else if (v === 'hallpass') ct.innerHTML = vHallPass();
 else if (v === 'admin') ct.innerHTML = S.draft ? vAdmin() : empty('Nothing here.');
+else if (v === 'settings') ct.innerHTML = vSettings();
 else if (v === 'play') { ct.innerHTML = vPlay(); startPack(ct); }
 else if (v === 'read') { ct.innerHTML = vRead(); startDoc(ct, S.doc); }
 else if (v === 'schedule') ct.innerHTML = vSchedule();
@@ -508,8 +560,8 @@ else if (!S.loadedAt) ct.innerHTML = S.error ? vError() : '<div class="spin"></d
 else ct.innerHTML = { home: vHome, todo: vTodo, grades: vGrades, classes: vClasses, calendar: vCal, course: vCourse }[v]();
 ct.scrollTop = keepScroll ? top : 0;
 }
-const go = v => { S.view = v; renderMain(); };
-const tile = (k, v, s, color) => `<div class="card tile"><div class="k">${k}</div><div class="v" style="color:${color || 'var(--tx)'}">${v}</div><div class="sub">${s}</div></div>`;
+const go = v => { S.view = v; if (VIEWS.includes(v)) store.set('lastView', v); renderMain(); };
+const tile = (k, v, s, color, g) => `<div class="card tile${g ? ' gtile' : ''}"><div class="k">${k}</div><div class="v" style="color:${color || 'var(--tx)'}">${v}</div><div class="sub">${s}</div></div>`;
 function status(x) {
 const now = Date.now(), d = x.due ? new Date(x.due) : null;
 if (x.done) return ['gd', 'Done'];
@@ -553,8 +605,8 @@ const next = sortWork(s.open).slice(0, 7);
 const classes = S.courses.map(c => `<div class="row click" data-course="${c.id}"><span class="dot" style="background:${esc(c.color)}"></span><div class="grow"><div class="t">${esc(c.name)}</div><div class="bar" style="margin-top:6px"><i style="width:${c.score == null ? 0 : Math.min(100, c.score)}%;background:${scoreColor(c.score)}"></i></div></div><div class="gr"><div class="t" style="color:${scoreColor(c.score)}">${c.score == null ? '—' : esc(c.grade || '')}</div><div class="sub">${c.score == null ? '' : c.score + '%'}</div></div></div>`).join('');
 return `<div class="hello"><div class="h">${hi}${name ? ', ' + esc(name) : ''}</div><div class="sub">${new Date().toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })} · ${line}</div></div>
 <div class="tiles">
-${tile('Average grade', s.avg == null ? '—' : s.avg.toFixed(1) + '%', s.graded.length + ' of ' + S.courses.length + ' classes graded', scoreColor(s.avg))}
-${tile('Estimated GPA', s.gpa == null ? '—' : s.gpa.toFixed(2), 'unweighted, 4.0 scale')}
+${tile('Average grade', s.avg == null ? '—' : s.avg.toFixed(1) + '%', s.graded.length + ' of ' + S.courses.length + ' classes graded', scoreColor(s.avg), 1)}
+${tile('Estimated GPA', s.gpa == null ? '—' : s.gpa.toFixed(2), 'unweighted, 4.0 scale', '', 1)}
 ${tile('Due this week', s.week.length, s.week.length ? 'next: ' + esc(sortWork(s.week)[0].title) : 'nothing due', s.week.length ? 'var(--wn)' : 'var(--tx)')}
 ${tile('Overdue', s.overdue.length, s.overdue.length ? 'needs your attention' : 'all caught up', s.overdue.length ? 'var(--bad)' : 'var(--gd)')}
 </div>
@@ -589,10 +641,10 @@ const s = stats();
 const rows = S.courses.map(c => `<div class="row click" data-course="${c.id}"><span class="dot" style="background:${esc(c.color)}"></span><div class="grow"><div class="t">${esc(c.name)}</div><div class="sub">${esc(c.teachers.join(', ') || c.code || '')}</div><div class="bar" style="margin-top:8px"><i style="width:${c.score == null ? 0 : Math.min(100, c.score)}%;background:${scoreColor(c.score)}"></i></div></div>
 <div class="gr"><div class="big" style="color:${scoreColor(c.score)}">${c.score == null ? '—' : esc(c.grade || '')}</div><div class="sub">${c.score == null ? (c.hidden ? 'hidden' : 'no grade yet') : c.score + '%'}</div></div></div>`).join('');
 return `<div class="tiles">
-${tile('Average', s.avg == null ? '—' : s.avg.toFixed(1) + '%', 'across graded classes', scoreColor(s.avg))}
-${tile('Estimated GPA', s.gpa == null ? '—' : s.gpa.toFixed(2), 'unweighted, 4.0 scale')}
-${tile('Highest', s.graded.length ? Math.max(...s.graded.map(c => c.score)) + '%' : '—', s.graded.length ? esc(s.graded.reduce((a, c) => c.score > a.score ? c : a).name) : '', 'var(--gd)')}
-${tile('Lowest', s.graded.length ? Math.min(...s.graded.map(c => c.score)) + '%' : '—', s.graded.length ? esc(s.graded.reduce((a, c) => c.score < a.score ? c : a).name) : '', s.graded.length ? scoreColor(Math.min(...s.graded.map(c => c.score))) : '')}
+${tile('Average', s.avg == null ? '—' : s.avg.toFixed(1) + '%', 'across graded classes', scoreColor(s.avg), 1)}
+${tile('Estimated GPA', s.gpa == null ? '—' : s.gpa.toFixed(2), 'unweighted, 4.0 scale', '', 1)}
+${tile('Highest', s.graded.length ? Math.max(...s.graded.map(c => c.score)) + '%' : '—', s.graded.length ? esc(s.graded.reduce((a, c) => c.score > a.score ? c : a).name) : '', 'var(--gd)', 1)}
+${tile('Lowest', s.graded.length ? Math.min(...s.graded.map(c => c.score)) + '%' : '—', s.graded.length ? esc(s.graded.reduce((a, c) => c.score < a.score ? c : a).name) : '', s.graded.length ? scoreColor(Math.min(...s.graded.map(c => c.score))) : '', 1)}
 </div>
 <div class="cols"><div class="card"><h2>Current grades <span>click a class for details</span></h2>${rows || empty('No active classes')}</div>
 <div class="card"><h2>Recently graded</h2>${S.grades.slice(0, 12).map(gradeRow).join('') || empty('No recent grades')}</div></div>`;
@@ -636,7 +688,7 @@ return `<div class="row">${link(a.html_url, 'grow', `<div class="t">${esc(a.name
 const up = A.filter(a => !a.due_at || new Date(a.due_at) >= now).sort((a, b) => (a.due_at ? +new Date(a.due_at) : 9e15) - (b.due_at ? +new Date(b.due_at) : 9e15));
 const past = A.filter(a => a.due_at && new Date(a.due_at) < now).sort((a, b) => new Date(b.due_at) - new Date(a.due_at));
 list = (up.length ? `<div class="grp">Upcoming</div><div>${up.map(row).join('')}</div>` : '') + (past.length ? `<div class="grp">Past</div><div>${past.map(row).join('')}</div>` : '') || empty('No assignments posted');
-extra = `<div class="sub">${graded.length} of ${A.length} assignments graded${possible ? ' · ' + fmtNum(earned) + ' / ' + fmtNum(possible) + ' points' : ''}</div>`;
+extra = `<div class="sub">${graded.length} of ${A.length} assignments graded${possible ? ' · <span class="pts">' + fmtNum(earned) + ' / ' + fmtNum(possible) + ' points</span>' : ''}</div>`;
 }
 const ann = S.ann.filter(a => a.course === c).slice(0, 5);
 const todo = sortWork(S.work.filter(x => x.open && x.course === c)).slice(0, 6);
@@ -981,11 +1033,11 @@ root.querySelectorAll(`[data-reqform="${kind}"] [data-req]`).forEach(i => { i.va
 reqSay(kind, kind === 'games' ? "Sent! We'll most likely add it soon, so check back in a few days." : "Sent! We'll most likely add study stuff for it soon, so check back in a few days.", 'ok');
 }).catch(() => reqSay(kind, "Couldn't send right now. Try again in a bit.", 'err'));
 }
-function openBlank() {
-const read = S.view === 'read';
-const p = read ? DOCS.find(x => x.id === S.doc) : PACK.find(x => x.id === S.game);
+function openBlank(item) {
+const read = !item && S.view === 'read';
+const p = item || (read ? DOCS.find(x => x.id === S.doc) : PACK.find(x => x.id === S.game));
 const w = p && window.open(blankUrl(), '_blank');
-if (!w) return;
+if (!w) return false;
 w.opener = null;
 const d = w.document;
 d.title = p.name;
@@ -993,7 +1045,7 @@ d.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;background:#000';
 if (read) {
 d.body.style.position = 'relative';
 docView(d, p).then(el => d.body.appendChild(el)).catch(() => { d.body.style.color = '#fff'; d.body.textContent = "Couldn't load this resource."; });
-return;
+return true;
 }
 const f = d.createElement('iframe');
 f.setAttribute('allow', 'fullscreen; autoplay; gamepad');
@@ -1001,6 +1053,15 @@ f.style.cssText = 'border:0;width:100%;height:100%;display:block';
 f.src = gameUrl(p.id);
 d.body.appendChild(f);
 f.focus();
+return true;
+}
+// Opens a game inside Class Dash, or in a new about:blank tab if that's picked in Settings
+function playGame(id) {
+addRecent('pack:' + id);
+S.game = id;
+const p = PACK.find(x => x.id === id);
+if (P.gameOpen === 'tab' && !LIB && p && openBlank(p)) { if (S.view === 'games') renderMain(true); return; }
+go('play');
 }
 function openLibraryTab() {
 const w = window.open(blankUrl(), '_blank');
@@ -1024,7 +1085,7 @@ const vGames = () => {
 const cats = [['All', PACK.length], ...[...THEMES, ARCADE].map(t => [t[0], PACK.filter(p => p.theme === t).length]).filter(c => c[1])];
 if (!cats.some(c => c[0] === S.cat)) S.cat = 'All';
 const list = S.cat === 'All' ? PACK : PACK.filter(p => p.theme[0] === S.cat);
-const recent = store.get('recent', []).map(findItem).filter(Boolean);
+const recent = P.recent ? store.get('recent', []).map(findItem).filter(Boolean) : [];
 const libState = PACK.length ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoading ? empty('No games yet. Add an .html file to the offline folder, then hit refresh.') : '<div class="spin"></div>';
 return `${PATTERNS}<div class="ghero"><div class="ghead"><div class="grow"><div class="gh">Game library</div>
 <div class="sub">${PACK.length} ${PACK.length === 1 ? 'game' : 'games'} · press <span class="kbd">/</span> to search</div></div>
@@ -1064,8 +1125,8 @@ last: [['Period 6', '1:35', '2:55'], ['iVision/Flex', '2:55', '3:45']] }
 };
 const DAY_SCHED = [null, 'reg', 'tue', 'wed', 'reg', 'reg', null];
 const toMin = t => { const [h, m] = t.split(':').map(Number); return (h < 7 ? h + 12 : h) * 60 + m; };
-const hm = m => { const h = Math.floor(m / 60); return (h % 12 || 12) + ':' + String(m % 60).padStart(2, '0'); };
-const ampm = m => hm(m) + (m < 720 ? ' a.m.' : ' p.m.');
+const hm = m => { const h = Math.floor(m / 60); return (P.clock24 ? h : h % 12 || 12) + ':' + String(m % 60).padStart(2, '0'); };
+const ampm = m => P.clock24 ? hm(m) : hm(m) + (m < 720 ? ' a.m.' : ' p.m.');
 const span = mins => { const t = Math.ceil(mins); return t >= 60 ? Math.floor(t / 60) + 'h ' + (t % 60) + 'm' : t + 'm'; };
 const periodsFor = key => { const s = SCHEDULES[key]; return [...s.first, ...s[S.lunch === 2 ? 'l2' : 'l1'], ...s.last].map(([name, a, b]) => ({ name, a: toMin(a), b: toMin(b) })); };
 const nowMin = d => d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60;
@@ -1137,7 +1198,7 @@ ${b.button && b.link ? `<button class="btn" data-banner="${esc(b.id)}">${esc(b.b
 }
 function applySite() {
 const s = curSite();
-$('.bd').style.setProperty('--ac', hexOk(s.accent) ? s.accent : '#7c9cff');
+$('.bd').style.setProperty('--ac', !S.draft && hexOk(P.accent) ? P.accent : hexOk(s.accent) ? s.accent : '#7c9cff');
 $('.brand .logo').innerHTML = I[s.icon] || I.cap;
 $('.bname').textContent = s.name || 'Class Dash';
 $('[data-omni]').placeholder = 'Search ' + (s.name || 'Class Dash') + ', or go to study.ecology-study';
@@ -1159,7 +1220,7 @@ if (!link) return;
 const doc = DOCS.find(d => d.id === link || d.id === 'study/' + link);
 if (doc) { S.doc = doc.id; return go('read'); }
 const pk = PACK.find(p => p.id === link || p.id === 'offline/' + link);
-if (pk) { addRecent('pack:' + pk.id); S.game = pk.id; return go('play'); }
+if (pk) return playGame(pk.id);
 if (/^https?:\/\//i.test(link)) return void window.open(link, '_blank', 'noopener');
 if (/\//.test(link) || /\.html?$/i.test(link)) return void window.open(PAGES + link.replace(/^\/+/, ''), '_blank', 'noopener');
 const hit = omniSearch(link).find(x => x.s >= 1000);
@@ -1339,7 +1400,7 @@ $('.ubar').hidden = false;
 if (pendingUpdate) showUpdate(pendingUpdate.code);
 // "Check for updates" in the sidebar: download the newest bookmarklet.js and compare it with the installed copy
 async function checkUpdates() {
-const btn = $('.cupd');
+const btn = $('[data-act="checkupd"]');
 if (btn.dataset.busy) return;
 btn.dataset.busy = '1'; btn.textContent = 'Checking…';
 const get = u => fetch(u + '?t=' + Date.now(), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); });
@@ -1371,7 +1432,7 @@ run();
 }
 // ---- Address bar: search everything, or type an address like study.ecology-study / games.2048 ----
 const slug = s => String(s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-const ALIAS = { overview: 'home', 'to-do': 'todo', todos: 'todo', class: 'classes', game: 'games', calender: 'calendar', bell: 'schedule', 'hall-pass': 'hallpass', pass: 'hallpass', securly: 'hallpass', request: 'games' };
+const ALIAS = { overview: 'home', 'to-do': 'todo', todos: 'todo', class: 'classes', game: 'games', calender: 'calendar', bell: 'schedule', 'hall-pass': 'hallpass', pass: 'hallpass', securly: 'hallpass', request: 'games', setting: 'settings', options: 'settings', preferences: 'settings', prefs: 'settings', theme: 'settings' };
 function currentAddr() {
 const v = S.view;
 if (v === 'course') { const c = byId(S.courseId); return c ? 'classes.' + slug(c.name) : 'classes'; }
@@ -1380,8 +1441,62 @@ if (v === 'read') { const d = DOCS.find(x => x.id === S.doc); return d ? 'study.
 if (v === 'study' && S.scls !== 'All') return 'study.' + slug(S.scls);
 return v === 'admin' ? '' : v;
 }
+// ---- Settings page (personal, saved in this browser) ----
+const SIZES = { small: 0.9, normal: 1, large: 1.12 };
+function applyPrefs() {
+const bd = $('.bd');
+bd.classList.toggle('th-light', P.theme === 'light');
+bd.classList.toggle('th-mid', P.theme === 'midnight');
+bd.classList.toggle('cd-full', !!P.full);
+bd.classList.toggle('cd-still', !P.motion);
+bd.classList.toggle('cd-blur', !!P.blurGrades);
+bd.classList.toggle('tl-s', P.tiles === 'small');
+bd.classList.toggle('tl-l', P.tiles === 'large');
+bd.style.setProperty('--z', SIZES[P.size] || 1);
+applySite();
+}
+function setPref(k, v) {
+P[k] = v;
+store.set('prefs', P);
+S.setMsg = null; S.resetArm = false;
+applyPrefs();
+tick();
+paintChrome();
+renderMain(true);
+}
+function vSettings() {
+const seg = (k, opts) => `<div class="seg mini">${opts.map(([v, l]) => `<button type="button" data-pref="${k}" data-val="${esc(v)}" class="${P[k] === v ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+const row = (label, sub, ctl) => `<div class="srow"><div class="grow"><div class="t">${label}</div>${sub ? `<div class="sub wrap">${sub}</div>` : ''}</div>${ctl}</div>`;
+const tog = (k, label, sub) => `<label class="stog"><span class="grow"><span class="t">${label}</span>${sub ? `<span class="sub wrap">${sub}</span>` : ''}</span><input type="checkbox" data-ptog="${k}"${P[k] ? ' checked' : ''}><i></i></label>`;
+const themes = [['dark', 'Dark', ['#161a22', '#1d222c', '#272d3a']], ['light', 'Light', ['#ffffff', '#eef1f6', '#e1e6ef']], ['midnight', 'Midnight', ['#0b0c10', '#13151b', '#000000']]];
+const ac = hexOk(P.accent) ? P.accent.toLowerCase() : '';
+const siteAc = hexOk(SITE.accent) ? SITE.accent : '#7c9cff';
+const starts = shownNav().filter(n => n[0] !== 'hallpass').map(n => [n[0], n[1]]).concat([['last', 'Last page I had open']]);
+const m = S.setMsg;
+return `<div class="card adm sset-c"><h2>Appearance<span>saved in this browser · stays when Class Dash updates</span></h2>
+${row('Theme', '', `<div class="thms">${themes.map(([k, l, c]) => `<button type="button" class="thc${P.theme === k ? ' on' : ''}" data-pref="theme" data-val="${k}"><div class="pv" style="background:${c[2]}">${c.slice(0, 2).map(x => `<i style="background:${x}"></i>`).join('')}<i style="background:${ac || siteAc};flex:.3"></i></div><span>${l}</span></button>`).join('')}</div>`)}
+${row('Accent colour', 'Buttons, highlights and links', `<div class="sws"><button type="button" class="btn${ac ? '' : ' pri'}" data-pacc="" style="padding:4px 10px;font-size:12px">Default</button>${COLOR_CHOICES.map(c => `<button type="button" class="sw${ac === c ? ' on' : ''}" style="background:${c}" data-pacc="${c}" title="${c}"></button>`).join('')}<input type="color" data-pcolor value="${ac || siteAc}" title="Pick any colour"></div>`)}
+${row('Text size', 'Makes everything in Class Dash bigger or smaller', seg('size', [['small', 'Small'], ['normal', 'Normal'], ['large', 'Large']]))}
+${tog('full', 'Fill the whole screen', 'Use the full browser window instead of a floating box')}
+${tog('motion', 'Animations', 'Turn off to stop things sliding and fading')}</div>
+<div class="card adm sset-c"><h2>General</h2>
+${row('Start page', 'What opens when you click the bookmark' + (isCanvas ? '' : '. Canvas pages only work on Canvas.'), `<select data-pstart>${starts.map(([v, l]) => `<option value="${v}"${P.start === v ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`)}
+${row('Clock', '', seg('clock24', [[false, '12-hour'], [true, '24-hour']]))}
+${tog('seconds', 'Show seconds on the clock')}
+${tog('blurGrades', 'Hide grades', 'Blurs scores and GPA until you hover over them, so people walking by can\'t see')}
+${tog('outside', 'Close when clicking outside', 'Turn off so a stray click outside the box doesn\'t close Class Dash')}</div>
+<div class="card adm sset-c"><h2>Games</h2>
+${row('Open games', '', seg('gameOpen', [['here', 'Inside Class Dash'], ['tab', 'In a new tab']]))}
+${row('Game tile size', '', seg('tiles', [['small', 'Small'], ['medium', 'Medium'], ['large', 'Large']]))}
+${tog('recent', 'Show "Jump back in"', 'Your recently played games at the top of the library')}</div>
+<div class="card adm sset-c"><h2>Reset</h2><div class="sacts">
+<button type="button" class="btn" data-act="pclear">Clear recently played</button>
+<button type="button" class="btn" data-act="preset">${S.resetArm ? 'Click again to reset everything' : 'Reset all settings'}</button>
+<span class="amsg ${m ? m.cls : ''}">${m ? esc(m.text) : ''}</span></div></div>`;
+}
 function omniItems() {
 const out = shownNav().map(([v, label, icon]) => ({ kind: 'Page', name: label, addr: v, icon, w: 40, open: () => go(v) }));
+if (!LIB) out.push({ kind: 'Page', name: 'Settings', addr: 'settings', icon: I.gear, w: 35, open: () => go('settings') });
 const classes = {};
 DOCS.forEach(p => { classes[p.cls] = classes[p.cls] || p; });
 Object.keys(classes).forEach(cls => out.push({ kind: 'Study class', name: cls, addr: 'study.' + slug(cls), icon: classes[cls].icon, color: classes[cls].color, w: 30,
@@ -1389,7 +1504,7 @@ open: () => { S.scls = cls; S.sq = ''; go('study'); } }));
 DOCS.forEach(p => out.push({ kind: 'Study · ' + p.cls, name: p.name, addr: 'study.' + slug(p.cls) + '.' + slug(p.name), alt: 'study.' + slug(p.name), icon: p.icon, color: p.color, w: 25,
 open: () => { S.doc = p.id; go('read'); } }));
 PACK.forEach(p => out.push({ kind: 'Game', name: p.name, addr: 'games.' + slug(p.name), icon: (p.theme && p.theme[2] ? svg(p.theme[2]) : I.game), w: 20,
-open: () => { addRecent('pack:' + p.id); S.game = p.id; go('play'); } }));
+open: () => playGame(p.id) }));
 if (isCanvas) {
 S.courses.forEach(c => out.push({ kind: 'Class', name: c.name, addr: 'classes.' + slug(c.name), icon: I.book, color: c.color, w: 25,
 open: () => { S.back = 'classes'; S.courseId = c.id; go('course'); } }));
@@ -1461,11 +1576,21 @@ sealed(v).then(ok => { if (ok) { omniBox.blur(); omniClose(); openAdmin(); } els
 else if (e.key === 'Escape') { e.preventDefault(); omniBox.blur(); omniClose(); omniBox.value = currentAddr(); }
 }
 root.addEventListener('click', e => {
-if (e.target === $('.bd')) return LIB ? null : close();
-const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-sched],[data-lunch],[data-pack],[data-doc],[data-act]');
+if (e.target === $('.bd')) return LIB || !P.outside ? null : close();
+const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-sched],[data-lunch],[data-pack],[data-doc],[data-pref],[data-pacc],[data-act]');
 if (!t) return;
 const d = t.dataset;
-if (d.go) go(d.go);
+if (d.pref) setPref(d.pref, d.val === 'true' ? true : d.val === 'false' ? false : d.val);
+else if (d.pacc != null) setPref('accent', d.pacc);
+else if (d.act === 'settings') go('settings');
+else if (d.act === 'pclear') { store.set('recent', []); S.setMsg = { text: 'Recently played cleared.', cls: 'ok' }; renderMain(true); }
+else if (d.act === 'preset') {
+if (!S.resetArm) { S.resetArm = true; S.setMsg = null; renderMain(true); return; }
+P = Object.assign({}, PREF_DEFAULT); store.set('prefs', P);
+applyPrefs(); tick(); paintChrome();
+S.resetArm = false; S.setMsg = { text: 'Settings reset to the defaults.', cls: 'ok' }; renderMain(true);
+}
+else if (d.go) go(d.go);
 else if (d.course) { S.back = navOf(S.view); S.courseId = Number(d.course); go('course'); }
 else if (d.done) {
 if (S.done.has(d.done)) S.done.delete(d.done); else S.done.add(d.done);
@@ -1479,7 +1604,7 @@ else if (d.scls) { S.scls = d.scls; renderMain(true); }
 else if (d.doc) { S.doc = d.doc; go('read'); }
 else if (d.sched) { S.schedKey = d.sched; renderMain(true); }
 else if (d.lunch) { S.lunch = Number(d.lunch); store.set('lunch', S.lunch); paintSched(); renderMain(true); }
-else if (d.pack) { addRecent('pack:' + d.pack); S.game = d.pack; go('play'); }
+else if (d.pack) playGame(d.pack);
 else if (d.act === 'random') { const v = visibleTiles(); if (v.length) v[Math.floor(Math.random() * v.length)].click(); }
 else if (d.act === 'license') showLicense($('.ct'));
 else if (d.act === 'newtab') openBlank();
@@ -1492,6 +1617,15 @@ else if (d.act === 'hallpass') openHallPass();
 else if (d.act === 'checkupd') checkUpdates();
 else if (d.act === 'update') applyUpdate();
 else if (d.act === 'refresh') { if (usesLib(S.view)) loadLib(true); else { S.courseCache = {}; load(); } }
+});
+root.addEventListener('change', e => {
+const t = e.target;
+if (t.matches('[data-ptog]')) setPref(t.dataset.ptog, t.checked);
+else if (t.matches('[data-pstart]')) setPref('start', t.value);
+else if (t.matches('[data-pcolor]') && hexOk(t.value)) setPref('accent', t.value.toLowerCase());
+});
+root.addEventListener('input', e => {
+if (e.target.matches('[data-pcolor]') && hexOk(e.target.value)) $('.bd').style.setProperty('--ac', e.target.value);
 });
 root.addEventListener('submit', e => {
 const f = e.target.closest && e.target.closest('[data-reqform]');
@@ -1540,7 +1674,7 @@ e.stopPropagation();
 }
 const tick = () => {
 const n = new Date();
-$('.clock').textContent = fmtTime(n);
+$('.clock').textContent = fmtTime(n, P.seconds);
 $('.date').textContent = n.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
 paintSched();
 if (S.view === 'schedule' && n.getSeconds() === 0 && !(root.activeElement && root.activeElement.matches('[data-period]'))) renderMain(true);
@@ -1558,8 +1692,9 @@ document.documentElement.style.overflow = oldOverflow;
 host.remove();
 }
 host.__close = close;
+if (S.view !== 'games' && !shownNav().some(n => n[0] === S.view)) S.view = isCanvas && !LIB ? 'home' : 'games';
 tick();
-applySite();
+applyPrefs();
 loadSite();
 renderMain();
 load();
