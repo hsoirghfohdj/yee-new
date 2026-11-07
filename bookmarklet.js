@@ -14,7 +14,7 @@ get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == 
 set(k, v) { try { localStorage.setItem('classdash_' + k, JSON.stringify(v)); } catch (e) {} }
 };
 // Personal settings (the Settings page). Saved in this browser as classdash_prefs, so updates never reset them.
-const PREF_DEFAULT = { theme: 'dark', accent: '', size: 'normal', full: false, motion: true, start: 'home', clock24: false, seconds: false, outside: true, blurGrades: false, gameOpen: 'here', recent: true, tiles: 'medium' };
+const PREF_DEFAULT = { theme: 'dark', accent: '', size: 'normal', full: false, motion: true, start: 'home', clock24: false, seconds: false, outside: true, blurGrades: false, gameOpen: 'here', recent: true, tiles: 'medium', gameMute: true, qsKey: { code: 'KeyQ', alt: true, ctrl: false, shift: false, meta: false } };
 let P = Object.assign({}, PREF_DEFAULT, store.get('prefs', {}));
 const VIEWS = ['home', 'todo', 'grades', 'classes', 'calendar', 'schedule', 'hallpass', 'study', 'games'];
 const CANVAS_VIEWS = ['home', 'todo', 'grades', 'classes', 'calendar'];
@@ -25,7 +25,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Games now have a loading screen and a New this week row, plus Sketchbook, a new Settings page and a cleaner Study page.';
+const WHATSNEW = 'Everything now loads straight from the repo. Games start muted (Sound button above each game), and the new briefcase button or Alt+Q jumps to a Canvas assignment.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -96,6 +96,9 @@ chain: svg('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d
 pic: svg('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>'),
 file: svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>'),
 plus: svg('<path d="M12 5v14M5 12h14"/>'),
+brief: svg('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>'),
+vol: svg('<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>'),
+mute: svg('<path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/>'),
 key: svg('<circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 9.2-9.2M16 7l3 3M14 9l2 2"/>'),
 tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
 };
@@ -374,6 +377,9 @@ background:radial-gradient(120% 160% at 0% 0%,rgba(124,156,255,.2),transparent 5
 .snone[hidden]{display:none}
 .snone .btn{margin-top:12px;display:inline-flex;gap:6px;align-items:center}
 .sreq{margin-top:6px}
+.btn.snd{display:inline-flex;align-items:center;gap:6px}
+.btn.snd[hidden]{display:none}
+.btn.snd svg{width:15px;height:15px;margin:0}
 .gt .nb{position:absolute;top:8px;left:8px;z-index:1;padding:2px 7px;border-radius:7px;background:var(--ac);color:#0f1218;font-size:10px;font-weight:800;letter-spacing:.06em;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .grp .grpn{margin-left:8px;font-weight:550;text-transform:none;letter-spacing:0;opacity:.8}
 .gload{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:var(--p1);transition:opacity .25s}
@@ -517,6 +523,25 @@ url = m ? m[1] : null;
 }
 return out || [];
 }
+// Quick switch: jump to a random current Canvas assignment (button at the top, or the shortcut in Settings)
+function assignPool() {
+const now = Date.now(), abs = u => { try { return new URL(u, location.origin).href; } catch (e) { return null; } };
+const ok = x => x.url && (x.type === 'assignment' || x.type === 'quiz' || x.type === 'discussion_topic');
+let l = S.work.filter(x => ok(x) && x.open && (!x.due || (+new Date(x.due) > now - 7 * DAY && +new Date(x.due) < now + 21 * DAY)));
+if (!l.length) l = S.work.filter(x => ok(x) && x.open);
+if (!l.length) l = S.work.filter(ok);
+return l.map(x => ({ t: x.title, u: abs(x.url) })).filter(x => x.u).slice(0, 40);
+}
+const keyOf = e => ({ code: e.code, alt: e.altKey, ctrl: e.ctrlKey, shift: e.shiftKey, meta: e.metaKey });
+const keyMatch = (a, k) => !!k && !!a && a.code === k.code && !!a.alt === !!k.alt && !!a.ctrl === !!k.ctrl && !!a.shift === !!k.shift && !!a.meta === !!k.meta;
+const KEYNAMES = { Backquote: '`', Minus: '-', Equal: '=', BracketLeft: '[', BracketRight: ']', Backslash: '\\', Semicolon: ';', Quote: "'", Comma: ',', Period: '.', Slash: '/', Space: 'Space', Escape: 'Esc', Enter: 'Enter', Tab: 'Tab', ArrowUp: 'Up', ArrowDown: 'Down', ArrowLeft: 'Left', ArrowRight: 'Right' };
+const keyLabel = k => !k ? 'Not set' : [k.ctrl && 'Ctrl', k.alt && 'Alt', k.shift && 'Shift', k.meta && 'Cmd'].filter(Boolean).concat(KEYNAMES[k.code] || String(k.code).replace(/^(Key|Digit|Numpad)/, '')).join(' + ');
+function quickSwitch() {
+const pool = isCanvas && !LIB && S.loadedAt ? assignPool() : store.get('assignPool', []);
+const url = pool.length ? pool[Math.floor(Math.random() * pool.length)].u : isCanvas && !LIB ? location.origin + '/' : store.get('canvasHome', '');
+if (!LIB) close();
+if (url) location.href = url;
+}
 function decorate(c, colors) {
 const es = c.enrollments || [];
 const e = es.find(x => /student/i.test(x.type || '')) || es[0] || {};
@@ -587,6 +612,7 @@ title: a.title, text: plain(a.message).slice(0, 220), at: a.posted_at, url: a.ht
 author: a.author && a.author.display_name, course: byId((a.context_code || '').replace('course_', ''))
 })).sort((a, b) => new Date(b.at) - new Date(a.at));
 S.loadedAt = new Date();
+if (!LIB) { store.set('assignPool', assignPool()); store.set('canvasHome', location.origin + '/'); }
 } catch (e) {
 S.error = e.message || String(e);
 }
@@ -609,7 +635,7 @@ root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div 
 <aside class="sb"><div class="brand"><span class="logo">${I.cap}</span><span class="bname">Class Dash</span></div><nav class="nav"></nav><div class="sbf"><div class="clock"></div><div class="date"></div><div class="sched" data-go="schedule" title="Open the bell schedule"></div><div class="sbl"><button class="cupd" data-act="settings" title="Settings (saved in this browser)">${I.gear.replace('width="18" height="18"', 'width="13" height="13"')}Settings</button><button class="cupd" data-act="checkupd">Check for updates</button><button class="cupd" data-act="admin" hidden title="Admin (only shows on your computers)">${I.key.replace('width="18" height="18"', 'width="13" height="13"')}Admin</button></div><div class="ver"></div></div></aside>
 <main class="mn"><header class="hd"><h1></h1>
 <div class="omni"><span class="oi">${I.search}</span><input data-omni placeholder="Search Class Dash, or go to study.ecology-study" autocomplete="off" spellcheck="false" aria-label="Search or go to"><span class="kbd">Ctrl K</span><div class="odrop" hidden></div></div><span class="upd"></span>
-<button class="ib" data-act="refresh" title="Refresh">${I.refresh}</button><button class="ib sset" data-act="settings" title="Settings">${I.gear}</button><button class="ib" data-act="close" title="Close (Esc)">${I.x}</button></header>
+<button class="ib qsw" data-act="qswitch" title="Jump to a Canvas assignment">${I.brief}</button><button class="ib" data-act="refresh" title="Refresh">${I.refresh}</button><button class="ib sset" data-act="settings" title="Settings">${I.gear}</button><button class="ib" data-act="close" title="Close (Esc)">${I.x}</button></header>
 <div class="bnrs"></div>
 <div class="ubar" hidden><span class="uic">${I.refresh}</span><div class="grow"><div class="t">Update available</div><div class="sub unote"></div></div>
 <button class="btn" data-act="later">Later</button><button class="btn pri" data-act="update">Update now</button></div>
@@ -626,6 +652,7 @@ const c = S.view === 'course' && byId(S.courseId), g = S.view === 'play' && PACK
 $('.hd h1').textContent = c ? c.name : g ? g.name : dc ? dc.name : S.view === 'admin' ? 'Admin' : S.view === 'settings' ? 'Settings' : (NAV.find(n => n[0] === S.view) || [, ''])[1];
 root.querySelectorAll('[data-act="settings"]').forEach(b => b.classList.toggle('on', S.view === 'settings'));
 root.querySelectorAll('[data-act="admin"]').forEach(b => b.classList.toggle('on', S.view === 'admin'));
+$('.qsw').title = 'Jump to a Canvas assignment' + (P.qsKey ? ' (' + keyLabel(P.qsKey) + ')' : '');
 $('.upd').textContent = usesLib(S.view) ? (S.libLoading ? 'Checking GitHub…' : S.lib ? 'Updated ' + fmtTime(new Date(S.lib.at)) : '')
 : S.loading && S.loadedAt ? 'Refreshing…' : S.loadedAt && isCanvas && S.view !== 'play' && S.view !== 'read' ? 'Updated ' + fmtTime(S.loadedAt) : '';
 const rb = $('[data-act="refresh"]');
@@ -843,10 +870,10 @@ if (!p.startsWith(DIR) || !/\.html?$/i.test(p)) return false;
 const parts = p.slice(DIR.length).split('/');
 return parts.length === 1 || (parts.length === 2 && /^index\.html?$/i.test(parts[1]));
 };
-// A game loads straight from the repo (raw.githubusercontent.com) instead of GitHub Pages when it has a
-// LOAD-FROM-REPO.txt next to it: offline/<game>/LOAD-FROM-REPO.txt, or offline/<game>.LOAD-FROM-REPO.txt
-const repoMarker = p => /\/index\.html?$/i.test(p) ? p.replace(/index\.html?$/i, 'LOAD-FROM-REPO.txt') : p.replace(/\.html?$/i, '.LOAD-FROM-REPO.txt');
-const repoGame = id => !!(S.lib && (S.lib.fromRepo || []).includes(id));
+// Games load straight from the repo (raw.githubusercontent.com). One with a LOAD-FROM-PAGES.txt next to it
+// (offline/<game>/LOAD-FROM-PAGES.txt or offline/<game>.LOAD-FROM-PAGES.txt) loads from GitHub Pages instead.
+const pagesMarker = p => /\/index\.html?$/i.test(p) ? p.replace(/index\.html?$/i, 'LOAD-FROM-PAGES.txt') : p.replace(/\.html?$/i, '.LOAD-FROM-PAGES.txt');
+const repoGame = id => !(S.lib && (S.lib.fromPages || []).includes(id));
 const toPack = path => {
 const rel = path.slice(DIR.length), parts = rel.split('/');
 const base = parts.length === 2 ? parts[0] : parts[0].replace(/\.html?$/i, '');
@@ -931,8 +958,8 @@ files.filter(p => IMG.test(p)).forEach(p => { imgs[p.replace(IMG, '').toLowerCas
 const paths = files.filter(isGame);
 paths.forEach(p => { const a = artFor(p, imgs); if (a) pics[p] = a; });
 const dirs = [...new Set(files.filter(p => p.startsWith(STUDY)).map(p => p.slice(STUDY.length).split('/')).filter(a => a.length > 1).map(a => a[0]))];
-const fromRepo = paths.filter(p => files.includes(repoMarker(p)));
-return { at: Date.now(), paths, art: pics, study: files.filter(isDoc), dirs, fromRepo };
+const fromPages = paths.filter(p => files.includes(pagesMarker(p)));
+return { at: Date.now(), paths, art: pics, study: files.filter(isDoc), dirs, fromPages };
 }
 // Games added to the repo in the last 7 days, worked out from GitHub (compare last week's commit with now). Cached for an hour.
 let NEWG = store.get('newGames', null);
@@ -981,7 +1008,7 @@ const p = PACK.find(x => x.id === S.game);
 if (!p) return `<div class="gbar"><button class="btn" data-go="games">← Games</button></div>` + empty('That game is no longer in the repo.');
 return `<div class="play"><div class="gbar wide"><button class="btn" data-go="games">← Games</button>
 <div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${esc(p.desc)} · ${p.repo ? 'straight from the repo' : 'from GitHub Pages'}</div></div>
-<button class="btn" data-act="license">License</button><button class="btn" data-act="newtab">New tab</button><button class="btn" data-act="full">Full screen</button><button class="btn" data-act="reload">Restart</button></div>
+<button class="btn snd" data-act="sound" title="Turn the game's sound on or off">${soundBtn()}</button><button class="btn" data-act="license">License</button><button class="btn" data-act="newtab">New tab</button><button class="btn" data-act="full">Full screen</button><button class="btn" data-act="reload">Restart</button></div>
 <div class="frame"><div class="spin"></div></div></div>`;
 };
 // Loading screen shown over a game until its page has finished downloading
@@ -1008,16 +1035,81 @@ const iv = w.setInterval(tick, 1000);
 tick();
 f.addEventListener('load', () => { w.clearInterval(iv); ov.classList.add('done'); w.setTimeout(() => ov.remove(), 300); }, { once: true });
 }
-// Points the frame at the game: GitHub Pages normally, or the repo itself (fetched and shown in a sandbox) for LOAD-FROM-REPO games
+// Runs first inside every game loaded from the repo: a sound switch, saved progress (games can't use the browser's
+// own storage in their sandbox, so Class Dash keeps it for them), and passing key presses up for the quick-switch shortcut.
+function cdShim(startMuted, saved) {
+var muted = !!startMuted, gains = [];
+var send = function (m) { try { parent.postMessage(m, '*'); } catch (e) {} };
+try {
+var AC = window.AudioContext || window.webkitAudioContext;
+if (AC) {
+var W = function (o) {
+var ctx = o === undefined ? new AC() : new AC(o);
+try { var g = ctx.createGain(); g.gain.value = muted ? 0 : 1; g.connect(ctx.destination); Object.defineProperty(ctx, 'destination', { get: function () { return g; }, configurable: true }); gains.push(g); } catch (e) {}
+return ctx;
+};
+W.prototype = AC.prototype;
+window.AudioContext = W;
+if (window.webkitAudioContext) window.webkitAudioContext = W;
+}
+} catch (e) {}
+var media = function () { try { var l = document.querySelectorAll('audio,video'); for (var i = 0; i < l.length; i++) l[i].muted = muted; } catch (e) {} };
+try { var play = HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play = function () { try { this.muted = muted; } catch (e) {} return play.apply(this, arguments); }; } catch (e) {}
+var mk = function (data, changed) {
+var has = function (k) { return Object.prototype.hasOwnProperty.call(data, k); };
+var api = {
+getItem: function (k) { k = String(k); return has(k) ? data[k] : null; },
+setItem: function (k, v) { data[String(k)] = String(v); changed(); },
+removeItem: function (k) { delete data[String(k)]; changed(); },
+clear: function () { for (var k in data) delete data[k]; changed(); },
+key: function (i) { var ks = Object.keys(data); return i >= 0 && i < ks.length ? ks[i] : null; }
+};
+return new Proxy(api, {
+get: function (t, k) { if (k === 'length') return Object.keys(data).length; if (k in api) return api[k]; return typeof k === 'string' && has(k) ? data[k] : undefined; },
+set: function (t, k, v) { if (!(k in api)) api.setItem(k, v); return true; },
+deleteProperty: function (t, k) { api.removeItem(k); return true; },
+has: function (t, k) { return k in api || has(k); },
+ownKeys: function () { return Object.keys(data); },
+getOwnPropertyDescriptor: function (t, k) { return has(k) ? { value: data[k], writable: true, enumerable: true, configurable: true } : undefined; }
+});
+};
+var data = saved && typeof saved === 'object' ? saved : {}, timer = 0;
+var ls = mk(data, function () { clearTimeout(timer); timer = setTimeout(function () { send({ cdSave: data }); }, 800); });
+try { Object.defineProperty(window, 'localStorage', { value: ls, configurable: true }); } catch (e) {}
+try { Object.defineProperty(window, 'sessionStorage', { value: mk({}, function () {}), configurable: true }); } catch (e) {}
+var jar = {};
+try { Object.defineProperty(document, 'cookie', { configurable: true, get: function () { return Object.keys(jar).map(function (k) { return k + '=' + jar[k]; }).join('; '); }, set: function (v) { var p = String(v).split(';')[0], i = p.indexOf('='); if (i > 0) jar[p.slice(0, i).trim()] = p.slice(i + 1).trim(); } }); } catch (e) {}
+window.addEventListener('message', function (e) {
+var d = e.data;
+if (!d || typeof d !== 'object' || !('cdMute' in d)) return;
+muted = !!d.cdMute;
+for (var i = 0; i < gains.length; i++) { try { gains[i].gain.value = muted ? 0 : 1; } catch (x) {} }
+media();
+});
+window.addEventListener('keydown', function (e) { send({ cdKey: { code: e.code, alt: e.altKey, ctrl: e.ctrlKey, shift: e.shiftKey, meta: e.metaKey } }); }, true);
+send({ cdReady: 1 });
+}
+const jsonIn = v => JSON.stringify(v).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+// Points the frame at the game: straight from the repo (fetched, then shown in a sandbox with the shim above),
+// or GitHub Pages for LOAD-FROM-PAGES games and if the repo can't be reached. Resolves to 'repo' or 'pages'.
 const GAME_SANDBOX = 'allow-scripts allow-pointer-lock allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads allow-orientation-lock';
-function frameGame(f, path) {
-if (!repoGame(path)) { f.src = gameUrl(path); return Promise.resolve(); }
+function frameGame(f, path, muted) {
+if (!repoGame(path)) { f.src = gameUrl(path); return Promise.resolve('pages'); }
 const raw = rawOf(path);
-return fetch(raw + '?t=' + Date.now(), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); }).then(html => {
-const base = '<base href="' + esc(raw.replace(/[^/]*$/, '')) + '">';
+return fetch(raw).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); }).then(html => {
+const add = '<base href="' + esc(raw.replace(/[^/]*$/, '')) + '"><script>(' + cdShim.toString() + ')(' + (muted ? 1 : 0) + ',' + jsonIn(store.get('save:' + path, {}) || {}) + ');<\/script>';
 f.setAttribute('sandbox', GAME_SANDBOX);
-f.srcdoc = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + base) : base + html;
-}).catch(() => { f.src = gameUrl(path); });
+f.srcdoc = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + add) : /<html[^>]*>/i.test(html) ? html.replace(/<html[^>]*>/i, m => m + add) : add + html;
+return 'repo';
+}).catch(() => { f.removeAttribute('sandbox'); f.removeAttribute('srcdoc'); f.src = gameUrl(path); return 'pages'; });
+}
+const saveGame = (id, data) => { try { const t = JSON.stringify(data); if (t.length < 2e6) localStorage.setItem('classdash_save:' + id, t); } catch (e) {} };
+const soundBtn = () => (S.soundOn ? I.vol + 'Sound on' : I.mute + 'Sound off');
+function paintSound() {
+const b = root.querySelector('[data-act="sound"]');
+if (!b) return;
+b.innerHTML = soundBtn();
+b.hidden = S.gameMode === 'pages';
 }
 function startFrame(ct, path) {
 const box = ct.querySelector('.frame');
@@ -1029,7 +1121,8 @@ f.setAttribute('allow', 'fullscreen; autoplay; gamepad');
 f.addEventListener('load', () => { try { f.contentWindow.focus(); } catch (e) {} });
 box.innerHTML = gameLoader(p, true);
 watchLoad(f, box.querySelector('.gload'));
-frameGame(f, path).then(() => { if (box.isConnected) box.appendChild(f); });
+S.gameMode = null;
+frameGame(f, path, !S.soundOn).then(mode => { S.gameMode = mode; paintSound(); if (box.isConnected) box.appendChild(f); });
 }
 const startPack = ct => startFrame(ct, S.game);
 // Study pages load straight from the repo (raw.githubusercontent.com), so a new upload shows up
@@ -1043,7 +1136,7 @@ if (docCache[path]) return Promise.resolve(docCache[path]);
 return fetch(RAW + path.split('/').map(encodeURIComponent).join('/') + '?t=' + Date.now(), { cache: 'no-store' })
 .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
 .then(html => {
-const base = '<base href="' + esc(gameUrl(path).replace(/[^/]*$/, '')) + '">';
+const base = '<base href="' + esc(rawOf(path).replace(/[^/]*$/, '')) + '">';
 html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + base) : base + html;
 return (docCache[path] = html);
 });
@@ -1271,11 +1364,45 @@ f.setAttribute('allow', 'fullscreen; autoplay; gamepad');
 f.style.cssText = 'border:0;width:100%;height:100%;display:block';
 d.body.insertAdjacentHTML('beforeend', gameLoader({ name: p.name }));
 watchLoad(f, d.body.querySelector('.gload'), w);
-frameGame(f, p.id).then(() => { d.body.appendChild(f); f.focus(); });
+const muted = S.view === 'play' && S.game === p.id ? !S.soundOn : P.gameMute;
+frameGame(f, p.id, muted).then(mode => {
+d.body.appendChild(f);
+const cfg = { id: p.id, muted, repo: mode === 'repo', key: P.qsKey, pool: isCanvas && !LIB && S.loadedAt ? assignPool() : store.get('assignPool', []), home: store.get('canvasHome', '') };
+const sc = d.createElement('script');
+sc.textContent = '(' + blankTabScript.toString() + ')(' + jsonIn(cfg) + ');';
+d.body.appendChild(sc);
+f.focus();
+});
 return true;
+}
+// Runs inside an about:blank game tab: Sound button, the quick-switch shortcut and saving progress
+function blankTabScript(c) {
+var f = document.querySelector('iframe'), muted = c.muted;
+var tell = function () { try { f.contentWindow.postMessage({ cdMute: muted }, '*'); } catch (e) {} };
+if (c.repo) {
+var b = document.createElement('button');
+b.style.cssText = 'position:fixed;top:10px;right:10px;z-index:5;border:0;border-radius:9px;padding:7px 12px;font:600 13px system-ui,sans-serif;background:rgba(15,18,24,.78);color:#e9ecf2;cursor:pointer;opacity:.6';
+b.onmouseenter = function () { b.style.opacity = 1; };
+b.onmouseleave = function () { b.style.opacity = .6; };
+var paint = function () { b.textContent = muted ? 'Sound off' : 'Sound on'; };
+b.onclick = function () { muted = !muted; paint(); tell(); };
+paint();
+document.body.appendChild(b);
+}
+var same = function (k) { var q = c.key; return !!q && k.code === q.code && !!k.alt === !!q.alt && !!k.ctrl === !!q.ctrl && !!k.shift === !!q.shift && !!k.meta === !!q.meta; };
+var go = function () { var p = c.pool || []; var u = p.length ? p[Math.floor(Math.random() * p.length)].u : c.home; if (u) location.href = u; };
+window.addEventListener('message', function (e) {
+var d = e.data;
+if (e.source !== f.contentWindow || !d || typeof d !== 'object') return;
+if (d.cdReady) tell();
+else if (d.cdKey && same(d.cdKey)) go();
+else if (d.cdSave && typeof d.cdSave === 'object') { try { var t = JSON.stringify(d.cdSave); if (t.length < 2e6) localStorage.setItem('classdash_save:' + c.id, t); } catch (x) {} }
+});
+window.addEventListener('keydown', function (e) { if (same({ code: e.code, alt: e.altKey, ctrl: e.ctrlKey, shift: e.shiftKey, meta: e.metaKey })) { e.preventDefault(); go(); } }, true);
 }
 // Opens a game inside Class Dash, or in a new about:blank tab if that's picked in Settings
 function playGame(id) {
+S.soundOn = !P.gameMute;
 addRecent('pack:' + id);
 S.game = id;
 const p = PACK.find(x => x.id === id);
@@ -1603,14 +1730,14 @@ ${list || '<p class="sub">No study resources yet.</p>'}</div>`;
 const gameFiles = (files, id) => {
 if (/\/index\.html?$/i.test(id)) { const dir = id.replace(/\/index\.html?$/i, ''); return { dir, list: files.filter(f => f.path.startsWith(dir + '/')) }; }
 const stem = id.replace(/\.html?$/i, '');
-return { stem, list: files.filter(f => f.path === id || (f.path.startsWith(stem + '.') && /^(license\.txt|load-from-repo\.txt|png|jpe?g|webp|gif|svg)$/i.test(f.path.slice(stem.length + 1)))) };
+return { stem, list: files.filter(f => f.path === id || (f.path.startsWith(stem + '.') && /^(license\.txt|load-from-repo\.txt|load-from-pages\.txt|png|jpe?g|webp|gif|svg)$/i.test(f.path.slice(stem.length + 1)))) };
 };
 function gameRowA(p, hid, fea) {
 const at = `data-id="${esc(p.id)}"`, ek = 'game:' + p.id, h = hash(p.name);
 const thumb = `<span class="gthumb" style="background:linear-gradient(135deg,${PAL[h % PAL.length]},${PAL[(h >>> 3) % PAL.length]})">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : esc(p.name.charAt(0))}</span>`;
 if (A.edit === ek) return `<div class="ares">${thumb}${editRow('adm-gsave', at, 'Game name')}</div>`;
-return `<div class="ares${hid ? ' dim' : ''}">${thumb}<span class="grow"><span class="t">${esc(p.name)}</span>${fea ? '<span class="chip ac">Featured</span>' : ''}${hid ? '<span class="chip">Hidden</span>' : ''}${p.repo ? '<span class="chip gd" title="Loads straight from the repo, not GitHub Pages">From repo</span>' : ''}</span>
-<button class="btn sm" data-act="adm-gplay" ${at}>Play</button><button class="btn sm" data-act="adm-grepo" ${at} title="${p.repo ? 'Load it from GitHub Pages again' : 'Load it straight from the repo, so changes work right away'}">${p.repo ? 'Use Pages' : 'Use repo'}</button><button class="btn sm" data-act="adm-gedit" ${at}>Rename</button><button class="btn sm" data-act="adm-gcover" ${at}>${p.img ? 'Change cover' : 'Add cover'}</button>
+return `<div class="ares${hid ? ' dim' : ''}">${thumb}<span class="grow"><span class="t">${esc(p.name)}</span>${fea ? '<span class="chip ac">Featured</span>' : ''}${hid ? '<span class="chip">Hidden</span>' : ''}${!p.repo ? '<span class="chip wn" title="Loads from GitHub Pages instead of the repo">From Pages</span>' : ''}</span>
+<button class="btn sm" data-act="adm-gplay" ${at}>Play</button><button class="btn sm" data-act="adm-grepo" ${at} title="${p.repo ? 'Load it from GitHub Pages instead (try this if it breaks)' : 'Load it straight from the repo again'}">${p.repo ? 'Use Pages' : 'Use repo'}</button><button class="btn sm" data-act="adm-gedit" ${at}>Rename</button><button class="btn sm" data-act="adm-gcover" ${at}>${p.img ? 'Change cover' : 'Add cover'}</button>
 <button class="btn sm" data-act="adm-gfeat" ${at}>${fea ? 'Unfeature' : 'Feature'}</button><button class="btn sm" data-act="adm-ghide" ${at}>${hid ? 'Show' : 'Hide'}</button>
 ${delBtn(ek, 'adm-gdel', at, 'Delete', 'Click again to delete')}</div>`;
 }
@@ -1623,7 +1750,7 @@ return `<div class="card adm sset-c"><h2>Add games</h2>
 <label class="adrop"><input type="file" data-gfile multiple accept=".html,.htm"><span>${I.plus}<b>Choose game files</b> or drop them here</span><span class="sub wrap">Single-file .html games. The file name becomes the game's name. A brand-new game can take a few minutes to start working while GitHub Pages updates.</span><span class="afiles"></span></label>
 <div class="arow"><button class="btn pri" data-act="adm-gupload">Add games</button></div></div>
 <div class="card adm"><h2>All games<span>${all.length} games · ${fea.size} featured · ${hid.size} hidden</span></h2>
-<p class="sub wrap" style="margin-bottom:10px"><b>Feature</b> pins a game to the top of the library. <b>Hide</b> takes it out of the library without deleting it. <b>Use repo</b> loads a game straight from the repo, so it works without waiting for GitHub Pages.</p>
+<p class="sub wrap" style="margin-bottom:10px"><b>Feature</b> pins a game to the top of the library. <b>Hide</b> takes it out of the library without deleting it. Games load straight from the repo. If one doesn't work that way, <b>Use Pages</b> loads it from GitHub Pages instead.</p>
 <div class="arow" style="margin-top:0"><input class="wide" data-agq value="${esc(A.gq)}" placeholder="Search games to rename, hide or delete…" autocomplete="off"></div>
 ${shown.map(p => gameRowA(p, hid.has(p.id), fea.has(p.id))).join('') || '<p class="sub" style="padding:10px 0">No games match.</p>'}
 ${list.length > shown.length ? `<div class="arow"><button class="btn" data-act="adm-gmore">Show more</button><span class="sub">${list.length - shown.length} more</span></div>` : ''}
@@ -1826,11 +1953,11 @@ return 'Renamed to ' + pretty(name) + '. It can take a few minutes to start work
 });
 }
 case 'adm-grepo': {
-const on = repoGame(d.id), mk = repoMarker(d.id);
-return aRun(on ? 'Switching to GitHub Pages' : 'Switching to the repo', async () => {
-await ghChange((on ? 'Load from GitHub Pages: ' : 'Load from the repo: ') + game.name, async files => on ? files.filter(f => f.path === mk).map(f => ({ path: f.path, sha: null }))
-: [{ path: mk, b64: b64enc('This game loads straight from the repo (raw.githubusercontent.com) instead of GitHub Pages,\nso changes work right away. Delete this file to load it from GitHub Pages again.\n') }]);
-return on ? game.name + ' loads from GitHub Pages again.' : game.name + ' now loads straight from the repo. Games with separate script files may need a small change to work this way.';
+const onPages = !repoGame(d.id), mk = pagesMarker(d.id);
+return aRun(onPages ? 'Switching to the repo' : 'Switching to GitHub Pages', async () => {
+await ghChange((onPages ? 'Load from the repo: ' : 'Load from GitHub Pages: ') + game.name, async files => onPages ? files.filter(f => f.path === mk).map(f => ({ path: f.path, sha: null }))
+: [{ path: mk, b64: b64enc('This game loads from GitHub Pages instead of straight from the repo.\nDelete this file to load it from the repo again.\n') }]);
+return onPages ? game.name + ' loads straight from the repo again.' : game.name + ' now loads from GitHub Pages. New changes to it take a few minutes to show up.';
 });
 }
 case 'adm-gcover': { A.coverFor = d.id; const inp = root.querySelector('[data-acover]'); if (inp) { inp.value = ''; inp.click(); } return; }
@@ -2031,6 +2158,7 @@ ${tog('full', 'Fill the whole screen', 'Use the full browser window instead of a
 ${tog('motion', 'Animations', 'Turn off to stop things sliding and fading')}</div>
 <div class="card adm sset-c"><h2>General</h2>
 ${row('Start page', 'What opens when you click the bookmark' + (isCanvas ? '' : '. Canvas pages only work on Canvas.'), `<select data-pstart>${starts.map(([v, l]) => `<option value="${v}"${P.start === v ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`)}
+${row('Quick switch shortcut', 'Jumps to one of your current Canvas assignments, even from inside a game. The briefcase button at the top does the same.', `<div class="sacts"><button type="button" class="btn${S.qsRec ? ' pri' : ''}" data-act="qsrec">${S.qsRec ? 'Press your keys now…' : esc(keyLabel(P.qsKey))}</button>${P.qsKey && !S.qsRec ? '<button type="button" class="btn" data-act="qsclear">Turn off</button>' : ''}</div>`)}
 ${row('Clock', '', seg('clock24', [[false, '12-hour'], [true, '24-hour']]))}
 ${tog('seconds', 'Show seconds on the clock')}
 ${tog('blurGrades', 'Hide grades', 'Blurs scores and GPA until you hover over them, so people walking by can\'t see')}
@@ -2038,6 +2166,7 @@ ${tog('outside', 'Close when clicking outside', 'Turn off so a stray click outsi
 <div class="card adm sset-c"><h2>Games</h2>
 ${row('Open games', '', seg('gameOpen', [['here', 'Inside Class Dash'], ['tab', 'In a new tab']]))}
 ${row('Game tile size', '', seg('tiles', [['small', 'Small'], ['medium', 'Medium'], ['large', 'Large']]))}
+${tog('gameMute', 'Start games with the sound off', 'Use the Sound button above a game to turn it on')}
 ${tog('recent', 'Show "Jump back in"', 'Your recently played games at the top of the library')}</div>
 <div class="card adm sset-c"><h2>Reset</h2><div class="sacts">
 <button type="button" class="btn" data-act="pclear">Clear recently played</button>
@@ -2143,6 +2272,10 @@ else if (d.pref) setPref(d.pref, d.val === 'true' ? true : d.val === 'false' ? f
 else if (d.pacc != null) setPref('accent', d.pacc);
 else if (d.act === 'settings') go('settings');
 else if (d.act === 'admin') openAdmin();
+else if (d.act === 'qswitch') quickSwitch();
+else if (d.act === 'qsrec') { S.qsRec = !S.qsRec; renderMain(true); }
+else if (d.act === 'qsclear') { S.qsRec = false; setPref('qsKey', null); }
+else if (d.act === 'sound') { S.soundOn = !S.soundOn; const gf = root.querySelector('.gframe'); try { if (gf && gf.contentWindow) gf.contentWindow.postMessage({ cdMute: !S.soundOn }, '*'); } catch (err) {} paintSound(); }
 else if (d.act === 'pclear') { store.set('recent', []); S.setMsg = { text: 'Recently played cleared.', cls: 'ok' }; renderMain(true); }
 else if (d.act === 'preset') {
 if (!S.resetArm) { S.resetArm = true; S.setMsg = null; renderMain(true); return; }
@@ -2207,6 +2340,15 @@ if (S.view === 'study') { S.sq = e.target.value; filterStudy(); } else { S.q = e
 });
 function onKey(e) {
 const down = e.type === 'keydown', study = S.view === 'study';
+if (S.qsRec) {
+e.preventDefault(); e.stopPropagation();
+if (!down || ['Shift', 'Control', 'Alt', 'Meta', 'OS', 'AltGraph', 'CapsLock'].includes(e.key)) return;
+S.qsRec = false;
+if (e.key === 'Escape') return renderMain(true);
+if (e.key === 'Backspace' || e.key === 'Delete') return setPref('qsKey', null);
+return setPref('qsKey', keyOf(e));
+}
+if (down && !e.repeat && P.qsKey && keyMatch(keyOf(e), P.qsKey)) { e.preventDefault(); e.stopPropagation(); quickSwitch(); return; }
 if (root.activeElement === omniBox) { omniKey(e); e.stopPropagation(); return; }
 if (down && !LIB && (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); e.stopPropagation(); omniBox.focus(); return; }
 if (down && (e.key === 'Enter' || e.key === ' ') && root.activeElement && root.activeElement.matches('.rr,.ccard')) { e.preventDefault(); e.stopPropagation(); root.activeElement.click(); return; }
@@ -2243,9 +2385,18 @@ if (S.view === 'schedule' && n.getSeconds() === 0 && !(root.activeElement && roo
 const clockT = setInterval(tick, 1000);
 const oldOverflow = document.documentElement.style.overflow;
 document.documentElement.style.overflow = 'hidden';
+function onMsg(e) {
+const gf = S.view === 'play' && root.querySelector('.gframe'), d = e.data;
+if (!gf || e.source !== gf.contentWindow || !d || typeof d !== 'object') return;
+if (d.cdReady) { try { gf.contentWindow.postMessage({ cdMute: !S.soundOn }, '*'); } catch (err) {} }
+else if (d.cdKey) { if (keyMatch(d.cdKey, P.qsKey)) quickSwitch(); }
+else if (d.cdSave && typeof d.cdSave === 'object' && S.game) saveGame(S.game, d.cdSave);
+}
 window.addEventListener('keydown', onKey, true);
 window.addEventListener('keyup', onKey, true);
+window.addEventListener('message', onMsg);
 function close() {
+window.removeEventListener('message', onMsg);
 clearInterval(clockT);
 window.removeEventListener('keydown', onKey, true);
 window.removeEventListener('keyup', onKey, true);
