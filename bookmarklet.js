@@ -25,7 +25,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Class Dash is now Classboard: a new name, a new look and a new website.';
+const WHATSNEW = 'Worksheets can come with their answer key: it shows on the same resource in Study and opens with one click.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -372,6 +372,10 @@ background:radial-gradient(120% 160% at 0% 0%,color-mix(in srgb,var(--ac) 20%,tr
 .rr .sub{font-size:11.5px;display:flex;gap:6px;align-items:center}
 .chip.new{background:var(--ac);color:#0b0a10;font-size:10px;padding:0 7px}
 .rnt{width:28px;height:28px;flex:none;background:transparent;opacity:0;transition:opacity .12s}
+.chip.kch{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:0 7px;background:color-mix(in srgb,var(--ac) 18%,transparent);color:var(--act)}
+.chip.kch svg{width:10px;height:10px}
+.kseg button{display:inline-flex;align-items:center;gap:5px}
+.kseg svg{width:13px;height:13px}
 .rr:hover .rnt,.rr:focus-within .rnt{opacity:1}
 .sneed{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:9px 12px;border-radius:12px;border:1px dashed var(--p3);margin-bottom:14px;font-size:12.5px}
 .sneed .t{margin-right:2px;font-size:12.5px}
@@ -466,6 +470,10 @@ background:radial-gradient(120% 160% at 0% 0%,color-mix(in srgb,var(--ac) 20%,tr
 .acath .ssi{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#0b0a10;flex:none}
 .acath .ssi svg{width:17px;height:17px}
 .acat .ares{margin-left:42px;flex-wrap:wrap}
+.acat .ares.akey{margin-left:74px;border-top-style:dashed}
+.akey .chip{display:inline-flex;align-items:center;gap:4px}
+.akey .chip svg,.btn.sm svg{width:13px;height:13px}
+.adrop.akd{padding:12px;margin-top:8px;border-width:1px}
 .aempty{padding:6px 0 4px 42px}
 .btn.sm{padding:5px 10px;font-size:12px}
 .btn.danger{background:var(--bad);color:#fff}
@@ -972,9 +980,24 @@ const parts = path.slice(STUDY.length).split('/');
 const cls = parts.length === 1 ? 'Other' : pretty(parts[0]);
 const file = parts.length === 3 ? parts[1] : parts[parts.length - 1];
 const h = hash(cls.toLowerCase());
-return { id: path, dir: parts.length === 1 ? '' : parts[0], name: pretty(file.replace(/\.[a-z0-9]+$/i, '')), cls, file: parts.slice(1).join('/') || parts[0], kind: kindOf(path), ext: extOf(path),
+return { id: path, dir: parts.length === 1 ? '' : parts[0], name: pretty(file.replace(/\.[a-z0-9]+$/i, '')), stem: file.replace(/\.[a-z0-9]+$/i, ''), cls, file: parts.slice(1).join('/') || parts[0], kind: kindOf(path), ext: extOf(path),
 color: PAL[h % PAL.length], icon: (SUBJECTS.find(s => s[0].test(cls)) || [, I.study])[1] };
 };
+// Answer keys: a file named like its worksheet plus "key" ("Unit-3-Review.key.pdf", which Admin writes,
+// or "Unit 3 Review - Answer Key.pdf") is shown with that worksheet instead of as its own resource.
+const KEY_RE = /(?:[-_ .]+(?:answer[-_ .]*)?key|[-_ .]*answer[-_ .]*key)$/i;
+const normStem = s => s.toLowerCase().replace(/[-_ .]+/g, ' ').trim();
+function pairKeys(docs) {
+const byStem = new Map(), keys = new Set();
+docs.forEach(d => { if (!KEY_RE.test(d.stem)) byStem.set(d.dir + '/' + normStem(d.stem), d); });
+docs.forEach(d => {
+if (!KEY_RE.test(d.stem)) return;
+const w = byStem.get(d.dir + '/' + normStem(d.stem.replace(KEY_RE, '')));
+if (!w || w.key) return;
+w.key = d; d.keyOf = w; d.name = w.name + ' (answer key)'; keys.add(d);
+});
+return docs.filter(d => !keys.has(d));
+}
 const clsMatch = (cls, name) => { const n = (name || '').toLowerCase(), k = cls.toLowerCase(); return n.includes(k) || k.split(/[^a-z0-9]+/).some(w => w.length > 3 && n.includes(w)); };
 const myClass = cls => S.courses.some(c => clsMatch(cls, c.name));
 // "AP HUMAN GEOGRAPHY A_Hakes_S1" -> "AP Human Geography"
@@ -998,7 +1021,7 @@ let PACK = [], DOCS = [];
 const setPack = () => {
 const hiddenG = new Set(((S.draft || SITE || {}).hiddenGames) || []);
 PACK = (S.lib ? S.lib.paths : []).filter(p => !hiddenG.has(p)).map(toPack).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-DOCS = (S.lib && S.lib.study || []).map(toDoc).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+DOCS = pairKeys((S.lib && S.lib.study || []).map(toDoc)).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 };
 setPack();
 function libFrom(files) {
@@ -1304,14 +1327,17 @@ return panel(p.name, (p.ext ? p.ext.toUpperCase() + ' files' : 'These files') + 
 function startDoc(ct, path) {
 const box = ct.querySelector('.frame'), p = DOCS.find(x => x.id === path);
 if (!box || !p) return;
-docView(document, p).then(el => { if (S.view === 'read' && S.doc === path && box.isConnected) { box.innerHTML = ''; box.appendChild(el); } })
+const k = !!(S.docKey && p.key);
+docView(document, k ? p.key : p).then(el => { if (S.view === 'read' && S.doc === path && !!(S.docKey && p.key) === k && box.isConnected) { box.innerHTML = ''; box.appendChild(el); } })
 .catch(() => { if (box.isConnected) box.innerHTML = empty("Couldn't load this resource. Check your connection and try again."); });
 }
 const vRead = () => {
 const p = DOCS.find(x => x.id === S.doc);
 if (!p) return `<div class="gbar"><button class="btn" data-go="study">← Study</button></div>` + empty('That study resource is no longer in the repo.');
+const k = !!(S.docKey && p.key);
 return `<div class="play"><div class="gbar wide"><button class="btn" data-go="study">← Study</button>
-<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${esc(p.cls)}</div></div>
+<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${esc(p.cls)}${k ? ' · Answer key' : ''}</div></div>
+${p.key ? `<div class="seg mini kseg" role="group" aria-label="Show"><button data-dockeyview="0" class="${k ? '' : 'on'}">Worksheet</button><button data-dockeyview="1" class="${k ? 'on' : ''}">${I.key}Answer key</button></div>` : ''}
 <button class="btn" data-act="newtab">New tab</button><button class="btn" data-act="full">Full screen</button></div>
 <div class="frame"><div class="spin"></div></div></div>`;
 };
@@ -1450,15 +1476,15 @@ const kindIcon = p => ({ html: I.quiz, pdf: I.doc, link: I.chain, image: I.pic }
 const docLabel = p => p.kind === 'html' ? (/test|quiz|exam|practice|study|review/i.test(p.name) ? 'Practice & quizzes' : 'Interactive page')
 : p.kind === 'pdf' ? 'PDF' : p.kind === 'link' ? 'Website link' : p.kind === 'image' ? 'Image' : (p.ext ? p.ext.toUpperCase() + ' file' : 'File');
 const recentDocs = () => store.get('recentDocs', []).map(r => ({ r, p: DOCS.find(d => d.id === r.id) })).filter(x => x.p);
-function openDoc(id) {
+function openDoc(id, key) {
 store.set('recentDocs', [{ id, at: Date.now() }, ...store.get('recentDocs', []).filter(x => x.id !== id)].slice(0, 6));
-S.doc = id;
+S.doc = id; S.docKey = !!key;
 go('read');
 }
-const docAttrs = p => `tabindex="0" role="button" data-doc="${esc(p.id)}" data-kind="${p.kind}" data-name="${esc((p.name + ' ' + p.cls + ' ' + docLabel(p)).toLowerCase())}" title="Open ${esc(p.name)}"`;
+const docAttrs = p => `tabindex="0" role="button" data-doc="${esc(p.id)}" data-kind="${p.kind}" data-name="${esc((p.name + ' ' + p.cls + ' ' + docLabel(p) + (p.key ? ' answer key' : '')).toLowerCase())}" title="Open ${esc(p.name)}"`;
 const resRow = p => `<div class="rr" ${docAttrs(p)}><span class="rri" style="--c:${p.color}">${kindIcon(p)}</span>
-<span class="grow"><span class="t" style="display:block">${esc(p.name)}</span><span class="sub">${isNewDoc(p) ? '<span class="chip new">New</span>' : ''}${esc(docLabel(p))}</span></span>
-<button class="ib rnt" data-docnew="${esc(p.id)}" title="Open in a new tab">${I.ext}</button></div>`;
+<span class="grow"><span class="t" style="display:block">${esc(p.name)}</span><span class="sub">${isNewDoc(p) ? '<span class="chip new">New</span>' : ''}${esc(docLabel(p))}${p.key ? `<span class="chip kch">${I.key}Answer key</span>` : ''}</span></span>
+${p.key ? `<button class="ib rnt" data-dockey="${esc(p.id)}" title="Open the answer key">${I.key}</button>` : ''}<button class="ib rnt" data-docnew="${esc(p.id)}" title="Open in a new tab">${I.ext}</button></div>`;
 const contCard = (p, at) => `<div class="ccard" ${docAttrs(p)}><span class="rri" style="--c:${p.color}">${kindIcon(p)}</span>
 <span class="grow"><span class="t" style="display:block">${esc(p.name)}</span><span class="sub" style="display:block">${esc(p.cls)} · ${esc(rel(new Date(at).toISOString()))}</span></span></div>`;
 const vStudy = () => {
@@ -1589,7 +1615,8 @@ reqSay(kind, kind === 'games' ? "Sent! We'll most likely add it soon, so check b
 }
 function openBlank(item) {
 const read = item ? !!item.cls : S.view === 'read';
-const p = item || (read ? DOCS.find(x => x.id === S.doc) : PACK.find(x => x.id === S.game));
+let p = item || (read ? DOCS.find(x => x.id === S.doc) : PACK.find(x => x.id === S.game));
+if (read && !item && p && S.docKey && p.key) p = p.key;
 const w = p && window.open(blankUrl(), '_blank');
 if (!w) return false;
 w.opener = null;
@@ -1964,8 +1991,11 @@ const moves = cats.filter(c => c.dir && c.dir !== p.dir);
 return `<div class="ares"><span class="chip">${esc(docLabel(p))}</span><span class="grow"><span class="t">${esc(p.name)}</span>${isNewDoc(p) ? '<span class="chip new">New</span>' : ''}</span>
 <button class="btn sm" data-act="adm-docopen" ${at}>Open</button><button class="btn sm" data-act="adm-docedit" ${at}>Rename</button>
 ${p.kind === 'link' ? `<button class="btn sm" data-act="adm-linkedit" ${at}>Edit link</button>` : ''}
+${p.key ? '' : `<button class="btn sm" data-act="adm-keypick" ${at} title="Attach an answer key to this">${I.key}Add key</button>`}
 ${moves.length ? `<select data-amove="${esc(p.id)}" title="Move to another category"><option value="">Move to…</option>${moves.map(c => `<option value="${esc(c.dir)}">${esc(c.name)}</option>`).join('')}</select>` : ''}
-${delBtn(ek, 'adm-docdel', at, 'Delete', 'Click again to delete')}</div>`;
+${delBtn(ek, 'adm-docdel', at, 'Delete', p.key ? 'Delete it and its key?' : 'Click again to delete')}</div>${p.key ? `
+<div class="ares akey"><span class="chip">${I.key}Answer key</span><span class="grow"><span class="sub">${esc(docLabel(p.key))}</span></span>
+<button class="btn sm" data-act="adm-keyopen" ${at}>Open</button><button class="btn sm" data-act="adm-keypick" ${at}>Replace</button>${delBtn('key:' + p.id, 'adm-keydel', at, 'Remove', 'Click again to remove')}</div>` : ''}`;
 }
 function aStudy() {
 const cats = studyCats(), up = A.up;
@@ -1975,7 +2005,8 @@ const add = `<div class="card adm sset-c"><h2>Add to Study<span>shows up for eve
 ${sel === '__new' ? `<input data-up="newcat" value="${esc(up.newcat || '')}" placeholder="New category name (e.g. Chemistry)" maxlength="40">` : ''}
 <div class="seg mini"><button data-upkind="file" class="${up.kind !== 'link' ? 'on' : ''}">Files</button><button data-upkind="link" class="${up.kind === 'link' ? 'on' : ''}">A web link</button></div></div>
 ${up.kind === 'link' ? `<div class="arow"><input class="wide" data-up="url" value="${esc(up.url || '')}" placeholder="https://quizlet.com/…"><input data-up="name" value="${esc(up.name || '')}" placeholder="Name shown in Study" maxlength="80"></div>`
-: `<label class="adrop"><input type="file" data-upfile multiple><span>${I.plus}<b>Choose files</b> or drop them here</span><span class="sub wrap">PDFs, practice tests (.html), images or any file, up to 25 MB each. The file name becomes the title, and you can rename it after.</span><span class="afiles"></span></label>`}
+: `<label class="adrop"><input type="file" data-upfile multiple><span>${I.plus}<b>Choose files</b> or drop them here</span><span class="sub wrap">PDFs, practice tests (.html), images or any file, up to 25 MB each. The file name becomes the title, and you can rename it after.</span><span class="afiles"></span></label>
+<label class="adrop akd"><input type="file" data-upkey><span>${I.key}<b>Answer key</b> (optional)</span><span class="sub wrap">Adding one worksheet? Put its key here and they show up as one resource, with the key a click away.</span><span class="afiles"></span></label>`}
 <div class="arow"><button class="btn pri" data-act="adm-upload">Add to Study</button></div></div>`;
 const list = cats.map(c => {
 const ek = 'cat:' + c.dir, at = `data-dir="${esc(c.dir)}"`;
@@ -1986,7 +2017,7 @@ return `<div class="acat"><div class="acath">${headRow}</div>${c.docs.map(p => d
 }).join('');
 return add + `<div class="card adm"><h2>Categories<span>${cats.filter(c => c.dir).length} categories · ${DOCS.length} resources</span></h2>
 <div class="arow" style="margin-top:0"><input data-av="newcat" value="${esc(A.vals.newcat || '')}" placeholder="New category name (e.g. Chemistry)" maxlength="40"><button class="btn" data-act="adm-newcat">${I.plus}Create category</button></div>
-${list || '<p class="sub">No study resources yet.</p>'}</div>`;
+${list || '<p class="sub">No study resources yet.</p>'}<input type="file" data-akey hidden></div>`;
 }
 const gameFiles = (files, id) => {
 if (/\/index\.html?$/i.test(id)) { const dir = id.replace(/\/index\.html?$/i, ''); return { dir, list: files.filter(f => f.path.startsWith(dir + '/')) }; }
@@ -2097,6 +2128,20 @@ const left = files.filter(f => f.path.startsWith(STUDY + dir + '/') && !gone.has
 return left.length ? [] : [{ path: STUDY + dir + '/.keep', b64: b64enc('Classboard study category\n') }];
 }
 const aOnStudy = () => { if (S.view === 'admin') renderMain(true); };
+// Adds (or replaces) the answer key for a study resource: saved next to it as "<name>.key.<ext>"
+async function uploadKey(f) {
+const id = A.keyFor; A.keyFor = null;
+const w = id && DOCS.find(x => x.id === id);
+if (!f || !w) return;
+if (f.size > 25 * 1024 * 1024) return aSay('"' + f.name + '" is over 25 MB, which is too big.', 'err');
+let b64;
+try { b64 = await fileB64(f); } catch (e) { return aSay(e.message, 'err'); }
+const had = !!w.key, to = STUDY + (w.dir ? w.dir + '/' : '') + w.stem + '.key.' + (extOf(f.name) || 'bin');
+return aRun(had ? 'Replacing the answer key' : 'Adding the answer key', async () => {
+await ghChange((had ? 'Replace' : 'Add') + ' answer key: ' + to.slice(STUDY.length), async () => [{ path: to, b64 }].concat(had && w.key.id !== to ? [{ path: w.key.id, sha: null }] : []));
+return 'Answer key ' + (had ? 'replaced' : 'added') + ' for "' + w.name + '".';
+});
+}
 async function adminAct(d, t) {
 const doc = d.path && DOCS.find(x => x.id === d.path);
 const game = d.id && toPack(d.id);
@@ -2126,18 +2171,25 @@ let name = (up.name || '').trim(); if (!name) { try { name = new URL(url).hostna
 entries.push({ path: STUDY + cat + '/' + cleanSeg(name) + '.url', b64: b64enc('[InternetShortcut]\r\nURL=' + url + '\r\n'), name });
 } else {
 const input = root.querySelector('[data-upfile]'), files = input && input.files ? [...input.files] : [];
-if (!files.length) return aSay('Choose at least one file first.', 'err');
+const kin = root.querySelector('[data-upkey]'), keyFile = kin && kin.files && kin.files[0];
+if (!files.length) return aSay(keyFile ? 'Choose the worksheet too, in the box above the key.' : 'Choose at least one file first.', 'err');
+if (keyFile && files.length > 1) return aSay('Add an answer key with one worksheet at a time.', 'err');
+if (keyFile && keyFile.size > 25 * 1024 * 1024) return aSay('"' + keyFile.name + '" is over 25 MB, which is too big.', 'err');
 const big = files.find(f => f.size > 25 * 1024 * 1024);
 if (big) return aSay('"' + big.name + '" is over 25 MB, which is too big.', 'err');
 aSay('Reading ' + (files.length === 1 ? 'the file' : files.length + ' files') + '…', '');
-try { for (const f of files) entries.push({ path: STUDY + cat + '/' + (cleanSeg(f.name.replace(/\.[^.]+$/, '')) || 'file') + '.' + (extOf(f.name) || 'bin'), b64: await fileB64(f), name: f.name.replace(/\.[^.]+$/, '') }); }
+try {
+for (const f of files) entries.push({ path: STUDY + cat + '/' + (cleanSeg(f.name.replace(/\.[^.]+$/, '')) || 'file') + '.' + (extOf(f.name) || 'bin'), b64: await fileB64(f), name: f.name.replace(/\.[^.]+$/, '') });
+if (keyFile) entries.push({ path: entries[0].path.replace(/\.[^./]+$/, '') + '.key.' + (extOf(keyFile.name) || 'bin'), b64: await fileB64(keyFile), key: true });
+}
 catch (e) { return aSay(e.message, 'err'); }
 }
+const withKey = entries.some(e => e.key);
 return aRun('Adding to Study', async () => {
-await ghChange((entries.length === 1 ? 'Add study resource: ' + cat + '/' + entries[0].path.split('/').pop() : 'Add ' + entries.length + ' study resources to ' + cat),
+await ghChange((withKey ? 'Add study resource with answer key: ' + cat + '/' + entries[0].path.split('/').pop() : entries.length === 1 ? 'Add study resource: ' + cat + '/' + entries[0].path.split('/').pop() : 'Add ' + entries.length + ' study resources to ' + cat),
 async files => entries.map(e => ({ path: e.path, b64: e.b64 })).concat(files.filter(f => f.path === STUDY + cat + '/.keep').map(f => ({ path: f.path, sha: null }))));
 A.up = { kind: up.kind, cat };
-return (entries.length === 1 ? 'Added "' + pretty(entries[0].path.split('/').pop().replace(/\.[^.]+$/, '')) + '"' : 'Added ' + entries.length + ' files') + ' to ' + pretty(cat) + '. Everyone can see it in Study now.';
+return (withKey ? 'Added "' + pretty(entries[0].path.split('/').pop().replace(/\.[^.]+$/, '')) + '" with its answer key' : entries.length === 1 ? 'Added "' + pretty(entries[0].path.split('/').pop().replace(/\.[^.]+$/, '')) + '"' : 'Added ' + entries.length + ' files') + ' to ' + pretty(cat) + '. Everyone can see it in Study now.';
 });
 }
 case 'adm-newcat': {
@@ -2169,7 +2221,7 @@ if (!doc) return;
 const name = cleanSeg(A.vals.edit);
 if (!name) return aSay('Type a name first.', 'err');
 const folder = /\/index\.html?$/i.test(doc.id) && doc.id.slice(STUDY.length).split('/').length === 3;
-return aRun('Renaming', async () => { await ghChange('Rename study resource: ' + doc.name + ' to ' + pretty(name), async files => docMove(files, doc, null, folder ? name : name + (doc.ext ? '.' + doc.ext : ''))); return 'Renamed to ' + pretty(name) + '.'; });
+return aRun('Renaming', async () => { await ghChange('Rename study resource: ' + doc.name + ' to ' + pretty(name), async files => docMove(files, doc, null, folder ? name : name + (doc.ext ? '.' + doc.ext : '')).concat(doc.key ? docMove(files, doc.key, null, name + '.key.' + (doc.key.ext || 'bin')) : [])); return 'Renamed to ' + pretty(name) + '.'; });
 }
 case 'adm-linkedit':
 A.edit = 'link:' + d.path; A.vals.edit = ''; A.arm = null; renderMain(true);
@@ -2185,11 +2237,16 @@ if (!doc || !armed('doc:' + d.path)) return;
 return aRun('Deleting', async () => {
 await ghChange('Remove study resource: ' + d.path.slice(STUDY.length), async files => {
 const folder = /\/index\.html?$/i.test(doc.id) && doc.id.slice(STUDY.length).split('/').length === 3;
-const out = folder ? dropFiles(files, doc.id.replace(/\/index\.html?$/i, '')) : dropFiles(files, doc.id, true);
+const out = (folder ? dropFiles(files, doc.id.replace(/\/index\.html?$/i, '')) : dropFiles(files, doc.id, true)).concat(doc.key ? dropFiles(files, doc.key.id, true) : []);
 return out.concat(keepFolder(files, doc.dir, out));
 });
-return 'Deleted "' + doc.name + '".';
+return 'Deleted "' + doc.name + '"' + (doc.key ? ' and its answer key.' : '.');
 });
+case 'adm-keyopen': if (doc) openDoc(doc.id, true); return;
+case 'adm-keypick': { A.keyFor = d.path; const inp = root.querySelector('[data-akey]'); if (inp) { inp.value = ''; inp.click(); } return; }
+case 'adm-keydel':
+if (!doc || !doc.key || !armed('key:' + d.path)) return;
+return aRun('Removing the answer key', async () => { await ghChange('Remove answer key: ' + doc.key.id.slice(STUDY.length), async files => dropFiles(files, doc.key.id, true)); return 'Removed the answer key from "' + doc.name + '".'; });
 // Games
 case 'adm-gmore': A.gshow += 100; return renderMain(true);
 case 'adm-gplay': return playGame(d.id);
@@ -2301,10 +2358,11 @@ root.addEventListener('change', e => {
 const t = e.target;
 if (t.matches('[data-amove]') && t.value) {
 const p = DOCS.find(x => x.id === t.dataset.amove), dir = t.value;
-if (p) aRun('Moving', async () => { await ghChange('Move study resource: ' + p.name + ' to ' + dir, async files => { const out = docMove(files, p, dir); return out.concat(keepFolder(files, p.dir, out)); }); return 'Moved "' + p.name + '" to ' + pretty(dir) + '.'; });
+if (p) aRun('Moving', async () => { await ghChange('Move study resource: ' + p.name + ' to ' + dir, async files => { const out = docMove(files, p, dir).concat(p.key ? docMove(files, p.key, dir) : []); return out.concat(keepFolder(files, p.dir, out)); }); return 'Moved "' + p.name + '" to ' + pretty(dir) + '.'; });
 }
-else if (t.matches('[data-upfile],[data-gfile]')) { const n = [...(t.files || [])].map(f => f.name); const out = t.closest('.adrop') && t.closest('.adrop').querySelector('.afiles'); if (out) out.textContent = n.length ? n.length + ' chosen: ' + n.slice(0, 4).join(', ') + (n.length > 4 ? '…' : '') : ''; }
+else if (t.matches('[data-upfile],[data-gfile],[data-upkey]')) { const n = [...(t.files || [])].map(f => f.name); const out = t.closest('.adrop') && t.closest('.adrop').querySelector('.afiles'); if (out) out.textContent = n.length ? n.length + ' chosen: ' + n.slice(0, 4).join(', ') + (n.length > 4 ? '…' : '') : ''; }
 else if (t.matches('[data-acover]')) uploadCover(t.files && t.files[0]);
+else if (t.matches('[data-akey]')) uploadKey(t.files && t.files[0]);
 });
 root.addEventListener('click', e => {
 const t = e.target.closest('[data-sicon],[data-saccent],[data-bwhere],[data-bcolor],[data-bicon],[data-upkind],[data-banner],[data-bclose],[data-act^="adm-"]');
@@ -2523,7 +2581,7 @@ const gm = root.querySelector('.gmenu');
 if (gm && !gm.hidden && !e.target.closest('[data-act="gmore"]')) gm.hidden = true;
 const why = e.target.closest('[data-why]');
 if (why) { S.rep.why = why.dataset.why; root.querySelectorAll('[data-why]').forEach(b => b.classList.toggle('on', b === why)); return; }
-const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-skind],[data-reqcls],[data-reqtopic],[data-sched],[data-lunch],[data-pack],[data-docnew],[data-doc],[data-pref],[data-pacc],[data-act]');
+const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-skind],[data-reqcls],[data-reqtopic],[data-sched],[data-lunch],[data-pack],[data-docnew],[data-dockey],[data-dockeyview],[data-doc],[data-pref],[data-pacc],[data-act]');
 if (!t) return;
 const d = t.dataset;
 const toReq = sel => { const el = root.querySelector(sel) || root.querySelector('[data-req="scls"]'); if (el) { el.scrollIntoView({ block: 'center', behavior: P.motion ? 'smooth' : 'auto' }); el.focus({ preventScroll: true }); } };
@@ -2532,6 +2590,8 @@ const p = DOCS.find(x => x.id === d.docnew);
 store.set('recentDocs', [{ id: d.docnew, at: Date.now() }, ...store.get('recentDocs', []).filter(x => x.id !== d.docnew)].slice(0, 6));
 if (!p || !openBlank(p)) openDoc(d.docnew);
 }
+else if (d.dockey) openDoc(d.dockey, true);
+else if (d.dockeyview != null) { S.docKey = d.dockeyview === '1'; renderMain(true); }
 else if (d.skind) { S.skind = d.skind; renderMain(true); }
 else if (d.reqcls) { S.req.scls = d.reqcls; S.reqMsg.study = null; renderMain(true); toReq('[data-req="stopic"]'); }
 else if (d.reqtopic) { S.req.stopic = S.sq.trim(); if (S.scls !== 'All') S.req.scls = S.scls; S.reqMsg.study = null; renderMain(true); toReq(S.req.scls ? '[data-req="stopic"]' : '[data-req="scls"]'); }
