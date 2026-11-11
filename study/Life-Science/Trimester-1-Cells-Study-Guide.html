@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cells, Microscopes and the Science Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@500&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap" media="print" onload="this.media='all'">
+<style>
+:root {
+  --bg: #f7f6fa; --card: #ffffff; --ink: #19161f; --mu: #625b70; --mu2: #8b8499; --ln: #e7e3ee; --soft: #f1eef6;
+  --ac: #6a46d6; --acs: #efeafd; --pk: #c23b7a; --ok: #157a4a; --oks: #e6f5ed; --bad: #b8304f; --bads: #fcebef;
+  --sans: Geist, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  --math: "STIX Two Text", "Cambria Math", Georgia, serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d0b12; --card: #16131d; --ink: #f1eef5; --mu: #a39cb2; --mu2: #7b748a; --ln: #2a2533; --soft: #1e1a27;
+    --ac: #a78bfa; --acs: #241d38; --pk: #f07ab3; --ok: #5fd39b; --oks: #12291e; --bad: #ff8aa5; --bads: #2e1620; }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+body { font: 16px/1.6 var(--sans); color: var(--ink); background: var(--bg); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 28px 20px 80px; }
+.kick { font: 500 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ac); }
+h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.08; letter-spacing: -.035em; font-weight: 650; margin: 10px 0 12px; }
+.lede { color: var(--mu); font-size: 17px; max-width: 640px; }
+.src { margin-top: 10px; font-size: 13px; color: var(--mu2); }
+.tabs { position: sticky; top: 0; z-index: 5; display: flex; gap: 6px; margin: 24px -20px 22px; padding: 10px 20px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--ln); overflow-x: auto; scrollbar-width: none; }
+.tabs button { flex: none; border: 0; background: transparent; padding: 8px 14px; border-radius: 999px; font-weight: 550; font-size: 14.5px; color: var(--mu); cursor: pointer; }
+.tabs button:hover { color: var(--ink); background: var(--soft); }
+.tabs button.on { background: var(--ink); color: var(--bg); }
+.tabs b { font-weight: 600; opacity: .6; margin-left: 4px; }
+.pane[hidden] { display: none; }
+
+/* study guide */
+.toc { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.toc a { font-size: 13.5px; text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--ln); padding: 5px 12px; border-radius: 999px; }
+.toc a:hover { border-color: var(--ac); }
+.sec { background: var(--card); border: 1px solid var(--ln); border-radius: 18px; padding: 22px 24px; margin-bottom: 14px; scroll-margin-top: 70px; }
+.sec h2 { font-size: 21px; letter-spacing: -.02em; font-weight: 650; margin-bottom: 10px; display: flex; gap: 10px; align-items: baseline; }
+.sec h2 .n { font: 500 12px var(--mono); color: var(--ac); letter-spacing: .08em; }
+.sec p { margin: 8px 0; }
+.sec ul { margin: 8px 0 8px 20px; }
+.sec li { margin: 5px 0; }
+.sec li::marker { color: var(--ac); }
+.box { margin: 12px 0; padding: 12px 14px; border-radius: 12px; background: var(--soft); }
+.box.key { background: var(--acs); border-left: 3px solid var(--ac); }
+.box.warn { background: var(--bads); border-left: 3px solid var(--bad); }
+.box b:first-child { display: block; font-size: 12px; font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mu); margin-bottom: 4px; font-weight: 500; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 14.5px; }
+th, td { border: 1px solid var(--ln); padding: 7px 10px; text-align: left; vertical-align: top; }
+th { background: var(--soft); font-weight: 600; }
+details.ex { margin: 10px 0; border: 1px solid var(--ln); border-radius: 12px; overflow: hidden; }
+details.ex summary { cursor: pointer; padding: 11px 14px; font-weight: 550; list-style: none; display: flex; gap: 10px; align-items: baseline; }
+details.ex summary::-webkit-details-marker { display: none; }
+details.ex summary::before { content: "Example"; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--pk); flex: none; }
+details.ex summary::after { content: "Show steps"; margin-left: auto; font-size: 12.5px; color: var(--ac); flex: none; }
+details.ex[open] summary::after { content: "Hide"; }
+details.ex ol { margin: 0; padding: 4px 16px 12px 36px; }
+details.ex li { margin: 6px 0; }
+details.ex .ans { padding: 10px 16px 14px; border-top: 1px dashed var(--ln); font-weight: 600; }
+.m { font-family: var(--math); font-size: 1.1em; white-space: nowrap; }
+.fig { display: block; width: 100%; max-width: 460px; margin: 14px auto 6px; color: var(--mu); }
+.fig text { font: 12.5px var(--sans); fill: var(--ink); }
+.fig .ac { stroke: var(--ac); }
+.fig .acf { fill: var(--ac); }
+.figcap { text-align: center; font-size: 13px; color: var(--mu); margin-bottom: 8px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.m i { font-style: italic; }
+
+/* quiz */
+.qstart, .qcard, .qend { background: var(--card); border: 1px solid var(--ln); border-radius: 20px; padding: 24px; }
+.qstart h2, .qend h2 { font-size: 24px; letter-spacing: -.025em; font-weight: 650; margin-bottom: 6px; }
+.sub { color: var(--mu); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.chips button { border: 1px solid var(--ln); background: var(--card); padding: 6px 12px; border-radius: 999px; font-size: 13.5px; cursor: pointer; }
+.chips button.on { background: var(--acs); border-color: var(--ac); color: var(--ac); font-weight: 600; }
+.btn { border: 0; cursor: pointer; padding: 11px 20px; border-radius: 999px; font-weight: 600; font-size: 15px; background: var(--soft); }
+.btn.pri { background: var(--ink); color: var(--bg); }
+.btn:disabled { opacity: .45; cursor: default; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+.qtop { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 13.5px; color: var(--mu); }
+.qtop .t { font: 500 11.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ac); background: var(--acs); padding: 3px 9px; border-radius: 999px; }
+.bar { height: 4px; border-radius: 4px; background: var(--soft); overflow: hidden; margin-bottom: 18px; }
+.bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--ac), var(--pk)); transition: width .4s; }
+.qq { font-size: 18.5px; line-height: 1.5; font-weight: 500; margin-bottom: 16px; }
+.opts { display: grid; gap: 9px; }
+.opt { display: flex; gap: 12px; align-items: flex-start; text-align: left; width: 100%; border: 1.5px solid var(--ln); background: var(--card); padding: 12px 14px; border-radius: 14px; cursor: pointer; font-size: 15.5px; line-height: 1.45; transition: border-color .15s, background-color .15s; }
+.opt:hover:not(:disabled) { border-color: var(--ac); }
+.opt .l { flex: none; width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center; font: 600 12px var(--mono); background: var(--soft); color: var(--mu); }
+.opt:disabled { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--oks); }
+.opt.right .l { background: var(--ok); color: #fff; }
+.opt.wrong { border-color: var(--bad); background: var(--bads); }
+.opt.wrong .l { background: var(--bad); color: #fff; }
+.why { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--soft); font-size: 15px; }
+.why b { color: var(--ok); }
+.why.no b { color: var(--bad); }
+.big { font-size: 54px; font-weight: 650; letter-spacing: -.04em; line-height: 1; margin: 6px 0 4px; background: linear-gradient(100deg, var(--ac), var(--pk)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tbars { display: grid; gap: 10px; margin: 18px 0; }
+.tb { display: grid; grid-template-columns: minmax(120px, 1fr) 2fr 48px; gap: 12px; align-items: center; font-size: 14px; }
+.tb .tr { height: 8px; border-radius: 8px; background: var(--soft); overflow: hidden; }
+.tb .tr i { display: block; height: 100%; background: var(--ac); }
+.tb .p { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.miss { margin-top: 18px; display: grid; gap: 10px; }
+.miss > div { border: 1px solid var(--ln); border-radius: 14px; padding: 12px 14px; font-size: 14.5px; }
+.miss .a { color: var(--ok); font-weight: 600; margin-top: 4px; }
+.miss .w { color: var(--mu); margin-top: 4px; }
+.best { font-size: 13.5px; color: var(--mu2); margin-top: 8px; }
+
+/* vocab */
+.vtools { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+.vtools input { flex: 1; min-width: 180px; font: inherit; font-size: 15px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--ln); background: var(--card); color: var(--ink); outline: none; }
+.vtools input:focus { border-color: var(--ac); }
+.vgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.vc { perspective: 900px; height: 150px; cursor: pointer; }
+.vc > div { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+.vc.flip > div { transform: rotateY(180deg); }
+.vc .f, .vc .b { position: absolute; inset: 0; border-radius: 16px; padding: 16px; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: grid; place-items: center; text-align: center; border: 1px solid var(--ln); background: var(--card); overflow: auto; }
+.vc .f { font-weight: 650; font-size: 18px; letter-spacing: -.01em; }
+.vc .b { transform: rotateY(180deg); font-size: 14px; color: var(--mu); background: var(--acs); }
+.foot { margin-top: 34px; font-size: 13px; color: var(--mu2); text-align: center; }
+@media (max-width: 560px) { .sec { padding: 18px; } .qstart, .qcard, .qend { padding: 18px; } .qq { font-size: 17px; } .tb { grid-template-columns: 1fr 1fr 44px; } }
+@media print { .tabs, .row, .chips { display: none !important; } .pane[hidden] { display: block !important; } .sec, .qcard { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kick" id="kick"></div>
+  <h1 id="title"></h1>
+  <p class="lede" id="lede"></p>
+  <p class="src" id="src"></p>
+  <nav class="tabs" id="tabs"></nav>
+  <section class="pane" id="p-guide"></section>
+  <section class="pane" id="p-quiz" hidden></section>
+  <section class="pane" id="p-vocab" hidden></section>
+  <p class="foot">Made for Classboard. Check anything you're unsure about with your teacher or your class notes.</p>
+</div>
+<script>
+const DATA = {"id":"lifesci-a-cells","cls":"Life Science","kick":"Life Science A · Trimester 1","title":"Cells, Microscopes and the Science Lab","lede":"The big ideas from the first part of Life Science: staying safe in the lab, using a microscope, what makes something alive, cell theory, cell parts, and how cells build up into whole organisms.","src":"Covers the Issaquah School District 6th grade Life Science topics for the start of the year (science lab skills plus cells and organisms, NGSS MS-LS1-1, 1-2 and 1-3). Your teacher's order may be a little different.","guide":[{"title":"Staying safe in the lab","body":"\n      <ul><li>Wear <b>goggles</b> whenever you use chemicals, heat or glass. Tie back long hair.</li>\n      <li><b>Never eat, drink or taste</b> anything in the lab.</li>\n      <li>Tell the teacher right away about spills, broken glass or any injury, even small ones.</li>\n      <li>To smell something, <b>waft</b> it toward your nose with your hand. Don't sniff it directly.</li>\n      <li>Read all the directions before you start, and only do the steps you're told to.</li></ul>\n      <table><tr><th>Tool</th><th>What it's for</th></tr>\n      <tr><td>Graduated cylinder</td><td>Measuring liquid volume accurately (in mL)</td></tr>\n      <tr><td>Beaker</td><td>Holding, mixing or heating liquids (the lines are only rough guesses)</td></tr>\n      <tr><td>Test tube</td><td>Holding small amounts for a test</td></tr>\n      <tr><td>Dropper / pipette</td><td>Adding liquid one drop at a time</td></tr></table>\n      <div class=\"box key\"><b>Reading a graduated cylinder</b>Water curves down in the middle. That curve is the <b>meniscus</b>. Put your eyes level with it and read the <b>bottom</b> of the curve.</div>"},{"title":"Using a microscope","body":"\n      <table><tr><th>Part</th><th>Job</th></tr>\n      <tr><td>Eyepiece (ocular lens)</td><td>The lens you look through, usually 10×</td></tr>\n      <tr><td>Objective lenses</td><td>The lenses near the slide: low (4×), medium (10×), high (40×)</td></tr>\n      <tr><td>Stage and stage clips</td><td>The flat platform that holds the slide; clips keep it still</td></tr>\n      <tr><td>Diaphragm</td><td>Changes how much light comes through</td></tr>\n      <tr><td>Light source</td><td>Shines light up through the slide</td></tr>\n      <tr><td>Coarse focus knob</td><td>Big focus moves. Use it <b>only on low power</b></td></tr>\n      <tr><td>Fine focus knob</td><td>Small focus moves to sharpen the image</td></tr>\n      <tr><td>Arm and base</td><td>Carry it with one hand on the arm and one under the base</td></tr></table>\n      <div class=\"box key\"><b>Total magnification</b>Eyepiece × objective. A 10× eyepiece with a 40× objective magnifies 10 × 40 = <b>400×</b>.</div>\n      <ul><li>Always start on the <b>lowest power</b>, center what you want to see, focus, then switch to a higher power and use only the fine focus.</li>\n      <li>The image looks <b>upside down and backward</b>, so a slide moved left looks like it moves right.</li>\n      <li>A <b>wet mount</b>: put the sample on a slide, add a drop of water, and lower a cover slip at an angle so you don't trap air bubbles.</li></ul>"},{"title":"Thinking like a scientist","body":"\n      <ul><li><b>Hypothesis</b>: a testable prediction, often written \"If … then … because …\".</li>\n      <li><b>Independent variable</b>: the one thing you change on purpose.</li>\n      <li><b>Dependent variable</b>: what you measure to see the effect.</li>\n      <li><b>Controlled variables</b>: everything you keep the same so the test is fair.</li>\n      <li><b>Control group</b>: the group that doesn't get the change, so you can compare.</li></ul>\n      <div class=\"box\"><b>CER answers</b><b>Claim</b> (your answer), <b>Evidence</b> (data or observations that support it), <b>Reasoning</b> (the science idea that connects the evidence to the claim).</div>","examples":[{"q":"Maya tests whether plants grow taller with more hours of light. Name the independent and dependent variables, and two controlled variables.","steps":["What she changes on purpose: hours of light. That's the independent variable.","What she measures: how tall the plants grow. That's the dependent variable.","What must stay the same: type of plant, amount of water, soil, pot size, temperature."],"a":"Independent: hours of light. Dependent: plant height. Controlled: any two of plant type, water, soil, pot size, temperature."}]},{"title":"What makes something alive?","body":"\n      <p>Every living thing (<b>organism</b>) does all of these:</p>\n      <ul><li>Is made of one or more <b>cells</b></li><li>Uses <b>energy</b></li><li><b>Grows</b> and develops</li>\n      <li><b>Responds</b> to its environment (a change it reacts to is a <b>stimulus</b>)</li><li><b>Reproduces</b></li>\n      <li>Keeps its inside conditions steady (<b>homeostasis</b>), like sweating to cool down</li></ul>\n      <div class=\"box warn\"><b>Watch out</b>Fire grows, uses oxygen and spreads, but it is <b>not</b> made of cells and doesn't reproduce on its own, so it isn't alive. Something has to do <b>all</b> of the above.</div>"},{"title":"Cell theory","body":"\n      <ol style=\"margin-left:20px\"><li>All living things are made of one or more cells.</li><li>The cell is the basic unit of structure and function in living things.</li><li>All cells come from other cells that already exist.</li></ol>\n      <table><tr><th>Scientist</th><th>What they added</th></tr>\n      <tr><td>Robert Hooke (1665)</td><td>Looked at cork and named the tiny boxes \"cells\"</td></tr>\n      <tr><td>Anton van Leeuwenhoek</td><td>First to see living single-celled organisms in pond water</td></tr>\n      <tr><td>Schleiden and Schwann</td><td>All plants (Schleiden) and all animals (Schwann) are made of cells</td></tr>\n      <tr><td>Rudolf Virchow</td><td>Cells only come from other cells</td></tr></table>\n      <ul><li><b>Unicellular</b> organisms are one cell (bacteria, amoebas, yeast). <b>Multicellular</b> organisms have many cells (you, trees, mushrooms).</li>\n      <li>Bacteria are <b>prokaryotes</b>: their cells have no nucleus. Plants, animals and fungi are <b>eukaryotes</b>: their cells have a nucleus.</li></ul>"},{"title":"Cell parts and their jobs","body":"\n      <div class=\"cols\"><div><svg class=\"fig\" viewBox=\"0 0 300 220\" role=\"img\" aria-label=\"Animal cell with numbered parts\">\n  <path d=\"M150 18 C222 16 266 58 268 110 C270 165 218 202 150 200 C82 198 34 165 32 110 C34 55 80 20 150 18 Z\" fill=\"rgba(167,139,250,.13)\" stroke=\"#6a46d6\" stroke-width=\"2.5\"/>\n  <circle cx=\"140\" cy=\"105\" r=\"34\" fill=\"rgba(106,70,214,.32)\" stroke=\"#6a46d6\" stroke-width=\"1.8\"/><circle cx=\"148\" cy=\"98\" r=\"10\" fill=\"#6a46d6\" opacity=\".55\"/>\n  <g transform=\"rotate(-25 222 78)\"><ellipse cx=\"222\" cy=\"78\" rx=\"24\" ry=\"10\" fill=\"rgba(226,85,155,.38)\" stroke=\"#c23b7a\" stroke-width=\"1.5\"/><path d=\"M204 78 q3 -7 6 0 t6 0 t6 0 t6 0 t6 0 t6 0\" fill=\"none\" stroke=\"#c23b7a\" stroke-width=\"1.2\"/></g><g transform=\"rotate(20 95 160)\"><ellipse cx=\"95\" cy=\"160\" rx=\"22\" ry=\"9\" fill=\"rgba(226,85,155,.38)\" stroke=\"#c23b7a\" stroke-width=\"1.5\"/><path d=\"M79 160 q3 -6 6 0 t6 0 t6 0 t6 0 t6 0\" fill=\"none\" stroke=\"#c23b7a\" stroke-width=\"1.2\"/></g>\n  <circle cx=\"215\" cy=\"152\" r=\"15\" fill=\"rgba(76,160,240,.28)\" stroke=\"#3d8fd6\" stroke-width=\"1.5\"/>\n  <circle cx=\"190\" cy=\"120\" r=\"2.6\" fill=\"#6a46d6\"/><circle cx=\"200\" cy=\"132\" r=\"2.6\" fill=\"#6a46d6\"/><circle cx=\"80\" cy=\"92\" r=\"2.6\" fill=\"#6a46d6\"/><circle cx=\"92\" cy=\"80\" r=\"2.6\" fill=\"#6a46d6\"/><circle cx=\"182\" cy=\"178\" r=\"2.6\" fill=\"#6a46d6\"/><circle cx=\"120\" cy=\"52\" r=\"2.6\" fill=\"#6a46d6\"/><circle cx=\"242\" cy=\"118\" r=\"2.6\" fill=\"#6a46d6\"/><circle cx=\"60\" cy=\"125\" r=\"2.6\" fill=\"#6a46d6\"/><circle cx=\"208\" cy=\"182\" r=\"2.6\" fill=\"#6a46d6\"/>\n  <circle cx=\"262\" cy=\"142\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"262\" y=\"146\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">1</text><circle cx=\"140\" cy=\"128\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"140\" y=\"132\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">2</text><circle cx=\"70\" cy=\"108\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"70\" y=\"112\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">3</text><circle cx=\"222\" cy=\"60\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"222\" y=\"64\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">4</text><circle cx=\"215\" cy=\"152\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"215\" y=\"156\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">5</text><circle cx=\"198\" cy=\"112\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"198\" y=\"116\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">6</text></svg><p class=\"figcap\">Animal cell</p><ol style=\"columns:2;column-gap:24px;margin:6px 0 4px 22px;font-size:14.5px\"><li>Cell membrane</li><li>Nucleus</li><li>Cytoplasm</li><li>Mitochondrion</li><li>Vacuole</li><li>Ribosomes</li></ol></div>\n      <div><svg class=\"fig\" viewBox=\"0 0 300 220\" role=\"img\" aria-label=\"Plant cell with numbered parts\">\n  <rect x=\"30\" y=\"12\" width=\"240\" height=\"196\" rx=\"10\" fill=\"none\" stroke=\"#3f9e5a\" stroke-width=\"7\"/>\n  <rect x=\"40\" y=\"22\" width=\"220\" height=\"176\" rx=\"6\" fill=\"rgba(167,139,250,.13)\" stroke=\"#6a46d6\" stroke-width=\"1.6\"/>\n  <rect x=\"104\" y=\"40\" width=\"136\" height=\"116\" rx=\"28\" fill=\"rgba(76,160,240,.28)\" stroke=\"#3d8fd6\" stroke-width=\"1.6\"/>\n  <circle cx=\"72\" cy=\"62\" r=\"20\" fill=\"rgba(106,70,214,.32)\" stroke=\"#6a46d6\" stroke-width=\"1.6\"/><circle cx=\"76\" cy=\"58\" r=\"6\" fill=\"#6a46d6\" opacity=\".55\"/>\n  <g transform=\"rotate(10 70 118)\"><ellipse cx=\"70\" cy=\"118\" rx=\"15\" ry=\"7.5\" fill=\"rgba(60,170,90,.5)\" stroke=\"#2f8a4a\" stroke-width=\"1.4\"/><path d=\"M62 115 v6 M67 114 v8 M72 114 v8 M77 115 v6\" stroke=\"#2f8a4a\" stroke-width=\"1.3\"/></g><g transform=\"rotate(-15 68 166)\"><ellipse cx=\"68\" cy=\"166\" rx=\"15\" ry=\"7.5\" fill=\"rgba(60,170,90,.5)\" stroke=\"#2f8a4a\" stroke-width=\"1.4\"/><path d=\"M60 163 v6 M65 162 v8 M70 162 v8 M75 163 v6\" stroke=\"#2f8a4a\" stroke-width=\"1.3\"/></g><g transform=\"rotate(5 132 180)\"><ellipse cx=\"132\" cy=\"180\" rx=\"15\" ry=\"7.5\" fill=\"rgba(60,170,90,.5)\" stroke=\"#2f8a4a\" stroke-width=\"1.4\"/><path d=\"M124 177 v6 M129 176 v8 M134 176 v8 M139 177 v6\" stroke=\"#2f8a4a\" stroke-width=\"1.3\"/></g><g transform=\"rotate(-8 186 180)\"><ellipse cx=\"186\" cy=\"180\" rx=\"15\" ry=\"7.5\" fill=\"rgba(60,170,90,.5)\" stroke=\"#2f8a4a\" stroke-width=\"1.4\"/><path d=\"M178 177 v6 M183 176 v8 M188 176 v8 M193 177 v6\" stroke=\"#2f8a4a\" stroke-width=\"1.3\"/></g><g transform=\"rotate(80 250 112)\"><ellipse cx=\"250\" cy=\"112\" rx=\"15\" ry=\"7.5\" fill=\"rgba(60,170,90,.5)\" stroke=\"#2f8a4a\" stroke-width=\"1.4\"/><path d=\"M242 109 v6 M247 108 v8 M252 108 v8 M257 109 v6\" stroke=\"#2f8a4a\" stroke-width=\"1.3\"/></g>\n  <g transform=\"rotate(0 232 178)\"><ellipse cx=\"232\" cy=\"178\" rx=\"14\" ry=\"7\" fill=\"rgba(226,85,155,.38)\" stroke=\"#c23b7a\" stroke-width=\"1.5\"/><path d=\"M224 178 q3 -4 6 0 t6 0\" fill=\"none\" stroke=\"#c23b7a\" stroke-width=\"1.2\"/></g>\n  <circle cx=\"40\" cy=\"100\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"40\" y=\"104\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">1</text><circle cx=\"270\" cy=\"150\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"270\" y=\"154\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">2</text><circle cx=\"72\" cy=\"62\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"72\" y=\"66\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">3</text><circle cx=\"172\" cy=\"98\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"172\" y=\"102\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">4</text><circle cx=\"70\" cy=\"118\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"70\" y=\"122\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">5</text><circle cx=\"232\" cy=\"178\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"232\" y=\"182\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">6</text><circle cx=\"95\" cy=\"140\" r=\"9\" fill=\"#19161f\" stroke=\"#fff\" stroke-width=\"1.5\"/><text x=\"95\" y=\"144\" text-anchor=\"middle\" style=\"font:700 11px Geist,Arial;fill:#fff\">7</text></svg><p class=\"figcap\">Plant cell</p><ol style=\"columns:2;column-gap:24px;margin:6px 0 4px 22px;font-size:14.5px\"><li>Cell membrane</li><li>Cell wall</li><li>Nucleus</li><li>Central vacuole</li><li>Chloroplast</li><li>Mitochondrion</li><li>Cytoplasm</li></ol></div></div>\n      <table><tr><th>Part</th><th>Job</th><th>Found in</th></tr>\n      <tr><td><b>Cell membrane</b></td><td>Thin outer layer that controls what goes in and out</td><td>All cells</td></tr>\n      <tr><td><b>Nucleus</b></td><td>Control center; holds the DNA (the instructions)</td><td>Plant and animal cells</td></tr>\n      <tr><td><b>Cytoplasm</b></td><td>Jelly-like fluid that fills the cell and holds the parts</td><td>All cells</td></tr>\n      <tr><td><b>Mitochondria</b></td><td>Release energy from food (the cell's \"power plant\")</td><td>Plant and animal cells</td></tr>\n      <tr><td><b>Ribosomes</b></td><td>Make proteins</td><td>All cells</td></tr>\n      <tr><td><b>Endoplasmic reticulum</b></td><td>Tunnels that move materials around the cell</td><td>Plant and animal cells</td></tr>\n      <tr><td><b>Golgi body</b></td><td>Packages and ships proteins</td><td>Plant and animal cells</td></tr>\n      <tr><td><b>Vacuole</b></td><td>Stores water, food and waste. Plants have one big <b>central vacuole</b></td><td>Plant cells (big), animal cells (small)</td></tr>\n      <tr><td><b>Cell wall</b></td><td>Stiff layer outside the membrane that supports and protects</td><td>Plant cells (not animal)</td></tr>\n      <tr><td><b>Chloroplasts</b></td><td>Use sunlight to make food (photosynthesis); green from chlorophyll</td><td>Plant cells (not animal)</td></tr></table>\n      <div class=\"box key\"><b>Plant vs. animal</b>Only plant cells have a <b>cell wall</b>, <b>chloroplasts</b> and one <b>large central vacuole</b>, which is why plant cells look boxy and green. Both kinds have a membrane, nucleus, cytoplasm, mitochondria and ribosomes.</div>"},{"title":"From cells to organisms","body":"\n      <div class=\"box key\"><b>Levels of organization</b>Cell → Tissue → Organ → Organ system → Organism</div>\n      <table><tr><th>Level</th><th>Meaning</th><th>Example (you)</th><th>Example (a plant)</th></tr>\n      <tr><td>Cell</td><td>Smallest living unit</td><td>Muscle cell</td><td>Leaf cell</td></tr>\n      <tr><td>Tissue</td><td>Group of similar cells doing one job</td><td>Heart muscle tissue</td><td>Tissue that carries water</td></tr>\n      <tr><td>Organ</td><td>Different tissues working together</td><td>Heart</td><td>Leaf</td></tr>\n      <tr><td>Organ system</td><td>Organs working together</td><td>Circulatory system</td><td>Shoot system</td></tr>\n      <tr><td>Organism</td><td>The whole living thing</td><td>You</td><td>The plant</td></tr></table>"},{"title":"Body systems work together","body":"\n      <table><tr><th>System</th><th>Main parts</th><th>Job</th></tr>\n      <tr><td>Circulatory</td><td>Heart, blood, blood vessels</td><td>Carries oxygen and nutrients to every cell, takes away waste</td></tr>\n      <tr><td>Respiratory</td><td>Lungs, airways</td><td>Brings in oxygen, gets rid of carbon dioxide</td></tr>\n      <tr><td>Digestive</td><td>Mouth, stomach, intestines</td><td>Breaks food down into nutrients</td></tr>\n      <tr><td>Muscular and skeletal</td><td>Muscles, bones</td><td>Movement, support and protection</td></tr>\n      <tr><td>Nervous</td><td>Brain, spinal cord, nerves, senses</td><td>Sends messages and senses the world</td></tr>\n      <tr><td>Excretory</td><td>Kidneys, bladder</td><td>Removes waste from the blood</td></tr></table>","examples":[{"q":"Explain how your body systems work together when you start running.","steps":["Your nervous system sends signals to your muscles to move.","Working muscles need more oxygen and energy, so you breathe faster (respiratory system).","Your heart beats faster to pump that oxygen and the nutrients from digestion to the muscles (circulatory system)."],"a":"No system works alone: the nervous, muscular, respiratory and circulatory systems all speed up together."}]}],"quiz":[{"t":"Lab & microscope","q":"Your lab partner knocks over a beaker and it breaks. What should you do first?","c":["Tell the teacher right away","Pick up the glass carefully with your hands","Sweep it under the table","Keep working and clean up at the end"],"a":0,"why":"Always tell the teacher about broken glass or spills. They have the right tools to clean it up safely."},{"t":"Lab & microscope","q":"How should you smell a chemical in the lab?","c":["Waft the smell toward your nose with your hand","Put your nose right over it and sniff","Taste a tiny bit instead","Never do anything to find out"],"a":0,"why":"Wafting brings a small amount of the smell to you safely."},{"t":"Lab & microscope","q":"Which tool measures liquid volume most accurately?","c":["Graduated cylinder","Beaker","Test tube","Hand lens"],"a":0,"why":"A graduated cylinder has exact markings. Beaker lines are only rough estimates."},{"t":"Lab & microscope","q":"Where do you read the volume in a graduated cylinder?","c":["At the bottom of the curved surface (meniscus), at eye level","At the top edge of the water","From above, looking down","At the highest line on the cylinder"],"a":0,"why":"Water curves down in the middle. Read the bottom of the curve with your eyes level to it."},{"t":"Lab & microscope","q":"The eyepiece is 10× and the objective is 40×. What is the total magnification?","c":["400×","50×","40×","4,000×"],"a":0,"why":"Multiply them: 10 × 40 = 400×."},{"t":"Lab & microscope","q":"Which knob should you use on high power?","c":["Fine focus only","Coarse focus only","Both, starting with coarse","Neither"],"a":0,"why":"The coarse knob moves too far and can crash the lens into the slide on high power."},{"t":"Lab & microscope","q":"Which microscope part controls how much light reaches the slide?","c":["Diaphragm","Stage clips","Eyepiece","Arm"],"a":0,"why":"The diaphragm opens and closes to let more or less light through."},{"t":"Lab & microscope","q":"You should always start looking at a slide with…","c":["The lowest-power objective","The highest-power objective","The fine focus knob","The light turned off"],"a":0,"why":"Low power shows a bigger area, so it's easier to find and center what you want to see."},{"t":"Science skills","q":"Jay tests if salt water freezes slower than plain water. What is the independent variable?","c":["How much salt is in the water","How long it takes to freeze","The size of the cups","The freezer temperature"],"a":0,"why":"The independent variable is the one thing you change on purpose: the salt."},{"t":"Science skills","q":"In the same test, what is the dependent variable?","c":["How long it takes to freeze","How much salt is in the water","The type of cup","The amount of water"],"a":0,"why":"The dependent variable is what you measure to see the result."},{"t":"Science skills","q":"Why do scientists keep controlled variables the same?","c":["So the only difference is the variable being tested","To make the experiment faster","So they don't need a hypothesis","To get the answer they expected"],"a":0,"why":"If more than one thing changes, you can't tell which one caused the result."},{"t":"Living things & cell theory","q":"Which is <b>not</b> a characteristic of all living things?","c":["Moving from place to place","Made of cells","Uses energy","Responds to its environment"],"a":0,"why":"Plants and many other organisms don't move from place to place, but they are still alive."},{"t":"Living things & cell theory","q":"Fire grows and uses oxygen. Why isn't it alive?","c":["It isn't made of cells","It is too hot","It doesn't use energy","It can't move"],"a":0,"why":"All living things are made of cells. Fire meets some of the characteristics but not all of them."},{"t":"Living things & cell theory","q":"Which is part of the cell theory?","c":["All cells come from other cells","All cells have a cell wall","All living things are multicellular","Cells can form from non-living things"],"a":0,"why":"The three parts: all living things are made of cells, the cell is the basic unit of life, and all cells come from existing cells."},{"t":"Living things & cell theory","q":"Who named \"cells\" after looking at cork under a microscope?","c":["Robert Hooke","Rudolf Virchow","Anton van Leeuwenhoek","Theodor Schwann"],"a":0,"why":"Hooke thought the tiny boxes in cork looked like small rooms, or cells."},{"t":"Living things & cell theory","q":"A bacterium is made of one cell with no nucleus. It is…","c":["Unicellular and a prokaryote","Multicellular and a prokaryote","Unicellular and a eukaryote","Not alive"],"a":0,"why":"One cell means unicellular. No nucleus means prokaryote."},{"t":"Cell parts","q":"Which part is the control center of the cell and holds the DNA?","c":["Nucleus","Cell membrane","Vacuole","Ribosome"],"a":0,"why":"The nucleus holds the instructions (DNA) that run the cell."},{"t":"Cell parts","q":"Which part controls what goes into and out of the cell?","c":["Cell membrane","Cell wall","Nucleus","Chloroplast"],"a":0,"why":"The membrane lets some things through and keeps others out. The cell wall just adds support."},{"t":"Cell parts","q":"Which part releases energy from food for the cell to use?","c":["Mitochondria","Chloroplasts","Ribosomes","Golgi body"],"a":0,"why":"Mitochondria are the cell's power plants. Chloroplasts make food; mitochondria release the energy in it."},{"t":"Cell parts","q":"Which part makes food from sunlight?","c":["Chloroplast","Mitochondrion","Nucleus","Vacuole"],"a":0,"why":"Chloroplasts do photosynthesis. They contain green chlorophyll."},{"t":"Cell parts","q":"Which group lists parts found <b>only</b> in plant cells?","c":["Cell wall, chloroplasts, large central vacuole","Nucleus, cell membrane, cytoplasm","Mitochondria, ribosomes, nucleus","Cell membrane, chloroplasts, ribosomes"],"a":0,"why":"Animal cells have no cell wall or chloroplasts, and only small vacuoles."},{"t":"Cell parts","q":"What makes proteins in the cell?","c":["Ribosomes","Vacuoles","Cell wall","Cytoplasm"],"a":0,"why":"Ribosomes are tiny protein factories found in all cells."},{"t":"Organization & systems","q":"Which list is in order from smallest to largest?","c":["Cell, tissue, organ, organ system, organism","Tissue, cell, organ, organism, organ system","Organ, tissue, cell, organ system, organism","Cell, organ, tissue, organism, organ system"],"a":0,"why":"Cells make tissues, tissues make organs, organs make organ systems, and systems make the organism."},{"t":"Organization & systems","q":"The heart is an example of…","c":["An organ","A tissue","A cell","An organ system"],"a":0,"why":"The heart is made of several kinds of tissue working together, which makes it an organ."},{"t":"Organization & systems","q":"When you run, you breathe faster and your heart beats faster. Which two systems are working together to get oxygen to your muscles?","c":["Respiratory and circulatory","Digestive and skeletal","Nervous and excretory","Skeletal and respiratory"],"a":0,"why":"Your lungs bring in oxygen and your heart and blood carry it to the muscles."},{"t":"Organization & systems","q":"Which system breaks food down into nutrients your cells can use?","c":["Digestive","Circulatory","Respiratory","Nervous"],"a":0,"why":"The digestive system breaks food down; the circulatory system then carries the nutrients to cells."}],"vocab":[["Organism","Any living thing."],["Cell","The smallest unit that can carry out all the jobs of life."],["Cell theory","All living things are made of cells; cells are the basic unit of life; all cells come from other cells."],["Unicellular","Made of just one cell."],["Multicellular","Made of many cells."],["Prokaryote","A cell with no nucleus, like a bacterium."],["Eukaryote","A cell with a nucleus, like plant and animal cells."],["Organelle","A tiny structure inside a cell with its own job."],["Nucleus","The control center; holds the DNA."],["Cell membrane","Thin layer around the cell that controls what goes in and out."],["Cell wall","Stiff layer outside the membrane of plant cells."],["Cytoplasm","Jelly-like fluid that fills the cell."],["Mitochondria","Release energy from food."],["Chloroplast","Uses sunlight to make food; found in plant cells."],["Vacuole","Stores water, food and waste."],["Ribosome","Makes proteins."],["Tissue","A group of similar cells doing the same job."],["Organ","Different tissues working together, like the heart or a leaf."],["Organ system","A group of organs working together."],["Stimulus","A change in the environment that an organism responds to."],["Homeostasis","Keeping conditions inside the body steady."],["Magnification","How many times bigger something looks; eyepiece × objective."],["Objective lens","The microscope lens closest to the slide."],["Hypothesis","A testable prediction."],["Independent variable","The one thing you change on purpose."],["Dependent variable","What you measure in an experiment."],["Meniscus","The curve at the top of a liquid; read the bottom of it."]]};
+(function () {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const store = { get(k, d) { try { const v = localStorage.getItem('cbstudy:' + DATA.id + ':' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+                  set(k, v) { try { localStorage.setItem('cbstudy:' + DATA.id + ':' + k, JSON.stringify(v)); } catch (e) {} } };
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  $('kick').textContent = DATA.kick; $('title').textContent = DATA.title; $('lede').innerHTML = DATA.lede; $('src').innerHTML = DATA.src || '';
+  document.title = DATA.title + ' · ' + DATA.cls;
+
+  // tabs
+  const TABS = [['guide', 'Study guide', ''], ['quiz', 'Practice quiz', DATA.quiz.length], ['vocab', 'Vocab', DATA.vocab.length]];
+  $('tabs').innerHTML = TABS.map(([k, l, n]) => `<button data-tab="${k}">${l}${n ? `<b>${n}</b>` : ''}</button>`).join('');
+  function show(k) {
+    TABS.forEach(([t]) => { $('p-' + t).hidden = t !== k; });
+    document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === k));
+  }
+  $('tabs').onclick = e => { const b = e.target.closest('[data-tab]'); if (b) { show(b.dataset.tab); window.scrollTo({ top: 0, behavior: 'smooth' }); } };
+  show('guide');
+
+  // study guide
+  $('p-guide').innerHTML = `<div class="toc">${DATA.guide.map((s, i) => `<a href="#s${i}">${esc(s.title)}</a>`).join('')}</div>` +
+    DATA.guide.map((s, i) => `<article class="sec" id="s${i}"><h2><span class="n">${String(i + 1).padStart(2, '0')}</span>${esc(s.title)}</h2>${s.body || ''}
+      ${(s.examples || []).map(x => `<details class="ex"><summary>${x.q}</summary><ol>${x.steps.map(st => `<li>${st}</li>`).join('')}</ol><div class="ans">${x.a}</div></details>`).join('')}</article>`).join('');
+  $('p-guide').addEventListener('click', e => { const a = e.target.closest('.toc a'); if (!a) return; e.preventDefault(); const el = document.querySelector(a.getAttribute('href')); if (el) el.scrollIntoView({ behavior: 'smooth' }); });
+
+  // practice quiz
+  const topics = [...new Set(DATA.quiz.map(q => q.t))];
+  let pick = new Set(topics), run = null;
+  function qStart() {
+    const best = store.get('best', null);
+    $('p-quiz').innerHTML = `<div class="qstart"><h2>Practice quiz</h2><p class="sub">${DATA.quiz.length} questions. You'll see why each answer is right as you go, and a breakdown by topic at the end.</p>
+      ${topics.length > 1 ? `<div class="chips">${topics.map(t => `<button data-topic="${esc(t)}" class="${pick.has(t) ? 'on' : ''}">${esc(t)}</button>`).join('')}</div>` : ''}
+      <div class="row"><button class="btn pri" id="go">Start (${DATA.quiz.filter(q => pick.has(q.t)).length} questions)</button></div>
+      ${best ? `<p class="best">Your best: ${best.pct}% on ${new Date(best.at).toLocaleDateString()}</p>` : ''}</div>`;
+    $('p-quiz').querySelectorAll('[data-topic]').forEach(b => b.onclick = () => { const t = b.dataset.topic; if (pick.has(t) && pick.size > 1) pick.delete(t); else pick.add(t); qStart(); });
+    $('go').onclick = () => begin(DATA.quiz.filter(q => pick.has(q.t)));
+  }
+  function begin(list) { run = { qs: shuffle(list).map(q => Object.assign({}, q, { order: shuffle(q.c.map((_, i) => i)) })), i: 0, res: [] }; qShow(); }
+  function qShow() {
+    const q = run.qs[run.i], n = run.qs.length;
+    $('p-quiz').innerHTML = `<div class="qcard"><div class="qtop"><span class="t">${esc(q.t)}</span><span>${run.i + 1} of ${n}</span></div>
+      <div class="bar"><i style="width:${(run.i / n) * 100}%"></i></div><div class="qq">${q.q}</div>
+      <div class="opts">${q.order.map((ci, k) => `<button class="opt" data-ci="${ci}"><span class="l">${'ABCDE'[k]}</span><span>${q.c[ci]}</span></button>`).join('')}</div>
+      <div id="why"></div><div class="row"><button class="btn pri" id="next" hidden>${run.i + 1 < n ? 'Next question' : 'See my results'}</button></div></div>`;
+    $('p-quiz').querySelectorAll('.opt').forEach(b => b.onclick = () => answer(+b.dataset.ci));
+  }
+  function answer(ci) {
+    const q = run.qs[run.i], ok = ci === q.a;
+    if (run.res.length > run.i) return;
+    run.res.push({ q, ok, ci });
+    $('p-quiz').querySelectorAll('.opt').forEach(b => { b.disabled = true; const c = +b.dataset.ci; if (c === q.a) b.classList.add('right'); else if (c === ci) b.classList.add('wrong'); });
+    $('why').innerHTML = `<div class="why${ok ? '' : ' no'}"><b>${ok ? 'Correct.' : 'Not quite.'}</b> ${q.why}</div>`;
+    const nx = $('next'); nx.hidden = false; nx.focus(); nx.onclick = () => { run.i++; if (run.i < run.qs.length) qShow(); else qEnd(); };
+  }
+  function qEnd() {
+    const n = run.res.length, right = run.res.filter(r => r.ok).length, pct = Math.round(right / n * 100);
+    const best = store.get('best', null);
+    if (n === DATA.quiz.length && (!best || pct >= best.pct)) store.set('best', { pct, at: Date.now() });
+    const by = topics.map(t => { const l = run.res.filter(r => r.q.t === t); return { t, n: l.length, ok: l.filter(r => r.ok).length }; }).filter(x => x.n);
+    const misses = run.res.filter(r => !r.ok);
+    $('p-quiz').innerHTML = `<div class="qend"><div class="sub">${right} of ${n} right</div><div class="big">${pct}%</div>
+      <h2>${pct >= 90 ? "You're ready for this." : pct >= 75 ? 'Close. Clean up the misses below.' : pct >= 50 ? 'Good start. Review your weakest topic, then try again.' : 'Go back through the study guide, then try again.'}</h2>
+      <div class="tbars">${by.map(x => `<div class="tb"><span>${esc(x.t)}</span><span class="tr"><i style="width:${x.ok / x.n * 100}%"></i></span><span class="p">${x.ok}/${x.n}</span></div>`).join('')}</div>
+      <div class="row">${misses.length ? '<button class="btn pri" id="redo">Retry the ones I missed</button>' : ''}<button class="btn" id="again">Start over</button></div>
+      ${misses.length ? `<div class="miss">${misses.map(r => `<div>${r.q.q}<div class="w">You picked: ${r.q.c[r.ci]}</div><div class="a">Answer: ${r.q.c[r.q.a]}</div><div class="w">${r.q.why}</div></div>`).join('')}</div>` : ''}</div>`;
+    if (misses.length) $('redo').onclick = () => begin(misses.map(r => DATA.quiz.find(q => q.q === r.q.q)));
+    $('again').onclick = qStart;
+  }
+  document.addEventListener('keydown', e => {
+    if ($('p-quiz').hidden || !run || e.target.matches('input')) return;
+    const k = e.key.toUpperCase(), i = 'ABCDE'.indexOf(k) >= 0 ? 'ABCDE'.indexOf(k) : '12345'.indexOf(k);
+    const opts = $('p-quiz').querySelectorAll('.opt');
+    if (i >= 0 && opts[i] && !opts[i].disabled) opts[i].click();
+    else if (e.key === 'Enter' && $('next') && !$('next').hidden) $('next').click();
+  });
+  qStart();
+
+  // vocab
+  let vorder = DATA.vocab.slice();
+  function vShow(filter) {
+    const q = (filter || '').toLowerCase();
+    $('vg').innerHTML = vorder.filter(([t, d]) => !q || (t + ' ' + d).toLowerCase().includes(q)).map(([t, d]) => `<div class="vc" tabindex="0"><div><div class="f">${esc(t)}</div><div class="b">${d}</div></div></div>`).join('');
+  }
+  $('p-vocab').innerHTML = `<div class="vtools"><input id="vq" placeholder="Search terms…" autocomplete="off"><button class="btn" id="vs">Shuffle</button><button class="btn" id="vf">Flip all</button></div><div class="vgrid" id="vg"></div>`;
+  vShow('');
+  $('vq').oninput = e => vShow(e.target.value);
+  $('vs').onclick = () => { vorder = shuffle(vorder); vShow($('vq').value); };
+  $('vf').onclick = () => { const cards = [...document.querySelectorAll('.vc')], all = cards.every(c => c.classList.contains('flip')); cards.forEach(c => c.classList.toggle('flip', !all)); };
+  $('vg').addEventListener('click', e => { const c = e.target.closest('.vc'); if (c) c.classList.toggle('flip'); });
+  $('vg').addEventListener('keydown', e => { const c = e.target.closest('.vc'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); c.classList.toggle('flip'); } });
+})();
+</script>
+</body>
+</html>
