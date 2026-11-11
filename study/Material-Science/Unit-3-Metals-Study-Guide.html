@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metals: Structure, Strength and Heat Treatment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@500&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap" media="print" onload="this.media='all'">
+<style>
+:root {
+  --bg: #f7f6fa; --card: #ffffff; --ink: #19161f; --mu: #625b70; --mu2: #8b8499; --ln: #e7e3ee; --soft: #f1eef6;
+  --ac: #6a46d6; --acs: #efeafd; --pk: #c23b7a; --ok: #157a4a; --oks: #e6f5ed; --bad: #b8304f; --bads: #fcebef;
+  --sans: Geist, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  --math: "STIX Two Text", "Cambria Math", Georgia, serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d0b12; --card: #16131d; --ink: #f1eef5; --mu: #a39cb2; --mu2: #7b748a; --ln: #2a2533; --soft: #1e1a27;
+    --ac: #a78bfa; --acs: #241d38; --pk: #f07ab3; --ok: #5fd39b; --oks: #12291e; --bad: #ff8aa5; --bads: #2e1620; }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+body { font: 16px/1.6 var(--sans); color: var(--ink); background: var(--bg); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 28px 20px 80px; }
+.kick { font: 500 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ac); }
+h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.08; letter-spacing: -.035em; font-weight: 650; margin: 10px 0 12px; }
+.lede { color: var(--mu); font-size: 17px; max-width: 640px; }
+.src { margin-top: 10px; font-size: 13px; color: var(--mu2); }
+.tabs { position: sticky; top: 0; z-index: 5; display: flex; gap: 6px; margin: 24px -20px 22px; padding: 10px 20px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--ln); overflow-x: auto; scrollbar-width: none; }
+.tabs button { flex: none; border: 0; background: transparent; padding: 8px 14px; border-radius: 999px; font-weight: 550; font-size: 14.5px; color: var(--mu); cursor: pointer; }
+.tabs button:hover { color: var(--ink); background: var(--soft); }
+.tabs button.on { background: var(--ink); color: var(--bg); }
+.tabs b { font-weight: 600; opacity: .6; margin-left: 4px; }
+.pane[hidden] { display: none; }
+
+/* study guide */
+.toc { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.toc a { font-size: 13.5px; text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--ln); padding: 5px 12px; border-radius: 999px; }
+.toc a:hover { border-color: var(--ac); }
+.sec { background: var(--card); border: 1px solid var(--ln); border-radius: 18px; padding: 22px 24px; margin-bottom: 14px; scroll-margin-top: 70px; }
+.sec h2 { font-size: 21px; letter-spacing: -.02em; font-weight: 650; margin-bottom: 10px; display: flex; gap: 10px; align-items: baseline; }
+.sec h2 .n { font: 500 12px var(--mono); color: var(--ac); letter-spacing: .08em; }
+.sec p { margin: 8px 0; }
+.sec ul { margin: 8px 0 8px 20px; }
+.sec li { margin: 5px 0; }
+.sec li::marker { color: var(--ac); }
+.box { margin: 12px 0; padding: 12px 14px; border-radius: 12px; background: var(--soft); }
+.box.key { background: var(--acs); border-left: 3px solid var(--ac); }
+.box.warn { background: var(--bads); border-left: 3px solid var(--bad); }
+.box b:first-child { display: block; font-size: 12px; font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mu); margin-bottom: 4px; font-weight: 500; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 14.5px; }
+th, td { border: 1px solid var(--ln); padding: 7px 10px; text-align: left; vertical-align: top; }
+th { background: var(--soft); font-weight: 600; }
+details.ex { margin: 10px 0; border: 1px solid var(--ln); border-radius: 12px; overflow: hidden; }
+details.ex summary { cursor: pointer; padding: 11px 14px; font-weight: 550; list-style: none; display: flex; gap: 10px; align-items: baseline; }
+details.ex summary::-webkit-details-marker { display: none; }
+details.ex summary::before { content: "Example"; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--pk); flex: none; }
+details.ex summary::after { content: "Show steps"; margin-left: auto; font-size: 12.5px; color: var(--ac); flex: none; }
+details.ex[open] summary::after { content: "Hide"; }
+details.ex ol { margin: 0; padding: 4px 16px 12px 36px; }
+details.ex li { margin: 6px 0; }
+details.ex .ans { padding: 10px 16px 14px; border-top: 1px dashed var(--ln); font-weight: 600; }
+.m { font-family: var(--math); font-size: 1.1em; white-space: nowrap; }
+.fig { display: block; width: 100%; max-width: 460px; margin: 14px auto 6px; color: var(--mu); }
+.fig text { font: 12.5px var(--sans); fill: var(--ink); }
+.fig .ac { stroke: var(--ac); }
+.fig .acf { fill: var(--ac); }
+.figcap { text-align: center; font-size: 13px; color: var(--mu); margin-bottom: 8px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.m i { font-style: italic; }
+
+/* quiz */
+.qstart, .qcard, .qend { background: var(--card); border: 1px solid var(--ln); border-radius: 20px; padding: 24px; }
+.qstart h2, .qend h2 { font-size: 24px; letter-spacing: -.025em; font-weight: 650; margin-bottom: 6px; }
+.sub { color: var(--mu); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.chips button { border: 1px solid var(--ln); background: var(--card); padding: 6px 12px; border-radius: 999px; font-size: 13.5px; cursor: pointer; }
+.chips button.on { background: var(--acs); border-color: var(--ac); color: var(--ac); font-weight: 600; }
+.btn { border: 0; cursor: pointer; padding: 11px 20px; border-radius: 999px; font-weight: 600; font-size: 15px; background: var(--soft); }
+.btn.pri { background: var(--ink); color: var(--bg); }
+.btn:disabled { opacity: .45; cursor: default; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+.qtop { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 13.5px; color: var(--mu); }
+.qtop .t { font: 500 11.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ac); background: var(--acs); padding: 3px 9px; border-radius: 999px; }
+.bar { height: 4px; border-radius: 4px; background: var(--soft); overflow: hidden; margin-bottom: 18px; }
+.bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--ac), var(--pk)); transition: width .4s; }
+.qq { font-size: 18.5px; line-height: 1.5; font-weight: 500; margin-bottom: 16px; }
+.opts { display: grid; gap: 9px; }
+.opt { display: flex; gap: 12px; align-items: flex-start; text-align: left; width: 100%; border: 1.5px solid var(--ln); background: var(--card); padding: 12px 14px; border-radius: 14px; cursor: pointer; font-size: 15.5px; line-height: 1.45; transition: border-color .15s, background-color .15s; }
+.opt:hover:not(:disabled) { border-color: var(--ac); }
+.opt .l { flex: none; width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center; font: 600 12px var(--mono); background: var(--soft); color: var(--mu); }
+.opt:disabled { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--oks); }
+.opt.right .l { background: var(--ok); color: #fff; }
+.opt.wrong { border-color: var(--bad); background: var(--bads); }
+.opt.wrong .l { background: var(--bad); color: #fff; }
+.why { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--soft); font-size: 15px; }
+.why b { color: var(--ok); }
+.why.no b { color: var(--bad); }
+.big { font-size: 54px; font-weight: 650; letter-spacing: -.04em; line-height: 1; margin: 6px 0 4px; background: linear-gradient(100deg, var(--ac), var(--pk)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tbars { display: grid; gap: 10px; margin: 18px 0; }
+.tb { display: grid; grid-template-columns: minmax(120px, 1fr) 2fr 48px; gap: 12px; align-items: center; font-size: 14px; }
+.tb .tr { height: 8px; border-radius: 8px; background: var(--soft); overflow: hidden; }
+.tb .tr i { display: block; height: 100%; background: var(--ac); }
+.tb .p { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.miss { margin-top: 18px; display: grid; gap: 10px; }
+.miss > div { border: 1px solid var(--ln); border-radius: 14px; padding: 12px 14px; font-size: 14.5px; }
+.miss .a { color: var(--ok); font-weight: 600; margin-top: 4px; }
+.miss .w { color: var(--mu); margin-top: 4px; }
+.best { font-size: 13.5px; color: var(--mu2); margin-top: 8px; }
+
+/* vocab */
+.vtools { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+.vtools input { flex: 1; min-width: 180px; font: inherit; font-size: 15px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--ln); background: var(--card); color: var(--ink); outline: none; }
+.vtools input:focus { border-color: var(--ac); }
+.vgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.vc { perspective: 900px; height: 150px; cursor: pointer; }
+.vc > div { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+.vc.flip > div { transform: rotateY(180deg); }
+.vc .f, .vc .b { position: absolute; inset: 0; border-radius: 16px; padding: 16px; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: grid; place-items: center; text-align: center; border: 1px solid var(--ln); background: var(--card); overflow: auto; }
+.vc .f { font-weight: 650; font-size: 18px; letter-spacing: -.01em; }
+.vc .b { transform: rotateY(180deg); font-size: 14px; color: var(--mu); background: var(--acs); }
+.foot { margin-top: 34px; font-size: 13px; color: var(--mu2); text-align: center; }
+@media (max-width: 560px) { .sec { padding: 18px; } .qstart, .qcard, .qend { padding: 18px; } .qq { font-size: 17px; } .tb { grid-template-columns: 1fr 1fr 44px; } }
+@media print { .tabs, .row, .chips { display: none !important; } .pane[hidden] { display: block !important; } .sec, .qcard { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kick" id="kick"></div>
+  <h1 id="title"></h1>
+  <p class="lede" id="lede"></p>
+  <p class="src" id="src"></p>
+  <nav class="tabs" id="tabs"></nav>
+  <section class="pane" id="p-guide"></section>
+  <section class="pane" id="p-quiz" hidden></section>
+  <section class="pane" id="p-vocab" hidden></section>
+  <p class="foot">Made for Classboard. Check anything you're unsure about with your teacher or your class notes.</p>
+</div>
+<script>
+const DATA = {"id":"matsci-u3-metals","cls":"Material Science","kick":"Material Science · Semester 1 · Unit 3","title":"Metals: Structure, Strength and Heat Treatment","lede":"Why metals bend instead of shatter, how to read a stress-strain curve, and how alloys, work hardening and heat treatment change a metal. Study guide, practice quiz and vocab.","src":"Built around the metals unit of the Materials Science and Technology (MST) curriculum, which Issaquah's Material Science course (IN425) appears to follow. Our best guess is that this is your Unit 3; if yours is different, send a request with your unit's name and we'll make that one.","guide":[{"title":"Metals as a material family","body":"\n      <p>Materials science sorts solids into five families: <b>metals, ceramics, glasses, polymers and composites</b>. Metals are usually shiny, conduct heat and electricity, and can be bent or hammered without breaking.</p>\n      <ul><li><b>Metallic bonding</b>: metal atoms give up their outer (valence) electrons into a shared \"sea\" of electrons that moves around a grid of positive ions.</li>\n      <li>Those free electrons carry electricity and heat, which is why metals <b>conduct</b>.</li>\n      <li>The bonds don't point in a fixed direction, so layers of atoms can slide past each other and re-bond. That makes metals <b>ductile</b> (can be drawn into wire) and <b>malleable</b> (can be hammered into sheets).</li>\n      <li>Ceramics have ionic and covalent bonds locked in place, so when layers shift they push apart and crack. That's why a plate shatters but a spoon bends.</li></ul>"},{"title":"Crystals, grains and dislocations","body":"\n      <p>Solid metals are <b>crystalline</b>: their atoms sit in a repeating 3D pattern. The smallest repeating box is the <b>unit cell</b>.</p>\n      <table><tr><th>Structure</th><th>Examples</th><th>What it means</th></tr>\n      <tr><td><b>BCC</b> (body-centered cubic)</td><td>Iron at room temperature, chromium, tungsten</td><td>Strong; less ductile when cold</td></tr>\n      <tr><td><b>FCC</b> (face-centered cubic)</td><td>Aluminum, copper, gold, silver, nickel</td><td>Most ways for layers to slip, so very ductile</td></tr>\n      <tr><td><b>HCP</b> (hexagonal close-packed)</td><td>Zinc, magnesium, titanium</td><td>Fewer ways to slip, so less ductile</td></tr></table>\n      <ul><li>A real piece of metal is made of many small crystals called <b>grains</b>. Where two grains meet is a <b>grain boundary</b>.</li>\n      <li>A <b>dislocation</b> is a flaw, a line of atoms out of place. Metals bend permanently because dislocations move through the crystal.</li>\n      <li>Anything that makes dislocations harder to move makes the metal <b>stronger and harder</b> (and usually less ductile). Smaller grains mean more grain boundaries in the way, so <b>smaller grains = stronger metal</b>.</li></ul>"},{"title":"Stress, strain and the stress-strain curve","body":"\n      <div class=\"cols\"><div class=\"box key\"><b>Stress</b>Force ÷ area. Units: N/m² = pascals (Pa), or N/mm² = megapascals (MPa).</div>\n      <div class=\"box key\"><b>Strain</b>Change in length ÷ original length. No units (sometimes written as a %).</div></div>\n      <svg class=\"fig\" viewBox=\"0 0 400 250\" role=\"img\" aria-label=\"A stress-strain curve for a ductile metal\">\n  <g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"M50 210 H380 M50 210 V20\"/><path d=\"M372 205 l8 5 -8 5 M45 28 l5 -8 5 8\"/></g>\n  <path d=\"M50 210 L125 85 C150 58 200 44 245 43 C285 43 315 66 345 112\" fill=\"none\" class=\"ac\" stroke-width=\"3.5\" stroke-linecap=\"round\"/>\n  <path d=\"M345 112 l6 8 M345 112 l-7 7\" class=\"ac\" stroke-width=\"2.5\"/>\n  <circle cx=\"90\" cy=\"152\" r=\"5\" class=\"acf\"/><text x=\"102\" y=\"156\" >Elastic region</text><circle cx=\"125\" cy=\"85\" r=\"5\" class=\"acf\"/><text x=\"41\" y=\"79\" >Yield point</text><circle cx=\"245\" cy=\"43\" r=\"5\" class=\"acf\"/><text x=\"185\" y=\"31\" >Ultimate tensile strength</text><circle cx=\"345\" cy=\"112\" r=\"5\" class=\"acf\"/><text x=\"315\" y=\"138\" >Fracture</text>\n  <text x=\"300\" y=\"232\" >Strain →</text>\n  <text x=\"18\" y=\"130\" transform=\"rotate(-90 18 130)\" >Stress →</text></svg>\n      <p class=\"figcap\">A ductile metal pulled until it breaks</p>\n      <ul><li><b>Elastic region</b>: a straight line. Remove the load and the metal springs back. The slope is <b>Young's modulus</b> (stiffness).</li>\n      <li><b>Yield point / yield strength</b>: where <b>plastic</b> (permanent) deformation starts.</li>\n      <li><b>Ultimate tensile strength</b>: the highest stress on the curve. After it the sample starts <b>necking</b> (getting thin in one spot).</li>\n      <li><b>Fracture</b>: it breaks. A <b>brittle</b> material breaks with almost no plastic region; a <b>ductile</b> one stretches a lot first. <b>Toughness</b> is the area under the curve (energy absorbed before breaking).</li></ul>","examples":[{"q":"A steel rod with a cross-section of 20 mm² is pulled with 2,000 N. Its 50.0 mm length stretches by 0.025 mm. Find the stress, strain and Young's modulus.","steps":["Stress = 2,000 N ÷ 20 mm² = 100 N/mm² = 100 MPa.","Strain = 0.025 mm ÷ 50.0 mm = 0.0005.","Young's modulus = stress ÷ strain = 100 MPa ÷ 0.0005 = 200,000 MPa."],"a":"100 MPa; 0.0005; 200,000 MPa = 200 GPa (typical for steel)."}]},{"title":"Making metals stronger: work hardening and alloys","body":"\n      <ul><li><b>Work hardening</b> (cold working): bending, hammering, rolling or drawing a metal at room temperature creates more dislocations, which tangle and block each other. The metal gets harder and stronger but less ductile. Bend a paper clip back and forth and it eventually snaps.</li>\n      <li><b>Alloy</b>: a mixture of a metal with other elements. Different-sized atoms distort the crystal and pin dislocations, so alloys are usually stronger than the pure metal.</li>\n      <li><b>Substitutional alloy</b>: the added atoms take the place of the main atoms (zinc in copper = brass). <b>Interstitial alloy</b>: small atoms squeeze into the gaps (carbon in iron = steel).</li></ul>\n      <table><tr><th>Alloy</th><th>Made of</th></tr><tr><td>Steel</td><td>Iron + carbon</td></tr><tr><td>Stainless steel</td><td>Iron + carbon + chromium (+ nickel)</td></tr>\n      <tr><td>Brass</td><td>Copper + zinc</td></tr><tr><td>Bronze</td><td>Copper + tin</td></tr><tr><td>Sterling silver</td><td>92.5% silver + copper</td></tr><tr><td>Solder (traditional)</td><td>Tin + lead</td></tr></table>"},{"title":"Heat treatment","body":"\n      <table><tr><th>Treatment</th><th>What you do</th><th>Result</th></tr>\n      <tr><td><b>Annealing</b></td><td>Heat it, then let it cool slowly</td><td>Softer and more ductile; undoes work hardening</td></tr>\n      <tr><td><b>Quenching</b></td><td>Heat steel red-hot, then cool it fast in water or oil</td><td>Very hard, but brittle</td></tr>\n      <tr><td><b>Tempering</b></td><td>Reheat quenched steel to a lower temperature, then cool</td><td>Loses a little hardness, gains toughness</td></tr></table>\n      <div class=\"box\"><b>The bobby pin lab</b>An annealed pin bends easily and stays bent. A quenched pin snaps when you bend it. A quenched-then-tempered pin is springy: it bends and returns. That's why tools and springs are quenched <i>and</i> tempered.</div>"},{"title":"Phase diagrams and melting","body":"\n      <ul><li>A pure metal melts at one temperature. Most alloys melt over a <b>range</b> of temperatures (partly solid, partly liquid in between).</li>\n      <li>A <b>phase diagram</b> shows which phases (solid, liquid or a mix) exist at each temperature and composition. The <b>liquidus</b> line is where it becomes fully liquid; the <b>solidus</b> is where it becomes fully solid.</li>\n      <li>The <b>eutectic</b> point is the one composition that melts all at once at the <b>lowest</b> temperature of any mix. Tin melts at 232 °C and lead at 327 °C, but 63% tin / 37% lead solder melts at about 183 °C, which is why it's used to join wires without damaging parts.</li></ul>"},{"title":"Shaping metals and stopping corrosion","body":"\n      <ul><li><b>Casting</b>: pour molten metal into a mold. <b>Lost-wax (investment) casting</b>: carve a wax model → attach a wax sprue → surround it with plaster (the investment) → heat to burn out the wax → pour in molten metal → cool, break away the plaster, cut off the sprue and polish.</li>\n      <li><b>Forging</b> (hammering hot metal), <b>rolling</b> into sheets and <b>drawing</b> through a die into wire. Drawing makes wire longer and thinner, and work-hardens it.</li>\n      <li><b>Corrosion</b> is a metal reacting with its environment. Rust is iron oxide and needs both oxygen and water.</li>\n      <li>Protection: paint or coat it; <b>galvanize</b> it (coat steel with zinc); use <b>stainless steel</b>, where chromium forms a thin oxide layer that protects the metal underneath. Aluminum protects itself the same way.</li></ul>"}],"quiz":[{"t":"Bonding & structure","q":"Why do metals conduct electricity well?","c":["Their valence electrons can move freely through the metal","Their atoms are packed in a random pattern","They have strong ionic bonds","They contain water"],"a":0,"why":"In metallic bonding the outer electrons form a shared \"sea\" that can flow, which carries current."},{"t":"Bonding & structure","q":"Why does a metal spoon bend while a ceramic plate shatters?","c":["Metallic bonds don't point in fixed directions, so layers can slide and re-bond","Metals are always softer than ceramics","Ceramics have no bonds between atoms","Metals are not crystalline"],"a":0,"why":"Ceramic bonds are locked in place, so shifting layers push apart and crack. Metal layers can slip and stay bonded."},{"t":"Bonding & structure","q":"Aluminum, copper and gold are very ductile. Which crystal structure do they share?","c":["FCC (face-centered cubic)","BCC (body-centered cubic)","HCP (hexagonal close-packed)","Amorphous"],"a":0,"why":"FCC metals have the most slip planes, so layers slide easily and the metal stretches a lot before breaking."},{"t":"Bonding & structure","q":"What is a grain in a metal?","c":["A small crystal where the atoms are all lined up the same way","A speck of dirt trapped in the metal","A bubble left over from casting","A single atom"],"a":0,"why":"A piece of metal is made of many tiny crystals (grains) pointing in different directions."},{"t":"Bonding & structure","q":"Making the grains in a metal smaller usually makes it…","c":["Stronger and harder","Softer and weaker","Melt at a lower temperature","Conduct electricity better"],"a":0,"why":"More grain boundaries block dislocations from moving, which makes the metal stronger."},{"t":"Bonding & structure","q":"Permanent (plastic) bending in a metal happens mainly because…","c":["Dislocations move through the crystal","Atoms break apart into ions","The metal melts slightly","Grains turn into glass"],"a":0,"why":"Dislocations are line flaws that slide through the crystal and let layers shift one row at a time."},{"t":"Stress & strain","q":"Stress is defined as…","c":["Force divided by area","Change in length divided by original length","Force times distance","Mass divided by volume"],"a":0,"why":"Stress = force ÷ cross-sectional area. Change in length ÷ original length is strain."},{"t":"Stress & strain","q":"A 5,000 N load pulls on a wire with a cross-section of 10 mm². What is the stress?","c":["500 MPa","50,000 MPa","0.002 MPa","50 MPa"],"a":0,"why":"5,000 N ÷ 10 mm² = 500 N/mm², and 1 N/mm² = 1 MPa."},{"t":"Stress & strain","q":"A 200.0 mm rod stretches to 200.4 mm. What is the strain?","c":["0.002","0.4","200.4","0.02"],"a":0,"why":"Strain = 0.4 mm ÷ 200.0 mm = 0.002. It has no units."},{"t":"Stress & strain","q":"On a stress-strain curve, what does the yield point mark?","c":["Where permanent deformation begins","The highest stress the sample takes","Where the sample breaks","Where the test starts"],"a":0,"why":"Before the yield point the metal springs back (elastic). After it, some of the stretch is permanent (plastic)."},{"t":"Stress & strain","q":"What does the slope of the straight, elastic part of the curve tell you?","c":["How stiff the material is (Young's modulus)","How tough it is","Its melting point","Its density"],"a":0,"why":"The slope is stress ÷ strain in the elastic region, which is Young's modulus. A steeper slope means stiffer."},{"t":"Stress & strain","q":"The highest point on a stress-strain curve is the…","c":["Ultimate tensile strength","Yield strength","Fracture point","Elastic limit"],"a":0,"why":"After the ultimate tensile strength, the sample necks and the stress it can carry drops until it breaks."},{"t":"Stress & strain","q":"A material breaks with almost no plastic stretching. It is…","c":["Brittle","Ductile","Malleable","Annealed"],"a":0,"why":"Brittle materials (like glass or quenched steel) fracture soon after the elastic region."},{"t":"Treatments & alloys","q":"You bend a paper clip back and forth until it snaps. What happened to the bent spot?","c":["It work-hardened: harder but more brittle","It annealed: softer and more ductile","It melted from the friction","It turned into a different element"],"a":0,"why":"Cold working piles up tangled dislocations, so the metal gets harder but loses ductility until it cracks."},{"t":"Treatments & alloys","q":"Annealing a metal means…","c":["Heating it and letting it cool slowly to make it softer","Heating it and cooling it fast in water","Hammering it while cold","Coating it with zinc"],"a":0,"why":"Slow cooling lets new, relaxed grains form, which undoes work hardening."},{"t":"Treatments & alloys","q":"Red-hot steel is plunged into cold water. The steel becomes…","c":["Very hard but brittle","Soft and easy to bend","Rusty right away","An alloy of iron and hydrogen"],"a":0,"why":"That is quenching. It traps a hard, brittle structure in the steel."},{"t":"Treatments & alloys","q":"Why is a knife blade tempered after it is quenched?","c":["To make it less brittle while keeping most of its hardness","To make it as hard as possible","To remove all the carbon","To change its color only"],"a":0,"why":"Tempering reheats the steel to a lower temperature, trading a bit of hardness for toughness so it won't chip or snap."},{"t":"Treatments & alloys","q":"Brass is an alloy of…","c":["Copper and zinc","Copper and tin","Iron and carbon","Tin and lead"],"a":0,"why":"Copper + tin is bronze, iron + carbon is steel, and tin + lead is traditional solder."},{"t":"Treatments & alloys","q":"In steel, small carbon atoms fit into the gaps between iron atoms. This is a…","c":["Interstitial alloy","Substitutional alloy","Composite","Ceramic"],"a":0,"why":"\"Interstitial\" means in the spaces. In a substitutional alloy the added atoms replace the main ones."},{"t":"Treatments & alloys","q":"Why is an alloy usually stronger than the pure metal it is made from?","c":["Different-sized atoms distort the crystal and make dislocations harder to move","Alloys have no grains","Alloys are always heavier","Alloys melt at higher temperatures"],"a":0,"why":"Anything that pins dislocations in place makes plastic deformation harder, so the metal is stronger."},{"t":"Melting & making","q":"Tin melts at 232 °C and lead at 327 °C, but 63/37 tin-lead solder melts at 183 °C. That composition is called the…","c":["Eutectic","Liquidus","Yield point","Unit cell"],"a":0,"why":"The eutectic is the mix that melts all at once at the lowest temperature."},{"t":"Melting & making","q":"Which is the right order for lost-wax casting?","c":["Wax model → plaster investment → burn out the wax → pour metal → break out","Pour metal → wax model → plaster → burn out","Plaster → pour metal → wax model → burn out","Wax model → pour metal → plaster → burn out"],"a":0,"why":"The wax leaves a hollow in the plaster, and the metal fills that hollow."},{"t":"Melting & making","q":"Pulling a wire through a smaller die makes the wire…","c":["Longer, thinner and work-hardened","Shorter and softer","Annealed","An alloy"],"a":0,"why":"Drawing is cold working, so it adds dislocations and hardens the wire."},{"t":"Melting & making","q":"Why doesn't stainless steel rust like regular steel?","c":["Its chromium forms a thin oxide layer that protects the metal","It has no iron in it","It is painted at the factory","It is quenched"],"a":0,"why":"The chromium oxide layer seals the surface and repairs itself if scratched."},{"t":"Melting & making","q":"Galvanizing steel means…","c":["Coating it with zinc","Heating it and cooling it slowly","Adding chromium to it","Drawing it into wire"],"a":0,"why":"The zinc coating corrodes first and protects the steel underneath."}],"vocab":[["Metallic bond","Positive metal ions held together by a shared \"sea\" of free valence electrons."],["Ductile","Can be stretched or drawn into wire without breaking."],["Malleable","Can be hammered or rolled into thin sheets."],["Crystalline","Atoms arranged in a repeating 3D pattern."],["Unit cell","The smallest repeating box of atoms in a crystal."],["BCC / FCC / HCP","Body-centered cubic / face-centered cubic / hexagonal close-packed crystal structures."],["Grain","One small crystal in a metal; its atoms all line up the same way."],["Grain boundary","Where two grains meet; it blocks dislocations."],["Dislocation","A line flaw in a crystal; its movement lets a metal bend permanently."],["Stress","Force ÷ cross-sectional area (Pa or MPa)."],["Strain","Change in length ÷ original length (no units)."],["Elastic deformation","Stretching that goes away when the load is removed."],["Plastic deformation","Permanent change in shape."],["Young's modulus","Stiffness: the slope of the elastic part of the stress-strain curve."],["Yield strength","The stress where plastic deformation begins."],["Ultimate tensile strength","The highest stress a material reaches before necking and breaking."],["Toughness","Energy a material absorbs before it breaks (area under the curve)."],["Brittle","Breaks with little or no plastic deformation."],["Hardness","Resistance to being scratched or dented."],["Work hardening","Getting harder and less ductile from being bent, hammered or drawn cold."],["Annealing","Heating, then cooling slowly, to soften a metal."],["Quenching","Cooling hot steel fast in water or oil to make it hard."],["Tempering","Reheating quenched steel to a lower temperature to make it tougher."],["Alloy","A metal mixed with one or more other elements."],["Eutectic","The mixture that melts all at once at the lowest temperature."],["Investment casting","Lost-wax casting: a wax model is replaced by metal in a plaster mold."],["Corrosion","A metal breaking down by reacting with its environment, like rust."],["Galvanizing","Coating steel with zinc to protect it from rust."]]};
+(function () {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const store = { get(k, d) { try { const v = localStorage.getItem('cbstudy:' + DATA.id + ':' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+                  set(k, v) { try { localStorage.setItem('cbstudy:' + DATA.id + ':' + k, JSON.stringify(v)); } catch (e) {} } };
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  $('kick').textContent = DATA.kick; $('title').textContent = DATA.title; $('lede').innerHTML = DATA.lede; $('src').innerHTML = DATA.src || '';
+  document.title = DATA.title + ' · ' + DATA.cls;
+
+  // tabs
+  const TABS = [['guide', 'Study guide', ''], ['quiz', 'Practice quiz', DATA.quiz.length], ['vocab', 'Vocab', DATA.vocab.length]];
+  $('tabs').innerHTML = TABS.map(([k, l, n]) => `<button data-tab="${k}">${l}${n ? `<b>${n}</b>` : ''}</button>`).join('');
+  function show(k) {
+    TABS.forEach(([t]) => { $('p-' + t).hidden = t !== k; });
+    document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === k));
+  }
+  $('tabs').onclick = e => { const b = e.target.closest('[data-tab]'); if (b) { show(b.dataset.tab); window.scrollTo({ top: 0, behavior: 'smooth' }); } };
+  show('guide');
+
+  // study guide
+  $('p-guide').innerHTML = `<div class="toc">${DATA.guide.map((s, i) => `<a href="#s${i}">${esc(s.title)}</a>`).join('')}</div>` +
+    DATA.guide.map((s, i) => `<article class="sec" id="s${i}"><h2><span class="n">${String(i + 1).padStart(2, '0')}</span>${esc(s.title)}</h2>${s.body || ''}
+      ${(s.examples || []).map(x => `<details class="ex"><summary>${x.q}</summary><ol>${x.steps.map(st => `<li>${st}</li>`).join('')}</ol><div class="ans">${x.a}</div></details>`).join('')}</article>`).join('');
+  $('p-guide').addEventListener('click', e => { const a = e.target.closest('.toc a'); if (!a) return; e.preventDefault(); const el = document.querySelector(a.getAttribute('href')); if (el) el.scrollIntoView({ behavior: 'smooth' }); });
+
+  // practice quiz
+  const topics = [...new Set(DATA.quiz.map(q => q.t))];
+  let pick = new Set(topics), run = null;
+  function qStart() {
+    const best = store.get('best', null);
+    $('p-quiz').innerHTML = `<div class="qstart"><h2>Practice quiz</h2><p class="sub">${DATA.quiz.length} questions. You'll see why each answer is right as you go, and a breakdown by topic at the end.</p>
+      ${topics.length > 1 ? `<div class="chips">${topics.map(t => `<button data-topic="${esc(t)}" class="${pick.has(t) ? 'on' : ''}">${esc(t)}</button>`).join('')}</div>` : ''}
+      <div class="row"><button class="btn pri" id="go">Start (${DATA.quiz.filter(q => pick.has(q.t)).length} questions)</button></div>
+      ${best ? `<p class="best">Your best: ${best.pct}% on ${new Date(best.at).toLocaleDateString()}</p>` : ''}</div>`;
+    $('p-quiz').querySelectorAll('[data-topic]').forEach(b => b.onclick = () => { const t = b.dataset.topic; if (pick.has(t) && pick.size > 1) pick.delete(t); else pick.add(t); qStart(); });
+    $('go').onclick = () => begin(DATA.quiz.filter(q => pick.has(q.t)));
+  }
+  function begin(list) { run = { qs: shuffle(list).map(q => Object.assign({}, q, { order: shuffle(q.c.map((_, i) => i)) })), i: 0, res: [] }; qShow(); }
+  function qShow() {
+    const q = run.qs[run.i], n = run.qs.length;
+    $('p-quiz').innerHTML = `<div class="qcard"><div class="qtop"><span class="t">${esc(q.t)}</span><span>${run.i + 1} of ${n}</span></div>
+      <div class="bar"><i style="width:${(run.i / n) * 100}%"></i></div><div class="qq">${q.q}</div>
+      <div class="opts">${q.order.map((ci, k) => `<button class="opt" data-ci="${ci}"><span class="l">${'ABCDE'[k]}</span><span>${q.c[ci]}</span></button>`).join('')}</div>
+      <div id="why"></div><div class="row"><button class="btn pri" id="next" hidden>${run.i + 1 < n ? 'Next question' : 'See my results'}</button></div></div>`;
+    $('p-quiz').querySelectorAll('.opt').forEach(b => b.onclick = () => answer(+b.dataset.ci));
+  }
+  function answer(ci) {
+    const q = run.qs[run.i], ok = ci === q.a;
+    if (run.res.length > run.i) return;
+    run.res.push({ q, ok, ci });
+    $('p-quiz').querySelectorAll('.opt').forEach(b => { b.disabled = true; const c = +b.dataset.ci; if (c === q.a) b.classList.add('right'); else if (c === ci) b.classList.add('wrong'); });
+    $('why').innerHTML = `<div class="why${ok ? '' : ' no'}"><b>${ok ? 'Correct.' : 'Not quite.'}</b> ${q.why}</div>`;
+    const nx = $('next'); nx.hidden = false; nx.focus(); nx.onclick = () => { run.i++; if (run.i < run.qs.length) qShow(); else qEnd(); };
+  }
+  function qEnd() {
+    const n = run.res.length, right = run.res.filter(r => r.ok).length, pct = Math.round(right / n * 100);
+    const best = store.get('best', null);
+    if (n === DATA.quiz.length && (!best || pct >= best.pct)) store.set('best', { pct, at: Date.now() });
+    const by = topics.map(t => { const l = run.res.filter(r => r.q.t === t); return { t, n: l.length, ok: l.filter(r => r.ok).length }; }).filter(x => x.n);
+    const misses = run.res.filter(r => !r.ok);
+    $('p-quiz').innerHTML = `<div class="qend"><div class="sub">${right} of ${n} right</div><div class="big">${pct}%</div>
+      <h2>${pct >= 90 ? "You're ready for this." : pct >= 75 ? 'Close. Clean up the misses below.' : pct >= 50 ? 'Good start. Review your weakest topic, then try again.' : 'Go back through the study guide, then try again.'}</h2>
+      <div class="tbars">${by.map(x => `<div class="tb"><span>${esc(x.t)}</span><span class="tr"><i style="width:${x.ok / x.n * 100}%"></i></span><span class="p">${x.ok}/${x.n}</span></div>`).join('')}</div>
+      <div class="row">${misses.length ? '<button class="btn pri" id="redo">Retry the ones I missed</button>' : ''}<button class="btn" id="again">Start over</button></div>
+      ${misses.length ? `<div class="miss">${misses.map(r => `<div>${r.q.q}<div class="w">You picked: ${r.q.c[r.ci]}</div><div class="a">Answer: ${r.q.c[r.q.a]}</div><div class="w">${r.q.why}</div></div>`).join('')}</div>` : ''}</div>`;
+    if (misses.length) $('redo').onclick = () => begin(misses.map(r => DATA.quiz.find(q => q.q === r.q.q)));
+    $('again').onclick = qStart;
+  }
+  document.addEventListener('keydown', e => {
+    if ($('p-quiz').hidden || !run || e.target.matches('input')) return;
+    const k = e.key.toUpperCase(), i = 'ABCDE'.indexOf(k) >= 0 ? 'ABCDE'.indexOf(k) : '12345'.indexOf(k);
+    const opts = $('p-quiz').querySelectorAll('.opt');
+    if (i >= 0 && opts[i] && !opts[i].disabled) opts[i].click();
+    else if (e.key === 'Enter' && $('next') && !$('next').hidden) $('next').click();
+  });
+  qStart();
+
+  // vocab
+  let vorder = DATA.vocab.slice();
+  function vShow(filter) {
+    const q = (filter || '').toLowerCase();
+    $('vg').innerHTML = vorder.filter(([t, d]) => !q || (t + ' ' + d).toLowerCase().includes(q)).map(([t, d]) => `<div class="vc" tabindex="0"><div><div class="f">${esc(t)}</div><div class="b">${d}</div></div></div>`).join('');
+  }
+  $('p-vocab').innerHTML = `<div class="vtools"><input id="vq" placeholder="Search terms…" autocomplete="off"><button class="btn" id="vs">Shuffle</button><button class="btn" id="vf">Flip all</button></div><div class="vgrid" id="vg"></div>`;
+  vShow('');
+  $('vq').oninput = e => vShow(e.target.value);
+  $('vs').onclick = () => { vorder = shuffle(vorder); vShow($('vq').value); };
+  $('vf').onclick = () => { const cards = [...document.querySelectorAll('.vc')], all = cards.every(c => c.classList.contains('flip')); cards.forEach(c => c.classList.toggle('flip', !all)); };
+  $('vg').addEventListener('click', e => { const c = e.target.closest('.vc'); if (c) c.classList.toggle('flip'); });
+  $('vg').addEventListener('keydown', e => { const c = e.target.closest('.vc'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); c.classList.toggle('flip'); } });
+})();
+</script>
+</body>
+</html>
