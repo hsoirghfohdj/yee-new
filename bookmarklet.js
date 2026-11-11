@@ -25,7 +25,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Worksheets can come with their answer key: it shows on the same resource in Study and opens with one click.';
+const WHATSNEW = 'Games load a lot more reliably (no more scrambled text, Flash games work again, and Try another way actually switches source), plus you can rate study resources out of 5.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -328,6 +328,29 @@ background:radial-gradient(120% 160% at 0% 0%,color-mix(in srgb,var(--ac) 20%,tr
 .play{display:flex;flex-direction:column;gap:12px;height:100%;min-height:420px}
 .gbar.wide{max-width:none}
 .frame{flex:1;position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--ln);background:var(--p1)}
+.rate{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:9px 12px 9px 14px;border-radius:12px;background:color-mix(in srgb,var(--ac) 12%,var(--p1));border:1px solid color-mix(in srgb,var(--ac) 38%,transparent)}
+.rate .rq{font-weight:650;font-size:13.5px;line-height:1.25}
+.rate .rq span{display:block;font-weight:500;font-size:11.5px;color:var(--mu)}
+.stars{display:inline-flex;gap:1px}
+.stars button{all:unset;cursor:pointer;width:30px;height:30px;display:grid;place-items:center;border-radius:8px;color:var(--mu)}
+.stars svg{width:23px;height:23px}
+.stars svg path{fill:transparent;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round;transition:fill .12s}
+.stars button.on,.stars:hover button{color:#f5b546}
+.stars button.on svg path,.stars:hover button svg path{fill:currentColor}
+.stars button:hover~button{color:var(--mu)}
+.stars button:hover~button svg path{fill:transparent}
+.stars button:focus-visible{outline:2px solid var(--ac)}
+.rate input{flex:1 1 200px;min-width:150px;height:34px;padding:0 11px;border-radius:9px;background:var(--bg);border:1px solid var(--ln);color:var(--tx);font:13px/1 inherit;outline:none}
+.rate input:focus{border-color:var(--ac)}
+.rate .amsg{font-size:12.5px}
+.rated{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mu);padding:0 4px}
+.rated .stars button{width:18px;height:18px;cursor:default}
+.rated .stars svg{width:15px;height:15px}
+.rated .stars:hover button{color:var(--mu)}
+.rated .stars:hover button svg path{fill:transparent}
+.rated .stars button.on,.rated .stars:hover button.on{color:#f5b546}
+.rated .stars:hover button.on svg path{fill:currentColor}
+.rated .lnk{all:unset;cursor:pointer;color:var(--act);font-weight:600}
 .gframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
 .lic{position:absolute;inset:0;overflow:auto;margin:0;padding:20px;background:var(--p1);color:var(--mu);font:12px/1.5 ui-monospace,monospace;white-space:pre-wrap}
 .note{color:var(--mu);font-size:12px;text-align:center}
@@ -1115,11 +1138,19 @@ store.set('reqAt', Date.now());
 say('Thanks! We got your report.', 'ok');
 }).catch(() => say("Couldn't send right now. Try again in a bit.", 'err'));
 }
-// Load the open game from the next copy: repo -> GitHub Pages -> Vercel -> repo
+// Load the open game from the next copy: repo -> Vercel -> GitHub Pages -> repo
 function altSource() {
 if (!S.game) return;
-const next = { repo: 'pages', pages: 'vercel', vercel: 'repo' }[S.gameMode] || 'pages';
+const next = { repo: 'vercel', vercel: 'pages', pages: 'repo' }[S.gameMode] || 'vercel';
+S.altWhy = '';
 rememberSrc(S.game, next === 'repo' ? null : next);
+renderMain();
+}
+// A game from the repo reported that its files didn't load: switch it to the full copy on Vercel (once per game)
+function autoAlt(why) {
+if (S.view !== 'play' || S.gameMode !== 'repo' || !S.game || S.altTried === S.game) return;
+S.altTried = S.game; S.altWhy = why || '';
+rememberSrc(S.game, 'vercel');
 renderMain();
 }
 // Play time: counted while a game is open and on screen. Today's total shows on the Games page and above the game.
@@ -1162,9 +1193,43 @@ f.addEventListener('load', () => { w.clearInterval(iv); ov.classList.add('done')
 }
 // Runs first inside every game loaded from the repo: a sound switch, saved progress (games can't use the browser's
 // own storage in their sandbox, so Classboard keeps it for them), and passing key presses up for the quick-switch shortcut.
-function cdShim(startMuted, saved) {
+function cdShim(startMuted, saved, host) {
 var muted = !!startMuted, gains = [];
 var send = function (m) { try { parent.postMessage(m, '*'); } catch (e) {} };
+// If the game's own scripts, styles or worker can't load in the first 20 seconds, tell Classboard so it can
+// switch to the full copy of the game instead of leaving a broken screen.
+var t0 = Date.now(), failed = false;
+var fail = function (why) { if (failed || Date.now() - t0 > 20000) return; failed = true; send({ cdFail: String(why).slice(0, 200) }); };
+window.addEventListener('error', function (e) {
+var t = e.target;
+if (!t || t === window || !t.tagName) return;
+var u = t.src || t.href || '';
+// only when the file is really there (a file missing everywhere won't load from any other copy either)
+// (an empty src points at the game's own page, which never runs as a script anywhere, so that doesn't count)
+if (host && u.indexOf(host) === 0 && !/\.html?([?#]|$)/i.test(u) && (t.tagName === 'SCRIPT' || (t.tagName === 'LINK' && /stylesheet/i.test(t.rel || '')))) { try { fetch(u, { method: 'HEAD', cache: 'no-store' }).then(function (r) { if (r.ok) fail(decodeURIComponent(u.slice(host.length))); }, function () {}); } catch (x) {} }
+}, true);
+// On Vercel a missing file is a normal 404 the game can handle, but from this sandbox the 404 (which has no CORS
+// header) turns into a network error that stops some games. Give them the plain 404 instead.
+try {
+var realFetch = window.fetch;
+if (realFetch && host) window.fetch = function (input) {
+var p = realFetch.apply(this, arguments), abs = '';
+try { abs = new URL(typeof input === 'string' ? input : (input && input.url) || String(input), document.baseURI).href; } catch (x) {}
+if (abs.indexOf(host) !== 0) return p;
+return p.catch(function (err) { if (err && err.name === 'AbortError') throw err; return new Response('', { status: 404, statusText: 'Not Found' }); });
+};
+} catch (e) {}
+// A page that is still completely empty 10 seconds in (no canvas, picture, video or text) didn't start here
+setTimeout(function () {
+try {
+var b = document.body, rich = b && b.querySelector('canvas,iframe,img,video,svg,object,embed,ruffle-player,ruffle-object');
+if (!rich && (!b || (b.getElementsByTagName('*').length < 3 && b.textContent.trim().length < 20))) fail('blank page');
+} catch (x) {}
+}, 10000);
+try {
+var OW = window.Worker;
+if (OW) { var NW = function (u, o) { try { return o === undefined ? new OW(u) : new OW(u, o); } catch (x) { fail('worker'); throw x; } }; NW.prototype = OW.prototype; window.Worker = NW; }
+} catch (e) {}
 try {
 var AC = window.AudioContext || window.webkitAudioContext;
 if (AC) {
@@ -1202,6 +1267,39 @@ var data = saved && typeof saved === 'object' ? saved : {}, timer = 0;
 var ls = mk(data, function () { clearTimeout(timer); timer = setTimeout(function () { send({ cdSave: data }); }, 800); });
 try { Object.defineProperty(window, 'localStorage', { value: ls, configurable: true }); } catch (e) {}
 try { Object.defineProperty(window, 'sessionStorage', { value: mk({}, function () {}), configurable: true }); } catch (e) {}
+// The sandbox blocks service workers, cache storage and IndexedDB, and touching them throws. Give games harmless
+// stand-ins: no service worker, an in-memory cache, and IndexedDB that fails the normal way (onerror) so games fall
+// back to localStorage (kept above) instead of crashing.
+try {
+var swStub = { controller: null, ready: new Promise(function () {}), register: function () { return Promise.reject(new Error('Service workers are off here')); },
+getRegistration: function () { return Promise.resolve(undefined); }, getRegistrations: function () { return Promise.resolve([]); }, addEventListener: function () {}, removeEventListener: function () {}, startMessages: function () {} };
+Object.defineProperty(navigator, 'serviceWorker', { configurable: true, get: function () { return swStub; } });
+} catch (e) {}
+try {
+var key = function (r) { return String(r && r.url ? r.url : r); }, stores = {};
+var mkCache = function () {
+var m = {};
+return { match: function (r) { var v = m[key(r)]; return Promise.resolve(v ? v.clone() : undefined); }, matchAll: function () { return Promise.resolve(Object.keys(m).map(function (k) { return m[k].clone(); })); },
+put: function (r, res) { try { m[key(r)] = res.clone(); } catch (x) {} return Promise.resolve(); }, add: function () { return Promise.resolve(); }, addAll: function () { return Promise.resolve(); },
+delete: function (r) { var h = key(r) in m; delete m[key(r)]; return Promise.resolve(h); }, keys: function () { return Promise.resolve(Object.keys(m).map(function (k) { return new Request(k); })); } };
+};
+var cacheStub = { open: function (n) { return Promise.resolve(stores[n] || (stores[n] = mkCache())); }, has: function (n) { return Promise.resolve(n in stores); },
+delete: function (n) { var h = n in stores; delete stores[n]; return Promise.resolve(h); }, keys: function () { return Promise.resolve(Object.keys(stores)); }, match: function () { return Promise.resolve(undefined); } };
+Object.defineProperty(window, 'caches', { configurable: true, get: function () { return cacheStub; } });
+} catch (e) {}
+try {
+var IDB = window.indexedDB;
+if (IDB) ['open', 'deleteDatabase'].forEach(function (fn) {
+var real = IDB[fn];
+Object.defineProperty(IDB, fn, { configurable: true, value: function () {
+try { return real.apply(IDB, arguments); } catch (x) {
+var req = { result: undefined, error: x, readyState: 'done', source: null, transaction: null, onsuccess: null, onerror: null, onupgradeneeded: null, onblocked: null, _l: {},
+addEventListener: function (t, f) { (this._l[t] = this._l[t] || []).push(f); }, removeEventListener: function (t, f) { this._l[t] = (this._l[t] || []).filter(function (g) { return g !== f; }); } };
+setTimeout(function () { var ev = { type: 'error', target: req, currentTarget: req, preventDefault: function () {}, stopPropagation: function () {} }; try { if (req.onerror) req.onerror(ev); } catch (y) {} (req._l.error || []).forEach(function (f) { try { f(ev); } catch (y) {} }); }, 0);
+return req;
+} } });
+});
+} catch (e) {}
 var jar = {};
 try { Object.defineProperty(document, 'cookie', { configurable: true, get: function () { return Object.keys(jar).map(function (k) { return k + '=' + jar[k]; }).join('; '); }, set: function (v) { var p = String(v).split(';')[0], i = p.indexOf('='); if (i > 0) jar[p.slice(0, i).trim()] = p.slice(i + 1).trim(); } }); } catch (e) {}
 window.addEventListener('message', function (e) {
@@ -1218,29 +1316,49 @@ const jsonIn = v => JSON.stringify(v).replace(/</g, '\\u003c').replace(/\u2028/g
 // Points the frame at the game: straight from the repo (fetched, then shown in a sandbox with the shim above),
 // or GitHub Pages for LOAD-FROM-PAGES games and if the repo can't be reached. Resolves to 'repo' or 'pages'.
 const GAME_SANDBOX = 'allow-scripts allow-pointer-lock allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads allow-orientation-lock';
-// If a game won't load from the repo, this computer remembers to use GitHub Pages for it (for 3 days),
-// and if Pages doesn't answer either, the copy on Vercel.
-const VERCEL = 'https://jamesahmad.vercel.app/';
+// If a game won't load from the repo, this computer remembers to use the copy on Vercel for it (for 3 days),
+// and if Vercel doesn't answer, GitHub Pages. Games from the repo load their other files (scripts, styles,
+// sounds) from Vercel too: raw GitHub sends those as plain text, which browsers refuse to run.
+const VERCEL = 'https://classboardd.vercel.app/';
 const vercelUrl = p => VERCEL + p.split('/').map(encodeURIComponent).join('/');
 const memSrc = id => { const m = store.get('gameSrc', {})[id]; return m && Date.now() - m.at < 3 * DAY ? m.src : null; };
 const rememberSrc = (id, src) => { const m = store.get('gameSrc', {}); if (src) m[id] = { src, at: Date.now() }; else delete m[id]; store.set('gameSrc', m); };
 const headOk = u => fetch(u, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok).catch(() => false);
 function frameGame(f, path, muted) {
 const want = memSrc(path) || (repoGame(path) ? 'repo' : 'pages');
-const viaPages = () => headOk(gameUrl(path)).then(ok => {
-if (ok) { if (want === 'repo') rememberSrc(path, 'pages'); f.src = gameUrl(path); return 'pages'; }
-rememberSrc(path, 'vercel'); f.src = vercelUrl(path); return 'vercel';
+const urlOf = m => m === 'vercel' ? vercelUrl(path) : gameUrl(path);
+// a hosted copy (Vercel or GitHub Pages); if the first one doesn't answer, the other
+const hosted = first => {
+const other = first === 'vercel' ? 'pages' : 'vercel';
+return headOk(urlOf(first)).then(ok => ok ? first : headOk(urlOf(other)).then(ok2 => ok2 ? other : first)).then(m => {
+if (m !== want) rememberSrc(path, m);
+f.removeAttribute('sandbox'); f.removeAttribute('srcdoc'); f.src = urlOf(m);
+return m;
 });
-if (want === 'vercel') { f.src = vercelUrl(path); return Promise.resolve('vercel'); }
-if (want === 'pages') return viaPages();
-const raw = rawOf(path);
+};
+if (want === 'vercel' || want === 'pages') return hosted(want);
+// <base> is the game's own address on Vercel (not just its folder): packed games fetch their own page to unpack it
+const raw = rawOf(path), base = vercelUrl(path);
 return fetch(raw).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); }).then(html => {
-const add = '<base href="' + esc(raw.replace(/[^/]*$/, '')) + '"><script>(' + cdShim.toString() + ')(' + (muted ? 1 : 0) + ',' + jsonIn(store.get('save:' + path, {}) || {}) + ');<\/script>';
+const ownBase = /<base\s[^>]*href/i.test(html.slice(0, 30000));
+// Flash games whose Ruffle player is pasted inline: it only finds its .wasm files next to a <script src>, so it looked on
+// Vercel, never started, and left "]]>" on screen. Tell it the folder the page itself names. These pages also wrap the
+// player in made-up tags, so its height:100% came out as 0px: once the player shows up, stretch it over the frame.
+const ruf = html.match(/\be=\\?"(https?:[^"]*?)\\?\/ruffle\.js\\?"/);
+const ruffle = ruf ? '<script>window.RufflePlayer=window.RufflePlayer||{};RufflePlayer.config=Object.assign({publicPath:' + jsonIn(ruf[1].replace(/\\\//g, '/') + '/') + '},RufflePlayer.config||{});'
+  + 'var cdRuf=setInterval(function(){if(!document.querySelector("ruffle-object,ruffle-embed")||document.getElementById("cd-ruf"))return;var s=document.createElement("style");s.id="cd-ruf";'
+  + 's.textContent="ruffle-object,ruffle-embed{position:fixed!important;left:0!important;top:0!important;width:100%!important;height:100%!important;z-index:2147483647}html,body{background:#000}";'
+  + '(document.head||document.documentElement).appendChild(s)},300);setTimeout(function(){clearInterval(cdRuf)},60000);<\/script>' : '';
+const add = (ownBase ? '' : '<base href="' + esc(base) + '">') + '<script>(' + cdShim.toString() + ')(' + (muted ? 1 : 0) + ',' + jsonIn(store.get('save:' + path, {}) || {}) + ',' + jsonIn(VERCEL) + ');<\/script>' + ruffle;
 f.setAttribute('sandbox', GAME_SANDBOX);
-f.srcdoc = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + add) : /<html[^>]*>/i.test(html) ? html.replace(/<html[^>]*>/i, m => m + add) : add + html;
+f.srcdoc = injectTop(html, add);
 return 'repo';
-}).catch(() => { f.removeAttribute('sandbox'); f.removeAttribute('srcdoc'); return viaPages(); });
+}).catch(() => hosted('vercel'));
 }
+// Puts our tags at the very top of a page (after <!doctype> if it has one). Searching for "<head" instead breaks
+// games whose whole page is stored inside a script string: the first "<head" is inside that string, so the inserted
+// <script> cut it in half and the rest showed up on screen as text like "\r\n \r\n <\/head>".
+const injectTop = (html, add) => html.replace(/^(\uFEFF?\s*(?:<!--[\s\S]*?-->\s*)*(?:<!doctype[^>]*>)?)/i, m => m + add);
 const saveGame = (id, data) => { try { const t = JSON.stringify(data); if (t.length < 2e6) localStorage.setItem('classdash_save:' + id, t); } catch (e) {} };
 const soundBtn = () => (S.soundOn ? I.vol + 'Sound on' : I.mute + 'Sound off');
 function paintSound() {
@@ -1260,7 +1378,7 @@ f.addEventListener('load', () => { try { f.contentWindow.focus(); } catch (e) {}
 box.innerHTML = gameLoader(p, true);
 watchLoad(f, box.querySelector('.gload'));
 S.gameMode = null;
-frameGame(f, path, !S.soundOn).then(mode => { S.gameMode = mode; paintSound(); const sub = root.querySelector('.gbar .gsrc'); if (sub) sub.textContent = SRC_LABEL[mode] || ''; if (box.isConnected) box.appendChild(f); });
+frameGame(f, path, !S.soundOn).then(mode => { S.gameMode = mode; paintSound(); const sub = root.querySelector('.gbar .gsrc'); if (sub) sub.textContent = (SRC_LABEL[mode] || '') + (S.altWhy && mode === 'vercel' && S.altTried === path ? " (the repo copy didn't load right)" : ''); if (box.isConnected) box.appendChild(f); });
 }
 const startPack = ct => startFrame(ct, S.game);
 // Study pages load straight from the repo (raw.githubusercontent.com), so a new upload shows up
@@ -1275,7 +1393,7 @@ return fetch(RAW + path.split('/').map(encodeURIComponent).join('/') + '?t=' + D
 .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
 .then(html => {
 const base = '<base href="' + esc(rawOf(path).replace(/[^/]*$/, '')) + '">';
-html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + base) : base + html;
+html = injectTop(html, base);
 return (docCache[path] = html);
 });
 }
@@ -1331,6 +1449,43 @@ const k = !!(S.docKey && p.key);
 docView(document, k ? p.key : p).then(el => { if (S.view === 'read' && S.doc === path && !!(S.docKey && p.key) === k && box.isConnected) { box.innerHTML = ''; box.appendChild(el); } })
 .catch(() => { if (box.isConnected) box.innerHTML = empty("Couldn't load this resource. Check your connection and try again."); });
 }
+// "How accurate was this to your class?" bar on every study resource. The rating is emailed (web3forms, like
+// reports) and remembered in this browser (classdash_ratings) so it shrinks to a small line once it's sent.
+const STAR = '<svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>';
+const RATE_WORDS = ['', 'Not like my class', 'Only a little like my class', 'Partly matches my class', 'Mostly matches my class', 'Matches my class'];
+const starRow = (n, live) => `<span class="stars"${live ? ' role="radiogroup" aria-label="Rate it out of 5"' : ''}>${[1, 2, 3, 4, 5].map(i => `<button${live ? ` data-rstar="${i}" title="${i} out of 5: ${RATE_WORDS[i]}" aria-label="${i} out of 5"` : ' tabindex="-1" aria-hidden="true"'} class="${i <= n ? 'on' : ''}">${STAR}</button>`).join('')}</span>`;
+function rateBar(p) {
+const done = store.get('ratings', {})[p.id], r = S.rate && S.rate.id === p.id ? S.rate : null;
+if (done && !r) return `<div class="ratewrap"><div class="rated">You rated this ${starRow(done.s)} <span>${esc(RATE_WORDS[done.s])}</span> · <button class="lnk" data-act="rateedit">Change</button></div></div>`;
+const n = r ? r.stars : 0;
+return `<div class="ratewrap"><div class="rate"><div class="rq">How accurate was this to your class?<span>${n ? esc(RATE_WORDS[n]) : 'Tap a star. It helps us fix or add the right stuff.'}</span></div>${starRow(n, true)}
+${n ? `<input data-rtext maxlength="300" placeholder="${n < 5 ? 'What was different from your class? (optional)' : 'Anything to add? (optional)'}" value="${esc(r.text || '')}" autocomplete="off"><button class="btn pri" data-act="ratesend">Send</button>` : ''}<span class="amsg"></span></div></div>`;
+}
+function paintRate() {
+const p = S.view === 'read' && DOCS.find(x => x.id === S.doc), el = root.querySelector('.ratewrap');
+if (!p || !el) return;
+el.outerHTML = rateBar(p);
+const i = root.querySelector('[data-rtext]');
+if (i && S.rate && S.rate.focus) { i.focus(); S.rate.focus = false; }
+}
+function sendRating() {
+const p = DOCS.find(x => x.id === S.doc), r = S.rate, say = (t, c) => { const m = root.querySelector('.rate .amsg'); if (m) { m.textContent = t; m.className = 'amsg ' + (c || ''); } };
+if (!p || !r || r.id !== p.id || !r.stars) return;
+if (Date.now() - store.get('rateAt', 0) < 10000) return say('Give it a few seconds before sending another.', 'err');
+const mine = isCanvas ? S.courses.find(c => clsMatch(p.cls, c.name)) : null;
+const btn = root.querySelector('[data-act="ratesend"]'); if (btn) btn.disabled = true;
+say('Sending…');
+fetch('https://api.web3forms.com/submit', {
+method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+body: JSON.stringify({ access_key: W3F_KEY, subject: 'Classboard rating: ' + r.stars + '/5 - ' + p.name + ' (' + p.cls + ')', from_name: 'Classboard', Request: 'Study resource rating',
+Resource: p.name, Class: p.cls, File: p.id, Rating: r.stars + ' out of 5 (' + RATE_WORDS[r.stars] + ')', 'What was off': (r.text || '').trim() || '-', 'Their Canvas class': mine ? mine.name : '-', Details: 'Sent from the rating bar on a study resource' })
+}).then(x => x.json()).then(j => {
+if (String(j.success) !== 'true') throw new Error('failed');
+store.set('rateAt', Date.now());
+const all = store.get('ratings', {}); all[p.id] = { s: r.stars, at: Date.now() }; store.set('ratings', all);
+S.rate = null; paintRate();
+}).catch(() => { if (btn) btn.disabled = false; say("Couldn't send right now. Try again in a bit.", 'err'); });
+}
 const vRead = () => {
 const p = DOCS.find(x => x.id === S.doc);
 if (!p) return `<div class="gbar"><button class="btn" data-go="study">← Study</button></div>` + empty('That study resource is no longer in the repo.');
@@ -1339,7 +1494,7 @@ return `<div class="play"><div class="gbar wide"><button class="btn" data-go="st
 <div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${esc(p.cls)}${k ? ' · Answer key' : ''}</div></div>
 ${p.key ? `<div class="seg mini kseg" role="group" aria-label="Show"><button data-dockeyview="0" class="${k ? '' : 'on'}">Worksheet</button><button data-dockeyview="1" class="${k ? 'on' : ''}">${I.key}Answer key</button></div>` : ''}
 <button class="btn" data-act="newtab">New tab</button><button class="btn" data-act="full">Full screen</button></div>
-<div class="frame"><div class="spin"></div></div></div>`;
+${rateBar(p)}<div class="frame"><div class="spin"></div></div></div>`;
 };
 // ---- My flashcards (saved in this browser; shared with a code that holds the whole set) ----
 const fcSets = () => store.get('cards', []);
@@ -1478,7 +1633,7 @@ const docLabel = p => p.kind === 'html' ? (/test|quiz|exam|practice|study|review
 const recentDocs = () => store.get('recentDocs', []).map(r => ({ r, p: DOCS.find(d => d.id === r.id) })).filter(x => x.p);
 function openDoc(id, key) {
 store.set('recentDocs', [{ id, at: Date.now() }, ...store.get('recentDocs', []).filter(x => x.id !== id)].slice(0, 6));
-S.doc = id; S.docKey = !!key;
+S.doc = id; S.docKey = !!key; S.rate = null;
 go('read');
 }
 const docAttrs = p => `tabindex="0" role="button" data-doc="${esc(p.id)}" data-kind="${p.kind}" data-name="${esc((p.name + ' ' + p.cls + ' ' + docLabel(p) + (p.key ? ' answer key' : '')).toLowerCase())}" title="Open ${esc(p.name)}"`;
@@ -2581,7 +2736,7 @@ const gm = root.querySelector('.gmenu');
 if (gm && !gm.hidden && !e.target.closest('[data-act="gmore"]')) gm.hidden = true;
 const why = e.target.closest('[data-why]');
 if (why) { S.rep.why = why.dataset.why; root.querySelectorAll('[data-why]').forEach(b => b.classList.toggle('on', b === why)); return; }
-const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-skind],[data-reqcls],[data-reqtopic],[data-sched],[data-lunch],[data-pack],[data-docnew],[data-dockey],[data-dockeyview],[data-doc],[data-pref],[data-pacc],[data-act]');
+const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-skind],[data-reqcls],[data-reqtopic],[data-sched],[data-lunch],[data-pack],[data-docnew],[data-dockey],[data-dockeyview],[data-rstar],[data-doc],[data-pref],[data-pacc],[data-act]');
 if (!t) return;
 const d = t.dataset;
 const toReq = sel => { const el = root.querySelector(sel) || root.querySelector('[data-req="scls"]'); if (el) { el.scrollIntoView({ block: 'center', behavior: P.motion ? 'smooth' : 'auto' }); el.focus({ preventScroll: true }); } };
@@ -2591,6 +2746,7 @@ store.set('recentDocs', [{ id: d.docnew, at: Date.now() }, ...store.get('recentD
 if (!p || !openBlank(p)) openDoc(d.docnew);
 }
 else if (d.dockey) openDoc(d.dockey, true);
+else if (d.rstar) { S.rate = { id: S.doc, stars: Number(d.rstar), text: S.rate && S.rate.id === S.doc ? S.rate.text : '', focus: !(S.rate && S.rate.stars) }; paintRate(); }
 else if (d.dockeyview != null) { S.docKey = d.dockeyview === '1'; renderMain(true); }
 else if (d.skind) { S.skind = d.skind; renderMain(true); }
 else if (d.reqcls) { S.req.scls = d.reqcls; S.reqMsg.study = null; renderMain(true); toReq('[data-req="stopic"]'); }
@@ -2634,6 +2790,8 @@ else if (d.pack) playGame(d.pack);
 else if (d.act === 'random') { const v = visibleTiles(); if (v.length) v[Math.floor(Math.random() * v.length)].click(); }
 else if (d.act === 'license') showLicense($('.ct'));
 else if (d.act === 'newtab') openBlank();
+else if (d.act === 'ratesend') sendRating();
+else if (d.act === 'rateedit') { const was = store.get('ratings', {})[S.doc]; S.rate = { id: S.doc, stars: was ? was.s : 0, text: '' }; paintRate(); }
 else if (d.act === 'libtab') openLibraryTab();
 else if (d.act === 'full') { const f = root.querySelector('.gframe'); if (f && f.requestFullscreen) f.requestFullscreen(); }
 else if (d.act === 'reload') renderMain();
@@ -2694,6 +2852,7 @@ if (act) { e.preventDefault(); e.stopPropagation(); fcAct({ act }); return; }
 }
 if (root.activeElement === omniBox) { omniKey(e); e.stopPropagation(); return; }
 if (down && !LIB && (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); e.stopPropagation(); omniBox.focus(); return; }
+if (down && e.key === 'Enter' && root.activeElement && root.activeElement.matches('[data-rtext]')) { e.preventDefault(); e.stopPropagation(); sendRating(); return; }
 if (down && (e.key === 'Enter' || e.key === ' ') && root.activeElement && root.activeElement.matches('.rr,.ccard')) { e.preventDefault(); e.stopPropagation(); root.activeElement.click(); return; }
 const box = usesLib(S.view) && $('[data-search]'), typing = box && root.activeElement === box;
 const q = study ? S.sq : S.q;
@@ -2738,10 +2897,12 @@ if (!gf || e.source !== gf.contentWindow || !d || typeof d !== 'object') return;
 if (d.cdReady) { try { gf.contentWindow.postMessage({ cdMute: !S.soundOn }, '*'); } catch (err) {} }
 else if (d.cdKey) { if (keyMatch(d.cdKey, P.qsKey)) quickSwitch(); }
 else if (d.cdSave && typeof d.cdSave === 'object' && S.game) saveGame(S.game, d.cdSave);
+else if (d.cdFail) autoAlt(d.cdFail);
 }
 window.addEventListener('keydown', onKey, true);
 window.addEventListener('keyup', onKey, true);
 window.addEventListener('message', onMsg);
+root.addEventListener('input', e => { if (e.target.matches && e.target.matches('[data-rtext]') && S.rate) S.rate.text = e.target.value; });
 function close() {
 flushPlay();
 window.removeEventListener('message', onMsg);
