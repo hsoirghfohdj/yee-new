@@ -17,17 +17,19 @@
     },
     {
       "id": "bmw5t6m6s",
-      "title": "New games!",
-      "text": "We are currently in the process of adding your requested games!",
-      "button": "",
-      "link": "",
+      "title": "New study resources!",
+      "text": "Lots of new study resources have been added. (Adv. Geo, Alg. 2, Mat. Sci., Life Sci.)",
+      "button": "Start studying",
+      "link": "study",
       "color": "#e46fd0",
       "icon": "game",
       "where": "both",
-      "start": "2026-11-06T18:54",
-      "end": "2026-11-07T20:55"
+      "start": "2026-11-10T18:54",
+      "end": "2026-11-13T20:55"
     }
   ],
   "hidden": [],
-  "hallpass": "https://pass.securly.com/"
+  "hallpass": "https://pass.securly.com/",
+  "featured": [],
+  "hiddenGames": []
 }
