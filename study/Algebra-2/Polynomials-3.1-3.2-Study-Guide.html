@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polynomial Functions: Graphing and Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@500&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap" media="print" onload="this.media='all'">
+<style>
+:root {
+  --bg: #f7f6fa; --card: #ffffff; --ink: #19161f; --mu: #625b70; --mu2: #8b8499; --ln: #e7e3ee; --soft: #f1eef6;
+  --ac: #6a46d6; --acs: #efeafd; --pk: #c23b7a; --ok: #157a4a; --oks: #e6f5ed; --bad: #b8304f; --bads: #fcebef;
+  --sans: Geist, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  --math: "STIX Two Text", "Cambria Math", Georgia, serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d0b12; --card: #16131d; --ink: #f1eef5; --mu: #a39cb2; --mu2: #7b748a; --ln: #2a2533; --soft: #1e1a27;
+    --ac: #a78bfa; --acs: #241d38; --pk: #f07ab3; --ok: #5fd39b; --oks: #12291e; --bad: #ff8aa5; --bads: #2e1620; }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+body { font: 16px/1.6 var(--sans); color: var(--ink); background: var(--bg); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 28px 20px 80px; }
+.kick { font: 500 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ac); }
+h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.08; letter-spacing: -.035em; font-weight: 650; margin: 10px 0 12px; }
+.lede { color: var(--mu); font-size: 17px; max-width: 640px; }
+.src { margin-top: 10px; font-size: 13px; color: var(--mu2); }
+.tabs { position: sticky; top: 0; z-index: 5; display: flex; gap: 6px; margin: 24px -20px 22px; padding: 10px 20px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--ln); overflow-x: auto; scrollbar-width: none; }
+.tabs button { flex: none; border: 0; background: transparent; padding: 8px 14px; border-radius: 999px; font-weight: 550; font-size: 14.5px; color: var(--mu); cursor: pointer; }
+.tabs button:hover { color: var(--ink); background: var(--soft); }
+.tabs button.on { background: var(--ink); color: var(--bg); }
+.tabs b { font-weight: 600; opacity: .6; margin-left: 4px; }
+.pane[hidden] { display: none; }
+
+/* study guide */
+.toc { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.toc a { font-size: 13.5px; text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--ln); padding: 5px 12px; border-radius: 999px; }
+.toc a:hover { border-color: var(--ac); }
+.sec { background: var(--card); border: 1px solid var(--ln); border-radius: 18px; padding: 22px 24px; margin-bottom: 14px; scroll-margin-top: 70px; }
+.sec h2 { font-size: 21px; letter-spacing: -.02em; font-weight: 650; margin-bottom: 10px; display: flex; gap: 10px; align-items: baseline; }
+.sec h2 .n { font: 500 12px var(--mono); color: var(--ac); letter-spacing: .08em; }
+.sec p { margin: 8px 0; }
+.sec ul { margin: 8px 0 8px 20px; }
+.sec li { margin: 5px 0; }
+.sec li::marker { color: var(--ac); }
+.box { margin: 12px 0; padding: 12px 14px; border-radius: 12px; background: var(--soft); }
+.box.key { background: var(--acs); border-left: 3px solid var(--ac); }
+.box.warn { background: var(--bads); border-left: 3px solid var(--bad); }
+.box b:first-child { display: block; font-size: 12px; font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mu); margin-bottom: 4px; font-weight: 500; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 14.5px; }
+th, td { border: 1px solid var(--ln); padding: 7px 10px; text-align: left; vertical-align: top; }
+th { background: var(--soft); font-weight: 600; }
+details.ex { margin: 10px 0; border: 1px solid var(--ln); border-radius: 12px; overflow: hidden; }
+details.ex summary { cursor: pointer; padding: 11px 14px; font-weight: 550; list-style: none; display: flex; gap: 10px; align-items: baseline; }
+details.ex summary::-webkit-details-marker { display: none; }
+details.ex summary::before { content: "Example"; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--pk); flex: none; }
+details.ex summary::after { content: "Show steps"; margin-left: auto; font-size: 12.5px; color: var(--ac); flex: none; }
+details.ex[open] summary::after { content: "Hide"; }
+details.ex ol { margin: 0; padding: 4px 16px 12px 36px; }
+details.ex li { margin: 6px 0; }
+details.ex .ans { padding: 10px 16px 14px; border-top: 1px dashed var(--ln); font-weight: 600; }
+.m { font-family: var(--math); font-size: 1.1em; white-space: nowrap; }
+.fig { display: block; width: 100%; max-width: 460px; margin: 14px auto 6px; color: var(--mu); }
+.fig text { font: 12.5px var(--sans); fill: var(--ink); }
+.fig .ac { stroke: var(--ac); }
+.fig .acf { fill: var(--ac); }
+.figcap { text-align: center; font-size: 13px; color: var(--mu); margin-bottom: 8px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.m i { font-style: italic; }
+
+/* quiz */
+.qstart, .qcard, .qend { background: var(--card); border: 1px solid var(--ln); border-radius: 20px; padding: 24px; }
+.qstart h2, .qend h2 { font-size: 24px; letter-spacing: -.025em; font-weight: 650; margin-bottom: 6px; }
+.sub { color: var(--mu); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.chips button { border: 1px solid var(--ln); background: var(--card); padding: 6px 12px; border-radius: 999px; font-size: 13.5px; cursor: pointer; }
+.chips button.on { background: var(--acs); border-color: var(--ac); color: var(--ac); font-weight: 600; }
+.btn { border: 0; cursor: pointer; padding: 11px 20px; border-radius: 999px; font-weight: 600; font-size: 15px; background: var(--soft); }
+.btn.pri { background: var(--ink); color: var(--bg); }
+.btn:disabled { opacity: .45; cursor: default; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+.qtop { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 13.5px; color: var(--mu); }
+.qtop .t { font: 500 11.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ac); background: var(--acs); padding: 3px 9px; border-radius: 999px; }
+.bar { height: 4px; border-radius: 4px; background: var(--soft); overflow: hidden; margin-bottom: 18px; }
+.bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--ac), var(--pk)); transition: width .4s; }
+.qq { font-size: 18.5px; line-height: 1.5; font-weight: 500; margin-bottom: 16px; }
+.opts { display: grid; gap: 9px; }
+.opt { display: flex; gap: 12px; align-items: flex-start; text-align: left; width: 100%; border: 1.5px solid var(--ln); background: var(--card); padding: 12px 14px; border-radius: 14px; cursor: pointer; font-size: 15.5px; line-height: 1.45; transition: border-color .15s, background-color .15s; }
+.opt:hover:not(:disabled) { border-color: var(--ac); }
+.opt .l { flex: none; width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center; font: 600 12px var(--mono); background: var(--soft); color: var(--mu); }
+.opt:disabled { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--oks); }
+.opt.right .l { background: var(--ok); color: #fff; }
+.opt.wrong { border-color: var(--bad); background: var(--bads); }
+.opt.wrong .l { background: var(--bad); color: #fff; }
+.why { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--soft); font-size: 15px; }
+.why b { color: var(--ok); }
+.why.no b { color: var(--bad); }
+.big { font-size: 54px; font-weight: 650; letter-spacing: -.04em; line-height: 1; margin: 6px 0 4px; background: linear-gradient(100deg, var(--ac), var(--pk)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tbars { display: grid; gap: 10px; margin: 18px 0; }
+.tb { display: grid; grid-template-columns: minmax(120px, 1fr) 2fr 48px; gap: 12px; align-items: center; font-size: 14px; }
+.tb .tr { height: 8px; border-radius: 8px; background: var(--soft); overflow: hidden; }
+.tb .tr i { display: block; height: 100%; background: var(--ac); }
+.tb .p { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.miss { margin-top: 18px; display: grid; gap: 10px; }
+.miss > div { border: 1px solid var(--ln); border-radius: 14px; padding: 12px 14px; font-size: 14.5px; }
+.miss .a { color: var(--ok); font-weight: 600; margin-top: 4px; }
+.miss .w { color: var(--mu); margin-top: 4px; }
+.best { font-size: 13.5px; color: var(--mu2); margin-top: 8px; }
+
+/* vocab */
+.vtools { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+.vtools input { flex: 1; min-width: 180px; font: inherit; font-size: 15px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--ln); background: var(--card); color: var(--ink); outline: none; }
+.vtools input:focus { border-color: var(--ac); }
+.vgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.vc { perspective: 900px; height: 150px; cursor: pointer; }
+.vc > div { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+.vc.flip > div { transform: rotateY(180deg); }
+.vc .f, .vc .b { position: absolute; inset: 0; border-radius: 16px; padding: 16px; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: grid; place-items: center; text-align: center; border: 1px solid var(--ln); background: var(--card); overflow: auto; }
+.vc .f { font-weight: 650; font-size: 18px; letter-spacing: -.01em; }
+.vc .b { transform: rotateY(180deg); font-size: 14px; color: var(--mu); background: var(--acs); }
+.foot { margin-top: 34px; font-size: 13px; color: var(--mu2); text-align: center; }
+@media (max-width: 560px) { .sec { padding: 18px; } .qstart, .qcard, .qend { padding: 18px; } .qq { font-size: 17px; } .tb { grid-template-columns: 1fr 1fr 44px; } }
+@media print { .tabs, .row, .chips { display: none !important; } .pane[hidden] { display: block !important; } .sec, .qcard { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kick" id="kick"></div>
+  <h1 id="title"></h1>
+  <p class="lede" id="lede"></p>
+  <p class="src" id="src"></p>
+  <nav class="tabs" id="tabs"></nav>
+  <section class="pane" id="p-guide"></section>
+  <section class="pane" id="p-quiz" hidden></section>
+  <section class="pane" id="p-vocab" hidden></section>
+  <p class="foot">Made for Classboard. Check anything you're unsure about with your teacher or your class notes.</p>
+</div>
+<script>
+const DATA = {"id":"alg2-t3-1-2","cls":"Algebra 2","kick":"Algebra 2 · Topic 3 · Lessons 3-1 and 3-2","title":"Polynomial Functions: Graphing and Operations","lede":"Everything for lessons 3-1 (graphing polynomial functions) and 3-2 (adding, subtracting and multiplying polynomials): what to know, worked examples, a practice quiz and the vocab.","src":"Matches Topic 3 of enVision Algebra 2 (2018), the book Issaquah School District uses for Algebra 2. All problems here are original practice.","guide":[{"title":"What counts as a polynomial","body":"\n      <p>A <b>polynomial</b> is a sum of terms that each look like <span class=\"m\"><i>a</i>·<i>x</i>^<i>n</i></span>, where <span class=\"m\"><i>a</i></span> is a real number and the exponent <span class=\"m\"><i>n</i></span> is a <b>whole number</b> (0, 1, 2, 3, …).</p>\n      <ul><li><b>Standard form</b>: terms written from the highest exponent to the lowest.</li>\n      <li><b>Degree</b>: the highest exponent. <b>Leading coefficient</b>: the number in front of that term.</li>\n      <li>Name by degree: 0 constant, 1 linear, 2 quadratic, 3 cubic, 4 quartic, 5 quintic.</li>\n      <li>Name by number of terms: 1 monomial, 2 binomial, 3 trinomial, 4 or more just \"polynomial\".</li></ul>\n      <div class=\"box warn\"><b>Not polynomials</b>Anything with a negative or fraction exponent, a variable under a root, or a variable in a denominator: <span class=\"m\">3<i>x</i><sup>−2</sup></span>, <span class=\"m\">√<i>x</i></span>, <span class=\"m\">5/x</span>.</div>","examples":[{"q":"Write <span class=\"m\">4<i>x</i> − 3<i>x</i><sup>3</sup> + 7 + <i>x</i><sup>4</sup></span> in standard form, then give its degree, leading coefficient and name.","steps":["Order the terms by exponent, highest first: <span class=\"m\"><i>x</i><sup>4</sup> − 3<i>x</i><sup>3</sup> + 4<i>x</i> + 7</span>.","The highest exponent is 4, so the degree is 4 (quartic).","The <span class=\"m\"><i>x</i><sup>4</sup></span> term has an invisible 1 in front, so the leading coefficient is 1.","There are four terms, so it is called a polynomial (not a trinomial)."],"a":"Degree 4, leading coefficient 1, quartic polynomial with four terms."}]},{"title":"End behavior","body":"\n      <p>End behavior is what the graph does at the far left (<span class=\"m\">x → −∞</span>) and far right (<span class=\"m\">x → ∞</span>). Only the <b>degree</b> and the <b>sign of the leading coefficient</b> matter.</p>\n      <table><tr><th></th><th>Leading coefficient positive</th><th>Leading coefficient negative</th></tr>\n      <tr><th>Even degree</th><td>Up on the left, up on the right</td><td>Down on the left, down on the right</td></tr>\n      <tr><th>Odd degree</th><td>Down on the left, up on the right</td><td>Up on the left, down on the right</td></tr></table>\n      <div class=\"box key\"><b>Quick check</b>Even degree acts like <span class=\"m\"><i>x</i><sup>2</sup></span> (both ends match). Odd degree acts like <span class=\"m\"><i>x</i><sup>3</sup></span> (ends go opposite ways). A negative leading coefficient flips it upside down.</div>","examples":[{"q":"Describe the end behavior of <span class=\"m\"><i>f</i>(<i>x</i>) = −2<i>x</i><sup>5</sup> + <i>x</i><sup>2</sup> − 9</span>.","steps":["Degree 5 is odd, so the two ends go opposite ways.","The leading coefficient is −2, which is negative, so the graph is flipped compared with <span class=\"m\"><i>x</i><sup>5</sup></span>."],"a":"As <span class=\"m\">x → −∞</span>, <span class=\"m\">f(x) → ∞</span>; as <span class=\"m\">x → ∞</span>, <span class=\"m\">f(x) → −∞</span>."}]},{"title":"Zeros, turning points and intervals","body":"\n      <ul><li>A polynomial of degree <span class=\"m\"><i>n</i></span> has <b>at most <span class=\"m\"><i>n</i></span> real zeros</b> (x-intercepts) and <b>at most <span class=\"m\"><i>n</i> − 1</span> turning points</b>.</li>\n      <li>A <b>turning point</b> is where the graph switches from going up to going down (a <b>relative maximum</b>) or from down to up (a <b>relative minimum</b>).</li>\n      <li>In factored form, each factor <span class=\"m\">(<i>x</i> − <i>r</i>)</span> gives a zero at <span class=\"m\"><i>x</i> = <i>r</i></span>. Watch the sign: <span class=\"m\">(<i>x</i> + 2)</span> means <span class=\"m\"><i>x</i> = −2</span>.</li>\n      <li><b>Increasing / decreasing</b> intervals are written with x-values, read left to right.</li>\n      <li>If <span class=\"m\"><i>f</i>(<i>a</i>)</span> and <span class=\"m\"><i>f</i>(<i>b</i>)</span> have opposite signs, the graph crosses zero somewhere between <span class=\"m\"><i>a</i></span> and <span class=\"m\"><i>b</i></span>.</li></ul>","examples":[{"q":"Find the zeros and end behavior of <span class=\"m\"><i>f</i>(<i>x</i>) = <i>x</i>(<i>x</i> − 3)(<i>x</i> + 1)</span>, then sketch it.","steps":["Set each factor to zero: <span class=\"m\"><i>x</i> = 0</span>, <span class=\"m\"><i>x</i> = 3</span>, <span class=\"m\"><i>x</i> = −1</span>.","Multiplying the x-terms gives <span class=\"m\"><i>x</i><sup>3</sup></span>: degree 3 with a positive leading coefficient, so it falls on the left and rises on the right.","Test a point between the zeros: <span class=\"m\"><i>f</i>(1) = 1(−2)(2) = −4</span>, so the graph dips below the axis between 0 and 3.","Test <span class=\"m\"><i>f</i>(−0.5) = (−0.5)(−3.5)(0.5) = 0.875</span>, so it is above the axis between −1 and 0."],"a":"Zeros at −1, 0 and 3; the graph comes up from the bottom left, peaks between −1 and 0, dips below between 0 and 3, then rises to the right."},{"q":"Use a table to describe <span class=\"m\"><i>g</i>(<i>x</i>) = <i>x</i><sup>3</sup> − 4<i>x</i></span>.","steps":["Factor: <span class=\"m\"><i>x</i>(<i>x</i> − 2)(<i>x</i> + 2)</span>, so the zeros are −2, 0 and 2.","Table: <span class=\"m\"><i>g</i>(−3) = −15</span>, <span class=\"m\"><i>g</i>(−1) = 3</span>, <span class=\"m\"><i>g</i>(1) = −3</span>, <span class=\"m\"><i>g</i>(3) = 15</span>.","The graph rises to a relative maximum between −2 and 0 (about 3.1 near x ≈ −1.15), falls to a relative minimum between 0 and 2 (about −3.1 near x ≈ 1.15), then rises."],"a":"Two turning points (the most a cubic can have); increasing, then decreasing, then increasing."}]},{"title":"Average rate of change and sensible domains","body":"\n      <p>The <b>average rate of change</b> of <span class=\"m\"><i>f</i></span> from <span class=\"m\"><i>x</i> = <i>a</i></span> to <span class=\"m\"><i>x</i> = <i>b</i></span> is the slope between those two points:</p>\n      <div class=\"box key\"><b>Formula</b><span class=\"m\">(<i>f</i>(<i>b</i>) − <i>f</i>(<i>a</i>)) / (<i>b</i> − <i>a</i>)</span></div>\n      <p>For a polynomial it changes depending on the interval you pick, because the graph curves. In a real-world model, also ask which inputs make sense: lengths and times can't be negative, and a box can't have a cut bigger than half its side.</p>","examples":[{"q":"For <span class=\"m\"><i>f</i>(<i>x</i>) = <i>x</i><sup>3</sup> − 4<i>x</i></span>, compare the average rate of change from <span class=\"m\"><i>x</i> = 0</span> to <span class=\"m\"><i>x</i> = 2</span> with the rate from <span class=\"m\"><i>x</i> = 1</span> to <span class=\"m\"><i>x</i> = 3</span>.","steps":["<span class=\"m\"><i>f</i>(0) = 0</span> and <span class=\"m\"><i>f</i>(2) = 0</span>, so the first rate is <span class=\"m\">(0 − 0)/(2 − 0) = 0</span>.","<span class=\"m\"><i>f</i>(1) = −3</span> and <span class=\"m\"><i>f</i>(3) = 15</span>, so the second rate is <span class=\"m\">(15 − (−3))/(3 − 1) = 9</span>."],"a":"The function is changing much faster on [1, 3] (rate 9) than on [0, 2] (rate 0)."}]},{"title":"Adding and subtracting polynomials","body":"\n      <p>Combine <b>like terms</b>: terms with the same variable raised to the same power. Only the coefficients change.</p>\n      <div class=\"box warn\"><b>Subtracting</b>Distribute the minus sign to <i>every</i> term in the second polynomial before combining. This is the most common mistake on this lesson.</div>\n      <p><b>Closure</b>: adding, subtracting or multiplying two polynomials always gives another polynomial. (Dividing does not always.)</p>","examples":[{"q":"Simplify <span class=\"m\">(3<i>x</i><sup>3</sup> − 2<i>x</i><sup>2</sup> + 5) − (<i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup> − 6<i>x</i> + 1)</span>.","steps":["Distribute the minus: <span class=\"m\">3<i>x</i><sup>3</sup> − 2<i>x</i><sup>2</sup> + 5 − <i>x</i><sup>3</sup> − 4<i>x</i><sup>2</sup> + 6<i>x</i> − 1</span>.","Combine: <span class=\"m\"><i>x</i><sup>3</sup></span> terms give <span class=\"m\">2<i>x</i><sup>3</sup></span>; <span class=\"m\"><i>x</i><sup>2</sup></span> terms give <span class=\"m\">−6<i>x</i><sup>2</sup></span>; the <span class=\"m\"><i>x</i></span> term is <span class=\"m\">+6<i>x</i></span>; constants give <span class=\"m\">4</span>."],"a":"<span class=\"m\">2<i>x</i><sup>3</sup> − 6<i>x</i><sup>2</sup> + 6<i>x</i> + 4</span>"},{"q":"Simplify <span class=\"m\">(3<i>a</i><sup>2</sup><i>b</i> − 2<i>ab</i> + 5) − (<i>a</i><sup>2</sup><i>b</i> + 4<i>ab</i> − 1)</span>. (More than one variable works the same way.)","steps":["Like terms must match every variable and exponent: <span class=\"m\"><i>a</i><sup>2</sup><i>b</i></span> terms go together, <span class=\"m\"><i>ab</i></span> terms go together.","Distribute the minus: <span class=\"m\">3<i>a</i><sup>2</sup><i>b</i> − 2<i>ab</i> + 5 − <i>a</i><sup>2</sup><i>b</i> − 4<i>ab</i> + 1</span>."],"a":"<span class=\"m\">2<i>a</i><sup>2</sup><i>b</i> − 6<i>ab</i> + 6</span>"}]},{"title":"Multiplying polynomials","body":"\n      <p>Multiply <b>every term</b> in the first polynomial by <b>every term</b> in the second, then combine like terms. A box (area model) helps keep track.</p>\n      <ul><li>The degree of a product is the <b>sum</b> of the degrees: (degree 1)·(degree 2) gives degree 3.</li>\n      <li>For a power like <span class=\"m\">(<i>x</i> + 2)<sup>3</sup></span>, multiply it out step by step: <span class=\"m\">(<i>x</i> + 2)<sup>2</sup></span> first, then times <span class=\"m\">(<i>x</i> + 2)</span> again.</li></ul>","examples":[{"q":"Multiply <span class=\"m\">(<i>x</i> − 3)(2<i>x</i><sup>2</sup> + <i>x</i> − 4)</span>.","steps":["<span class=\"m\"><i>x</i></span> times each term: <span class=\"m\">2<i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> − 4<i>x</i></span>.","<span class=\"m\">−3</span> times each term: <span class=\"m\">−6<i>x</i><sup>2</sup> − 3<i>x</i> + 12</span>.","Combine like terms: <span class=\"m\">2<i>x</i><sup>3</sup> − 5<i>x</i><sup>2</sup> − 7<i>x</i> + 12</span>."],"a":"<span class=\"m\">2<i>x</i><sup>3</sup> − 5<i>x</i><sup>2</sup> − 7<i>x</i> + 12</span>"},{"q":"Expand <span class=\"m\">(<i>x</i> + 2)<sup>3</sup></span>.","steps":["<span class=\"m\">(<i>x</i> + 2)<sup>2</sup> = <i>x</i><sup>2</sup> + 4<i>x</i> + 4</span>.","Multiply by <span class=\"m\">(<i>x</i> + 2)</span>: <span class=\"m\"><i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup> + 4<i>x</i> + 2<i>x</i><sup>2</sup> + 8<i>x</i> + 8</span>.","Combine: <span class=\"m\"><i>x</i><sup>3</sup> + 6<i>x</i><sup>2</sup> + 12<i>x</i> + 8</span>."],"a":"<span class=\"m\"><i>x</i><sup>3</sup> + 6<i>x</i><sup>2</sup> + 12<i>x</i> + 8</span>"},{"q":"Multiply three factors: <span class=\"m\">2<i>x</i>(<i>x</i> + 1)(<i>x</i> − 3)</span>.","steps":["Multiply two of the factors first: <span class=\"m\">(<i>x</i> + 1)(<i>x</i> − 3) = <i>x</i><sup>2</sup> − 2<i>x</i> − 3</span>.","Then distribute the monomial: <span class=\"m\">2<i>x</i>(<i>x</i><sup>2</sup> − 2<i>x</i> − 3) = 2<i>x</i><sup>3</sup> − 4<i>x</i><sup>2</sup> − 6<i>x</i></span>."],"a":"<span class=\"m\">2<i>x</i><sup>3</sup> − 4<i>x</i><sup>2</sup> − 6<i>x</i></span>"},{"q":"A box is made from a 12 in by 10 in sheet by cutting an x by x square from each corner and folding up the sides. Write its volume as a polynomial.","steps":["Length <span class=\"m\">12 − 2<i>x</i></span>, width <span class=\"m\">10 − 2<i>x</i></span>, height <span class=\"m\"><i>x</i></span>.","<span class=\"m\">(12 − 2<i>x</i>)(10 − 2<i>x</i>) = 120 − 44<i>x</i> + 4<i>x</i><sup>2</sup></span>.","Times <span class=\"m\"><i>x</i></span>: <span class=\"m\">V(<i>x</i>) = 4<i>x</i><sup>3</sup> − 44<i>x</i><sup>2</sup> + 120<i>x</i></span>. It only makes sense for <span class=\"m\">0 < <i>x</i> < 5</span>."],"a":"<span class=\"m\">V(<i>x</i>) = 4<i>x</i><sup>3</sup> − 44<i>x</i><sup>2</sup> + 120<i>x</i></span>"}]},{"title":"Mistakes to avoid","body":"\n      <ul><li>Calling <span class=\"m\"><i>x</i><sup>4</sup> + 2<i>x</i> + 1</span> a \"quartic trinomial\" is right; calling it \"degree 3\" because it has 3 terms is not. Degree comes from the exponent.</li>\n      <li>Reading the leading coefficient before writing standard form. Reorder first.</li>\n      <li>Forgetting the invisible 1 or −1: the leading coefficient of <span class=\"m\">−<i>x</i><sup>3</sup> + 5</span> is −1.</li>\n      <li>Only subtracting the first term of the second polynomial.</li>\n      <li>Squaring a binomial as <span class=\"m\">(<i>x</i> + 3)<sup>2</sup> = <i>x</i><sup>2</sup> + 9</span>. The middle term <span class=\"m\">6<i>x</i></span> is missing.</li></ul>"}],"quiz":[{"t":"Classifying","q":"Which of these is <b>not</b> a polynomial?","c":["<span class=\"m\">3<i>x</i><sup>4</sup> − <i>x</i> + 2</span>","<span class=\"m\">5</span>","<span class=\"m\">2<i>x</i><sup>−1</sup> + 3</span>","<span class=\"m\">(1/2)<i>x</i><sup>2</sup> − 7<i>x</i></span>"],"a":2,"why":"A polynomial can only have whole-number exponents. <span class=\"m\"><i>x</i><sup>−1</sup></span> has a negative exponent."},{"t":"Classifying","q":"What is <span class=\"m\">6 + 2<i>x</i><sup>3</sup> − <i>x</i><sup>5</sup> + 4<i>x</i></span> in standard form?","c":["<span class=\"m\">−<i>x</i><sup>5</sup> + 2<i>x</i><sup>3</sup> + 4<i>x</i> + 6</span>","<span class=\"m\">6 + 4<i>x</i> + 2<i>x</i><sup>3</sup> − <i>x</i><sup>5</sup></span>","<span class=\"m\">2<i>x</i><sup>3</sup> − <i>x</i><sup>5</sup> + 4<i>x</i> + 6</span>","<span class=\"m\"><i>x</i><sup>5</sup> + 2<i>x</i><sup>3</sup> + 4<i>x</i> + 6</span>"],"a":0,"why":"Standard form lists terms from the highest exponent down, keeping each sign with its term."},{"t":"Classifying","q":"What are the degree and leading coefficient of <span class=\"m\"><i>f</i>(<i>x</i>) = 7<i>x</i><sup>2</sup> − 3<i>x</i><sup>4</sup> + <i>x</i> − 1</span>?","c":["Degree 4, leading coefficient −3","Degree 2, leading coefficient 7","Degree 4, leading coefficient 7","Degree 4, leading coefficient 1"],"a":0,"why":"The highest exponent is 4, and the number on that term is −3. Reorder before you read it."},{"t":"Classifying","q":"How do you name <span class=\"m\">5<i>x</i><sup>3</sup> − 2<i>x</i></span>?","c":["Cubic binomial","Quadratic binomial","Cubic trinomial","Quintic binomial"],"a":0,"why":"Degree 3 is cubic, and there are two terms, so it is a binomial."},{"t":"End behavior","q":"What is the end behavior of <span class=\"m\"><i>f</i>(<i>x</i>) = 2<i>x</i><sup>4</sup> − 3<i>x</i> + 1</span>?","c":["Up on both ends","Down on both ends","Down on the left, up on the right","Up on the left, down on the right"],"a":0,"why":"Even degree with a positive leading coefficient: both ends point up, like <span class=\"m\"><i>x</i><sup>2</sup></span>."},{"t":"End behavior","q":"Which describes <span class=\"m\"><i>f</i>(<i>x</i>) = -<i>x</i><sup>3</sup> + 4<i>x</i><sup>2</sup></span>?","c":["As <span class=\"m\">x → −∞</span>, <span class=\"m\">f(x) → ∞</span>; as <span class=\"m\">x → ∞</span>, <span class=\"m\">f(x) → −∞</span>","As <span class=\"m\">x → −∞</span>, <span class=\"m\">f(x) → −∞</span>; as <span class=\"m\">x → ∞</span>, <span class=\"m\">f(x) → ∞</span>","Both ends go to <span class=\"m\">∞</span>","Both ends go to <span class=\"m\">−∞</span>"],"a":0,"why":"Odd degree means the ends go opposite ways; the negative leading coefficient makes it start high on the left and end low on the right."},{"t":"End behavior","q":"A graph falls on the left and rises on the right. Which could be its function?","c":["<span class=\"m\"><i>f</i>(<i>x</i>) = <i>x</i><sup>3</sup> − 2<i>x</i></span>","<span class=\"m\"><i>f</i>(<i>x</i>) = -<i>x</i><sup>3</sup> + 1</span>","<span class=\"m\"><i>f</i>(<i>x</i>) = <i>x</i><sup>4</sup> − <i>x</i></span>","<span class=\"m\"><i>f</i>(<i>x</i>) = −2<i>x</i><sup>2</sup> + 3</span>"],"a":0,"why":"Falling left and rising right is odd degree with a positive leading coefficient."},{"t":"Turning points & zeros","q":"What is the greatest number of turning points a degree 5 polynomial can have?","c":["4","5","6","3"],"a":0,"why":"A degree <span class=\"m\"><i>n</i></span> polynomial has at most <span class=\"m\"><i>n</i> − 1</span> turning points."},{"t":"Turning points & zeros","q":"A polynomial graph has 3 turning points. What is the least degree it could have?","c":["4","3","2","5"],"a":0,"why":"At most <span class=\"m\"><i>n</i> − 1</span> turning points means 3 turning points needs <span class=\"m\">n >= 4</span>."},{"t":"Turning points & zeros","q":"What are the zeros of <span class=\"m\"><i>f</i>(<i>x</i>) = (<i>x</i> + 5)(<i>x</i> − 2)(<i>x</i> − 6)</span>?","c":["−5, 2 and 6","5, −2 and −6","5, 2 and 6","−5, −2 and 6"],"a":0,"why":"Set each factor to zero: <span class=\"m\"><i>x</i> + 5 = 0</span> gives −5, and so on."},{"t":"Turning points & zeros","q":"A table shows <span class=\"m\"><i>f</i>(−2) = −5</span> and <span class=\"m\"><i>f</i>(−1) = 3</span> for a polynomial <span class=\"m\"><i>f</i></span>. What must be true?","c":["<span class=\"m\"><i>f</i></span> has a zero between −2 and −1","<span class=\"m\"><i>f</i></span> has a turning point at <span class=\"m\"><i>x</i> = −1</span>","<span class=\"m\"><i>f</i>(0) = 0</span>","The degree of <span class=\"m\"><i>f</i></span> is odd"],"a":0,"why":"The output changes from negative to positive, and polynomial graphs have no gaps, so the graph crosses the x-axis between those inputs."},{"t":"Turning points & zeros","q":"What is a relative maximum?","c":["A point that is higher than all the points near it","The highest point on the whole graph","Where the graph crosses the y-axis","Any point where <span class=\"m\"><i>f</i>(<i>x</i>) = 0</span>"],"a":0,"why":"\"Relative\" means compared with nearby points. It does not have to be the highest point overall."},{"t":"Turning points & zeros","q":"Where is <span class=\"m\"><i>f</i>(<i>x</i>) = <i>x</i><sup>2</sup> − 4<i>x</i></span> increasing?","c":["<span class=\"m\">x > 2</span>","<span class=\"m\"><i>x</i> < 2</span>","<span class=\"m\">x > 0</span>","<span class=\"m\">x > 4</span>"],"a":0,"why":"The vertex is at <span class=\"m\"><i>x</i> = 2</span> (halfway between the zeros 0 and 4). The parabola opens up, so it rises to the right of 2."},{"t":"Turning points & zeros","q":"What is the average rate of change of <span class=\"m\"><i>f</i>(<i>x</i>) = <i>x</i><sup>3</sup></span> from <span class=\"m\"><i>x</i> = 1</span> to <span class=\"m\"><i>x</i> = 3</span>?","c":["13","26","9","4"],"a":0,"why":"<span class=\"m\">(<i>f</i>(3) − <i>f</i>(1))/(3 − 1) = (27 − 1)/2 = 13</span>."},{"t":"Add & subtract","q":"Simplify <span class=\"m\">(5<i>xy</i> − 2<i>x</i><sup>2</sup>) + (3<i>x</i><sup>2</sup> − 7<i>xy</i> + <i>y</i>)</span>.","c":["<span class=\"m\"><i>x</i><sup>2</sup> − 2<i>xy</i> + <i>y</i></span>","<span class=\"m\"><i>x</i><sup>2</sup> + 2<i>xy</i> + <i>y</i></span>","<span class=\"m\">−<i>x</i><sup>2</sup> − 2<i>xy</i> + <i>y</i></span>","<span class=\"m\"><i>x</i><sup>2</sup> − 2<i>xy</i></span>"],"a":0,"why":"Group terms that match exactly: <span class=\"m\">−2<i>x</i><sup>2</sup> + 3<i>x</i><sup>2</sup> = <i>x</i><sup>2</sup></span>, <span class=\"m\">5<i>xy</i> − 7<i>xy</i> = −2<i>xy</i></span>, and <span class=\"m\"><i>y</i></span> has no partner."},{"t":"Add & subtract","q":"Simplify <span class=\"m\">(4<i>x</i><sup>2</sup> − 3<i>x</i> + 1) + (−<i>x</i><sup>2</sup> + 5<i>x</i> − 7)</span>.","c":["<span class=\"m\">3<i>x</i><sup>2</sup> + 2<i>x</i> − 6</span>","<span class=\"m\">5<i>x</i><sup>2</sup> + 2<i>x</i> − 6</span>","<span class=\"m\">3<i>x</i><sup>2</sup> − 8<i>x</i> + 8</span>","<span class=\"m\">3<i>x</i><sup>4</sup> + 2<i>x</i><sup>2</sup> − 6</span>"],"a":0,"why":"Combine like terms: <span class=\"m\">4<i>x</i><sup>2</sup> − <i>x</i><sup>2</sup> = 3<i>x</i><sup>2</sup></span>, <span class=\"m\">−3<i>x</i> + 5<i>x</i> = 2<i>x</i></span>, <span class=\"m\">1 − 7 = −6</span>. Exponents do not change when you add."},{"t":"Add & subtract","q":"Simplify <span class=\"m\">(5<i>x</i><sup>3</sup> + 2<i>x</i> − 4) − (2<i>x</i><sup>3</sup> − <i>x</i><sup>2</sup> + 2<i>x</i> − 9)</span>.","c":["<span class=\"m\">3<i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> + 5</span>","<span class=\"m\">3<i>x</i><sup>3</sup> − <i>x</i><sup>2</sup> + 4<i>x</i> − 13</span>","<span class=\"m\">3<i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> + 4<i>x</i> + 5</span>","<span class=\"m\">7<i>x</i><sup>3</sup> − <i>x</i><sup>2</sup> + 4<i>x</i> − 13</span>"],"a":0,"why":"Distribute the minus to every term: <span class=\"m\">5<i>x</i><sup>3</sup> + 2<i>x</i> − 4 − 2<i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> − 2<i>x</i> + 9</span>, which combines to <span class=\"m\">3<i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> + 5</span>."},{"t":"Add & subtract","q":"If <span class=\"m\"><i>f</i>(<i>x</i>) = <i>x</i><sup>2</sup> + 3<i>x</i></span> and <span class=\"m\"><i>g</i>(<i>x</i>) = 2<i>x</i><sup>2</sup> − <i>x</i> + 4</span>, what is <span class=\"m\">(<i>f</i> − <i>g</i>)(<i>x</i>)</span>?","c":["<span class=\"m\">−<i>x</i><sup>2</sup> + 4<i>x</i> − 4</span>","<span class=\"m\">−<i>x</i><sup>2</sup> + 2<i>x</i> − 4</span>","<span class=\"m\">3<i>x</i><sup>2</sup> + 2<i>x</i> + 4</span>","<span class=\"m\">−<i>x</i><sup>2</sup> + 4<i>x</i> + 4</span>"],"a":0,"why":"<span class=\"m\"><i>x</i><sup>2</sup> − 2<i>x</i><sup>2</sup> = -<i>x</i><sup>2</sup></span>, <span class=\"m\">3<i>x</i> − (−<i>x</i>) = 4<i>x</i></span>, <span class=\"m\">0 − 4 = −4</span>."},{"t":"Add & subtract","q":"Which statement is always true?","c":["The product of two polynomials is a polynomial","The quotient of two polynomials is a polynomial","The sum of two cubics is a cubic","The difference of two quadratics has degree 2"],"a":0,"why":"Polynomials are closed under addition, subtraction and multiplication. Sums can lose degree (the top terms can cancel), and division can leave a fraction."},{"t":"Multiply","q":"Multiply <span class=\"m\">(2<i>x</i> − 1)(<i>x</i> + 3)</span>.","c":["<span class=\"m\">2<i>x</i><sup>2</sup> + 5<i>x</i> − 3</span>","<span class=\"m\">2<i>x</i><sup>2</sup> + 7<i>x</i> − 3</span>","<span class=\"m\">2<i>x</i><sup>2</sup> − 5<i>x</i> − 3</span>","<span class=\"m\">2<i>x</i><sup>2</sup> + 6<i>x</i> − 3</span>"],"a":0,"why":"<span class=\"m\">2<i>x</i>·<i>x</i> = 2<i>x</i><sup>2</sup></span>, <span class=\"m\">2<i>x</i>·3 = 6<i>x</i></span>, <span class=\"m\">−1·<i>x</i> = -<i>x</i></span>, <span class=\"m\">−1·3 = −3</span>. Then <span class=\"m\">6<i>x</i> − <i>x</i> = 5<i>x</i></span>."},{"t":"Multiply","q":"Multiply <span class=\"m\">(<i>x</i> + 1)(<i>x</i><sup>2</sup> − <i>x</i> + 1)</span>.","c":["<span class=\"m\"><i>x</i><sup>3</sup> + 1</span>","<span class=\"m\"><i>x</i><sup>3</sup> + 2<i>x</i><sup>2</sup> + 1</span>","<span class=\"m\"><i>x</i><sup>3</sup> − 1</span>","<span class=\"m\"><i>x</i><sup>3</sup> + <i>x</i><sup>2</sup> + <i>x</i> + 1</span>"],"a":0,"why":"<span class=\"m\"><i>x</i><sup>3</sup> − <i>x</i><sup>2</sup> + <i>x</i> + <i>x</i><sup>2</sup> − <i>x</i> + 1</span>: the middle terms cancel, leaving <span class=\"m\"><i>x</i><sup>3</sup> + 1</span>."},{"t":"Multiply","q":"Multiply <span class=\"m\">3<i>x</i>(<i>x</i> − 2)(<i>x</i> + 4)</span>.","c":["<span class=\"m\">3<i>x</i><sup>3</sup> + 6<i>x</i><sup>2</sup> − 24<i>x</i></span>","<span class=\"m\">3<i>x</i><sup>3</sup> − 6<i>x</i><sup>2</sup> − 24<i>x</i></span>","<span class=\"m\">3<i>x</i><sup>2</sup> + 6<i>x</i> − 24</span>","<span class=\"m\">3<i>x</i><sup>3</sup> + 6<i>x</i><sup>2</sup> + 24<i>x</i></span>"],"a":0,"why":"<span class=\"m\">(<i>x</i> − 2)(<i>x</i> + 4) = <i>x</i><sup>2</sup> + 2<i>x</i> − 8</span>, then <span class=\"m\">3<i>x</i></span> times each term."},{"t":"Multiply","q":"A shop sells <span class=\"m\"><i>x</i></span> hoodies at <span class=\"m\">(40 − 0.5<i>x</i>)</span> dollars each. Which polynomial gives the revenue?","c":["<span class=\"m\">R(<i>x</i>) = −0.5<i>x</i><sup>2</sup> + 40<i>x</i></span>","<span class=\"m\">R(<i>x</i>) = 40 − 0.5<i>x</i><sup>2</sup></span>","<span class=\"m\">R(<i>x</i>) = 39.5<i>x</i></span>","<span class=\"m\">R(<i>x</i>) = 0.5<i>x</i><sup>2</sup> + 40<i>x</i></span>"],"a":0,"why":"Revenue is quantity times price: <span class=\"m\"><i>x</i>(40 − 0.5<i>x</i>) = 40<i>x</i> − 0.5<i>x</i><sup>2</sup></span>."},{"t":"Multiply","q":"What is the degree of <span class=\"m\">(<i>x</i><sup>3</sup> + 2)(<i>x</i><sup>2</sup> − 5<i>x</i> + 1)</span>?","c":["5","6","3","2"],"a":0,"why":"Add the degrees of the factors: 3 + 2 = 5."},{"t":"Multiply","q":"Expand <span class=\"m\">(<i>x</i> − 2)<sup>3</sup></span>.","c":["<span class=\"m\"><i>x</i><sup>3</sup> − 6<i>x</i><sup>2</sup> + 12<i>x</i> − 8</span>","<span class=\"m\"><i>x</i><sup>3</sup> − 8</span>","<span class=\"m\"><i>x</i><sup>3</sup> − 6<i>x</i><sup>2</sup> − 12<i>x</i> − 8</span>","<span class=\"m\"><i>x</i><sup>3</sup> + 6<i>x</i><sup>2</sup> + 12<i>x</i> − 8</span>"],"a":0,"why":"<span class=\"m\">(<i>x</i> − 2)<sup>2</sup> = <i>x</i><sup>2</sup> − 4<i>x</i> + 4</span>; times <span class=\"m\">(<i>x</i> − 2)</span> gives <span class=\"m\"><i>x</i><sup>3</sup> − 6<i>x</i><sup>2</sup> + 12<i>x</i> − 8</span>. Cubing each part separately does not work."},{"t":"Multiply","q":"A box is made from a 10 by 8 sheet by cutting <span class=\"m\"><i>x</i></span> by <span class=\"m\"><i>x</i></span> squares from the corners. Which is its volume?","c":["<span class=\"m\">4<i>x</i><sup>3</sup> − 36<i>x</i><sup>2</sup> + 80<i>x</i></span>","<span class=\"m\">4<i>x</i><sup>3</sup> − 18<i>x</i><sup>2</sup> + 80<i>x</i></span>","<span class=\"m\">80<i>x</i> − 4<i>x</i><sup>2</sup></span>","<span class=\"m\">4<i>x</i><sup>3</sup> + 36<i>x</i><sup>2</sup> + 80<i>x</i></span>"],"a":0,"why":"<span class=\"m\">(10 − 2<i>x</i>)(8 − 2<i>x</i>) = 4<i>x</i><sup>2</sup> − 36<i>x</i> + 80</span>, then multiply by the height <span class=\"m\"><i>x</i></span>."}],"vocab":[["Polynomial","A sum of terms <span class=\"m\"><i>a</i>·<i>x</i>^<i>n</i></span> where every exponent is a whole number."],["Polynomial function","A function whose rule is a polynomial, like <span class=\"m\"><i>f</i>(<i>x</i>) = <i>x</i><sup>3</sup> − 4<i>x</i></span>."],["Standard form","Terms written from the highest exponent to the lowest."],["Degree","The highest exponent in the polynomial."],["Leading coefficient","The number in front of the highest-degree term."],["Monomial","A polynomial with one term."],["Binomial","A polynomial with two terms."],["Trinomial","A polynomial with three terms."],["Cubic / quartic / quintic","Degree 3 / degree 4 / degree 5."],["End behavior","What <span class=\"m\"><i>f</i>(<i>x</i>)</span> does as <span class=\"m\"><i>x</i></span> goes to <span class=\"m\">−∞</span> and <span class=\"m\">∞</span>."],["Turning point","Where the graph changes from increasing to decreasing, or the other way."],["Relative maximum","A turning point higher than the points around it."],["Relative minimum","A turning point lower than the points around it."],["Zero","An input that makes <span class=\"m\"><i>f</i>(<i>x</i>) = 0</span>; an x-intercept of the graph."],["Like terms","Terms with the same variable raised to the same power."],["Closure","An operation on polynomials that always gives a polynomial (add, subtract, multiply)."]]};
+(function () {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const store = { get(k, d) { try { const v = localStorage.getItem('cbstudy:' + DATA.id + ':' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+                  set(k, v) { try { localStorage.setItem('cbstudy:' + DATA.id + ':' + k, JSON.stringify(v)); } catch (e) {} } };
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  $('kick').textContent = DATA.kick; $('title').textContent = DATA.title; $('lede').innerHTML = DATA.lede; $('src').innerHTML = DATA.src || '';
+  document.title = DATA.title + ' · ' + DATA.cls;
+
+  // tabs
+  const TABS = [['guide', 'Study guide', ''], ['quiz', 'Practice quiz', DATA.quiz.length], ['vocab', 'Vocab', DATA.vocab.length]];
+  $('tabs').innerHTML = TABS.map(([k, l, n]) => `<button data-tab="${k}">${l}${n ? `<b>${n}</b>` : ''}</button>`).join('');
+  function show(k) {
+    TABS.forEach(([t]) => { $('p-' + t).hidden = t !== k; });
+    document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === k));
+  }
+  $('tabs').onclick = e => { const b = e.target.closest('[data-tab]'); if (b) { show(b.dataset.tab); window.scrollTo({ top: 0, behavior: 'smooth' }); } };
+  show('guide');
+
+  // study guide
+  $('p-guide').innerHTML = `<div class="toc">${DATA.guide.map((s, i) => `<a href="#s${i}">${esc(s.title)}</a>`).join('')}</div>` +
+    DATA.guide.map((s, i) => `<article class="sec" id="s${i}"><h2><span class="n">${String(i + 1).padStart(2, '0')}</span>${esc(s.title)}</h2>${s.body || ''}
+      ${(s.examples || []).map(x => `<details class="ex"><summary>${x.q}</summary><ol>${x.steps.map(st => `<li>${st}</li>`).join('')}</ol><div class="ans">${x.a}</div></details>`).join('')}</article>`).join('');
+  $('p-guide').addEventListener('click', e => { const a = e.target.closest('.toc a'); if (!a) return; e.preventDefault(); const el = document.querySelector(a.getAttribute('href')); if (el) el.scrollIntoView({ behavior: 'smooth' }); });
+
+  // practice quiz
+  const topics = [...new Set(DATA.quiz.map(q => q.t))];
+  let pick = new Set(topics), run = null;
+  function qStart() {
+    const best = store.get('best', null);
+    $('p-quiz').innerHTML = `<div class="qstart"><h2>Practice quiz</h2><p class="sub">${DATA.quiz.length} questions. You'll see why each answer is right as you go, and a breakdown by topic at the end.</p>
+      ${topics.length > 1 ? `<div class="chips">${topics.map(t => `<button data-topic="${esc(t)}" class="${pick.has(t) ? 'on' : ''}">${esc(t)}</button>`).join('')}</div>` : ''}
+      <div class="row"><button class="btn pri" id="go">Start (${DATA.quiz.filter(q => pick.has(q.t)).length} questions)</button></div>
+      ${best ? `<p class="best">Your best: ${best.pct}% on ${new Date(best.at).toLocaleDateString()}</p>` : ''}</div>`;
+    $('p-quiz').querySelectorAll('[data-topic]').forEach(b => b.onclick = () => { const t = b.dataset.topic; if (pick.has(t) && pick.size > 1) pick.delete(t); else pick.add(t); qStart(); });
+    $('go').onclick = () => begin(DATA.quiz.filter(q => pick.has(q.t)));
+  }
+  function begin(list) { run = { qs: shuffle(list).map(q => Object.assign({}, q, { order: shuffle(q.c.map((_, i) => i)) })), i: 0, res: [] }; qShow(); }
+  function qShow() {
+    const q = run.qs[run.i], n = run.qs.length;
+    $('p-quiz').innerHTML = `<div class="qcard"><div class="qtop"><span class="t">${esc(q.t)}</span><span>${run.i + 1} of ${n}</span></div>
+      <div class="bar"><i style="width:${(run.i / n) * 100}%"></i></div><div class="qq">${q.q}</div>
+      <div class="opts">${q.order.map((ci, k) => `<button class="opt" data-ci="${ci}"><span class="l">${'ABCDE'[k]}</span><span>${q.c[ci]}</span></button>`).join('')}</div>
+      <div id="why"></div><div class="row"><button class="btn pri" id="next" hidden>${run.i + 1 < n ? 'Next question' : 'See my results'}</button></div></div>`;
+    $('p-quiz').querySelectorAll('.opt').forEach(b => b.onclick = () => answer(+b.dataset.ci));
+  }
+  function answer(ci) {
+    const q = run.qs[run.i], ok = ci === q.a;
+    if (run.res.length > run.i) return;
+    run.res.push({ q, ok, ci });
+    $('p-quiz').querySelectorAll('.opt').forEach(b => { b.disabled = true; const c = +b.dataset.ci; if (c === q.a) b.classList.add('right'); else if (c === ci) b.classList.add('wrong'); });
+    $('why').innerHTML = `<div class="why${ok ? '' : ' no'}"><b>${ok ? 'Correct.' : 'Not quite.'}</b> ${q.why}</div>`;
+    const nx = $('next'); nx.hidden = false; nx.focus(); nx.onclick = () => { run.i++; if (run.i < run.qs.length) qShow(); else qEnd(); };
+  }
+  function qEnd() {
+    const n = run.res.length, right = run.res.filter(r => r.ok).length, pct = Math.round(right / n * 100);
+    const best = store.get('best', null);
+    if (n === DATA.quiz.length && (!best || pct >= best.pct)) store.set('best', { pct, at: Date.now() });
+    const by = topics.map(t => { const l = run.res.filter(r => r.q.t === t); return { t, n: l.length, ok: l.filter(r => r.ok).length }; }).filter(x => x.n);
+    const misses = run.res.filter(r => !r.ok);
+    $('p-quiz').innerHTML = `<div class="qend"><div class="sub">${right} of ${n} right</div><div class="big">${pct}%</div>
+      <h2>${pct >= 90 ? "You're ready for this." : pct >= 75 ? 'Close. Clean up the misses below.' : pct >= 50 ? 'Good start. Review your weakest topic, then try again.' : 'Go back through the study guide, then try again.'}</h2>
+      <div class="tbars">${by.map(x => `<div class="tb"><span>${esc(x.t)}</span><span class="tr"><i style="width:${x.ok / x.n * 100}%"></i></span><span class="p">${x.ok}/${x.n}</span></div>`).join('')}</div>
+      <div class="row">${misses.length ? '<button class="btn pri" id="redo">Retry the ones I missed</button>' : ''}<button class="btn" id="again">Start over</button></div>
+      ${misses.length ? `<div class="miss">${misses.map(r => `<div>${r.q.q}<div class="w">You picked: ${r.q.c[r.ci]}</div><div class="a">Answer: ${r.q.c[r.q.a]}</div><div class="w">${r.q.why}</div></div>`).join('')}</div>` : ''}</div>`;
+    if (misses.length) $('redo').onclick = () => begin(misses.map(r => DATA.quiz.find(q => q.q === r.q.q)));
+    $('again').onclick = qStart;
+  }
+  document.addEventListener('keydown', e => {
+    if ($('p-quiz').hidden || !run || e.target.matches('input')) return;
+    const k = e.key.toUpperCase(), i = 'ABCDE'.indexOf(k) >= 0 ? 'ABCDE'.indexOf(k) : '12345'.indexOf(k);
+    const opts = $('p-quiz').querySelectorAll('.opt');
+    if (i >= 0 && opts[i] && !opts[i].disabled) opts[i].click();
+    else if (e.key === 'Enter' && $('next') && !$('next').hidden) $('next').click();
+  });
+  qStart();
+
+  // vocab
+  let vorder = DATA.vocab.slice();
+  function vShow(filter) {
+    const q = (filter || '').toLowerCase();
+    $('vg').innerHTML = vorder.filter(([t, d]) => !q || (t + ' ' + d).toLowerCase().includes(q)).map(([t, d]) => `<div class="vc" tabindex="0"><div><div class="f">${esc(t)}</div><div class="b">${d}</div></div></div>`).join('');
+  }
+  $('p-vocab').innerHTML = `<div class="vtools"><input id="vq" placeholder="Search terms…" autocomplete="off"><button class="btn" id="vs">Shuffle</button><button class="btn" id="vf">Flip all</button></div><div class="vgrid" id="vg"></div>`;
+  vShow('');
+  $('vq').oninput = e => vShow(e.target.value);
+  $('vs').onclick = () => { vorder = shuffle(vorder); vShow($('vq').value); };
+  $('vf').onclick = () => { const cards = [...document.querySelectorAll('.vc')], all = cards.every(c => c.classList.contains('flip')); cards.forEach(c => c.classList.toggle('flip', !all)); };
+  $('vg').addEventListener('click', e => { const c = e.target.closest('.vc'); if (c) c.classList.toggle('flip'); });
+  $('vg').addEventListener('keydown', e => { const c = e.target.closest('.vc'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); c.classList.toggle('flip'); } });
+})();
+</script>
+</body>
+</html>
