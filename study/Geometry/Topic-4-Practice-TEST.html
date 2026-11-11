@@ -1,0 +1,1030 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Topic 4 Practice Test</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap">
+<style>
+/* Layout: one exam-paper column on faint graph paper; answers hide in violet "key ink" under each question. */
+:root {
+  --paper: #fbfcfd;
+  --sheet: #ffffff;
+  --ink: #1a2230;
+  --muted: #5a6577;
+  --rule: #dbe3ec;
+  --grid: rgba(31, 95, 191, 0.07);
+  --accent: #1f5fbf;
+  --key: #6a2dbf;
+  --keybg: #f5f0fc;
+  --chal: #a4520c;
+  --chalbg: #fdf4ea;
+  --ok: #1b7a45;
+  --okbg: #e7f4ec;
+  --bad: #b3261e;
+  --badbg: #fbebea;
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-hand: "Caveat", "Comic Sans MS", cursive;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f141b; --sheet: #151b24; --ink: #e4e9f0; --muted: #98a4b4; --rule: #273140;
+    --grid: rgba(127, 176, 255, 0.05); --accent: #86b4ff; --key: #c8a8ff; --keybg: #1e1830;
+    --chal: #f2a865; --chalbg: #2a1d12; --ok: #63d394; --okbg: #12281b; --bad: #ff8f86; --badbg: #2e1514; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f141b; --sheet: #151b24; --ink: #e4e9f0; --muted: #98a4b4; --rule: #273140;
+  --grid: rgba(127, 176, 255, 0.05); --accent: #86b4ff; --key: #c8a8ff; --keybg: #1e1830;
+  --chal: #f2a865; --chalbg: #2a1d12; --ok: #63d394; --okbg: #12281b; --bad: #ff8f86; --badbg: #2e1514; color-scheme: dark;
+}
+
+body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font: 400 16px/1.6 var(--f-body);
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--sheet);
+}
+.wrap {
+  max-width: 860px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 64px;
+}
+
+header.top { display: grid; gap: 10px; padding-block: 8px 20px; }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+h1 { font: 800 clamp(30px, 6vw, 46px)/1.05 var(--f-display); letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); max-width: 62ch; margin: 0; }
+.covers { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.covers span { font: 500 12px/1 var(--f-mono); padding: 6px 8px; border: 1px solid var(--rule); background: var(--sheet); border-radius: 3px; }
+
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 10px 14px; margin-bottom: 26px;
+}
+.bar .score { font: 500 14px var(--f-mono); color: var(--muted); margin-right: auto; }
+.bar .score b { color: var(--key); font-weight: 600; }
+button {
+  font: 600 14px var(--f-body); color: var(--ink); background: transparent;
+  border: 1px solid var(--rule); border-radius: 4px; padding: 7px 12px; cursor: pointer;
+}
+button:hover { border-color: var(--accent); color: var(--accent); }
+button[aria-pressed="true"] { background: var(--key); border-color: var(--key); color: var(--sheet); }
+button:focus-visible, summary:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+section.part { margin-top: 38px; }
+.part > h2 {
+  font: 700 20px/1.2 var(--f-display); margin: 0 0 4px; display: flex; gap: 10px; align-items: baseline;
+}
+.part > h2 .tag { font: 500 12px var(--f-mono); color: var(--accent); letter-spacing: .1em; text-transform: uppercase; }
+.part > .dir { color: var(--muted); margin: 0 0 14px; font-size: 15px; }
+
+.q {
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 18px 20px 14px; margin-top: 14px; display: grid; gap: 12px;
+}
+.q-head { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+.num { font: 700 15px/1.6 var(--f-mono); color: var(--accent); min-width: 2.2em; }
+.prompt { min-width: 0; }
+.prompt p { margin: 0 0 8px; }
+.prompt p:last-child { margin-bottom: 0; }
+var { font-style: italic; font-family: var(--f-body); }
+.seg { text-decoration: overline; text-decoration-thickness: 1.5px; }
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 4px 16px; margin-top: 6px; }
+.choices span b { font-family: var(--f-mono); color: var(--muted); font-weight: 500; margin-right: 6px; }
+.blank { display: inline-block; min-width: 72px; border-bottom: 1.5px solid var(--muted); margin: 0 4px; height: 1.1em; vertical-align: -2px; }
+ol.sub { margin: 4px 0 0; padding-left: 1.4em; display: grid; gap: 4px; }
+ol.sub li::marker { font-family: var(--f-mono); color: var(--muted); }
+.nts { font: 400 12px var(--f-mono); color: var(--muted); }
+
+.fig { overflow-x: auto; }
+.fig svg { display: block; width: 100%; max-width: 340px; height: auto; margin: 2px auto; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.card { border: 1px dashed var(--rule); border-radius: 4px; padding: 10px 12px 12px; display: grid; gap: 6px; min-width: 0; }
+.card .lab { font: 600 13px var(--f-mono); color: var(--muted); }
+.card .line { font-size: 15px; }
+.card .blank { min-width: 54px; }
+svg .ln { stroke: var(--ink); stroke-width: 2; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+svg .mk { stroke: var(--ink); stroke-width: 1.5; fill: none; stroke-linecap: round; }
+svg .vx { fill: var(--ink); font: 600 14px var(--f-body); }
+svg .ex { fill: var(--accent); font: 500 12px var(--f-mono); }
+
+details.ans { border-top: 1px dashed var(--rule); padding-top: 8px; }
+details.ans > summary {
+  cursor: pointer; font: 600 13px var(--f-mono); color: var(--key); list-style: none;
+  display: inline-flex; gap: 6px; align-items: center; letter-spacing: .03em;
+}
+details.ans > summary::-webkit-details-marker { display: none; }
+details.ans > summary::before { content: "+"; display: inline-block; width: 1em; text-align: center; }
+details.ans[open] > summary::before { content: "−"; }
+.key {
+  margin-top: 10px; background: var(--keybg); border-radius: 4px; padding: 12px 14px;
+  color: var(--key); display: grid; gap: 6px; font-size: 15px;
+}
+.key p { margin: 0; }
+.key .final {
+  font: 700 24px/1.2 var(--f-hand); border: 2px solid var(--key); border-radius: 3px;
+  padding: 2px 10px; justify-self: start;
+}
+.key .work { font-family: var(--f-mono); font-size: 13.5px; line-height: 1.7; white-space: pre-wrap; overflow-x: auto; }
+.key ul { margin: 0; padding-left: 1.2em; }
+.got { display: inline-flex; gap: 8px; align-items: center; margin-top: 4px; font: 500 13px var(--f-mono); color: var(--muted); cursor: pointer; justify-self: start; }
+.got input { width: 16px; height: 16px; accent-color: var(--key); }
+
+.part.challenge > h2 .tag { color: var(--chal); }
+.challenge .q { border-color: var(--chal); background: linear-gradient(var(--chalbg), var(--chalbg)) top / 100% 4px no-repeat, var(--sheet); }
+.challenge .num { color: var(--chal); }
+
+footer { margin-top: 40px; color: var(--muted); font-size: 14px; }
+
+/* answering */
+.resp {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px 14px;
+  padding-top: 12px; border-top: 1px dashed var(--rule);
+}
+.card .resp { border-top: 0; padding-top: 2px; grid-template-columns: 1fr 1fr; gap: 8px; }
+.fld { display: grid; gap: 4px; min-width: 0; align-content: start; }
+.fld > span { font: 500 12px var(--f-mono); color: var(--muted); }
+.fld.wide { grid-column: 1 / -1; }
+.fld input, .fld select, .fld textarea {
+  font: 500 15px var(--f-body); color: var(--ink); background: var(--paper);
+  border: 1.5px solid var(--rule); border-radius: 4px; padding: 7px 9px;
+  width: 100%; box-sizing: border-box; min-width: 0;
+}
+.fld textarea { min-height: 64px; resize: vertical; }
+.fld input:focus, .fld select:focus, .fld textarea:focus { border-color: var(--accent); outline: none; }
+.fld.ok input, .fld.ok select { border-color: var(--ok); background: var(--okbg); }
+.fld.bad input, .fld.bad select { border-color: var(--bad); background: var(--badbg); }
+.fld .fix { font: 500 12px var(--f-mono); color: var(--bad); }
+.fld input:disabled, .fld select:disabled, .fld textarea:disabled { color: var(--ink); opacity: 1; -webkit-text-fill-color: var(--ink); }
+.actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button.check { background: var(--accent); border-color: var(--accent); color: var(--sheet); }
+button.check:hover { color: var(--sheet); filter: brightness(1.1); }
+.msg { font: 500 13px var(--f-mono); color: var(--bad); }
+.result { font: 600 13px var(--f-mono); padding: 5px 10px; border-radius: 3px; }
+.result.ok { color: var(--ok); background: var(--okbg); }
+.result.bad { color: var(--bad); background: var(--badbg); }
+.choices label {
+  display: flex; gap: 8px; align-items: center; padding: 7px 10px; cursor: pointer;
+  border: 1.5px solid var(--rule); border-radius: 4px;
+}
+.choices label:has(input:checked) { border-color: var(--accent); }
+.choices label.ok { border-color: var(--ok); background: var(--okbg); }
+.choices label.bad { border-color: var(--bad); background: var(--badbg); }
+.choices input { accent-color: var(--accent); margin: 0; }
+.reveal .key { margin-top: 0; }
+.reveal { display: grid; gap: 0; }
+
+.print-only { display: none; }
+@media screen {
+  .blank { display: none; }
+  .js .card .line { display: none; }
+}
+#printKey .pk { display: grid; grid-template-columns: 2.6em 1fr; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--rule); break-inside: avoid; }
+#printKey .pk .num { font-size: 13px; }
+#printKey .key { margin: 0; padding: 6px 10px; font-size: 12.5px; }
+#printKey .key .final { font-size: 19px; }
+#printKey .key .work { font-size: 11.5px; }
+
+@media print {
+  :root:not(#x) {
+    --paper: #fff; --sheet: #fff; --ink: #111; --muted: #555; --rule: #c9ced6; --accent: #1f4f9f;
+    --key: #5a22a8; --keybg: #f6f1fd; --chal: #94470a; --chalbg: #fff; color-scheme: light;
+  }
+  body { background: #fff; font-size: 11.5pt; }
+  .wrap { max-width: none; padding: 0; }
+  .bar, .resp, .reveal, .screen-only, footer, .covers { display: none !important; }
+  .print-only { display: block; }
+  .blank { display: inline-block; }
+  .card .line { display: inline !important; }
+  h1 { font-size: 26pt; }
+  .nameline { display: flex; gap: 8px; align-items: baseline; margin-top: 6px; font-weight: 600; }
+  .nameline span { display: inline-block; flex: 1; border-bottom: 1px solid #111; }
+  .nameline span.sm { flex: 0 0 80px; }
+  section.part { margin-top: 18px; }
+  .q { break-inside: avoid; padding: 10px 14px; margin-top: 10px; border-color: #c9ced6; }
+  .q .prompt::after { content: ""; display: block; height: 1.1in; }
+  .q[data-mc] .prompt::after, .q[data-q="13"] .prompt::after, .q[data-q="16"] .prompt::after, .q[data-q="17"] .prompt::after { height: 0; }
+  .q[data-q="12"] .prompt::after, .q[data-q="19"] .prompt::after, .q[data-q="21"] .prompt::after { height: 1.4in; }
+  .challenge .q .prompt::after { height: 2in; }
+  .challenge .q { background: #fff; }
+  .card { break-inside: avoid; }
+  .q[data-q="16"] { break-inside: auto; }
+  .part > .dir { break-inside: avoid; }
+  .choices input { display: none; }
+  .choices { grid-template-columns: repeat(4, 1fr); }
+  .part > h2, .part > .dir { break-after: avoid; }
+  .choices label { border: 0; padding: 2px 0; }
+  .figs { grid-template-columns: repeat(2, 1fr); }
+  .fig svg { max-width: 300px; }
+  #printKey { display: block; break-before: page; }
+  @page { margin: 0.55in; }
+}
+
+@media (max-width: 480px) {
+  .q { padding: 14px 14px 12px; }
+  .q-head { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  details.ans[open] .key { animation: inkin .18s ease-out; }
+  @keyframes inkin { from { opacity: .3; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Advanced Geometry · Topic 4</div>
+    <h1>Topic 4 Practice Test</h1>
+    <p class="lede screen-only">Built from the 4.0–4.6 worksheets, both quiz reviews, the unit review, and Quiz #1. Work it out on paper, no calculator, then type your answers and press <strong>Check</strong>. The worked answer only unlocks after you answer. Your progress is saved in this browser.</p>
+    <p class="lede print-only">Built from the 4.0–4.6 worksheets, both quiz reviews, the unit review, and Quiz #1. Show all your work. No calculator. The answer key is at the end.</p>
+    <div class="nameline print-only">Name <span></span> Period <span class="sm"></span> Date <span class="sm"></span></div>
+    <div class="covers">
+      <span>4.0 Classifying</span><span>4.2 Isosceles &amp; Equilateral</span><span>4.3 CPCTC · SSS · SAS</span><span>4.4 ASA · AAS</span><span>4.5 HL</span><span>4.6 Overlapping</span>
+    </div>
+  </header>
+
+  <div class="bar" role="region" aria-label="Test controls">
+    <span class="score" aria-live="polite">Score <b id="gotCount">0</b> / <span id="gotTotal">24</span> · <span id="doneCount">0</span> answered</span>
+    <button type="button" id="restart">Restart test</button>
+  </div>
+
+  <!-- PART A -->
+  <section class="part">
+    <h2><span class="tag">Part A</span> Multiple choice</h2>
+    <p class="dir">Pick the choice that best completes the statement or answers the question.</p>
+
+    <article class="q" data-q="1">
+      <div class="q-head"><div class="num">1</div><div class="prompt">
+        <p>If Δ<var>MNP</var> ≅ Δ<var>QRS</var>, then <span class="seg"><var>PM</var></span> ≅</p>
+        <div class="choices"><span><b>A</b><span class="seg">QR</span></span><span><b>B</b><span class="seg">RS</span></span><span><b>C</b><span class="seg">SQ</span></span><span><b>D</b><span class="seg">NP</span></span></div>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <p>Match letters by position: P ↔ S and M ↔ Q, so <span class="seg">PM</span> ↔ <span class="seg">SQ</span>.</p>
+        <p class="final">C</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="2">
+      <div class="q-head"><div class="num">2</div><div class="prompt">
+        <p>Is this statement true? <em>A right triangle can also be an obtuse triangle.</em></p>
+        <div class="choices"><span><b>A</b>Always true</span><span><b>B</b>Sometimes true</span><span><b>C</b>Never true</span><span><b>D</b>Can’t be determined</span></div>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <p>A right angle is 90° and an obtuse angle is more than 90°. Together they already pass 180°, so a triangle can't have both.</p>
+        <p class="final">C · Never</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="3">
+      <div class="q-head"><div class="num">3</div><div class="prompt">
+        <p>Which is the correct classification of Δ<var>ABC</var> if <var>m</var>∠<var>A</var> = 38° and <var>m</var>∠<var>B</var> = 52°?</p>
+        <div class="choices"><span><b>A</b>Acute</span><span><b>B</b>Right</span><span><b>C</b>Obtuse</span><span><b>D</b>Equiangular</span></div>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <p><var>m</var>∠<var>C</var> = 180 − 38 − 52 = 90°</p>
+        <p class="final">B · Right</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="4">
+      <div class="q-head"><div class="num">4</div><div class="prompt">
+        <p>Is this statement true? <em>An isosceles triangle is also an equilateral triangle.</em></p>
+        <div class="choices"><span><b>A</b>Always true</span><span><b>B</b>Sometimes true</span><span><b>C</b>Never true</span><span><b>D</b>Can’t be determined</span></div>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <p>Isosceles needs <em>at least</em> two congruent sides. If the third side also matches, it's equilateral. If not, it isn't. (Flip it around and "every equilateral triangle is isosceles" is always true.)</p>
+        <p class="final">B · Sometimes</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="5">
+      <div class="q-head"><div class="num">5</div><div class="prompt">
+        <p>Which of these can <strong>not</strong> be used to prove two triangles congruent?</p>
+        <div class="choices"><span><b>A</b>SAS</span><span><b>B</b>AAS</span><span><b>C</b>SSA</span><span><b>D</b>HL</span></div>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <p>SSA (and AAA) are not congruence shortcuts. HL is the one special "SSA" case that works, and only for right triangles.</p>
+        <p class="final">C · SSA</p>
+      </div></details>
+    </article>
+  </section>
+
+  <!-- PART B -->
+  <section class="part">
+    <h2><span class="tag">Part B</span> Classifying &amp; angle sums</h2>
+    <p class="dir">Show your setup. Remember: 3 different angles means 3 different side lengths.</p>
+
+    <article class="q" data-q="6">
+      <div class="q-head"><div class="num">6</div><div class="prompt">
+        <p>Δ<var>ABC</var> has vertices <var>A</var>(1, 2), <var>B</var>(4, 6), and <var>C</var>(8, 3). Classify it by its sides <strong>and</strong> its angles. Show the distance formula work.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">AB = √((4−1)² + (6−2)²) = √(9 + 16) = √25 = 5
+BC = √((8−4)² + (3−6)²) = √(16 + 9) = √25 = 5
+AC = √((8−1)² + (3−2)²) = √(49 + 1) = √50 = 5√2</div>
+        <p>Two sides match, so it's isosceles. Check for a right angle with the Pythagorean theorem: 5² + 5² = 50 = (√50)². So ∠<var>B</var> is a right angle.</p>
+        <p class="final">Right isosceles</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="7">
+      <div class="q-head"><div class="num">7</div><div class="prompt">
+        <p>In Δ<var>ABC</var>, the measure of ∠<var>B</var> is 12 more than twice the measure of ∠<var>A</var>, and the measure of ∠<var>C</var> is 12 less than three times the measure of ∠<var>A</var>. Find each angle measure, then classify the triangle by its angles and sides.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">x + (2x + 12) + (3x − 12) = 180
+6x = 180
+x = 30</div>
+        <p><var>m</var>∠<var>A</var> = 30°, <var>m</var>∠<var>B</var> = 72°, <var>m</var>∠<var>C</var> = 78°. All angles are under 90° and all are different.</p>
+        <p class="final">Acute scalene</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="8">
+      <div class="q-head"><div class="num">8</div><div class="prompt">
+        <p>In a right triangle, one acute angle measures 18° less than twice the other acute angle. Find both acute angles.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">x + (2x − 18) + 90 = 180
+3x = 108
+x = 36  →  2(36) − 18 = 54</div>
+        <p class="final">36° and 54°</p>
+      </div></details>
+    </article>
+  </section>
+
+  <!-- PART C -->
+  <section class="part">
+    <h2><span class="tag">Part C</span> Isosceles &amp; equilateral</h2>
+    <p class="dir">Base angles sit opposite the congruent sides. Equilateral means equiangular: every angle is 60°.</p>
+
+    <article class="q" data-q="9">
+      <div class="q-head"><div class="num">9</div><div class="prompt">
+        <p>Δ<var>KLM</var> is isosceles with <span class="seg"><var>KL</var></span> ≅ <span class="seg"><var>KM</var></span>. If <var>KL</var> = 5<var>x</var> − 8, <var>KM</var> = 3<var>x</var> + 6, and <var>LM</var> = 2<var>x</var> + 3, find <var>x</var>, each side length, and the perimeter.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">5x − 8 = 3x + 6
+2x = 14
+x = 7</div>
+        <p><var>KL</var> = <var>KM</var> = 27, <var>LM</var> = 2(7) + 3 = 17</p>
+        <p class="final">x = 7 · perimeter = 71 units</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="10">
+      <div class="q-head"><div class="num">10</div><div class="prompt">
+        <p>Δ<var>PQR</var> is equilateral. <var>PQ</var> = 4<var>x</var> + 2, <var>QR</var> = 7<var>x</var> − 10, <var>RP</var> = 3<var>y</var> + 3, and <var>m</var>∠<var>Q</var> = (5<var>z</var> − 10)°. Find <var>x</var>, <var>y</var>, and <var>z</var>.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">4x + 2 = 7x − 10  →  12 = 3x  →  x = 4   (each side = 18)
+3y + 3 = 18  →  y = 5
+5z − 10 = 60  →  z = 14</div>
+        <p class="final">x = 4, y = 5, z = 14</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="11">
+      <div class="q-head"><div class="num">11</div><div class="prompt">
+        <p>In Δ<var>JKL</var>, <span class="seg"><var>JK</var></span> ≅ <span class="seg"><var>JL</var></span>. Solve for <var>x</var>, find <var>m</var>∠<var>J</var>, and classify Δ<var>JKL</var> by its angles and sides.</p>
+        <div class="fig" data-fig="q11"></div>
+        <p class="nts">Figure not drawn to scale.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">Base angles ≅:  x² − 20 = 8x
+x² − 8x − 20 = 0
+(x − 10)(x + 2) = 0
+x = 10  or  x = −2</div>
+        <p><var>x</var> = −2 makes 8<var>x</var> = −16°, which is impossible. With <var>x</var> = 10 each base angle is 80°, so <var>m</var>∠<var>J</var> = 180 − 160 = 20°.</p>
+        <p class="final">x = 10 · m∠J = 20° · acute isosceles</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="12">
+      <div class="q-head"><div class="num">12</div><div class="prompt">
+        <p>Δ<var>ABC</var> is isosceles with <span class="seg"><var>AB</var></span> ≅ <span class="seg"><var>CB</var></span>, and Δ<var>DBE</var> is equilateral. Points <var>A</var>, <var>D</var>, <var>E</var>, <var>C</var> are on one line. Find <var>x</var>, <var>m</var>∠<var>A</var>, <var>m</var>∠<var>ADB</var>, <var>m</var>∠<var>ABD</var>, and <var>m</var>∠<var>ABC</var>.</p>
+        <div class="fig" data-fig="q12"></div>
+        <p class="nts">Figure not drawn to scale.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">Base angles ≅:  3x + 4 = 5x − 18  →  22 = 2x  →  x = 11
+m∠A = 3(11) + 4 = 37°
+m∠BDE = 60° (equilateral), so m∠ADB = 180 − 60 = 120° (linear pair)
+m∠ABD = 180 − 37 − 120 = 23°
+m∠ABC = 23 + 60 + 23 = 106°   (check: 180 − 37 − 37 = 106 ✓)</div>
+        <p class="final">x = 11 · 37° · 120° · 23° · 106°</p>
+      </div></details>
+    </article>
+  </section>
+
+  <!-- PART D -->
+  <section class="part">
+    <h2><span class="tag">Part D</span> Congruence statements &amp; CPCTC</h2>
+    <p class="dir">The order of the letters tells you which parts match. Sketch both triangles if it helps.</p>
+
+    <article class="q" data-q="13">
+      <div class="q-head"><div class="num">13</div><div class="prompt">
+        <p>Given Δ<var>JKL</var> ≅ Δ<var>PQR</var>, complete each statement.</p>
+        <ol class="sub" type="a">
+          <li>∠<var>K</var> ≅ <span class="blank"></span></li>
+          <li><span class="seg"><var>LJ</var></span> ≅ <span class="blank"></span></li>
+          <li>Δ<var>LKJ</var> ≅ Δ<span class="blank"></span></li>
+          <li><span class="blank"></span> ≅ <span class="seg"><var>QR</var></span></li>
+        </ol>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <p>J ↔ P, K ↔ Q, L ↔ R</p>
+        <ul>
+          <li>a. ∠<var>Q</var></li>
+          <li>b. <span class="seg">RP</span></li>
+          <li>c. Δ<var>RQP</var></li>
+          <li>d. <span class="seg">KL</span></li>
+        </ul>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="14">
+      <div class="q-head"><div class="num">14</div><div class="prompt">
+        <p>Δ<var>ABC</var> ≅ Δ<var>DEF</var>. <var>AB</var> = 3<var>x</var> + 4, <var>DE</var> = 5<var>x</var> − 10, <var>BC</var> = <var>x</var> + <var>y</var>, <var>m</var>∠<var>C</var> = (4<var>y</var> + 6)°, and <var>m</var>∠<var>F</var> = 70°. Find <var>x</var>, <var>y</var>, and <var>EF</var>.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">AB = DE:  3x + 4 = 5x − 10  →  x = 7
+∠C ≅ ∠F:  4y + 6 = 70  →  y = 16
+EF = BC = x + y = 7 + 16 = 23</div>
+        <p class="final">x = 7, y = 16, EF = 23</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="15">
+      <div class="q-head"><div class="num">15</div><div class="prompt">
+        <p>Δ<var>GHI</var> ≅ Δ<var>MNO</var>. <var>GH</var> = <var>x</var>² − 3<var>x</var>, <var>MN</var> = 2<var>x</var> + 14, and <var>GI</var> = 5<var>x</var> + 6. Solve for <var>x</var>, then find <var>GH</var>. Check every answer.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">x² − 3x = 2x + 14
+x² − 5x − 14 = 0
+(x − 7)(x + 2) = 0
+x = 7  or  x = −2</div>
+        <p><var>x</var> = −2 gives <var>GH</var> = 10, but <var>GI</var> = 5(−2) + 6 = −4. A side can't be negative, so throw it out.</p>
+        <p class="final">x = 7 · GH = 28</p>
+      </div></details>
+    </article>
+  </section>
+
+  <!-- PART E -->
+  <section class="part">
+    <h2><span class="tag">Part E</span> Congruence shortcuts</h2>
+    <p class="dir">Use only what's marked, plus shared sides, vertical angles, and alternate interior angles. If it doesn't work, write CBD and leave the statement blank.</p>
+
+    <article class="q" data-q="16">
+      <div class="q-head"><div class="num">16</div><div class="prompt">
+        <p>Complete each congruence statement and give the reason: SSS, SAS, ASA, AAS, HL, or CBD.</p>
+      </div></div>
+      <div class="figs">
+        <div class="card"><span class="lab">a.</span><div class="fig" data-fig="e1"></div><span class="line">Δ<var>ABD</var> ≅ Δ<span class="blank"></span> by <span class="blank"></span></span></div>
+        <div class="card"><span class="lab">b.</span><div class="fig" data-fig="e2"></div><span class="line">Δ<var>ABC</var> ≅ Δ<span class="blank"></span> by <span class="blank"></span></span></div>
+        <div class="card"><span class="lab">c.</span><div class="fig" data-fig="e3"></div><span class="line">Δ<var>JKL</var> ≅ Δ<span class="blank"></span> by <span class="blank"></span></span></div>
+        <div class="card"><span class="lab">d.</span><div class="fig" data-fig="e4"></div><span class="line">Δ<var>QRS</var> ≅ Δ<span class="blank"></span> by <span class="blank"></span></span></div>
+        <div class="card"><span class="lab">e.</span><div class="fig" data-fig="e5"></div><span class="line">Δ<var>FGH</var> ≅ Δ<span class="blank"></span> by <span class="blank"></span></span></div>
+        <div class="card"><span class="lab">f.</span><div class="fig" data-fig="e6"></div><span class="line">Δ<var>WXZ</var> ≅ Δ<span class="blank"></span> by <span class="blank"></span></span></div>
+        <div class="card"><span class="lab">g.</span><div class="fig" data-fig="e7"></div><span class="line">Δ<var>KLM</var> ≅ Δ<span class="blank"></span> by <span class="blank"></span></span></div>
+        <div class="card"><span class="lab">h.</span><div class="fig" data-fig="e8"></div><span class="line">Δ<var>ABD</var> ≅ Δ<span class="blank"></span> by <span class="blank"></span></span></div>
+      </div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <ul>
+          <li>a. Δ<var>CBD</var>, <strong>SSS</strong>. Two marked pairs plus the shared side <span class="seg">BD</span>.</li>
+          <li>b. Δ<var>EDC</var>, <strong>SAS</strong>. The vertical angles at <var>C</var> sit between the marked sides.</li>
+          <li>c. Δ<var>MNP</var>, <strong>AAS</strong>. <span class="seg">KL</span> is not between ∠<var>J</var> and ∠<var>K</var>.</li>
+          <li>d. Δ<var>TUV</var>, <strong>HL</strong>. Hypotenuses and one pair of legs, right angles at <var>R</var> and <var>U</var>.</li>
+          <li>e. <strong>CBD</strong>. The vertical angle at <var>H</var> is not between the marked sides, so it's SSA.</li>
+          <li>f. Δ<var>YZX</var>, <strong>SAS</strong>. Parallel sides give alternate interior angles ∠<var>WXZ</var> ≅ ∠<var>YZX</var>, and <span class="seg">XZ</span> is shared.</li>
+          <li>g. <strong>CBD</strong>. AAA only proves the shapes match, not the size.</li>
+          <li>h. Δ<var>ACD</var>, <strong>ASA</strong>. ∠<var>BAD</var> ≅ ∠<var>CAD</var>, shared side <span class="seg">AD</span>, and right angles ∠<var>ADB</var> ≅ ∠<var>ADC</var>.</li>
+        </ul>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="17">
+      <div class="q-head"><div class="num">17</div><div class="prompt">
+        <p>What one additional piece of information do you need to prove Δ<var>GHJ</var> ≅ Δ<var>MNP</var> by each shortcut?</p>
+        <div class="fig" data-fig="q17"></div>
+        <ol class="sub" type="a"><li>SAS</li><li>ASA</li><li>AAS</li></ol>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <p>Marked so far: ∠<var>H</var> ≅ ∠<var>N</var> and <span class="seg">HJ</span> ≅ <span class="seg">NP</span>.</p>
+        <ul>
+          <li>a. SAS: <span class="seg">GH</span> ≅ <span class="seg">MN</span> (the other side of ∠<var>H</var>)</li>
+          <li>b. ASA: ∠<var>J</var> ≅ ∠<var>P</var> (the angle at the other end of <span class="seg">HJ</span>)</li>
+          <li>c. AAS: ∠<var>G</var> ≅ ∠<var>M</var> (the angle not touching <span class="seg">HJ</span>)</li>
+        </ul>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="18">
+      <div class="q-head"><div class="num">18</div><div class="prompt">
+        <p>For what values of <var>a</var> and <var>b</var> are the triangles congruent by HL? The labeled legs correspond.</p>
+        <div class="fig" data-fig="q18"></div>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">Hypotenuses:  3a + 1 = 2a + 6  →  a = 5
+Legs:  2b − a = b + 3  →  2b − 5 = b + 3  →  b = 8
+Check: hypotenuse = 16, leg = 11 (leg is shorter ✓)</div>
+        <p class="final">a = 5, b = 8</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="19">
+      <div class="q-head"><div class="num">19</div><div class="prompt">
+        <p>In the figure, <span class="seg"><var>AD</var></span> and <span class="seg"><var>CB</var></span> cross at <var>E</var>, and ∠<var>EAC</var> ≅ ∠<var>ECA</var>.</p>
+        <div class="fig" data-fig="q19"></div>
+        <ol class="sub" type="a">
+          <li>Why is <span class="seg"><var>AE</var></span> ≅ <span class="seg"><var>CE</var></span>?</li>
+          <li>What additional statement do you need to prove Δ<var>ABE</var> ≅ Δ<var>CDE</var> by SAS?</li>
+          <li>What additional statement do you need to prove Δ<var>ABE</var> ≅ Δ<var>CDE</var> by AAS?</li>
+          <li>Suppose Δ<var>ABE</var> ≅ Δ<var>CDE</var>. Explain why Δ<var>ABC</var> ≅ Δ<var>CDA</var>, and name the shortcut.</li>
+        </ol>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <ul>
+          <li>a. Δ<var>AEC</var> has two congruent angles, so the sides opposite them are congruent (converse of the base angles theorem). Δ<var>AEC</var> is isosceles.</li>
+          <li>b. <span class="seg">BE</span> ≅ <span class="seg">DE</span>. Then <span class="seg">AE</span> ≅ <span class="seg">CE</span>, vertical angles ∠<var>AEB</var> ≅ ∠<var>CED</var>, and <span class="seg">BE</span> ≅ <span class="seg">DE</span> give SAS.</li>
+          <li>c. ∠<var>B</var> ≅ ∠<var>D</var> (∠<var>ABE</var> ≅ ∠<var>CDE</var>). With the vertical angles and <span class="seg">AE</span> ≅ <span class="seg">CE</span> that's AAS.</li>
+          <li>d. By CPCTC, <span class="seg">AB</span> ≅ <span class="seg">CD</span> and ∠<var>BAE</var> ≅ ∠<var>DCE</var>. Add the given ∠<var>EAC</var> ≅ ∠<var>ECA</var> to get ∠<var>BAC</var> ≅ ∠<var>DCA</var> (angle addition). <span class="seg">AC</span> is shared. So Δ<var>ABC</var> ≅ Δ<var>CDA</var> by <strong>SAS</strong>.</li>
+        </ul>
+      </div></details>
+    </article>
+  </section>
+
+  <!-- PART F -->
+  <section class="part">
+    <h2><span class="tag">Part F</span> Applications</h2>
+    <p class="dir">Explain in words as well as numbers.</p>
+
+    <article class="q" data-q="20">
+      <div class="q-head"><div class="num">20</div><div class="prompt">
+        <p><strong>Error analysis.</strong> In Δ<var>XYZ</var>, <span class="seg"><var>XY</var></span> ≅ <span class="seg"><var>XZ</var></span> and <var>m</var>∠<var>X</var> = 40°. A student wrote:</p>
+        <p style="font-family: var(--f-hand); font-size: 22px; line-height: 1.3; margin-left: 12px;">"Base angles are congruent, so m∠Y = m∠X = 40°.<br>m∠Z = 180 − 40 − 40 = 100°."</p>
+        <p>Describe the error and find the correct <var>m</var>∠<var>Y</var> and <var>m</var>∠<var>Z</var>.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <p>The base angles are the ones <em>opposite</em> the congruent sides. ∠<var>Z</var> is opposite <span class="seg">XY</span> and ∠<var>Y</var> is opposite <span class="seg">XZ</span>, so ∠<var>Y</var> ≅ ∠<var>Z</var>. ∠<var>X</var> is the vertex angle and doesn't match either one.</p>
+        <div class="work">m∠Y = m∠Z = (180 − 40) ÷ 2 = 70°</div>
+        <p class="final">m∠Y = m∠Z = 70°</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="21">
+      <div class="q-head"><div class="num">21</div><div class="prompt">
+        <p>A drone flies the path <var>A</var> → <var>B</var> → <var>D</var> → <var>C</var> at a constant 4 meters per second. In the figure, Δ<var>ABD</var> ≅ Δ<var>CDB</var>. How long does the trip take? Round to the nearest tenth of a second.</p>
+        <div class="fig" data-fig="q21"></div>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">BD (Pythagorean theorem) = √(24² + 7²) = √(576 + 49) = √625 = 25 m
+DC ≅ BA by CPCTC, so DC = 24 m
+Total distance = 24 + 25 + 24 = 73 m
+d = r · t  →  73 = 4t  →  t = 18.25</div>
+        <p class="final">≈ 18.3 seconds</p>
+      </div></details>
+    </article>
+  </section>
+
+  <!-- CHALLENGE -->
+  <section class="part challenge">
+    <h2><span class="tag">Challenge</span> Harder problems</h2>
+    <p class="dir">These take several steps and combine ideas. Some answers from factoring don't work. Check them.</p>
+
+    <article class="q" data-q="C1">
+      <div class="q-head"><div class="num">C1</div><div class="prompt">
+        <p>Solve for <var>x</var> and <var>y</var>. Then give all three angle measures and classify the triangle. <em>Hint: you'll need a system of equations.</em></p>
+        <div class="fig" data-fig="c1"></div>
+        <p class="nts">Figure not drawn to scale.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">Base angles ≅:   x + 2y + 20 = 4x + 10  →  2y = 3x − 10
+Angle sum:   3y + (x + 2y + 20) + (4x + 10) = 180
+             5x + 5y + 30 = 180  →  x + y = 30  →  y = 30 − x
+Substitute:  2(30 − x) = 3x − 10
+             60 − 2x = 3x − 10
+             70 = 5x  →  x = 14,  y = 16</div>
+        <p>Angles: 3(16) = 48°, 14 + 32 + 20 = 66°, 4(14) + 10 = 66°.</p>
+        <p class="final">x = 14, y = 16 · 48°, 66°, 66° · acute isosceles</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="C2">
+      <div class="q-head"><div class="num">C2</div><div class="prompt">
+        <p>Δ<var>ABC</var> has vertices <var>A</var>(−4, 1), <var>B</var>(−1, 5), <var>C</var>(−1, 1). Δ<var>DEF</var> has vertices <var>D</var>(2, −1), <var>E</var>(2, −4), <var>F</var>(6, −4).</p>
+        <ol class="sub" type="a">
+          <li>Prove the triangles are congruent. Write a congruence statement with the vertices in the correct order, and name the shortcut.</li>
+          <li>Find <var>m</var>∠<var>A</var> + <var>m</var>∠<var>F</var> without a protractor. Explain.</li>
+          <li>Classify Δ<var>DEF</var> and find its area.</li>
+        </ol>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">AB = √(3² + 4²) = 5     BC = √(0² + 4²) = 4     AC = √(3² + 0²) = 3
+DE = √(0² + 3²) = 3     EF = √(4² + 0²) = 4     DF = √(4² + 3²) = 5</div>
+        <p>a. Match by length: <var>A</var> is between the 5 and 3 sides, so <var>A</var> ↔ <var>D</var>. <var>B</var> is between 5 and 4, so <var>B</var> ↔ <var>F</var>. <var>C</var> ↔ <var>E</var>. <strong>Δ<var>ABC</var> ≅ Δ<var>DFE</var> by SSS.</strong> (Writing Δ<var>DEF</var> in that order would be wrong.)</p>
+        <p>b. ∠<var>F</var> ≅ ∠<var>B</var> by CPCTC. ∠<var>C</var> is a right angle (horizontal side meets vertical side), so ∠<var>A</var> + ∠<var>B</var> = 90°. So <var>m</var>∠<var>A</var> + <var>m</var>∠<var>F</var> = <strong>90°</strong>.</p>
+        <p>c. Right angle at <var>E</var>, three different sides: <strong>right scalene</strong>. Area = ½ · 3 · 4 = <strong>6 units²</strong>.</p>
+      </div></details>
+    </article>
+
+    <article class="q" data-q="C3">
+      <div class="q-head"><div class="num">C3</div><div class="prompt">
+        <p>Δ<var>ACB</var> ≅ Δ<var>DCE</var>, where <var>A</var>, <var>C</var>, <var>D</var> are on one line and <var>B</var>, <var>C</var>, <var>E</var> are on one line. Find <var>x</var> and <var>y</var>, then find <var>m</var>∠<var>B</var> and classify Δ<var>DCE</var>.</p>
+        <div class="fig" data-fig="c3"></div>
+        <p class="nts">Figure not drawn to scale.</p>
+      </div></div>
+      <details class="ans"><summary>Show answer</summary><div class="key">
+        <div class="work">Vertical angles:  x² − 4x = 3x + 8  →  x² − 7x − 8 = 0  →  (x − 8)(x + 1) = 0  →  x = 8 or −1
+CPCTC ∠A ≅ ∠D:   y² + 2y = 10y − 12 →  y² − 8y + 12 = 0  →  (y − 2)(y − 6) = 0  →  y = 2 or 6
+
+Every root gives a positive angle, so use the triangle sum in ΔDCE:
+(3x + 8) + (10y − 12) + (15y + 10) = 180
+  x = 8,  y = 6:   32 + 48 + 100 = 180  ✓
+  x = 8,  y = 2:   32 +  8 +  40 =  80  ✗
+  x = −1, y = 6:    5 + 48 + 100 = 153  ✗
+  x = −1, y = 2:    5 +  8 +  40 =  53  ✗</div>
+        <p>So <var>x</var> = 8 and <var>y</var> = 6. <var>m</var>∠<var>E</var> = 15(6) + 10 = 100°, and ∠<var>B</var> ≅ ∠<var>E</var> by CPCTC.</p>
+        <p class="final">x = 8, y = 6 · m∠B = 100° · obtuse scalene</p>
+      </div></details>
+    </article>
+  </section>
+
+  <footer>
+    <p>Before the test: practice naming triangles in the right order, look for shared sides and vertical angles, and always plug factored answers back in to check for negative sides or angles.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  const U = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy); return [dx / l, dy / l]; };
+  const f = n => +n.toFixed(2);
+  const line = (a, b, c = 'ln') => `<line class="${c}" x1="${f(a[0])}" y1="${f(a[1])}" x2="${f(b[0])}" y2="${f(b[1])}"/>`;
+  const poly = (...p) => `<polygon class="ln" points="${p.map(q => f(q[0]) + ',' + f(q[1])).join(' ')}"/>`;
+  function tick(a, b, n = 1) {
+    const [ux, uy] = U(a, b), nx = -uy, ny = ux, mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2; let s = '';
+    for (let i = 0; i < n; i++) { const o = (i - (n - 1) / 2) * 5, cx = mx + ux * o, cy = my + uy * o; s += line([cx - nx * 6, cy - ny * 6], [cx + nx * 6, cy + ny * 6], 'mk'); }
+    return s;
+  }
+  function arc(v, a, b, n = 1, r = 18) {
+    const t1 = Math.atan2(a[1] - v[1], a[0] - v[0]), t2 = Math.atan2(b[1] - v[1], b[0] - v[0]);
+    let d = t2 - t1; while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+    const sw = d > 0 ? 1 : 0; let s = '';
+    for (let i = 0; i < n; i++) { const R = r + i * 4; s += `<path class="mk" d="M${f(v[0] + R * Math.cos(t1))} ${f(v[1] + R * Math.sin(t1))} A${R} ${R} 0 0 ${sw} ${f(v[0] + R * Math.cos(t2))} ${f(v[1] + R * Math.sin(t2))}"/>`; }
+    return s;
+  }
+  function box(v, a, b, s = 11) {
+    const [ax, ay] = U(v, a), [bx, by] = U(v, b);
+    return `<path class="mk" d="M${f(v[0] + ax * s)} ${f(v[1] + ay * s)} L${f(v[0] + ax * s + bx * s)} ${f(v[1] + ay * s + by * s)} L${f(v[0] + bx * s)} ${f(v[1] + by * s)}"/>`;
+  }
+  function par(a, b) {
+    const [ux, uy] = U(a, b), nx = -uy, ny = ux, cx = (a[0] + b[0]) / 2 + ux * 4, cy = (a[1] + b[1]) / 2 + uy * 4;
+    return `<path class="mk" d="M${f(cx - ux * 7 + nx * 5)} ${f(cy - uy * 7 + ny * 5)} L${f(cx)} ${f(cy)} L${f(cx - ux * 7 - nx * 5)} ${f(cy - uy * 7 - ny * 5)}"/>`;
+  }
+  const t = (x, y, s, c = 'vx', anc = 'middle') => `<text class="${c}" x="${x}" y="${y}" text-anchor="${anc}">${s}</text>`;
+  const svg = (w, h, body, label) => `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}">${body}</svg>`;
+
+  const figs = {
+    q11() {
+      const J = [160, 24], K = [40, 170], L = [280, 170];
+      return svg(320, 196, poly(J, K, L) + tick(J, K) + tick(J, L) +
+        t(160, 16, 'J') + t(30, 186, 'K') + t(290, 186, 'L') +
+        t(62, 162, '(x² − 20)°', 'ex', 'start') + t(258, 162, '(8x)°', 'ex', 'end'),
+        'Isosceles triangle JKL with JK and JL marked congruent; angle K is x squared minus 20 degrees, angle L is 8x degrees');
+    },
+    q12() {
+      const A = [20, 170], D = [110, 170], E = [230, 170], C = [320, 170], B = [170, 66];
+      return svg(340, 200, line(A, C) + line(A, B) + line(B, C) + line(B, D) + line(B, E) +
+        tick(A, B) + tick(C, B) + tick(D, B, 2) + tick(B, E, 2) + tick(D, E, 2) +
+        t(14, 190, 'A') + t(110, 190, 'D') + t(230, 190, 'E') + t(326, 190, 'C') + t(170, 56, 'B') +
+        t(42, 162, '(3x + 4)°', 'ex', 'start') + t(298, 162, '(5x − 18)°', 'ex', 'end'),
+        'Isosceles triangle ABC with equilateral triangle DBE inside; angle A is 3x plus 4, angle C is 5x minus 18');
+    },
+    e1() {
+      const A = [30, 78], B = [120, 22], C = [210, 78], D = [120, 140];
+      return svg(240, 160, poly(A, B, C, D) + line(B, D) + tick(A, B) + tick(C, B) + tick(A, D, 2) + tick(C, D, 2) +
+        t(18, 83, 'A') + t(120, 14, 'B') + t(223, 83, 'C') + t(120, 156, 'D'), 'Kite ABCD with diagonal BD');
+    },
+    e2() {
+      const A = [30, 25], B = [30, 135], C = [130, 80], D = [230, 25], E = [230, 135];
+      return svg(260, 160, line(A, E) + line(B, D) + line(A, B) + line(D, E) +
+        tick(A, C) + tick(C, E) + tick(B, C, 2) + tick(C, D, 2) +
+        t(20, 22, 'A') + t(20, 146, 'B') + t(130, 68, 'C') + t(242, 22, 'D') + t(242, 146, 'E'), 'Bowtie: segments AE and BD cross at C');
+    },
+    e3() {
+      const J = [15, 130], K = [55, 28], L = [120, 130], M = [255, 130], N = [215, 28], P = [150, 130];
+      return svg(270, 150, poly(J, K, L) + poly(M, N, P) +
+        arc(J, K, L, 1, 20) + arc(M, N, P, 1, 20) + arc(K, J, L, 2, 16) + arc(N, M, P, 2, 16) + tick(K, L) + tick(N, P) +
+        t(8, 146, 'J') + t(55, 20, 'K') + t(124, 146, 'L') + t(262, 146, 'M') + t(215, 20, 'N') + t(146, 146, 'P'),
+        'Triangles JKL and MNP with two angle pairs and one side pair marked');
+    },
+    e4() {
+      const Q = [20, 22], R = [20, 128], S = [110, 128], T = [240, 128], Uu = [240, 22], V = [150, 22];
+      return svg(260, 150, poly(Q, R, S) + poly(T, Uu, V) + box(R, Q, S) + box(Uu, T, V) +
+        tick(Q, S, 2) + tick(T, V, 2) + tick(R, S) + tick(Uu, V) +
+        t(12, 20, 'Q') + t(12, 144, 'R') + t(116, 144, 'S') + t(250, 144, 'T') + t(250, 20, 'U') + t(142, 20, 'V'),
+        'Right triangles QRS and TUV');
+    },
+    e5() {
+      const F = [30, 25], G = [30, 135], H = [130, 80], I = [230, 25], J = [230, 135];
+      return svg(260, 160, line(F, J) + line(G, I) + line(F, G) + line(I, J) +
+        tick(F, G) + tick(I, J) + tick(G, H, 2) + tick(H, I, 2) +
+        t(20, 22, 'F') + t(20, 146, 'G') + t(130, 68, 'H') + t(242, 22, 'I') + t(242, 146, 'J'), 'Bowtie: segments FJ and GI cross at H');
+    },
+    e6() {
+      const W = [65, 25], X = [230, 25], Y = [190, 130], Z = [25, 130];
+      return svg(260, 150, poly(W, X, Y, Z) + line(X, Z) + par(W, X) + par(Z, Y) + tick(W, X) + tick(Z, Y) +
+        t(60, 17, 'W') + t(240, 22, 'X') + t(196, 146, 'Y') + t(16, 146, 'Z'),
+        'Parallelogram-style quadrilateral WXYZ with diagonal XZ; WX parallel to ZY');
+    },
+    e7() {
+      const K = [15, 128], L = [52, 50], M = [110, 128], N = [135, 128], P = [183, 26], Q = [258, 128];
+      return svg(275, 148, poly(K, L, M) + poly(N, P, Q) +
+        arc(K, L, M, 1, 16) + arc(N, P, Q, 1, 16) + arc(L, K, M, 2, 13) + arc(P, N, Q, 2, 13) + arc(M, K, L, 3, 12) + arc(Q, N, P, 3, 12) +
+        t(8, 144, 'K') + t(52, 42, 'L') + t(114, 144, 'M') + t(131, 144, 'N') + t(183, 18, 'P') + t(264, 144, 'Q'),
+        'Triangles KLM and NPQ of different sizes with all three angle pairs marked');
+    },
+    e8() {
+      const A = [120, 18], B = [25, 132], D = [120, 132], C = [215, 132];
+      return svg(240, 152, poly(A, B, C) + line(A, D) + arc(A, B, D, 1, 26) + arc(A, D, C, 1, 30) + box(D, A, B) + box(D, A, C) +
+        t(120, 12, 'A') + t(16, 146, 'B') + t(120, 148, 'D') + t(224, 146, 'C'),
+        'Triangle ABC split by segment AD; angles BAD and CAD marked congruent; right angles at D');
+    },
+    q17() {
+      const G = [15, 125], H = [62, 25], J = [125, 125], M = [165, 125], N = [212, 25], P = [275, 125];
+      return svg(290, 145, poly(G, H, J) + poly(M, N, P) + arc(H, G, J, 1, 18) + arc(N, M, P, 1, 18) + tick(H, J) + tick(N, P) +
+        t(8, 141, 'G') + t(62, 17, 'H') + t(130, 141, 'J') + t(160, 141, 'M') + t(212, 17, 'N') + t(281, 141, 'P'),
+        'Triangles GHJ and MNP with angle H congruent to angle N and side HJ congruent to NP');
+    },
+    q18() {
+      const A1 = [25, 20], B1 = [25, 128], C1 = [130, 128], A2 = [315, 20], B2 = [315, 128], C2 = [210, 128];
+      return svg(340, 152, poly(A1, B1, C1) + poly(A2, B2, C2) + box(B1, A1, C1) + box(B2, A2, C2) +
+        t(88, 66, '3a + 1', 'ex', 'start') + t(78, 146, '2b − a', 'ex') +
+        t(252, 66, '2a + 6', 'ex', 'end') + t(262, 146, 'b + 3', 'ex'),
+        'Two right triangles: hypotenuses 3a plus 1 and 2a plus 6; bottom legs 2b minus a and b plus 3');
+    },
+    q19() {
+      const A = [30, 150], B = [30, 30], C = [250, 150], D = [250, 30], E = [140, 90];
+      return svg(280, 172, line(A, B) + line(C, D) + line(A, C) + line(A, D) + line(C, B) +
+        arc(A, C, E, 1, 24) + arc(C, A, E, 1, 24) +
+        t(20, 162, 'A') + t(20, 28, 'B') + t(260, 162, 'C') + t(260, 28, 'D') + t(140, 76, 'E'),
+        'Overlapping triangles: AD and CB cross at E; angles EAC and ECA marked congruent');
+    },
+    q21() {
+      const A = [30, 120], B = [270, 120], C = [270, 50], D = [30, 50];
+      return svg(300, 150, poly(A, B, C, D) + line(B, D) + box(A, B, D) + box(C, B, D) +
+        t(20, 136, 'A') + t(280, 136, 'B') + t(280, 46, 'C') + t(20, 46, 'D') +
+        t(150, 140, '24 m', 'ex') + t(24, 90, '7 m', 'ex', 'end'),
+        'Rectangle-shaped figure ABCD with diagonal BD; AB is 24 meters and AD is 7 meters');
+    },
+    c1() {
+      const V = [160, 30], L = [20, 172], R = [300, 172];
+      return svg(320, 196, poly(V, L, R) + tick(V, L) + tick(V, R) +
+        t(160, 62, '(3y)°', 'ex') + t(40, 164, '(x + 2y + 20)°', 'ex', 'start') + t(280, 164, '(4x + 10)°', 'ex', 'end'),
+        'Isosceles triangle with congruent legs marked; vertex angle 3y, base angles x plus 2y plus 20 and 4x plus 10');
+    },
+    c3() {
+      const A = [30, 20], B = [30, 200], C = [180, 110], D = [330, 200], E = [330, 20];
+      return svg(360, 222, line(A, D) + line(B, E) + line(A, B) + line(D, E) +
+        t(20, 18, 'A') + t(20, 214, 'B') + t(180, 94, 'C') + t(342, 214, 'D') + t(342, 18, 'E') +
+        t(164, 115, '(x² − 4x)°', 'ex', 'end') + t(196, 115, '(3x + 8)°', 'ex', 'start') +
+        t(36, 86, '(y² + 2y)°', 'ex', 'start') + t(324, 172, '(10y − 12)°', 'ex', 'end') + t(324, 88, '(15y + 10)°', 'ex', 'end'),
+        'Bowtie of triangles ACB and DCE meeting at C with angle expressions');
+    }
+  };
+  document.querySelectorAll('[data-fig]').forEach(el => { const fn = figs[el.dataset.fig]; if (fn) el.innerHTML = fn(); });
+
+  document.documentElement.classList.add('js');
+
+  const N = (label, ans, o = {}) => ({ k: 'num', label, ans: [].concat(ans), ...o });
+  const S = (label, options, ans) => ({ k: 'sel', label, options, ans });
+  const T = (label, ans, show) => ({ k: 'txt', label, ans: [].concat(ans), show });
+  const W = label => ({ k: 'free', label });
+  const ANG = ['acute', 'right', 'obtuse', 'equiangular'];
+  const SIDES = ['scalene', 'isosceles', 'equilateral'];
+  const SC = ['SSS', 'SAS', 'ASA', 'AAS', 'HL', 'CBD'];
+  const SC5 = SC.slice(0, 5);
+  const ST17 = ['GH ≅ MN', 'GJ ≅ MP', '∠G ≅ ∠M', '∠J ≅ ∠P'];
+  const ST19 = ['AB ≅ CD', 'BE ≅ DE', '∠B ≅ ∠D', 'AC ≅ AC'];
+  const R19 = ['Vertical angles are congruent', 'Converse of the base angles theorem', 'CPCTC', 'Reflexive property (shared side)'];
+
+  const SPEC = {
+    1: { mc: 'C' }, 2: { mc: 'C' }, 3: { mc: 'B' }, 4: { mc: 'B' }, 5: { mc: 'C' },
+    6: [N('AB =', 5), N('BC =', 5), N('AC =', Math.sqrt(50), { show: '5√2 (√50)' }), S('By sides', SIDES, 'isosceles'), S('By angles', ANG, 'right')],
+    7: [N('m∠A =', 30), N('m∠B =', 72), N('m∠C =', 78), S('By angles', ANG, 'acute'), S('By sides', SIDES, 'scalene')],
+    8: [N('Smaller acute angle', 36), N('Larger acute angle', 54)],
+    9: [N('x =', 7), N('Perimeter', 71)],
+    10: [N('x =', 4), N('y =', 5), N('z =', 14)],
+    11: [N('x =', 10), N('m∠J =', 20), S('By angles', ANG, 'acute'), S('By sides', SIDES, 'isosceles')],
+    12: [N('x =', 11), N('m∠A =', 37), N('m∠ADB =', 120), N('m∠ABD =', 23), N('m∠ABC =', 106)],
+    13: [T('a.  ∠K ≅ ∠', 'q', '∠Q'), T('b.  LJ ≅', ['rp', 'pr'], 'RP'), T('c.  ΔLKJ ≅ Δ', 'rqp', 'ΔRQP'), T('d.  ? ≅ QR', ['kl', 'lk'], 'KL')],
+    14: [N('x =', 7), N('y =', 16), N('EF =', 23)],
+    15: [N('x =', 7), N('GH =', 28)],
+    16: { cards: [['cbd', 'SSS'], ['edc', 'SAS'], ['mnp', 'AAS'], ['tuv', 'HL'], ['', 'CBD'], ['yzx', 'SAS'], ['', 'CBD'], ['acd', 'ASA']] },
+    17: [S('a. SAS needs', ST17, 'GH ≅ MN'), S('b. ASA needs', ST17, '∠J ≅ ∠P'), S('c. AAS needs', ST17, '∠G ≅ ∠M')],
+    18: [N('a =', 5), N('b =', 8)],
+    19: [S('a. Reason', R19, R19[1]), S('b. SAS needs', ST19, 'BE ≅ DE'), S('c. AAS needs', ST19, '∠B ≅ ∠D'), W('d. Explain why ΔABC ≅ ΔCDA'), S('d. Shortcut', SC5, 'SAS')],
+    20: [W('What did the student do wrong?'), N('m∠Y =', 70), N('m∠Z =', 70)],
+    21: [N('BD (meters)', 25), N('Total distance (meters)', 73), N('Time (seconds, nearest tenth)', [18.3, 18.25], { show: '18.3' })],
+    C1: [N('x =', 14), N('y =', 16), N('Vertex angle', 48), N('Each base angle', 66), S('By angles', ANG, 'acute'), S('By sides', SIDES, 'isosceles')],
+    C2: [T('a.  ΔABC ≅ Δ', 'dfe', 'ΔDFE'), S('a. Shortcut', SC5, 'SSS'), N('b.  m∠A + m∠F =', 90), S('c. ΔDEF by angles', ANG, 'right'), S('c. ΔDEF by sides', SIDES, 'scalene'), N('c. Area of ΔDEF', 6)],
+    C3: [N('x =', 8), N('y =', 6), N('m∠B =', 100), S('ΔDCE by angles', ANG, 'obtuse'), S('ΔDCE by sides', SIDES, 'scalene')]
+  };
+
+  function parseNum(raw) {
+    let s = String(raw).toLowerCase().replace(/\s+/g, '').replace(/,/g, '').replace(/^[≈~]/, '');
+    s = s.replace(/^[a-z∠]+=/, '');
+    s = s.replace(/sqrt\(?([\d.]+)\)?/g, '√$1').replace(/root/g, '√');
+    s = s.replace(/[°a-z²³^]+$/g, '').replace(/°/g, '');
+    let m = s.match(/^(-?[\d.]*)√\(?([\d.]+)\)?$/);
+    if (m) { const c = m[1] === '' ? 1 : m[1] === '-' ? -1 : +m[1]; return c * Math.sqrt(+m[2]); }
+    m = s.match(/^(-?[\d.]+)\/([\d.]+)$/);
+    if (m) return +m[1] / +m[2];
+    return /^-?(\d+\.?\d*|\.\d+)$/.test(s) ? +s : NaN;
+  }
+  const norm = s => String(s).toLowerCase().replace(/m∠/g, '').replace(/triangle|angle|segment/g, '').replace(/[^a-z]/g, '');
+  function isRight(d, v) {
+    if (d.k === 'num') { const x = parseNum(v); return !isNaN(x) && d.ans.some(a => Math.abs(x - a) < 0.011); }
+    if (d.k === 'txt') return d.ans.includes(norm(v));
+    return v === d.ans;
+  }
+  const showAns = d => d.show || (d.k === 'num' ? String(d.ans[0]) : d.k === 'txt' ? (d.ans[0] ? d.ans[0].toUpperCase() : 'leave it blank') : d.ans);
+
+  let uid = 0;
+  function makeField(d) {
+    const id = 'f' + (++uid);
+    const wrap = document.createElement('div'); wrap.className = 'fld' + (d.k === 'free' ? ' wide' : '');
+    const lab = document.createElement('label'); lab.htmlFor = id; lab.textContent = d.label;
+    const span = document.createElement('span'); span.append(lab);
+    let ctrl;
+    if (d.k === 'sel') {
+      ctrl = document.createElement('select');
+      ctrl.append(new Option('Choose…', ''));
+      d.options.forEach(o => ctrl.append(new Option(o, o)));
+    } else if (d.k === 'free') {
+      ctrl = document.createElement('textarea'); ctrl.placeholder = 'Type your explanation';
+    } else {
+      ctrl = document.createElement('input'); ctrl.type = 'text'; ctrl.autocomplete = 'off'; ctrl.spellcheck = false;
+      if (d.k === 'num') ctrl.placeholder = 'number';
+    }
+    ctrl.id = id;
+    wrap.append(span, ctrl);
+    return { def: d, wrap, inputs: [ctrl], get: () => ctrl.value, set: v => { ctrl.value = v; } };
+  }
+
+  const Q = {};
+  const STORE = 't4-interactive-v1';
+  let state = {};
+  try { state = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { state = {}; }
+  const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} };
+
+  // Answer key for the printed copy, collected before the page rewires anything.
+  const pk = document.createElement('section');
+  pk.id = 'printKey'; pk.className = 'part print-only';
+  pk.innerHTML = '<h2><span class="tag">Key</span> Answer key</h2>';
+
+  document.querySelectorAll('article.q').forEach(art => {
+    const id = art.dataset.q, def = SPEC[id];
+    const det = art.querySelector('details.ans');
+    if (!def || !det) return;
+    const key = det.querySelector('.key');
+    const row = document.createElement('div'); row.className = 'pk';
+    row.innerHTML = `<div class="num">${id}</div>`; row.append(key.cloneNode(true)); pk.append(row);
+
+    const reveal = document.createElement('div'); reveal.className = 'reveal'; reveal.hidden = true; reveal.append(key);
+    det.replaceWith(reveal);
+
+    const fields = [];
+    const resp = document.createElement('div'); resp.className = 'resp';
+    if (def.mc) {
+      art.dataset.mc = '1';
+      const inputs = [];
+      art.querySelectorAll('.choices > span').forEach(sp => {
+        const letter = sp.querySelector('b').textContent.trim();
+        const lab = document.createElement('label');
+        const r = document.createElement('input'); r.type = 'radio'; r.name = 'mc-' + id; r.value = letter; r.id = `mc-${id}-${letter}`;
+        lab.append(r, ...Array.from(sp.childNodes)); sp.replaceWith(lab); inputs.push(r);
+      });
+      fields.push({
+        def: { k: 'mc', ans: def.mc }, wrap: art.querySelector('.choices'), inputs,
+        get: () => { const c = inputs.find(r => r.checked); return c ? c.value : ''; },
+        set: v => inputs.forEach(r => { r.checked = r.value === v; })
+      });
+    } else if (def.cards) {
+      art.querySelectorAll('.card').forEach((card, i) => {
+        const [tri, reason] = def.cards[i];
+        const left = card.querySelector('.line var').textContent;
+        const r = document.createElement('div'); r.className = 'resp';
+        const f1 = makeField({ k: 'txt', label: `Δ${left} ≅ Δ`, ans: [tri], optional: true, show: tri ? 'Δ' + tri.toUpperCase() : 'leave it blank' });
+        const f2 = makeField(S('Reason', SC, reason));
+        r.append(f1.wrap, f2.wrap); card.append(r); fields.push(f1, f2);
+      });
+    } else {
+      def.forEach(d => { const f = makeField(d); resp.append(f.wrap); fields.push(f); });
+    }
+
+    const actions = document.createElement('div'); actions.className = 'actions';
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'check'; btn.textContent = 'Check answer';
+    const result = document.createElement('span'); result.className = 'result'; result.hidden = true;
+    const msg = document.createElement('span'); msg.className = 'msg'; msg.setAttribute('aria-live', 'polite');
+    actions.append(btn, result, msg); resp.append(actions);
+    (art.querySelector('.figs') || art.querySelector('.q-head')).after(resp);
+
+    const q = Q[id] = { art, fields, reveal, btn, result, msg, done: false, correct: false };
+    btn.addEventListener('click', () => grade(id));
+    fields.forEach(f => f.inputs.forEach(x => {
+      x.addEventListener('input', () => { msg.textContent = ''; });
+      x.addEventListener('change', () => { msg.textContent = ''; });
+      if (x.tagName === 'INPUT' && x.type === 'text') x.addEventListener('keydown', e => { if (e.key === 'Enter') grade(id); });
+    }));
+  });
+  document.getElementById('printKey')?.remove();
+  document.querySelector('.wrap').insertBefore(pk, document.querySelector('footer'));
+
+  function mark(f, ok) {
+    if (f.def.k === 'mc') {
+      f.inputs.forEach(r => {
+        const lab = r.closest('label');
+        if (r.value === f.def.ans) lab.classList.add('ok');
+        else if (r.checked) lab.classList.add('bad');
+      });
+      return;
+    }
+    f.wrap.classList.add(ok ? 'ok' : 'bad');
+    if (!ok) { const s = document.createElement('span'); s.className = 'fix'; s.textContent = 'Answer: ' + showAns(f.def); f.wrap.append(s); }
+  }
+
+  function grade(id) {
+    const q = Q[id];
+    if (q.done) return;
+    const vals = q.fields.map(f => f.get());
+    if (q.fields.some((f, i) => !f.def.optional && vals[i].trim() === '')) {
+      q.msg.textContent = q.fields.length > 1 ? 'Answer every part first.' : 'Pick an answer first.';
+      return;
+    }
+    let right = 0, total = 0;
+    q.fields.forEach((f, i) => {
+      if (f.def.k === 'free') return;
+      total++;
+      const ok = isRight(f.def, vals[i]);
+      if (ok) right++;
+      mark(f, ok);
+    });
+    q.fields.forEach(f => f.inputs.forEach(x => { x.disabled = true; }));
+    q.done = true; q.correct = right === total;
+    q.btn.hidden = true; q.msg.textContent = '';
+    q.result.hidden = false;
+    q.result.className = 'result ' + (q.correct ? 'ok' : 'bad');
+    q.result.textContent = (q.correct ? 'Correct' : `${right} of ${total} right`) +
+      (q.fields.some(f => f.def.k === 'free') ? ' · compare your explanation with the key' : '');
+    q.reveal.hidden = false;
+    state[id] = { v: vals }; save(); score();
+  }
+
+  function resetQ(q) {
+    q.fields.forEach(f => {
+      f.wrap.classList.remove('ok', 'bad');
+      f.wrap.querySelectorAll('.fix').forEach(n => n.remove());
+      f.wrap.querySelectorAll('label.ok, label.bad').forEach(n => n.classList.remove('ok', 'bad'));
+      f.inputs.forEach(x => { x.disabled = false; if (x.type === 'radio') x.checked = false; else x.value = ''; });
+    });
+    q.done = false; q.correct = false; q.btn.hidden = false; q.result.hidden = true; q.msg.textContent = ''; q.reveal.hidden = true;
+  }
+
+  const ids = Object.keys(Q);
+  document.getElementById('gotTotal').textContent = ids.length;
+  function score() {
+    document.getElementById('gotCount').textContent = ids.filter(i => Q[i].correct).length;
+    document.getElementById('doneCount').textContent = ids.filter(i => Q[i].done).length;
+  }
+
+  ids.forEach(id => {
+    const s = state[id];
+    if (!s || !Array.isArray(s.v) || s.v.length !== Q[id].fields.length) return;
+    Q[id].fields.forEach((f, i) => f.set(s.v[i]));
+    grade(id);
+  });
+  score();
+
+  const restart = document.getElementById('restart');
+  let armed = false;
+  restart.addEventListener('click', () => {
+    if (!armed) { armed = true; restart.textContent = 'Click again to erase answers'; setTimeout(() => { armed = false; restart.textContent = 'Restart test'; }, 3000); return; }
+    armed = false; restart.textContent = 'Restart test';
+    ids.forEach(id => resetQ(Q[id])); state = {}; save(); score();
+    window.scrollTo({ top: 0 });
+  });
+})();
+</script>
+
+</body></html>
