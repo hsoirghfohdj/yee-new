@@ -25,7 +25,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'New in Study: Algebra 1 Topic 4 (systems of equations and inequalities) guide, quiz and worksheet with answer key. Your classes also match their study folders more accurately.';
+const WHATSNEW = 'New in Study: Algebra 1 Topic 4 (systems of equations and inequalities) guide, quiz and worksheet with answer key. Your classes also match their study folders more accurately, and new resources show up as soon as you open Classboard.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -1081,7 +1081,8 @@ if (S.view === 'games') renderMain(true);
 }
 async function loadLib(force) {
 if (S.lib && !S.lib.study && !S.libTried) force = true;
-if (S.libLoading || (!force && Date.now() - Math.max(S.libTried, S.lib ? S.lib.at : 0) < 5 * 6e4)) return;
+// the saved list shows right away, but the first check each time Classboard opens always asks GitHub, so new uploads appear at once
+if (S.libLoading || (!force && S.libTried && Date.now() - Math.max(S.libTried, S.lib ? S.lib.at : 0) < 5 * 6e4)) return;
 S.libLoading = true; S.libError = null; S.libTried = Date.now();
 paintChrome();
 try {
