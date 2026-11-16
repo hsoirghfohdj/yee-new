@@ -25,7 +25,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Games load a lot more reliably (no more scrambled text, Flash games work again, and Try another way actually switches source), plus you can rate study resources out of 5.';
+const WHATSNEW = 'New in Study: Algebra 1 Topic 4 (systems of equations and inequalities) guide, quiz and worksheet with answer key. Your classes also match their study folders more accurately.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -1021,7 +1021,8 @@ w.key = d; d.keyOf = w; d.name = w.name + ' (answer key)'; keys.add(d);
 });
 return docs.filter(d => !keys.has(d));
 }
-const clsMatch = (cls, name) => { const n = (name || '').toLowerCase(), k = cls.toLowerCase(); return n.includes(k) || k.split(/[^a-z0-9]+/).some(w => w.length > 3 && n.includes(w)); };
+// a shared word is enough ("Biology" ~ "BIOLOGY H A_Smith_S1"), but any number in the folder name has to match too, so Algebra 1 and Algebra 2 stay apart
+const clsMatch = (cls, name) => { const n = (name || '').toLowerCase(), k = cls.toLowerCase(), nums = k.match(/\d+/g) || []; return n.includes(k) || (k.split(/[^a-z0-9]+/).some(w => w.length > 3 && n.includes(w)) && nums.every(d => new RegExp('(^|[^a-z0-9])' + d + '($|[^0-9])').test(n))); };
 const myClass = cls => S.courses.some(c => clsMatch(cls, c.name));
 // "AP HUMAN GEOGRAPHY A_Hakes_S1" -> "AP Human Geography"
 const KEEP_CAPS = /^(AP|IB|US|UK|PE|CS|ELA|ESL|STEM|JROTC|AVID|CTE|II|III|IV)$/;
