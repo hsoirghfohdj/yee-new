@@ -1,10 +1,15 @@
-Krillion (offline edition) is built from OpenKrillion:
+Krillion (one-file edition) is built from OpenKrillion:
 https://github.com/VulcanEon/openkrillion.com-service
 
-The game code, pixel art and sounds are OpenKrillion's, used under the MIT license below.
-Changes for this edition: it runs entirely in the browser (the Cloudflare server is replaced by a
-small local stand-in), the day turns over at local midnight, and it has its own question bank of
-35 categories. Not affiliated with krillion.io.
+The game code, pixel art, sounds and sample questions are OpenKrillion's, used under the MIT
+license below. Changes for this edition: it runs in the browser (the Cloudflare server is replaced
+by a small local stand-in that keeps runs in browser storage), and the website-only parts
+(analytics, feedback forms, privacy and AI-docs pages) are left out.
+
+Like openkrillion.com, the daily prompts and accepted answers are the public reference puzzle from
+krillion.io, fetched each day (through api/krillion.js on Classboard's Vercel site). That puzzle
+data is not part of this repository and is not covered by the MIT license. Not affiliated with
+krillion.io.
 
 MIT License
 
