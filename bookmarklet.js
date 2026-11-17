@@ -25,7 +25,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'New in Study: Algebra 1 Topic 4 (systems of equations and inequalities) guide, quiz and worksheet with answer key. Your classes also match their study folders more accurately, and new resources show up as soon as you open Classboard.';
+const WHATSNEW = 'New in Study: a Biology Unit 3 Human Impact practice test (multiple choice plus short answers graded on key ideas). Practice tests in Study now remember your scores and where you left off, even after you close Classboard.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -1399,9 +1399,60 @@ html = injectTop(html, base);
 return (docCache[path] = html);
 });
 }
+// Study pages can't use the browser's storage in their sandbox either, so (like games) each page gets a stand-in
+// that starts with what Classboard saved for it and sends every change back up right away. That's how practice
+// tests keep their score history and saved spot between visits (classdash_docsave:<path>).
+function docShim(saved, tok) {
+var data = saved && typeof saved === 'object' ? saved : {}, queued = false;
+var send = function () { queued = false; try { parent.postMessage({ cdDocSave: data, tok: tok }, '*'); } catch (e) {} };
+var mk = function (d, changed) {
+var has = function (k) { return Object.prototype.hasOwnProperty.call(d, k); };
+var api = {
+getItem: function (k) { k = String(k); return has(k) ? d[k] : null; },
+setItem: function (k, v) { d[String(k)] = String(v); changed(); },
+removeItem: function (k) { delete d[String(k)]; changed(); },
+clear: function () { for (var k in d) delete d[k]; changed(); },
+key: function (i) { var ks = Object.keys(d); return i >= 0 && i < ks.length ? ks[i] : null; }
+};
+return new Proxy(api, {
+get: function (t, k) { if (k === 'length') return Object.keys(d).length; if (k in api) return api[k]; return typeof k === 'string' && has(k) ? d[k] : undefined; },
+set: function (t, k, v) { if (!(k in api)) api.setItem(k, v); return true; },
+deleteProperty: function (t, k) { api.removeItem(k); return true; },
+has: function (t, k) { return k in api || has(k); },
+ownKeys: function () { return Object.keys(d); },
+getOwnPropertyDescriptor: function (t, k) { return has(k) ? { value: d[k], writable: true, enumerable: true, configurable: true } : undefined; }
+});
+};
+// several changes in a row (a score plus the saved spot) go up as one message
+var ls = mk(data, function () { if (!queued) { queued = true; Promise.resolve().then(send); } });
+try { Object.defineProperty(window, 'localStorage', { value: ls, configurable: true }); } catch (e) {}
+try { Object.defineProperty(window, 'sessionStorage', { value: mk({}, function () {}), configurable: true }); } catch (e) {}
+}
+// Runs inside an about:blank study tab: keeps the page's saves, since there the page talks to this tab, not the dashboard
+function blankDocScript(tok, key) {
+window.addEventListener('message', function (e) {
+var d = e.data;
+if (!d || typeof d !== 'object' || d.tok !== tok || !d.cdDocSave || typeof d.cdDocSave !== 'object') return;
+try { var t = JSON.stringify(d.cdDocSave); if (t.length < 2e6) localStorage.setItem(key, t); } catch (x) {}
+});
+}
+const DOC_TOK = {};
+const docSaveKey = path => 'classdash_docsave:' + path;
+const docSaved = path => { try { const v = JSON.parse(localStorage.getItem(docSaveKey(path)) || '{}'); return v && typeof v === 'object' ? v : {}; } catch (e) { return {}; } };
+const saveDoc = (path, data) => { try { const t = JSON.stringify(data); if (t.length < 2e6) localStorage.setItem(docSaveKey(path), t); } catch (e) {} };
+function onDocMsg(e) {
+const d = e.data;
+if (d && typeof d === 'object' && d.cdDocSave && typeof d.cdDocSave === 'object' && DOC_TOK[d.tok]) saveDoc(DOC_TOK[d.tok], d.cdDocSave);
+}
 function fillDoc(f, path) {
 return docHtml(path)
-.then(html => { f.setAttribute('sandbox', DOC_SANDBOX); f.srcdoc = html; })
+.then(html => {
+const tok = Math.random().toString(36).slice(2) + Date.now().toString(36);
+DOC_TOK[tok] = path;
+f.dataset.cdtok = tok;
+f.setAttribute('sandbox', DOC_SANDBOX);
+f.srcdoc = injectTop(html, '<script>(' + docShim.toString() + ')(' + jsonIn(docSaved(path)) + ',' + jsonIn(tok) + ');<\/script>');
+})
 .catch(() => { f.src = gameUrl(path); });
 }
 // PDFs and images: raw GitHub serves them as downloads, so fetch the bytes and show them from a blob URL
@@ -1782,7 +1833,10 @@ d.title = p.name;
 d.body.style.cssText = 'margin:0;height:100vh;overflow:hidden;background:#000';
 if (read) {
 d.body.style.position = 'relative';
-docView(d, p).then(el => d.body.appendChild(el)).catch(() => { d.body.style.color = '#fff'; d.body.textContent = "Couldn't load this resource."; });
+docView(d, p).then(el => {
+d.body.appendChild(el);
+if (el.dataset && el.dataset.cdtok) { const sc = d.createElement('script'); sc.textContent = '(' + blankDocScript.toString() + ')(' + jsonIn(el.dataset.cdtok) + ',' + jsonIn(docSaveKey(p.id)) + ');'; d.body.appendChild(sc); }
+}).catch(() => { d.body.style.color = '#fff'; d.body.textContent = "Couldn't load this resource."; });
 return true;
 }
 const st = d.createElement('style');
@@ -2904,10 +2958,12 @@ else if (d.cdFail) autoAlt(d.cdFail);
 window.addEventListener('keydown', onKey, true);
 window.addEventListener('keyup', onKey, true);
 window.addEventListener('message', onMsg);
+window.addEventListener('message', onDocMsg);
 root.addEventListener('input', e => { if (e.target.matches && e.target.matches('[data-rtext]') && S.rate) S.rate.text = e.target.value; });
 function close() {
 flushPlay();
 window.removeEventListener('message', onMsg);
+window.removeEventListener('message', onDocMsg);
 clearInterval(clockT);
 window.removeEventListener('keydown', onKey, true);
 window.removeEventListener('keyup', onKey, true);
