@@ -4,6 +4,18 @@
   "accent": "#b48cff",
   "banners": [
     {
+      "id": "bmwka0vgh",
+      "title": "Study Resources | ",
+      "text": "Practice tests for biology is in the works, the one posted right now has non-accurate vocab. Adding all new game + study requests tomorrow (Tue, Nov 17)",
+      "button": "",
+      "link": "",
+      "color": "#e46fd0",
+      "icon": "board",
+      "where": "both",
+      "start": "2026-11-16T21:55",
+      "end": "2026-11-17T21:55"
+    },
+    {
       "id": "bmw4887gs",
       "title": "Anything to add? ",
       "text": "Tell us what you want us to add whethere it's study resources or games, we'll add it! (go to games or study tab to request)",
@@ -14,18 +26,6 @@
       "where": "both",
       "start": "",
       "end": ""
-    },
-    {
-      "id": "bmw5t6m6s",
-      "title": "New study resources!",
-      "text": "Lots of new study resources have been added. (Adv. Geo, Alg. 2, Mat. Sci., Life Sci.)",
-      "button": "Start studying",
-      "link": "study",
-      "color": "#e46fd0",
-      "icon": "game",
-      "where": "both",
-      "start": "2026-11-10T18:54",
-      "end": "2026-11-13T20:55"
     }
   ],
   "hidden": [],
