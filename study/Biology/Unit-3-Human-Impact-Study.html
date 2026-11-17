@@ -1,0 +1,1184 @@
+<!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<title>Unit 3 Human Impact Test (THIS IS NOT THE ACTUAL TEST, IT IS A PRACTICE TEST)</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'">
+<style>
+/* Layout: one study column (max 780px). Home = start cards + score history; a test shows one question card at a time under a sticky progress bar. */
+:root{
+  --paper:#EDF0F3; --surface:#FFFFFF; --sunk:#F5F7F9; --ink:#162029; --muted:#53616E; --line:#D2D9E0; --line-2:#AAB7C4;
+  --moss:#1F5C88; --moss-ink:#FFFFFF; --moss-soft:#DAE7F2;
+  --sun:#D96A26; --sun-ink:#2A1305; --sun-soft:#FBE5D4;
+  --good:#1E7A49; --good-soft:#DCF1E3; --bad:#B53F2E; --bad-soft:#F8E0DA;
+  --water:#22827F; --water-soft:#C4E5E2; --land:#D9D3BC; --soil:#A88B6A;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E141A; --surface:#161F28; --sunk:#121A22; --ink:#E2E9F0; --muted:#98A7B5; --line:#26323D; --line-2:#3A4A59;
+    --moss:#7DB4E3; --moss-ink:#0A1622; --moss-soft:#1B3146;
+    --sun:#F0965A; --sun-ink:#261205; --sun-soft:#3C2716;
+    --good:#6CCB94; --good-soft:#16382A; --bad:#F2897A; --bad-soft:#3E211C;
+    --water:#5CC3BE; --water-soft:#1A4442; --land:#3A3727; --soil:#5A4A36;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E141A; --surface:#161F28; --sunk:#121A22; --ink:#E2E9F0; --muted:#98A7B5; --line:#26323D; --line-2:#3A4A59;
+  --moss:#7DB4E3; --moss-ink:#0A1622; --moss-soft:#1B3146;
+  --sun:#F0965A; --sun-ink:#261205; --sun-soft:#3C2716;
+  --good:#6CCB94; --good-soft:#16382A; --bad:#F2897A; --bad-soft:#3E211C;
+  --water:#5CC3BE; --water-soft:#1A4442; --land:#3A3727; --soil:#5A4A36;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5}
+.wrap{max-width:780px;margin:0 auto;padding-block:20px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* Home */
+.hero{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;padding-block:12px 22px;border-bottom:2px solid var(--ink)}
+.hero h1{font-size:clamp(40px,8vw,64px);font-weight:800;letter-spacing:-.02em}
+.hero .lede{margin:10px 0 0;color:var(--muted);max-width:56ch}
+.mini{width:140px;height:auto}
+.mini text{font-family:var(--f-mono);font-size:9px;fill:var(--muted)}
+@media (max-width:560px){.hero{grid-template-columns:1fr}.mini{display:none}}
+.section{margin-top:28px;display:grid;gap:12px}
+.section > h2{font-size:24px;font-weight:800}
+.resume{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:var(--sun-soft);border:2px solid var(--sun);border-radius:10px;padding:14px 16px}
+.resume p{margin:0;min-width:0}
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:600px){.modes{grid-template-columns:1fr}}
+.mode{display:grid;gap:6px;align-content:start;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;cursor:pointer;min-width:0}
+.mode:hover{border-color:var(--moss)}
+.mode h3{font-size:21px;font-weight:800}
+.mode p{margin:0;color:var(--muted);font-size:15px}
+.mode .meta{font-family:var(--f-mono);font-size:12px;color:var(--moss);letter-spacing:.04em;text-transform:uppercase}
+.mode.primary{grid-column:1/-1;background:var(--moss);color:var(--moss-ink);border-color:var(--moss)}
+.mode.primary p,.mode.primary .meta{color:var(--moss-ink);opacity:.9}
+.mode.wide{grid-column:1/-1}
+.mode[disabled]{opacity:.5;cursor:not-allowed}
+.topicbox{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line-2);background:var(--sunk);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--moss);color:var(--moss-ink);border-color:var(--moss)}
+.setting{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.setting p{margin:0;font-size:15px;color:var(--muted)}
+.setting strong{color:var(--ink)}
+.switch{flex:none;width:48px;height:28px;border-radius:999px;border:0;background:var(--line-2);position:relative;cursor:pointer;margin-top:2px}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--surface);transition:transform .15s}
+.switch[aria-checked="true"]{background:var(--moss)}
+.switch[aria-checked="true"]::after{transform:translateX(20px)}
+
+/* History */
+.hist{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:16px;min-width:0}
+.hist-empty{color:var(--muted);margin:0}
+.chart{overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto}
+.chart text{font-family:var(--f-mono);font-size:11px;fill:var(--muted)}
+.chart .gl{stroke:var(--line);stroke-width:1}
+.chart .ln{stroke:var(--moss);stroke-width:2.5;fill:none}
+.chart .ar{fill:var(--moss-soft)}
+.chart .pt{fill:var(--surface);stroke:var(--moss);stroke-width:2.5}
+.chart .pt.last{fill:var(--moss)}
+.chart .pass{stroke:var(--sun);stroke-dasharray:4 4;stroke-width:1.5}
+.chart .lbl{fill:var(--ink);font-weight:700}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;font-family:var(--f-mono);font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px}
+.pill.hi{background:var(--good-soft);color:var(--good)}
+.pill.mid{background:var(--sun-soft);color:var(--ink)}
+.pill.lo{background:var(--bad-soft);color:var(--bad)}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 120px 48px;gap:10px;align-items:center;font-size:15px}
+.bar .track{height:10px;background:var(--sunk);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.bar .fill{height:100%;background:var(--moss)}
+.bar .fill.lo{background:var(--bad)}
+.bar .fill.mid{background:var(--sun)}
+.bar .v{font-family:var(--f-mono);font-size:13px;text-align:right}
+@media (max-width:480px){.bar{grid-template-columns:minmax(0,1fr) 80px 44px}}
+.hist-head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.hist-head h3{font-size:18px}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:14px;padding:0}
+.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px}
+
+/* Buttons */
+.btn{border:0;border-radius:8px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--moss);color:var(--moss-ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-2)}
+.btn.sun{background:var(--sun);color:var(--sun-ink)}
+.btn.small{padding:8px 12px;font-size:14px}
+
+/* Test */
+.bar-top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding-block:10px;border-bottom:1px solid var(--line);display:grid;gap:8px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.bar-row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.bar-row .count{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.prog{height:8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.prog > div{height:100%;background:var(--moss);transition:width .25s}
+.card{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:16px;min-width:0}
+@media (max-width:480px){.card{padding:16px}}
+.qmeta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--moss-soft);color:var(--ink)}
+.tag.src{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+.tag.sa{background:var(--sun-soft);color:var(--ink)}
+.qtext{font-size:21px;line-height:1.35;font-weight:700;margin:0;text-wrap:pretty}
+.qhint{margin:-6px 0 0;color:var(--muted);font-size:15px}
+.opts{display:grid;gap:10px}
+.opt{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;align-items:center;text-align:left;background:var(--sunk);border:2px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;min-height:52px}
+.opt:hover:not([disabled]){border-color:var(--moss)}
+.opt .k{font-family:var(--f-mono);font-weight:700;font-size:13px;width:28px;height:28px;border-radius:6px;display:grid;place-items:center;border:1px solid var(--line-2);background:var(--surface)}
+.opt.sel{border-color:var(--moss);background:var(--moss-soft)}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt[disabled]{cursor:default}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.actions .spacer{flex:1}
+.fb{border-radius:10px;padding:14px 16px;display:grid;gap:8px}
+.fb.ok{background:var(--good-soft);border:1px solid var(--good)}
+.fb.no{background:var(--bad-soft);border:1px solid var(--bad)}
+.fb.part{background:var(--sun-soft);border:1px solid var(--sun)}
+.fb h4{margin:0;font-family:var(--f-display);font-size:19px}
+.fb p{margin:0}
+.fb .ans{font-weight:700}
+.fig{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:10px;overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:300px;height:auto;margin:0 auto}
+.fig .bx{fill:var(--surface);stroke:var(--line-2);stroke-width:1.5}
+.fig .bx2{fill:var(--moss-soft);stroke:var(--moss);stroke-width:1.5}
+.fig .bx3{fill:var(--sun-soft);stroke:var(--sun);stroke-width:1.5}
+.fig .tx{fill:var(--ink);font-family:var(--f-body);font-size:13px}
+.fig .tx.b{font-weight:700}
+.fig .tx.s{font-size:11px;fill:var(--muted)}
+.fig .tx.m{font-family:var(--f-mono);font-size:11px;fill:var(--muted)}
+.fig .ar{stroke:var(--muted);stroke-width:1.6;fill:none}
+.fig .ah{fill:var(--muted)}
+.fig .ax{stroke:var(--ink);stroke-width:1.5;fill:none}
+.fig .gr{stroke:var(--line-2);stroke-width:1;stroke-dasharray:4 4}
+.fig .tagc{fill:var(--sun);stroke:var(--sun-ink);stroke-width:1}
+.fig .tagt{fill:var(--sun-ink);font-family:var(--f-mono);font-size:13px;font-weight:700}
+.fig .l1{stroke:var(--water);stroke-width:3;fill:none}
+.fig .l2{stroke:var(--sun);stroke-width:3;fill:none}
+.fig .l3{stroke:var(--moss);stroke-width:3;fill:none}
+.fig .l4{stroke:var(--muted);stroke-width:2.5;fill:none}
+.fig .gap{fill:var(--sun-soft)}
+.fig .gap2{fill:var(--bad-soft)}
+.fig .dashl{stroke-dasharray:8 5}
+.fig .band{fill:var(--surface);opacity:.55}
+.fig .pm{fill:var(--moss)} .fig .pf{fill:var(--water)}
+.fig .lvl{stroke:var(--ink);stroke-width:1.2}
+.fig .v1{fill:var(--water-soft)} .fig .v2{fill:var(--moss-soft)} .fig .v3{fill:var(--land)} .fig .v4{fill:var(--sun-soft)}
+.fig table{width:auto;min-width:100%;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.fig th{font-size:10px;white-space:nowrap;padding:6px 8px}
+.fig td{padding:7px 8px;font-family:var(--f-mono);font-size:13px;white-space:nowrap}
+.fig td:first-child{font-family:var(--f-body);font-weight:700;font-size:14px}
+.figcap{font-size:13px;color:var(--muted);margin:6px 2px 0}
+
+/* match */
+.mterms{display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--surface);padding-block:10px;margin-block:-10px;border-bottom:1px solid var(--line)}
+.mterms:empty{display:none}
+.mterm{border:2px solid var(--line-2);background:var(--surface);border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer}
+.mterm.sel{border-color:var(--sun);background:var(--sun-soft)}
+.mterm.used{opacity:.35}
+.mdefs{display:grid;gap:10px}
+.mdef{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;text-align:left;background:var(--sunk);border:2px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer}
+.mdef:hover:not([disabled]){border-color:var(--moss)}
+.mdef .slot{justify-self:start;font-weight:700;font-size:14px;border-radius:6px;padding:3px 10px;border:1px dashed var(--line-2);color:var(--muted)}
+.mdef .slot.filled{border:1px solid var(--moss);background:var(--moss-soft);color:var(--ink)}
+.mdef.right{border-color:var(--good);background:var(--good-soft)}
+.mdef.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.mdef .fix{font-size:14px;color:var(--bad);font-weight:700}
+.mdef[disabled]{cursor:default}
+
+/* short answer */
+.sa{display:grid;gap:6px}
+.sa textarea{width:100%;min-height:132px;font:inherit;font-size:17px;line-height:1.45;padding:12px 14px;border-radius:10px;border:2px solid var(--line-2);background:var(--surface);color:var(--ink);resize:vertical}
+.sa textarea.right{border-color:var(--good)}
+.sa textarea.part{border-color:var(--sun)}
+.sa textarea.wrong{border-color:var(--bad)}
+.sa textarea:disabled{opacity:1;background:var(--sunk)}
+.sa .wc{font-family:var(--f-mono);font-size:12px;color:var(--muted);justify-self:end}
+.ideas{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.idea{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;align-items:start}
+.idea .mk{font-family:var(--f-mono);font-weight:700;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;margin-top:1px}
+.idea.hit .mk{background:var(--good);color:var(--surface)}
+.idea.nohit .mk{background:var(--bad);color:var(--surface)}
+.idea.skip{color:var(--muted)}
+.idea.skip .mk{background:var(--line);color:var(--muted)}
+.idea.claimed .mk{background:var(--sun);color:var(--sun-ink)}
+.claim{border:1px solid var(--line-2);background:var(--surface);border-radius:6px;padding:3px 8px;font-size:13px;cursor:pointer;white-space:nowrap}
+.model{background:var(--surface);border:1px dashed var(--line-2);border-radius:8px;padding:10px 12px}
+.model b{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;display:block;margin-bottom:2px}
+
+/* Results */
+.score{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:center;padding-block:10px 22px;border-bottom:2px solid var(--ink)}
+.big{font-family:var(--f-display);font-weight:800;font-size:clamp(64px,16vw,112px);line-height:.9;letter-spacing:-.03em}
+.score p{margin:4px 0 0;color:var(--muted)}
+.score h1{font-size:28px}
+@media (max-width:480px){.score{grid-template-columns:1fr;gap:6px}}
+.missed{display:grid;gap:10px}
+.miss{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:8px;padding:12px 14px;display:grid;gap:4px;min-width:0}
+.miss.half{border-left-color:var(--sun)}
+.miss .q{font-weight:700}
+.miss .yours{color:var(--bad);overflow-wrap:anywhere}
+.miss .corr{color:var(--good);font-weight:700}
+.miss .why{color:var(--muted);font-size:15px}
+.rowbtns{display:flex;flex-wrap:wrap;gap:10px}
+.quitbox{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head><body>
+
+<div class="wrap" id="app"></div>
+
+<script>
+(() => {
+"use strict";
+/* ---------- helpers ---------- */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const fmt = n => Number(n).toLocaleString("en-US", {maximumFractionDigits: 4});
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+
+const TOPICS = {
+  history: "Human population history",
+  growth: "Population growth factors & country data",
+  dtm: "Demographic transition stages",
+  age: "Age-structure diagrams",
+  footprint: "Ecological footprints",
+  anthro: "Great Acceleration & the Anthropocene",
+  nitrogen: "Nitrogen, acid rain & ocean acidification",
+  biomag: "Biological magnification",
+  habitat: "Deforestation, monoculture & other threats"
+};
+
+/* ---------- vocabulary (every term) ---------- */
+// [term, definition, topic]
+const VOCAB = [
+  ["Demographic transition", "The predictable shift in birth rates, death rates, and population growth as a society moves from a primitive economy to industrialization", "dtm"],
+  ["Birth rate", "The number of live births per 1,000 people in a year", "growth"],
+  ["Death rate", "The number of deaths per 1,000 people in a year (also called the mortality rate)", "growth"],
+  ["Infant mortality", "How often babies die before their first birthday", "dtm"],
+  ["Life expectancy", "The average number of years a person in a population can expect to live", "dtm"],
+  ["Fertility rate", "The average number of children a woman has during her lifetime", "growth"],
+  ["Replacement-level fertility", "The number of children per woman (about 2.1) at which each generation exactly replaces the one before it", "growth"],
+  ["Immigration", "Movement of people INTO a country or area", "growth"],
+  ["Emigration", "Movement of people OUT of a country or area", "growth"],
+  ["Net migration", "People moving in minus people moving out; the overall gain or loss from moving", "growth"],
+  ["Growth rate", "How fast a population is getting bigger each year, usually written as a percent", "growth"],
+  ["Median age", "The middle age of a population: half the people are older and half are younger", "growth"],
+  ["Age structure", "How many people are in each age group of a population, shown as a population pyramid", "age"],
+  ["Dependency ratio", "The number of children and elderly people compared to the number of working-age adults", "age"],
+  ["Carrying capacity", "The largest population an environment can support over time", "history"],
+  ["Density-dependent limiting factor", "Something, like disease, that holds a population back more strongly the more crowded it gets", "history"],
+  ["Industrialization", "A society's shift to factories, machines, and fossil-fuel energy", "history"],
+  ["Ecological footprint", "The total area of healthy land and water ecosystems needed to provide the resources you use and absorb the wastes you produce", "footprint"],
+  ["Global hectare (gha)", "The unit footprints are measured in: one hectare of land or water with world-average productivity", "footprint"],
+  ["Great Acceleration", "The sharp jump in population, resource use, and environmental change that began around 1950", "anthro"],
+  ["Anthropocene", "The \"Age of Humans\": the period during which human activity has become the major cause of global change", "anthro"],
+  ["Anthrome", "A human-altered biome, such as a city, village, cropland, or rangeland", "anthro"],
+  ["Limiting nutrient", "A nutrient in short supply that keeps producers from growing more; adding it causes a burst of growth", "nitrogen"],
+  ["Algal bloom", "A sudden overgrowth of algae in water, triggered by extra nutrients like nitrogen", "nitrogen"],
+  ["Runoff", "Water flowing over land into streams, lakes, and oceans, carrying fertilizer and other pollutants with it", "nitrogen"],
+  ["Acid rain", "Precipitation made acidic when air pollution combines with water; especially damaging to forests and lakes", "nitrogen"],
+  ["Ocean acidification", "The continued drop in seawater pH caused by absorbing carbon dioxide from the atmosphere", "nitrogen"],
+  ["Biological magnification", "The increase in a pollutant's concentration at each higher trophic level of a food chain", "biomag"],
+  ["Deforestation", "The loss of forests, with negative effects on soil, water, carbon storage, and animals", "habitat"],
+  ["Monoculture", "Planting large areas with a single, high-production crop every year", "habitat"],
+  ["Habitat fragmentation", "Breaking up the area where organisms live into smaller, separated pieces, causing biodiversity loss", "habitat"],
+  ["Overharvesting", "Using a natural resource in an unsustainable way, faster than it can be replaced", "habitat"],
+  ["Invasive species", "An organism introduced to a new place by humans that spreads and disrupts the ecosystem", "habitat"],
+  ["Sustainable", "Using resources in a way that meets our needs without using them up for the future", "habitat"]
+];
+const CONFLICTS = [];
+
+/* ---------- question bank ---------- */
+const B = [];
+const MC = (id, topic, q, a, w, why, x = {}) => B.push(Object.assign({id, t: "mc", topic, q, a, w, why}, x));
+const TF = (id, topic, q, a, why, x = {}) => B.push(Object.assign({id, t: "tf", topic, q, a, why}, x));
+// Short answer: ideas = [[label, cue, cue, ...], ...]; an idea counts when any cue is found. need = points (default: every idea).
+const SA = (id, topic, q, model, ideas, why, x = {}) => B.push(Object.assign({id, t: "sa", topic, q, model, ideas, why}, x));
+const GEN = (id, topic, fn, x = {}) => B.push(Object.assign({id, t: "gen", topic, fn}, x));
+const STAGES = ["Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5"];
+const STG = (id, topic, q, n, why, x = {}) => MC(id, topic, q, "Stage " + n, STAGES.filter(s => s !== "Stage " + n), why, Object.assign({order: STAGES}, x));
+const N53 = {src: "5.3 guided notes"}, CH = {src: "Stage chart"}, PW = {src: "Population practice work"}, WU = {src: "Warm-up"},
+  N71 = {src: "7.1 guided notes"}, N72 = {src: "7.2 guided notes"}, EX = {src: "A step past the notes"};
+const F = (fig, base) => Object.assign({fig}, base);
+
+/* Human population history */
+MC("h1", "history", "For most of human history, the population stayed below about how many people (its carrying capacity at the time)?", "About half a billion (500 million)", ["About 3 billion", "About 7 billion", "About 50,000"], "On the 10,000 B.C.–2000 A.D. graph the line hugs the bottom, under about 0.5 billion, until the last few hundred years.", F("history", PW));
+MC("h2", "history", "Which 4 events are labeled on the graph of human population history?", "Agriculture begins, plowing and irrigation, the bubonic plague, the Industrial Revolution", ["Agriculture begins, the printing press, the bubonic plague, the moon landing", "Fire is discovered, plowing and irrigation, the Great Depression, the Industrial Revolution", "The Ice Age, agriculture begins, World War II, the internet"], "The graph marks agriculture beginning, plowing and irrigation, the bubonic plague, and the start of the Industrial Revolution.", PW);
+MC("h3", "history", "Which TWO events appear to have INCREASED the human carrying capacity on Earth?", "Plowing and irrigation, and the Industrial Revolution", ["The bubonic plague and the Industrial Revolution", "The bubonic plague and plowing and irrigation", "Agriculture beginning and the bubonic plague"], "After each one, the population climbs to a new, higher level. The plague did the opposite and caused a dip.", F("history", WU));
+MC("h4", "history", "Which density-dependent limiting factor is shown on the human population graph?", "The bubonic plague", ["The Industrial Revolution", "Plowing and irrigation", "Agriculture beginning"], "Disease is density-dependent: it spreads faster when people are crowded together. The plague shows up as a dip in the 1300s.", PW);
+MC("h5", "history", "Why is a disease like the bubonic plague called DENSITY-DEPENDENT?", "It spreads faster and kills more when people are crowded together", ["It affects a population the same way no matter how crowded it is", "It only affects small, spread-out populations", "It raises the carrying capacity of an area"], "The more crowded (dense) a population is, the stronger the effect. A density-independent factor, like a flood, hits the same no matter how crowded.");
+MC("h6", "history", "About how long has Earth's human population been greater than 1 billion?", "Since about 1800", ["Since about 10,000 B.C.", "Since about 1 A.D.", "Only since about 2000"], "The world passed 1 billion people around 1800, as the Industrial Revolution took off. It passed 8 billion in 2022.", PW);
+MC("h7", "history", "Which statement about the world's population today is TRUE?", "The population is still increasing, but the RATE of growth is decreasing", ["The population is decreasing, and so is its growth rate", "The population and its growth rate are both increasing faster than ever", "The population has stopped changing"], "From the notes: the size of the global human population is still increasing, but the rate of global population growth is decreasing.", N53);
+MC("h8", "history", "According to the 1950–2050 projection graph, about how many people will be on Earth in 2042?", "About 9 billion", ["About 5 billion", "About 7 billion", "About 12 billion"], "The projection reaches about 9 billion people in the early 2040s.", PW);
+MC("h9", "history", "What shape does the graph of human population over the last 10,000 years make?", "A J-shape: flat for a long time, then shooting almost straight up", ["An S-shape that has leveled off at carrying capacity", "A straight diagonal line", "A bell curve that rises and then falls"], "Very slow growth for thousands of years, then explosive growth after the Industrial Revolution, gives a J-curve (exponential growth).", F("history", {}));
+MC("h10", "history", "Why did the human population grow so slowly for most of history?", "Birth rates were high, but death rates were also high from disease, famine, and poor sanitation", ["Birth rates were very low", "People had access to birth control", "There was always plenty of food"], "That's Stage 1: high birth rates and high death rates cancel each other out.");
+MC("h11", "history", "The Industrial Revolution let the population explode mainly because…", "Machines, more food, medicine, and sanitation lowered death rates", ["Birth rates suddenly tripled", "Diseases like the plague became more common", "People moved out of cities and back onto farms"], "Death rates fell while birth rates stayed high for a while, so the population shot up.");
+MC("h12", "history", "Plowing and irrigation raised Earth's carrying capacity for humans because they…", "let farmers grow much more food on the same land", ["stopped diseases from spreading", "lowered birth rates", "moved people into crowded cities"], "More food from the same land means the environment can support more people.");
+
+/* Population growth factors & country data */
+MC("g1", "growth", "Which 4 factors affect how a population grows?", "Birth rate, death rate, immigration, and emigration", ["Birth rate, death rate, carrying capacity, and biomass", "Immigration, emigration, life expectancy, and median age", "Food, water, shelter, and space"], "Births and immigration add people; deaths and emigration take people away.", PW);
+MC("g2", "growth", "Which list has the 5 factors that affect a COUNTRY's population growth?", "Birth rate, death rate, fertility rate, net migration, and age structure", ["Birth rate, death rate, climate, land area, and religion", "Fertility rate, life expectancy, median age, latitude, and area", "Immigration, emigration, food, water, and space"], "From the practice work: birth rate, death rate, fertility rate, net migration, and age structure.", PW);
+MC("g3", "growth", "Angola's birth rate is 33.6. What does that number mean?", "33.6 live births per 1,000 people each year", ["33.6% of people had a baby this year", "33.6 births per 100 people each year", "Each woman has 33.6 children"], "Birth and death rates are given per 1,000 people per year.", F("countries", PW));
+MC("g4", "growth", "Net migration is…", "immigration minus emigration", ["births minus deaths", "immigration plus emigration", "deaths minus immigration"], "People moving in minus people moving out. A negative number means more people leave than arrive.");
+MC("g5", "growth", "Which country in the data table has the FASTEST growth rate?", "Angola", ["Kenya", "Canada", "Denmark"], "Angola grows 2.72% per year, the highest of the four.", F("countries", Object.assign({order: ["Angola", "Kenya", "Canada", "Denmark"]}, PW)));
+MC("g6", "growth", "Which country in the table has the LOWEST death rate, and why?", "Kenya, because its population is very young and young people rarely die", ["Canada, because it has the best hospitals", "Denmark, because it has the oldest population", "Angola, because it has the most births"], "Kenya's death rate is 6.8. Its median age is only 19.5, so most people are young. Canada (8.5) and Denmark (10.3) have more elderly people, so more deaths per 1,000, even with long life expectancy.", F("countries", PW));
+MC("g7", "growth", "Denmark's birth rate (10.4) and death rate (10.3) are almost equal. What does that tell you?", "Births barely outnumber deaths, so most of its small growth comes from immigration", ["The population is growing rapidly", "The population is crashing", "Denmark is in Stage 2"], "10.4 − 10.3 = 0.1 per 1,000. Its 0.22% growth comes mostly from immigration (2.1 per 1,000).", F("countries", PW));
+MC("g8", "growth", "In the class table, which country has a HIGH birth rate and a LOW death rate?", "Kenya", ["Angola", "Canada", "Denmark"], "High birth + high death = Angola. High birth + low death = Kenya. Low birth + high death = Denmark. Low birth + low death = Canada.", F("countries", Object.assign({order: ["Angola", "Kenya", "Canada", "Denmark"]}, PW)));
+MC("g9", "growth", "In the class table, which country has a LOW birth rate and a HIGH death rate?", "Denmark", ["Angola", "Kenya", "Canada"], "Denmark: birth rate 10.4, death rate 10.3 (the higher of the two developed countries).", F("countries", Object.assign({order: ["Angola", "Kenya", "Canada", "Denmark"]}, PW)));
+MC("g10", "growth", "Angola's median age is 18.2. Canada's is 42. What does that tell you about Angola?", "About half its people are under 18, so it has lots of children and will keep growing", ["Most of its people are elderly", "Its population is shrinking", "Its people live longer than Canadians"], "A low median age means a young population, the wide base of a Stage 2-style pyramid.", F("countries", PW));
+MC("g11", "growth", "Which two countries in the table are DEVELOPED countries?", "Canada and Denmark", ["Angola and Kenya", "Kenya and Canada", "Angola and Denmark"], "Low birth rates, life expectancy around 80, and a median age of 42 are signs of a developed country.", F("countries", PW));
+MC("g12", "growth", "Life expectancy is 56 years in Angola but 81.9 years in Canada. What best explains the difference?", "Better health care, sanitation, clean water, and food supply in Canada", ["Canada has a higher birth rate", "Angola has more immigration", "Canada has a younger population"], "The same improvements that lower death rates in Stage 2 raise life expectancy.", F("countries", {}));
+MC("g13", "growth", "Replacement-level fertility is about…", "2.1 children per woman", ["1 child per woman", "4 children per woman", "10 children per woman"], "Two children replace the two parents; the extra 0.1 makes up for children who don't survive to adulthood. The stage chart says Stage 4 countries are at, or slightly above, replacement.", EX);
+MC("g14", "growth", "If a country's birth rate EQUALS its death rate and nobody moves in or out, its population will…", "stay about the same size", ["grow quickly", "shrink quickly", "double"], "Births and deaths cancel out, so growth is about zero.");
+
+/* Demographic transition stages */
+MC("d1", "dtm", "Fill in the blanks: \"As a society moves from a ____ to ____, population growth predictably shifts.\"", "primitive economy … industrialization", ["industrialization … a primitive economy", "city … farm", "developed country … developing country"], "That shift is the demographic transition.", N53);
+MC("d2", "dtm", "What does population growth do across the 5 stages, in order?", "Slow → rapid → slowing → stable → declining", ["Rapid → slow → stable → slowing → declining", "Slow → slowing → rapid → declining → stable", "Declining → slow → rapid → stable → slowing"], "1 slow, 2 rapid, 3 slowing, 4 stable, 5 declining.", N53);
+MC("d3", "dtm", "In Stage 1, what happens to birth rates and death rates?", "Both are high and cancel each other out", ["Both are low and cancel each other out", "Birth rates are high and death rates are low", "Birth rates are low and death rates are high"], "Birth rates = death rates, both high, so growth is slow.", N53);
+MC("d4", "dtm", "Which describes Stage 1?", "Short life expectancy, high infant mortality, and poor health care and sanitation", ["Long life expectancy and low infant mortality", "Low birth rates from widely available birth control", "High affluence and economic development"], "From the notes: short life expectancy, high infant mortality, poor health care and sanitation.", N53);
+MC("d5", "dtm", "Why are there no good examples of true Stage 1 societies today?", "Almost every country now has at least some modern medicine, food, and sanitation, so death rates have dropped", ["Stage 1 countries are too small to count", "Every country has already reached Stage 5", "Stage 1 only happened before agriculture began"], "Once death rates start falling, a society has moved into Stage 2.", N53);
+STG("d6", "dtm", "In which stage does the birth rate stay HIGH but the death rate DROPS?", 2, "Stage 2: births stay high while better health care and sanitation cut deaths, so births far outnumber deaths.", WU);
+MC("d7", "dtm", "What are some reasons the death rate drops in Stage 2?", "Better sanitation, hygiene, health care, and food supply", ["More access to birth control", "Women gaining independence and work opportunities", "The high cost of raising children"], "Those changes cut deaths from disease and starvation. The other choices lower BIRTH rates (Stages 3–4).", WU);
+MC("d8", "dtm", "According to the stage chart, what do improvements in food supply do in Stage 2?", "Reduce deaths due to starvation", ["Raise the birth rate", "Make the population shrink", "Increase infant mortality"], "The chart also says better transportation reduces deaths from lack of water.", CH);
+STG("d9", "dtm", "Births > deaths, reduced infant mortality, and better health care and sanitation. Which stage is this?", 2, "Stage 2: rapid population growth.", N53);
+STG("d10", "dtm", "In which stage does the population get more access to education and birth control?", 3, "Stage 3: increased access to birth control leads to smaller families, and education improves.", WU);
+MC("d11", "dtm", "In Stage 3, increased access to birth control leads to…", "smaller families", ["larger families", "higher death rates", "more infant mortality"], "Birth rates begin to fall, so growth slows.", N53);
+MC("d12", "dtm", "Which change is listed for Stage 3 on the stage chart?", "The cost of children increases with the introduction of higher education", ["Children must contribute to the economy of the household", "Family planning and contraception are virtually nonexistent", "Population is essentially determined by the food supply"], "The other three describe Stage 1.", CH);
+STG("d13", "dtm", "In which stage do children become high-cost, so having a child becomes a CHOICE?", 4, "Stage 4: children are high cost and are a choice; women gain more independence and work opportunities.", WU);
+MC("d14", "dtm", "Which describes Stage 4?", "Low, stable birth rate, a death rate that climbs slightly, and high affluence", ["High birth rate and a falling death rate", "Death rate higher than the birth rate, with labor shortages", "Short life expectancy and high infant mortality"], "Stage 4: little to no growth, a stable population, high affluence and economic development.", N53);
+STG("d15", "dtm", "In which stage does the death rate EXCEED the birth rate, so the population declines?", 5, "Stage 5: no growth, a declining population (Japan, Germany, Italy).", N53);
+MC("d16", "dtm", "Which countries are the notes' examples of Stage 5 (declining population)?", "Japan, Germany, and Italy", ["Yemen, Afghanistan, and Kenya", "Mexico, India, and Brazil", "Canada, the UK, and the U.S."], "Those three have more deaths than births.", N53);
+STG("d17", "dtm", "Mexico and India are examples of which stage?", 3, "Both the notes and the stage chart put Mexico and India in Stage 3: births falling, deaths low.", N53);
+STG("d18", "dtm", "Yemen and Afghanistan are examples of which stage?", 2, "Stage 2: high birth rates and falling death rates.", N53);
+MC("d19", "dtm", "Which of these describes a Stage 1 society on the stage chart?", "Children must contribute to the economy of the household", ["Children, which are high cost, are a choice", "An expansion in women's status and education", "Fertility rate at or slightly above replacement"], "In Stage 1, kids work for the family, and there are no education or entertainment costs.", CH);
+STG("d20", "dtm", "On the stage chart, \"an expansion in women's status and education\" first appears in which stage?", 3, "Stage 3: women are valued beyond childbearing and motherhood. In Stage 4 they gain even more independence and work opportunities.", CH);
+MC("d21", "dtm", "On the overview chart, which name goes with Stage 4?", "Low stationary", ["High stationary", "Early expanding", "Late expanding"], "1 high stationary, 2 early expanding, 3 late expanding, 4 low stationary, 5 declining.", {src: "Overview chart"});
+MC("d22", "dtm", "On the overview chart, Stage 1 is \"high stationary\" and Stage 4 is \"low stationary.\" What's the difference?", "Both barely grow, but Stage 1 has high birth and death rates while Stage 4 has low ones", ["Stage 1 grows fast and Stage 4 shrinks", "Stage 1 has more people than Stage 4", "There is no difference"], "\"Stationary\" means the population isn't growing much. \"High\" and \"low\" describe the birth and death rates.", {src: "Overview chart"});
+STG("d23", "dtm", "Look at the graph. In which stage is the population growing FASTEST?", 2, "Stage 2: the death rate has dropped but the birth rate is still high, so the gap between them (natural increase) is widest.", F("dtm", {}));
+STG("d24", "dtm", "On the graph, in which stage are birth and death rates both LOW and the total population leveled off at its highest?", 4, "Stage 4: low stationary.", F("dtm", {}));
+MC("d25", "dtm", "On the graph, what does the shaded area between the birth rate and death rate lines show?", "Natural increase: how much faster people are being born than dying", ["The total population", "The number of immigrants", "The carrying capacity"], "When the birth rate is above the death rate, the population grows naturally. In Stage 5 the lines flip, giving natural decrease.", F("dtm", {}));
+MC("d26", "dtm", "Why is the population still growing in Stage 3 even though birth rates are falling?", "Births are still higher than deaths, and the many young people from Stage 2 are now having children", ["Death rates are rising quickly", "Immigration always doubles in Stage 3", "Birth rates are higher than ever"], "Births ≥ deaths (births a bit higher), so growth slows but doesn't stop yet.", EX);
+STG("d27", "dtm", "A country has falling birth rates, low death rates, growing cities, and more girls finishing school. Which stage is it most likely in?", 3, "Falling births + low deaths + increasing urbanization + women's education = Stage 3.", CH);
+STG("d28", "dtm", "A country has a high birth rate, a dropping death rate, and is building new water pipes and sewers. Which stage is it most likely in?", 2, "Improvements in water supply and sewerage reduce death rates in Stage 2.", CH);
+MC("d29", "dtm", "In Stage 5, what happens to the death rate?", "It stays steady or slowly increases as the population gets older", ["It drops to zero", "It falls steeply", "It becomes much lower than the birth rate"], "From the notes: a stable or slowly increasing death rate, with labor shortages and rising health care and social security costs.", N53);
+STG("d30", "dtm", "Which stage do you think the U.S. is in, based on the notes and the stage chart?", 4, "The U.S. is listed as a Stage 4 example: low birth and death rates, little growth.", PW);
+STG("d31", "dtm", "Which stage has high affluence, economic development, fewer young people, and more elderly people?", 4, "Stage 4 (little to no growth). Examples: United States, Australia, Argentina.", N53);
+
+/* Age-structure diagrams */
+const AB = ["A", "B", "C", "D"];
+MC("a1", "age", "Which diagram shows high birth rates with a rapid drop in each older age group because death rates are high (short life expectancy)?", "A", ["B", "C", "D"], "A: a very wide base that pinches in fast. Lots of babies, but few people survive to old age (Stage 1).", F("ages", Object.assign({order: AB}, N53)));
+MC("a2", "age", "Which diagram shows a high birth rate but a falling death rate, so more people live into middle age?", "B", ["A", "C", "D"], "B: still a wide base, but straight sides, because more people survive each age group (Stage 2).", F("ages", Object.assign({order: AB}, N53)));
+MC("a3", "age", "Which diagram shows a declining birth rate, a low death rate, and more people living to old age?", "C", ["A", "B", "D"], "C: about the same number of people in each age group until old age (Stage 3–4, stationary).", F("ages", Object.assign({order: AB}, N53)));
+MC("a4", "age", "Which diagram shows a DECLINING population (Stage 5)?", "D", ["A", "B", "C"], "D: a narrow base and more adults and elderly than children. Fewer births than deaths ahead.", F("ages", Object.assign({order: AB}, N53)));
+MC("a5", "age", "What does a very wide BASE on an age-structure diagram tell you?", "There are many young children, so birth rates are high", ["Most people live past 80", "The population is shrinking", "The death rate is lower than in developed countries"], "The bottom bars are ages 0–4, 5–9, and so on. A wide base means lots of births.");
+MC("a6", "age", "A narrow base and a wider top on an age-structure diagram means…", "few births and many older people, so the population will likely shrink", ["many births, so the population will grow fast", "a high death rate among children", "the population is in Stage 2"], "Fewer young people means fewer future parents, so the population declines.");
+MC("a7", "age", "Stage 4 diagrams have a \"higher dependency ratio.\" What does that mean?", "More elderly dependents compared to working-age adults", ["More babies than adults", "More immigrants than citizens", "More men than women"], "Dependents are the people too young or too old to work. The notes link this to a greater tax burden and strain on health care.", N53);
+MC("a8", "age", "Compared to 2002, the world's age structure in 2050 is expected to be…", "more column-shaped, with many more older people", ["more triangle-shaped, with more children than ever", "exactly the same", "top-heavy with almost no children"], "In the 2050 bars, the base stays about the same while the middle and top fill in.", {src: "Future population growth"});
+MC("a9", "age", "Why does a country with a wide-based age structure keep growing even if families start having fewer children?", "Its many young people are about to reach the age to have children of their own", ["Its death rate is about to rise sharply", "Older people move away", "Wide-based populations can't change"], "Even 2 kids per family adds up when there are so many young future parents. This is why Stage 3 still grows.", EX);
+MC("a10", "age", "An age-structure diagram with straight, nearly vertical sides shows a population that is…", "stable, with about the same number of people in each age group", ["growing rapidly", "declining rapidly", "mostly elderly"], "Column shape = stationary (little growth).");
+
+/* Ecological footprints */
+MC("f1", "footprint", "Which is the best definition of an ecological footprint?", "The total area of healthy land and water ecosystems needed to provide the resources you use", ["The amount of land your house sits on", "The amount of CO₂ one car releases in a year", "The number of species living in an ecosystem"], "From the notes: the total area of healthy land and water ecosystems needed to provide the resources you use (and absorb your wastes).", N71);
+MC("f2", "footprint", "An ecological footprint includes your USE of resources such as…", "energy, food, water, and shelter", ["sewage, trash, and greenhouse gases", "birth rate and death rate", "rocks, minerals, and soil only"], "Use of resources = energy, food, water, and shelter. Sewage, trash, and greenhouse gases are the wastes.", N71);
+MC("f3", "footprint", "An ecological footprint also includes the WASTES you produce, such as…", "sewage, trash, and greenhouse gases", ["energy, food, water, and shelter", "oxygen and water vapor", "seeds and fruit"], "Land and water are needed to absorb wastes too.", N71);
+MC("f4", "footprint", "Which country from the notes has the LARGEST average ecological footprint?", "United States (8.1 gha)", ["Russia (6.1 gha)", "France (4.6 gha)", "Peru (2.1 gha)"], "U.S. 8.1, Russia 6.1, France 4.6, Peru 2.1, Ghana 2.0.", N71);
+MC("f5", "footprint", "Which country from the notes has the SMALLEST average ecological footprint?", "Ghana (2.0 gha)", ["Peru (2.1 gha)", "France (4.6 gha)", "Russia (6.1 gha)"], "U.S. 8.1, Russia 6.1, France 4.6, Peru 2.1, Ghana 2.0.", N71);
+MC("f6", "footprint", "What does \"gha\" stand for in ecological footprint numbers?", "Global hectares", ["Greenhouse gas amount", "Grams of human activity", "Gallons per hour average"], "A global hectare is a hectare of land or water with world-average productivity.", N71);
+MC("f7", "footprint", "The average American's footprint (8.1 gha) is about how many times the average Ghanaian's (2.0 gha)?", "About 4 times", ["About 2 times", "About 8 times", "About 16 times"], "8.1 ÷ 2.0 ≈ 4.", Object.assign({order: ["About 2 times", "About 4 times", "About 8 times", "About 16 times"]}, N71));
+MC("f8", "footprint", "Which choice would SHRINK your ecological footprint the most?", "Switching to greener electricity and traveling less", ["Driving alone instead of taking the bus", "Buying a new phone every year", "Leaving lights on so the bulbs last longer"], "Less energy from fossil fuels and less travel = fewer resources used and less greenhouse gas.", N71);
+MC("f9", "footprint", "Why do developed countries like the U.S. usually have much larger ecological footprints PER PERSON than developing countries?", "Each person uses far more energy and resources and makes more waste", ["They have more people", "Their land is less healthy", "They have higher birth rates"], "A footprint is per person here. Bigger homes, more driving and flying, more meat, and more stuff all add land and water.");
+
+/* Great Acceleration & Anthropocene */
+MC("n1", "anthro", "The Great Acceleration began around…", "1950", ["1800", "1900", "2000"], "The graphs run 1950–2010; almost every line turns sharply upward around 1950.", Object.assign({order: ["1800", "1900", "1950", "2000"]}, N71));
+MC("n2", "anthro", "Which of these INCREASED sharply in the Great Acceleration graphs?", "Fertilizer use, energy use, water use, and world population", ["Forest area, wild fish numbers, and glacier size", "Only world population", "Only the number of farms"], "The graphs track fertilizer consumption, primary energy use, water use, world population, coastal nitrogen, and marine fish capture.", N71);
+MC("n3", "anthro", "The Great Acceleration graphs show socio-economic trends and Earth system trends. Which is an EARTH SYSTEM trend?", "Coastal nitrogen and marine fish capture", ["Fertilizer consumption", "Primary energy use", "World population"], "Socio-economic = what people do (fertilizer, energy, water, population). Earth system = the effects on the planet (coastal nitrogen, fish capture).", N71);
+MC("n4", "anthro", "The Anthropocene, or \"Age of Humans,\" is…", "the period during which human activity has become the major cause of global change", ["the time before humans existed", "the age when humans first started farming", "a biome made of cities"], "From the notes: human activity has become the major cause of global change.", N71);
+MC("n5", "anthro", "Anthromes are…", "human-altered biomes, like cities, villages, croplands, and rangelands", ["biomes with no human influence", "the animals that live in cities", "layers of the atmosphere"], "Anthrome = anthropogenic (human-made) biome.", N71);
+MC("n6", "anthro", "Which of these is NOT an anthrome?", "Wildlands with no significant human use", ["Cropland", "Rangeland", "A dense city settlement"], "On the diagram: wildlands → seminatural anthromes → used anthromes (rangeland, cropland, villages, dense settlements).", N71);
+MC("n7", "anthro", "Which order goes from LEAST to MOST human-altered?", "Wildlands → seminatural anthromes → rangeland → cropland → villages → dense settlements", ["Dense settlements → villages → cropland → rangeland → wildlands", "Cropland → wildlands → villages → rangeland → dense settlements", "Rangeland → wildlands → dense settlements → cropland → villages"], "Use increases from wild (left) to used (right) on the anthromes diagram.", N71);
+MC("n8", "anthro", "Which cause-and-effect pair from the Great Acceleration makes sense?", "More fertilizer use → more nitrogen washing into coastal waters", ["More fish capture → more fish in the ocean", "More water use → more fresh water available", "More energy use from fossil fuels → less CO₂ in the air"], "Fertilizer runoff is a big source of coastal nitrogen. The other three have the effect backwards.", EX);
+MC("n9", "anthro", "Look at the graph. What makes this period the \"Great Acceleration\"?", "Many human trends stayed fairly flat, then all shot upward together after about 1950", ["Every trend went down after 1950", "Only population changed; everything else stayed flat", "The trends rose slowly and steadily since 1750"], "The lines bend sharply at about the same time, which is why scientists see it as the start of the Anthropocene.", F("accel", {}));
+
+/* Nitrogen, acid rain & ocean acidification */
+MC("c1", "nitrogen", "Nitrogen released from burning ____ can travel through the air.", "fossil fuels", ["fertilizer", "trees", "rocks"], "Burning fossil fuels releases nitrogen compounds that blow far away and land in lakes and streams.", N72);
+MC("c2", "nitrogen", "Because nitrogen is a LIMITING NUTRIENT for producers, extra nitrogen in a lake can cause…", "algal blooms", ["acid rain", "biological magnification", "habitat fragmentation"], "Producers like algae were held back by too little nitrogen. Add some and they grow out of control.", N72);
+MC("c3", "nitrogen", "Humans produce nitrogen-enriched fertilizer. What is the DOWNSIDE?", "Nitrogen runoff into streams, lakes, and oceans", ["It makes crops grow slower", "It removes nitrogen from the air we breathe", "It causes earthquakes"], "The fertilizer helps produce food for the world, but rain washes extra nitrogen into the water.", N72);
+MC("c4", "nitrogen", "What is the BENEFIT of nitrogen-enriched fertilizer?", "It helps produce food for the people of the world", ["It cleans polluted lakes", "It lowers ocean pH", "It removes CO₂ from the air"], "From the notes: it helps produce food for the people of the world, but it also causes nitrogen runoff.", N72);
+MC("c5", "nitrogen", "Acid rain forms when…", "air pollution combines with water and falls as acidic rain", ["fertilizer washes into a lake", "the ocean absorbs CO₂", "a pollutant moves up a food chain"], "Pollution from burning fossil fuels (like sulfur and nitrogen oxides) mixes with water in the air.", N72);
+MC("c6", "nitrogen", "Acid rain is especially damaging to…", "forests and lakes", ["deserts and glaciers", "the deep ocean floor", "the ozone layer"], "From the notes: especially damaging to forests and lakes.", N72);
+MC("c7", "nitrogen", "Ocean acidification is…", "the continued DECREASE in ocean pH from absorbing CO₂ from the atmosphere", ["the continued increase in ocean pH from absorbing oxygen", "acid rain falling straight into the ocean", "fertilizer runoff causing algal blooms"], "More CO₂ in the air → more CO₂ dissolving in seawater → lower pH.", N72);
+MC("c8", "nitrogen", "As the ocean becomes more acidic, its pH…", "decreases (gets lower)", ["increases (gets higher)", "stays at 7", "becomes basic"], "Lower pH = more acidic.", Object.assign({order: ["decreases (gets lower)", "increases (gets higher)", "stays at 7", "becomes basic"]}, N72));
+MC("c9", "nitrogen", "In the diagram, what happens when CO₂ dissolves in seawater?", "It forms carbonic acid, which releases H⁺ ions and lowers the pH", ["It turns into oxygen", "It raises the pH and makes the water basic", "It turns into nitrogen fertilizer"], "CO₂ + water → carbonic acid → H⁺ ions. More H⁺ = lower pH.", F("ocean", N72));
+MC("c10", "nitrogen", "Why is ocean acidification a problem for clams, corals, and snails?", "Fewer carbonate ions are available to build their shells and skeletons", ["The water gets too warm for them", "Algae grow on their shells", "It makes them sink"], "Shells are made of calcium carbonate. H⁺ ions grab carbonate, so there's less left for building.", N72);
+MC("c11", "nitrogen", "Which human activity is the main source of the extra CO₂ behind ocean acidification?", "Burning fossil fuels", ["Using fertilizer", "Overharvesting fish", "Planting monocultures"], "Most extra CO₂ in the atmosphere comes from burning coal, oil, and natural gas.");
+MC("c12", "nitrogen", "Which problem → main cause pairing is correct?", "Ocean acidification → CO₂ absorbed from the air", ["Algal blooms → CO₂ absorbed from the air", "Acid rain → invasive species", "Biological magnification → nitrogen fertilizer"], "Algal blooms come from extra nitrogen. Acid rain comes from air pollution plus water. Biomagnification is about stored pollutants moving up food chains.", EX);
+MC("c13", "nitrogen", "A farmer spreads extra fertilizer, then a big rainstorm hits. What is most likely to happen to a lake downstream?", "Nitrogen runoff causes an algal bloom", ["The lake's pH rises sharply", "The fish become an invasive species", "The lake freezes"], "Rain carries fertilizer nitrogen into the lake, and the limiting nutrient sets off algae growth.");
+MC("c14", "nitrogen", "When a huge algal bloom dies and decomposers break it down, what often happens to the lake?", "Decomposers use up the oxygen in the water, and fish can die", ["The lake gets more oxygen than ever", "The water becomes too basic for life", "Nothing; dead algae just sink"], "Decomposition uses oxygen. Low-oxygen \"dead zones\" are a common result of nitrogen runoff.", EX);
+
+/* Biological magnification */
+MC("b1", "biomag", "Biological magnification is when…", "a pollutant's concentration increases at each higher trophic level of a food chain", ["a pollutant's concentration decreases up a food chain", "a population grows faster than its food supply", "algae grow out of control in a lake"], "From the notes: the concentration of a pollutant increases as the number of organisms at each trophic level decreases.", N72);
+MC("b2", "biomag", "In the diagram, which organisms have the HIGHEST concentration of the pollutant?", "Fish-eating birds", ["Large fish", "Zooplankton", "Producers"], "They're at the top of the food chain: 10,000,000 compared to 1 in the water.", F("biomag", N72));
+MC("b3", "biomag", "In the diagram, how many times more concentrated is the pollutant in large fish than in zooplankton?", "100 times", ["10 times", "1,000 times", "2 times"], "Zooplankton 10,000 → large fish 1,000,000. 1,000,000 ÷ 10,000 = 100.", F("biomag", Object.assign({order: ["2 times", "10 times", "100 times", "1,000 times"]}, N72)));
+MC("b4", "biomag", "From producers upward, about how many times does the concentration increase at each trophic level in the diagram?", "10 times", ["2 times", "100 times", "It stays the same"], "1,000 → 10,000 → 100,000 → 1,000,000 → 10,000,000: ×10 each step.", F("biomag", Object.assign({order: ["It stays the same", "2 times", "10 times", "100 times"]}, N72)));
+MC("b5", "biomag", "Going UP a food chain, the number of organisms at each level ____, while the concentration of a stored pollutant ____.", "decreases … increases", ["increases … decreases", "increases … increases", "stays the same … stays the same"], "Fewer organisms at the top, but each one has eaten many from below, so the pollutant piles up.", N72);
+MC("b6", "biomag", "Which kind of pollutant biomagnifies?", "One stored in body fat that isn't broken down or excreted, like DDT or mercury", ["One that dissolves and is peed out quickly", "Oxygen gas", "Water vapor"], "If the body can't get rid of it, it builds up over the organism's life and passes to whatever eats it.", EX);
+MC("b7", "biomag", "Why are top predators like eagles, orcas, and tuna the most at risk from biological magnification?", "They eat many organisms that each carry the pollutant, so it builds up the most in them", ["They drink more water than other animals", "They live in the cleanest parts of the ecosystem", "Predators can't digest pollutants, but prey can"], "Each step up multiplies the dose.");
+MC("b8", "biomag", "Pregnant people are often told to limit large fish like swordfish and tuna. Why?", "Large predatory fish build up high mercury levels through biological magnification", ["Large fish have too much protein", "Large fish are an invasive species", "Large fish cause algal blooms"], "Mercury from burning coal ends up in the water and magnifies up to the big predators.", EX);
+MC("b9", "biomag", "DDT was sprayed on crops and marshes in small amounts, but bald eagles laid eggs with shells so thin they broke. Why were eagles hit so hard?", "DDT built up in each level of the food chain, so the fish the eagles ate were loaded with it", ["Eagles ate the crops directly", "DDT made eagles an invasive species", "DDT caused acid rain on eagle nests"], "That's biological magnification. DDT was banned in the U.S. in 1972, and eagles recovered.", EX);
+
+/* Deforestation, monoculture & other threats */
+MC("t1", "habitat", "Deforestation is the loss of forests. According to the notes, it has negative effects on…", "soil, water, carbon storage, and animals", ["only the trees that are cut", "ocean pH only", "nothing, since trees grow back right away"], "From the notes: loss of forests that can have negative effects on soil, water, carbon storage, and animals.", N72);
+MC("t2", "habitat", "How does deforestation add to climate change?", "Fewer trees take in CO₂, and burned or rotting trees release their stored carbon", ["Trees release nitrogen when cut", "Cutting trees cools the planet", "It causes acid rain"], "Forests store huge amounts of carbon. Losing them both adds CO₂ and removes a carbon sink.");
+MC("t3", "habitat", "Monoculture means…", "planting large areas with a single, high-production crop every year", ["planting many different crops together", "letting land go wild", "raising one animal on a farm"], "From the notes. Example: thousands of acres of nothing but corn.", N72);
+MC("t4", "habitat", "Habitat fragmentation causes ____ loss and makes ecosystems more vulnerable to other disturbances.", "biodiversity", ["carbon", "water", "nitrogen"], "Small, separated patches support fewer species and are easier to wipe out.", N72);
+MC("t5", "habitat", "Which is an example of habitat fragmentation?", "A highway and housing developments split a forest into small, separate patches", ["Clearing an entire forest at once", "Planting only corn on a farm", "Bringing a new species to an island"], "Fragmentation = breaking habitat into pieces. (Clearing all of it is deforestation.)");
+MC("t6", "habitat", "Overharvesting means…", "using a natural resource in an unsustainable way", ["planting the same crop every year", "bringing a species to a new place", "a pollutant building up in a food chain"], "Taking something faster than it can replace itself.", N72);
+MC("t7", "habitat", "Which is an example of overharvesting?", "Catching cod faster than they can reproduce until the population collapses", ["Fishing within limits so the population stays steady", "Releasing pet fish into a lake", "Draining a wetland to build a mall"], "In the 1990s the Atlantic cod fishery collapsed from overfishing.");
+MC("t8", "habitat", "Invasive species are…", "species introduced to new places by humans that disrupt the ecosystem", ["species that have always lived in an area", "species that are endangered", "species that move up a food chain"], "From the notes: introduced to new places by humans, disrupting the ecosystem.", N72);
+MC("t9", "habitat", "Which is an example of an invasive species?", "Zebra mussels carried in ships' ballast water spreading through the Great Lakes", ["Salmon returning to the river where they hatched", "Wolves reintroduced to Yellowstone, where they used to live", "Monarch butterflies migrating to Mexico"], "Zebra mussels were brought by humans from Europe and crowd out native species. Wolves are native to Yellowstone, so they aren't invasive.");
+MC("t10", "habitat", "Why do invasive species often spread so fast in their new home?", "There are no natural predators, diseases, or competitors there to keep them in check", ["They are always larger than native species", "They can't reproduce", "Native species help them spread"], "Without the limiting factors from their home range, their populations can grow almost exponentially.", EX);
+MC("t11", "habitat", "A farmer clears a rainforest and plants nothing but soybeans on it every year. Which TWO human impacts is this?", "Deforestation and monoculture", ["Overharvesting and invasive species", "Acid rain and biological magnification", "Habitat fragmentation and ocean acidification"], "Clearing forest = deforestation. One high-production crop every year = monoculture.");
+MC("t12", "habitat", "Why is a monoculture riskier than a natural, mixed ecosystem?", "A single pest or disease can wipe out the whole crop", ["It has too much biodiversity", "It produces too little food", "It makes the soil more fertile every year"], "With only one species, there's nothing to buffer against a pest that targets it. Same nutrients used every year also wear out the soil.", EX);
+MC("t13", "habitat", "Which action would best REDUCE the harm from habitat fragmentation?", "Building wildlife corridors that connect separated patches", ["Building more roads through the patches", "Planting a monoculture between patches", "Introducing a new predator"], "Corridors let animals move, find mates, and find food between patches.", EX);
+MC("t14", "habitat", "Which statement best describes \"sustainable\" use of a resource?", "Using it in a way that meets our needs without using it up for the future", ["Using as much as possible while it lasts", "Never using the resource at all", "Using it only in developed countries"], "Overharvesting is the opposite: using a resource in an unsustainable way.");
+
+/* Harder short-answer questions */
+const DEATH = "death|deaths|mortality|dying|die|dies|people die|people dying";
+const DOWN = "fall|drop|decreas|declin|lower|low|reduc|go down|goes down|went down|less|fewer|shrink";
+const BIRTH = "birth|births|fertility|babies|baby|born|having kids|having children";
+const UP = "high|stay|remain|same|still|increas|rise|rising|grow|many|lots|large|more|big";
+SA("s1", "dtm", "Explain why a country's population grows FASTEST in Stage 2. Describe what happens to birth rates and death rates, and give at least one reason for the change.",
+  "In Stage 2, improvements in food supply, health care, sanitation, and clean water make the death rate fall (especially infant mortality), but the birth rate stays high. Births far outnumber deaths, so the population grows rapidly.",
+  [["Death rate falls", `${DEATH} ~ ${DOWN}`, "live longer|living longer|longer life|survive|surviving|fewer people die|less people die|people stop dying"],
+   ["Birth rate stays high", `${BIRTH} ~ ${UP}`, "large famil|big famil|many children|many kids|lots of kids|lots of children|more babies|lots of babies|births outnumber|more births than deaths|births are higher"],
+   ["A reason: health care, sanitation, food, or clean water", "health|medic|doctor|hospital|sanitat|hygien|clean water|water supply|sewer|sewage|vaccin|food|farming|transport|cure|disease"]],
+  "The key is the GAP: deaths drop first, births drop later, and the space between them is rapid growth.", N53);
+SA("s2", "dtm", "Give TWO reasons birth rates start to fall in Stage 3, and explain how each one leads to fewer births.",
+  "1) More access to birth control and family planning lets families choose to have fewer children. 2) More education, especially for women, and better jobs mean women start careers and have kids later. Also: children cost more (higher education), people move to cities where kids don't work on farms, and lower infant mortality means families don't need many kids to make sure some survive.",
+  [["Birth control or family planning", "birth control|contracept|family planning|condom|the pill|plan their famil|plan famil"],
+   ["Education (especially for women)", "educat|school|college|universit|learn"],
+   ["Women's status, jobs, or independence", "women|woman|female|career|job|work|employ|independ|wage"],
+   ["Children cost more or are no longer needed for work", "cost|expens|afford|money|price|farm|labor|labour|work on|help the family|help their family|economy of the household"],
+   ["Moving to cities (urbanization)", "urban|city|cities|move to town"],
+   ["Lower infant mortality, so fewer births are needed", "infant|survive|surviving|don't need as many|dont need as many|do not need as many|need fewer|need less"]],
+  "Any two well-explained reasons earn full credit.", Object.assign({need: 2}, N53));
+SA("s3", "age", "A country's age-structure diagram is a wide triangle with a very large base. Predict what will happen to its population over the next 20–30 years, and explain why.",
+  "The population will keep growing. The wide base means a huge share of the population is children, and in 20–30 years they will reach the age to have children of their own, so even more babies will be born.",
+  [["Lots of young people / children", "young|child|kid|youth|baby|babies|base|teen|infant|0-4|under 15"],
+   ["The population will grow", "grow|increas|expand|rise|rising|get bigger|gets bigger|go up|goes up|more people"],
+   ["Because they will reach reproductive age and have kids", "reproduc|have kids|have children|have babies|having kids|having children|having babies|their own|parents|childbearing|grow up|become adults|reach adult|start families|start a family"]],
+  "This \"population momentum\" is why Stage 2 and 3 countries keep growing for decades.", EX);
+SA("s4", "age", "Japan, Germany, and Italy have more elderly people than young people. Describe TWO problems this causes for those countries.",
+  "1) Labor shortages: fewer young adults are available to work. 2) Health care and social security costs rise: more elderly people need care and pensions, but there are fewer workers paying taxes, so the tax burden grows. The population also starts to shrink.",
+  [["Labor shortages / fewer workers", "labor|labour|worker|workforce|work force|jobs|employ|not enough people to work|fewer people working"],
+   ["Higher health care costs", "health|medical|hospital|doctor|nurs|care for"],
+   ["Social security, pensions, or taxes", "social security|pension|retire|tax|benefit|government money|support the elderly"],
+   ["The population shrinks", "shrink|declin|decreas|fewer people|population drop|population goes down|dying out|die out"]],
+  "From the notes: labor shortages and increased health care and social security costs; a greater tax burden.", Object.assign({need: 2}, N53));
+SA("s5", "history", "Use the graph to explain how plowing and irrigation and the Industrial Revolution changed Earth's carrying capacity for humans, and why.",
+  "Both RAISED the carrying capacity. Plowing and irrigation let farmers grow much more food on the same land, so more people could be fed. The Industrial Revolution brought machines, fertilizer, transportation, medicine, and sanitation, which produced even more food and lowered death rates, so the population shot up into the J-curve.",
+  [["Both raised carrying capacity", "increas|raise|rais|higher|more people|grow|boost|went up|go up|goes up|expand"],
+   ["Farming produced more food", "food|crop|farm|harvest|grow more|agricultur"],
+   ["Industrial Revolution: machines, medicine, sanitation, or lower death rates", "machin|factor|technolog|medic|sanitat|health|hospital|vaccin|transport|death|die|fertiliz|energy|fossil|industr"]],
+  "Notice the bubonic plague is the event that lowered the population, not raised the carrying capacity.", F("history", PW));
+SA("s6", "growth", "Canada and Denmark have almost the same birth rate (10.3 vs 10.4), yet Canada grows over 3 times faster (0.74% vs 0.22%). Use the data table to explain why.",
+  "Canada has a much higher immigration rate (5.7 vs 2.1 per 1,000), so many more people move in. Canada also has a lower death rate (8.5 vs 10.3), so births outnumber deaths by more (natural increase of 1.8 vs 0.1 per 1,000).",
+  [["Canada has more immigration", "immigra|migra|moving in|move in|moves in|5.7|people come|come to canada|newcomers"],
+   ["Canada has a lower death rate (or Denmark's is higher)", `${DEATH} ~ ${DOWN}`, "denmark has a higher death|denmark's death|denmark death|10.3|8.5|fewer deaths|less deaths|fewer people die|less people die"]],
+  "Growth rate ≈ (birth rate − death rate + immigration rate) ÷ 10. Canada: (10.3 − 8.5 + 5.7) ÷ 10 = 0.75%. Denmark: (10.4 − 10.3 + 2.1) ÷ 10 = 0.22%.", F("countries", PW));
+SA("s7", "footprint", "The average U.S. footprint is 8.1 gha, about 4 times Ghana's 2.0 gha. Use the two parts of what a footprint measures to explain the difference.",
+  "A footprint measures (1) the resources you use and (2) the wastes you make. The average American uses much more energy, food, water, and housing (bigger homes, more driving and flying, more meat and stuff), and produces much more trash, sewage, and greenhouse gases, so it takes more land and water to support them.",
+  [["Americans use more resources (energy, food, water, shelter)", "resourc|energy|electric|food|water|shelter|house|home|car=|cars=|driv|fly|flight|travel|meat|consum|stuff|buy|gas|fuel"],
+   ["Americans produce more wastes (trash, sewage, greenhouse gases)", "waste|trash|garbage|sewage|greenhouse|co2|carbon|emission|pollut"]],
+  "Both parts count: use of resources AND the wastes produced.", N71);
+SA("s8", "footprint", "Describe TWO specific changes a person could make to shrink their ecological footprint.",
+  "Examples: switch to greener (solar or wind) electricity; travel less by car or plane and bike, walk, or take the bus; eat less meat or more local food; reduce, reuse, recycle, and compost; use less water; buy less new stuff.",
+  [["Travel less, or walk, bike, carpool, or use public transit", "travel|driv|car=|cars=|bike|bicycl|walk|bus=|buses|train|transit|carpool|fly|flight|plane"],
+   ["Greener electricity or less energy", "solar|wind|renewabl|green|electric|energy|lights|unplug|thermostat|heat|power"],
+   ["Eat less meat or more local food", "meat|beef|vegetar|vegan|local|plant based|garden"],
+   ["Reduce, reuse, recycle, or compost", "recycl|reus|compost|trash|waste|plastic|thrift|second hand|secondhand|buy less|fewer things|less stuff"],
+   ["Use less water", "water|shower"],
+   ["Smaller home", "smaller house|smaller home|tiny home|apartment"]],
+  "Two changes from different categories earn full credit.", Object.assign({need: 2}, N71));
+SA("s9", "nitrogen", "Explain how burning fossil fuels in a city can cause an algal bloom in a lake many miles away.",
+  "Burning fossil fuels releases nitrogen into the air. Wind carries it far away, and it falls back down (in rain) into the lake. Nitrogen is a limiting nutrient for producers, so the extra nitrogen lets algae grow out of control: an algal bloom.",
+  [["Nitrogen is released into the air", "nitrogen ~ air|atmos|wind|travel|sky|released|smoke", "air ~ nitrogen", "emission|exhaust|smoke|pollut"],
+   ["It travels and falls into the lake (often with rain)", "rain|fall|falls|deposit|land|lands|settl|wash|carried|blow|wind|travel"],
+   ["Nitrogen is a limiting nutrient, so algae grow fast", "limit|nutrient|fertiliz|feed|food for", "algae ~ grow|multipl|spread|explod|bloom|increas|thrive"]],
+  "Pollution doesn't stay where it's made. Air and water carry it across whole regions.", N72);
+SA("s10", "nitrogen", "Explain how extra CO₂ in the atmosphere makes it harder for clams, corals, and snails to build their shells.",
+  "The ocean absorbs CO₂ from the atmosphere. In seawater, CO₂ forms carbonic acid, which releases H⁺ ions and lowers the pH (ocean acidification). The H⁺ ions bind to carbonate ions, so fewer carbonate ions are left for building calcium carbonate shells and skeletons.",
+  [["The ocean absorbs CO₂", "ocean|sea|seawater|water ~ absorb|dissolv|take in|takes in|soak|mix|enter", "absorb|dissolv"],
+   ["It forms acid and lowers the pH", "carbonic|acid|ph=|hion|hydrogen"],
+   ["Fewer carbonate ions for shells", "carbonate|calcium|bicarbonat|minerals for|building material"]],
+  "The diagram in your notes shows CO₂ + water → carbonic acid → H⁺, with fewer carbonate ions left for shell builders.", N72);
+SA("s11", "biomag", "DDT was sprayed in small amounts, but fish-eating birds ended up with very high levels in their bodies. Explain why.",
+  "DDT is stored in fat and isn't broken down or excreted, so it builds up in each organism. Each predator eats many organisms from the level below, taking in all of their DDT. So the concentration multiplies at each trophic level (biological magnification), and the birds at the top get the most.",
+  [["DDT is stored and builds up in the body", "stor|build|accumul|stay|stays|fat=|fats|fatty|not broken|isn't broken|can't break|cannot break|doesn't break|not excret|can't get rid|cannot get rid|doesn't leave|collect"],
+   ["Each predator eats MANY organisms below it", "many|lots|alot|multiple|large amount|a lot|hundreds|thousands|more fish|several"],
+   ["Concentration increases up each trophic level", "magnif|concentrat|level|food chain|chain|up the|higher|increas|multipl|top"]],
+  "Water 1 → producers 1,000 → zooplankton 10,000 → small fish 100,000 → large fish 1,000,000 → fish-eating birds 10,000,000.", F("biomag", N72));
+SA("s12", "habitat", "A new highway is built through a large forest. Explain how habitat fragmentation could reduce biodiversity there, even though most of the forest is still standing.",
+  "The highway splits the forest into smaller, isolated patches. Animals can't move safely between them to find food, mates, or territory, and many get hit crossing. The smaller populations in each patch are more vulnerable to disturbances like disease, fire, or inbreeding and can die out, so the number of species drops.",
+  [["The forest is split into smaller, isolated patches", "split|divid|separat|isolat|patch|piece|fragment|cut|smaller|broken"],
+   ["Animals can't move, find mates, food, or territory", "move|migrat|cross|mate|mating|travel|reach|territor|find food|roam|roadkill|hit by|wander|get to"],
+   ["Small populations are more vulnerable and can die out", "vulnerab|die out|dies out|extinct|disturb|disease|fire|inbreed|small population|smaller population|declin|lose species|fewer species|biodiversity"]],
+  "From the notes: habitat fragmentation causes biodiversity loss and makes ecosystems more vulnerable to other disturbances.", N72);
+SA("s13", "anthro", "What is the Anthropocene, and what evidence from the Great Acceleration graphs supports the idea that we are living in it?",
+  "The Anthropocene (\"Age of Humans\") is the period when human activity became the major cause of global change. Evidence: since about 1950, world population, energy use, fertilizer use, and water use have shot up, and so have their effects on Earth, like coastal nitrogen and marine fish capture.",
+  [["Human activity is the major cause of global change", "human ~ major|main|biggest|largest|domin|cause|change|impact|effect|control", "people ~ major|main|biggest|domin|cause|change|impact", "age of humans|age of man"],
+   ["Evidence: sharp increases since about 1950", "1950|population|energy|fertiliz|water use|fish|nitrogen|co2|carbon dioxide|skyrocket|sharp|spike|exponent|shot up|accelerat|rapid"]],
+  "The Great Acceleration is often used to mark the start of the Anthropocene.", F("accel", N71));
+
+/* Randomized math (new numbers every attempt; still multiple choice) */
+const signed = n => (n > 0 ? "+" : n < 0 ? "−" : "") + fmt(Math.abs(n));
+const uniq = (a, w) => new Set([a, ...w]).size === w.length + 1;
+GEN("x1", "growth", () => {
+  let b, d, i, e, ch, w;
+  do {
+    b = rand(120, 480) * 100; d = rand(60, 400) * 100; i = rand(5, 90) * 100; e = rand(5, 90) * 100; ch = b + i - d - e;
+    w = [b - d, b + e - d - i, b + i - d + e].map(n => `${signed(n)} people`);
+  } while (!uniq(`${signed(ch)} people`, w) || i === e);
+  return {t: "mc", q: `In one year, a country has ${fmt(b)} births, ${fmt(d)} deaths, ${fmt(i)} immigrants, and ${fmt(e)} emigrants. How much does its population change?`, a: `${signed(ch)} people`, w, why: `(births + immigration) − (deaths + emigration) = (${fmt(b)} + ${fmt(i)}) − (${fmt(d)} + ${fmt(e)}) = ${signed(ch)} people.`};
+});
+GEN("x2", "growth", () => {
+  let br, dr, nm, r, w;
+  const p = n => `${(Math.round(n * 100) / 100).toFixed(2).replace("-", "−")}% per year`, sn = n => n < 0 ? "−" + Math.abs(n) : String(n);
+  do {
+    br = rand(80, 450) / 10; dr = rand(50, 150) / 10; nm = rand(-30, 60) / 10; r = (br - dr + nm) / 10;
+    w = [p((br - dr) / 10), p(br - dr + nm), p((br + dr + nm) / 10)];
+  } while (Math.abs(nm) < 0.5 || !uniq(p(r), w));
+  return {t: "mc", q: `A country has a birth rate of ${br} per 1,000, a death rate of ${dr} per 1,000, and a net migration rate of ${sn(nm)} per 1,000. What is its growth rate?`, a: p(r), w, why: `Growth rate (%) = (birth rate − death rate + net migration) ÷ 10, because the rates are per 1,000 and a percent is per 100. (${br} − ${dr} ${nm < 0 ? "−" : "+"} ${Math.abs(nm)}) ÷ 10 = ${p(r)}. Check it on the class data: Kenya (25.1 − 6.8 − 0.2) ÷ 10 = 1.81%.`};
+});
+GEN("x3", "growth", () => {
+  let P, br, dr, add, w;
+  do {
+    P = pick([4, 6, 10, 20, 30, 50, 80]); br = rand(10, 40); dr = rand(5, 12); add = P * 1e6 * (br - dr) / 1000;
+    w = [P * 1e6 * (br - dr) / 100, P * 1e6 * br / 1000, P * 1e6 * (br - dr) / 10000].map(n => `About ${fmt(n)} people`);
+  } while (br <= dr || !uniq(`About ${fmt(add)} people`, w));
+  return {t: "mc", q: `A country of ${P} million people has a birth rate of ${br} and a death rate of ${dr} (per 1,000). Ignoring migration, about how many people does it gain in a year?`, a: `About ${fmt(add)} people`, w, why: `It gains ${br} − ${dr} = ${br - dr} people for every 1,000. ${P} million ÷ 1,000 = ${fmt(P * 1000)} groups of 1,000, so ${fmt(P * 1000)} × ${br - dr} = ${fmt(add)} people.`};
+});
+GEN("x4", "biomag", () => {
+  const L = ["zooplankton", "small fish", "large fish", "fish-eating birds"];
+  let s, t, c, ans, w;
+  const r = n => Math.round(n * 1e6) / 1e6, u = n => `${fmt(r(n))} ppm`;
+  do {
+    s = rand(0, 2); t = rand(s + 1, 3); c = pick([0.002, 0.003, 0.004, 0.005, 0.01, 0.02]); const k = t - s; ans = c * Math.pow(10, k);
+    w = [u(c * Math.pow(10, k - 1)), u(c * Math.pow(10, k + 1)), u(c * Math.pow(10, k + 2))];
+  } while (!uniq(u(ans), w));
+  return {t: "mc", q: `Mercury is found at ${fmt(c)} ppm in ${L[s]}. If its concentration increases about 10 times at each trophic level, about what will it be in ${L[t]}?`, a: u(ans), w, why: `${L.slice(s, t + 1).join(" → ")} is ${t - s} step${t - s > 1 ? "s" : ""} up: ${fmt(c)} × ${fmt(Math.pow(10, t - s))} = ${u(ans)}.`};
+});
+GEN("x5", "footprint", () => {
+  const who = pick([["the average American", 8.1], ["the average person in Russia", 6.1], ["the average person in France", 4.6], ["the average person in Peru", 2.1], ["someone", rand(25, 120) / 10]]);
+  const fp = who[1], e = n => `About ${(Math.round(n * 10) / 10).toFixed(1)} Earths`;
+  const a = e(fp / 1.6), w = [e(fp * 1.6), e(fp - 1.6), e(1.6 / fp)];
+  return {t: "mc", q: `Earth can supply about 1.6 gha of productive land and water per person. If everyone lived like ${who[0]} (a footprint of ${fp} gha), about how many Earths would we need?`, a, w: uniq(a, w) ? w : [e(fp * 2), e(fp + 1.6), e(1.6 / fp)], why: `Earths needed = footprint ÷ what Earth supplies per person = ${fp} ÷ 1.6 ≈ ${(Math.round(fp / 1.6 * 10) / 10).toFixed(1)}.`};
+});
+
+/* ---------- figures (inline SVG, drawn for this test) ---------- */
+const AH = id => `<defs><marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs>`;
+const tagc = (x, y, t) => `<circle class="tagc" cx="${x}" cy="${y}" r="12"/><text class="tagt" x="${x}" y="${y + 4.5}" text-anchor="middle">${t}</text>`;
+const box = (x, y, w, h, t, cls = "bx", tcls = "tx b") => `<rect class="${cls}" x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="6"/><text class="${tcls}" x="${x}" y="${y + 4.5}" text-anchor="middle">${t}</text>`;
+// smooth curve through key points (Catmull-Rom), returned as sampled [x, y] pairs
+function spline(P, steps = 14) {
+  const out = [];
+  for (let i = 0; i < P.length - 1; i++) {
+    const p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)];
+    for (let s = 0; s < steps; s++) {
+      const t = s / steps, t2 = t * t, t3 = t2 * t;
+      const f = k => 0.5 * ((2 * p1[k]) + (-p0[k] + p2[k]) * t + (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * t2 + (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * t3);
+      out.push([f(0), f(1)]);
+    }
+  }
+  out.push(P[P.length - 1]);
+  return out;
+}
+const pts = a => a.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
+const yAt = (S, x) => { for (let i = 1; i < S.length; i++) if (S[i][0] >= x) { const [x0, y0] = S[i - 1], [x1, y1] = S[i]; return x1 === x0 ? y1 : y0 + (y1 - y0) * (x - x0) / (x1 - x0); } return S[S.length - 1][1]; };
+const FIG = {};
+
+FIG.history = () => {
+  const X = yr => 64 + (yr + 10000) / 12000 * 516, Y = b => 226 - b * 190 / 7;
+  const data = [[-10000, .004], [-8000, .005], [-5000, .01], [-3000, .03], [-1000, .05], [0, .19], [500, .21], [1000, .28], [1200, .4], [1340, .44], [1360, .37], [1500, .46], [1650, .55], [1750, .79], [1800, .98], [1850, 1.26], [1900, 1.65], [1925, 2], [1950, 2.5], [1960, 3], [1975, 4.07], [1987, 5], [2000, 6.1]];
+  let g = ""; for (let b = 0; b <= 7; b++) g += `<line class="gr" x1="64" x2="580" y1="${Y(b)}" y2="${Y(b)}" opacity="${b ? .5 : 0}"/><text class="tx m" x="56" y="${Y(b) + 4}" text-anchor="end">${b}</text>`;
+  const xt = [[-10000, "10,000 B.C."], [-5000, "5000 B.C."], [0, "0"], [2000, "2000 A.D."]].map(([yr, t]) => `<text class="tx m" x="${X(yr)}" y="246" text-anchor="${yr === -10000 ? "start" : yr === 2000 ? "end" : "middle"}">${t}</text>`).join("");
+  const lab = (x, y, lines, tx, ty) => `<text class="tx b" x="${x}" y="${y}" text-anchor="middle">${lines.map((l, i) => `<tspan x="${x}" dy="${i ? 15 : 0}">${l}</tspan>`).join("")}</text><line class="ar" x1="${x}" y1="${y + 15 * (lines.length - 1) + 7}" x2="${tx}" y2="${ty}" marker-end="url(#ahH)"/>`;
+  return `<svg viewBox="0 0 600 270" role="img" aria-label="Graph of human population from 10,000 B.C. to 2000 A.D.: nearly flat near zero for thousands of years, then shooting straight up to about 6 billion after the Industrial Revolution.">${AH("ahH")}
+    ${g}<line class="ax" x1="64" y1="226" x2="580" y2="226"/><line class="ax" x1="64" y1="36" x2="64" y2="226"/>${xt}
+    <text class="tx s" transform="translate(18 132) rotate(-90)" text-anchor="middle">Population (billions)</text><text class="tx s" x="322" y="264" text-anchor="middle">Year</text>
+    <polyline class="l3" points="${pts(data.map(([yr, b]) => [X(yr), Y(b)]))}"/>
+    ${lab(150, 116, ["Agriculture", "begins"], 150, 218)}${lab(365, 150, ["Plowing and", "irrigation"], 365, 219)}${lab(468, 164, ["Bubonic", "plague"], 549, 212)}${lab(470, 60, ["Industrial Revolution", "begins"], 568, 200)}
+  </svg>`;
+};
+
+FIG.dtm = () => {
+  const B = [56, 150, 270, 390, 490, 572];
+  const wig = (S, a, f, ph) => S.map(([x, y]) => [x, x < 150 ? y + a * Math.sin(x / f + ph) * Math.min(1, (150 - x) / 25) : y]);
+  const birth = wig(spline([[56, 70], [150, 70], [270, 74], [330, 130], [390, 186], [490, 194], [572, 206]], 40), 4, 9, 0);
+  const death = wig(spline([[56, 76], [150, 78], [210, 132], [270, 166], [390, 196], [490, 199], [572, 184]], 40), 7, 8, 1.3);
+  const total = spline([[56, 228], [150, 226], [230, 206], [330, 130], [430, 82], [490, 76], [572, 88]]);
+  const inc = [], dec = [];
+  for (let x = 150; x <= 488; x += 4) inc.push([x, yAt(birth, x)]);
+  for (let x = 488; x >= 150; x -= 4) inc.push([x, Math.max(yAt(death, x), yAt(birth, x))]);
+  for (let x = 512; x <= 572; x += 4) dec.push([x, yAt(death, x)]);
+  for (let x = 572; x >= 512; x -= 4) dec.push([x, yAt(birth, x)]);
+  const bands = B.slice(0, 5).map((x, i) => `<text class="tx b" x="${(x + B[i + 1]) / 2}" y="30" text-anchor="middle">Stage ${i + 1}</text>`).join("") + B.slice(1, 5).map(x => `<line class="gr" x1="${x}" x2="${x}" y1="38" y2="236"/>`).join("");
+  return `<svg viewBox="0 0 600 296" role="img" aria-label="Demographic transition graph with 5 stages. Birth rate and death rate both start high. The death rate falls first in Stage 2, the birth rate falls in Stage 3, both are low in Stage 4, and in Stage 5 the death rate rises above the birth rate. Total population rises through Stages 2 and 3, levels off in Stage 4, and dips in Stage 5.">
+    <polygon class="gap" points="${pts(inc)}"/><polygon class="gap2" points="${pts(dec)}"/>
+    ${bands}<line class="ax" x1="56" y1="236" x2="572" y2="236"/><line class="ax" x1="56" y1="38" x2="56" y2="236"/>
+    <polyline class="l3 dashl" points="${pts(total)}"/><polyline class="l2" points="${pts(birth)}"/><polyline class="l1" points="${pts(death)}"/>
+    <text class="tx s" transform="translate(40 137) rotate(-90)" text-anchor="middle">Rate per 1,000 people</text>
+    <text class="tx s" x="226" y="100" text-anchor="middle">natural</text><text class="tx s" x="226" y="113" text-anchor="middle">increase</text>
+    <g transform="translate(70 262)"><line class="l2" x1="0" x2="26" y1="0" y2="0"/><text class="tx" x="32" y="4.5">Birth rate</text>
+    <line class="l1" x1="130" x2="156" y1="0" y2="0"/><text class="tx" x="162" y="4.5">Death rate</text>
+    <line class="l3 dashl" x1="268" x2="294" y1="0" y2="0"/><text class="tx" x="300" y="4.5">Total population</text></g>
+    <text class="tx s" x="314" y="288" text-anchor="middle">Time →</text>
+  </svg>`;
+};
+
+FIG.ages = () => {
+  const shapes = {A: [1, .7, .5, .36, .25, .16, .09, .04], B: [1, .88, .76, .64, .52, .4, .28, .15], C: [.8, .8, .79, .77, .73, .64, .5, .28], D: [.48, .56, .66, .78, .86, .84, .7, .42]};
+  return `<svg viewBox="0 0 600 236" role="img" aria-label="Four age-structure diagrams. A: very wide base that narrows quickly. B: a straight-sided triangle. C: nearly straight sides, rounded at the top. D: narrow base, widest in the middle and upper ages.">
+    ${["A", "B", "C", "D"].map((k, i) => {
+      const cx = 75 + i * 150;
+      const bars = shapes[k].map((f, j) => { const w = f * 58, y = 192 - (j + 1) * 20; return `<rect class="pm" x="${cx - w}" y="${y}" width="${w}" height="18" rx="2"/><rect class="pf" x="${cx}" y="${y}" width="${w}" height="18" rx="2"/>`; }).join("");
+      return `${bars}<line class="ax" x1="${cx}" x2="${cx}" y1="28" y2="194"/><text class="tx m" x="${cx - 34}" y="22" text-anchor="middle">male</text><text class="tx m" x="${cx + 34}" y="22" text-anchor="middle">female</text>${tagc(cx, 216, k)}`;
+    }).join("")}
+    <text class="tx m" x="4" y="190">0</text><text class="tx m" x="4" y="42">80+</text>
+  </svg>`;
+};
+
+FIG.countries = () => `<table><thead><tr><th>Country</th><th>Birth rate<br>(per 1,000)</th><th>Death rate<br>(per 1,000)</th><th>Immigration rate<br>(per 1,000)</th><th>Growth rate<br>(per year)</th><th>Median age<br>(years)</th><th>Life expectancy<br>(years)</th></tr></thead><tbody>
+  <tr><td>Angola</td><td>33.6</td><td>11.3</td><td>−0.1</td><td>2.72%</td><td>18.2</td><td>56</td></tr>
+  <tr><td>Kenya</td><td>25.1</td><td>6.8</td><td>−0.2</td><td>1.81%</td><td>19.5</td><td>64</td></tr>
+  <tr><td>Canada</td><td>10.3</td><td>8.5</td><td>5.7</td><td>0.74%</td><td>42</td><td>81.9</td></tr>
+  <tr><td>Denmark</td><td>10.4</td><td>10.3</td><td>2.1</td><td>0.22%</td><td>42</td><td>79.4</td></tr></tbody></table>`;
+
+FIG.biomag = () => {
+  const L = [["Water", "1"], ["Producers", "1,000"], ["Zooplankton", "10,000"], ["Small fish", "100,000"], ["Large fish", "1,000,000"], ["Fish-eating birds", "10,000,000"]];
+  const cx = 205, top = 34, h = 40, wB = 390, wT = 156, n = L.length;
+  const half = y => (wT + (wB - wT) * (y - top) / (n * h)) / 2;
+  return `<svg viewBox="0 0 600 300" role="img" aria-label="Biological magnification pyramid. Concentration of a pollutant: water 1, producers 1,000, zooplankton 10,000, small fish 100,000, large fish 1,000,000, fish-eating birds 10,000,000.">${AH("ahB")}
+    ${L.map(([name, c], i) => {
+      const yb = top + (n - i) * h, yt = yb - h, cls = ["v1", "v2", "v3", "v4"][i % 4];
+      return `<polygon class="${cls} lvl" points="${cx - half(yb)},${yb} ${cx + half(yb)},${yb} ${cx + half(yt)},${yt} ${cx - half(yt)},${yt}"/><text class="tx b" x="${cx}" y="${yt + 25}" text-anchor="middle">${name}</text><text class="tx b" x="490" y="${yt + 25}" text-anchor="end" style="font-family:var(--f-mono)">${c}</text><line class="gr" x1="${cx + half(yt + h / 2) + 6}" x2="404" y1="${yt + h / 2}" y2="${yt + h / 2}"/>`;
+    }).join("")}
+    <text class="tx s" x="490" y="20" text-anchor="end">Concentration (water = 1)</text>
+    <line class="ar" x1="548" y1="270" x2="548" y2="40" marker-end="url(#ahB)"/><text class="tx s" transform="translate(568 155) rotate(-90)" text-anchor="middle">Pollutant concentration increases</text>
+  </svg>`;
+};
+
+FIG.accel = () => {
+  const X = yr => 60 + (yr - 1750) / 260 * 470, Y = v => 220 - v * 176;
+  const lines = [
+    ["l3", "World population", [[1750, .04], [1850, .08], [1900, .12], [1950, .22], [1980, .55], [2010, .9]]],
+    ["l2", "Primary energy use", [[1750, .01], [1850, .02], [1900, .05], [1950, .14], [1980, .5], [2010, .96]]],
+    ["l1", "Fertilizer use", [[1750, 0], [1900, .005], [1940, .02], [1960, .14], [1975, .42], [1990, .7], [2010, 1]]],
+    ["l4", "Water use", [[1750, .02], [1900, .07], [1950, .18], [1980, .52], [2010, .78]]]
+  ];
+  const ticks = [1750, 1800, 1850, 1900, 1950, 2000].map(yr => `<text class="tx m" x="${X(yr)}" y="238" text-anchor="middle">${yr}</text>`).join("");
+  const ends = [[1, "Fertilizer use"], [.96, "Energy use"], [.9, "Population"], [.78, "Water use"]];
+  return `<svg viewBox="0 0 600 256" role="img" aria-label="Great Acceleration graph, 1750 to 2010. World population, primary energy use, fertilizer use, and water use all stay low and nearly flat, then shoot upward together after 1950.">
+    <line class="ax" x1="60" y1="220" x2="534" y2="220"/><line class="ax" x1="60" y1="36" x2="60" y2="220"/>${ticks}
+    <line class="gr" x1="${X(1950)}" x2="${X(1950)}" y1="30" y2="220"/>
+    ${lines.map(([c, , P]) => `<polyline class="${c}" points="${pts(spline(P.map(([yr, v]) => [X(yr), Y(v)])))}"/>`).join("")}
+    ${[["l1", 0], ["l2", 1], ["l3", 2], ["l4", 3]].map(([c, i]) => `<line class="${c}" x1="398" x2="414" y1="${50 + i * 17}" y2="${50 + i * 17}"/><text class="tx s" x="419" y="${54 + i * 17}">${ends[i][1]}</text>`).join("")}
+    <text class="tx s" transform="translate(42 128) rotate(-90)" text-anchor="middle">Amount (relative)</text>
+  </svg>`;
+};
+
+FIG.ocean = () => `<svg viewBox="0 0 600 248" role="img" aria-label="Ocean acidification: extra CO2 in the air dissolves in the ocean. CO2 plus water makes carbonic acid, which releases hydrogen ions. More hydrogen ions lower the pH, and they tie up carbonate ions, leaving fewer for shells.">${AH("ahO")}
+  ${box(150, 26, 270, 30, "Extra CO₂ in the air (fossil fuels)", "bx3")}
+  <path class="l1" d="M10,66 q15,-8 30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0 t30,0"/><text class="tx s" x="590" y="56" text-anchor="end">ocean surface</text>
+  <line class="ar" x1="80" y1="42" x2="80" y2="100" marker-end="url(#ahO)"/>
+  ${box(80, 118, 112, 32, "CO₂ + H₂O")}<line class="ar" x1="137" y1="118" x2="168" y2="118" marker-end="url(#ahO)"/>
+  ${box(256, 118, 172, 32, "Carbonic acid (H₂CO₃)")}<line class="ar" x1="343" y1="118" x2="372" y2="118" marker-end="url(#ahO)"/>
+  ${box(482, 118, 214, 32, "H⁺ ions + bicarbonate", "bx2")}
+  <line class="ar" x1="520" y1="135" x2="520" y2="178" marker-end="url(#ahO)"/><line class="ar" x1="430" y1="135" x2="330" y2="178" marker-end="url(#ahO)"/>
+  ${box(510, 198, 160, 34, "pH drops: more acidic", "bx3")}
+  <rect class="bx3" x="100" y="180" width="236" height="50" rx="6"/><text class="tx b" x="218" y="201" text-anchor="middle">H⁺ ties up carbonate ions,</text><text class="tx b" x="218" y="219" text-anchor="middle">fewer are left for shells</text>
+</svg>`;
+
+const HERO_MINI = `<svg class="mini" viewBox="0 0 140 112" aria-hidden="true"><line x1="14" y1="96" x2="134" y2="96" stroke="var(--ink)" stroke-width="1.5"/><line x1="14" y1="8" x2="14" y2="96" stroke="var(--ink)" stroke-width="1.5"/><polyline points="${pts(spline([[16, 93], [70, 91], [100, 86], [116, 70], [124, 40], [128, 12]], 10))}" fill="none" stroke="var(--moss)" stroke-width="3" stroke-linecap="round"/><circle cx="128" cy="12" r="4.5" fill="var(--sun)"/><text x="14" y="108">10,000 B.C.</text><text x="134" y="108" text-anchor="end">now</text></svg>`;
+
+/* ---------- building a test ---------- */
+const BYID = Object.fromEntries(B.map(q => [q.id, q]));
+const VBY = Object.fromEntries(VOCAB.map(v => [v[0], v]));
+const conflict = (a, b) => CONFLICTS.some(c => (c[0] === a && c.includes(b)) || (c[0] === b && c.includes(a)));
+const isSA = q => q.t === "sa";
+
+function instance(q) {
+  const base = {id: q.id, t: q.t, topic: q.topic, src: q.src || "", fig: q.fig || null, why: q.why || ""};
+  if (q.t === "gen") { const g = q.fn(); return instance(Object.assign({}, g, {id: q.id, topic: q.topic, src: "New numbers each time", fig: g.fig || null})); }
+  if (q.t === "mc") { const opts = q.order ? q.order.slice() : shuffle([q.a, ...q.w]); return Object.assign(base, {q: q.q, opts, ans: opts.indexOf(q.a), pts: 1}); }
+  if (q.t === "tf") return Object.assign(base, {t: "mc", q: q.q, opts: ["True", "False"], ans: q.a ? 0 : 1, pts: 1});
+  if (q.t === "sa") return Object.assign(base, {q: q.q, model: q.model, ideas: q.ideas, need: q.need || 0, pts: q.need || q.ideas.length});
+  return base;
+}
+function matchItems(terms) {
+  const list = shuffle(terms), n = Math.max(1, Math.ceil(list.length / 6)), rounds = Array.from({length: n}, () => []);
+  const cap = Math.ceil(list.length / n);
+  for (const term of list) {
+    const ok = rounds.filter(rd => rd.length < cap && !rd.some(x => conflict(x, term)));
+    const pool = ok.length ? ok : rounds;
+    pool.reduce((m, rd) => rd.length < m.length ? rd : m, pool[0]).push(term);
+  }
+  return rounds.filter(r => r.length).map(r => ({id: "match", t: "match", topic: "vocab", src: "Every vocab word", q: "Match each term to its definition.", terms: shuffle(r), defs: shuffle(r), pts: r.length}));
+}
+function vocabMC(term) {
+  const v = VBY[term];
+  const near = shuffle(VOCAB.filter(x => x[0] !== term && x[2] === v[2])), far = shuffle(VOCAB.filter(x => x[0] !== term && x[2] !== v[2]));
+  const opts = shuffle([term, ...[...near, ...far].slice(0, 3).map(x => x[0])]);
+  return {id: "vq:" + term, t: "mc", topic: "vocab", src: "Vocab", fig: null, q: v[1], opts, ans: opts.indexOf(term), pts: 1, why: `${term}: ${v[1]}.`, vterm: term};
+}
+const vocabFor = terms => terms.length >= 4 ? matchItems(terms) : terms.map(vocabMC);
+// multiple choice spread evenly over every topic
+function spread(pool, n) {
+  const byTopic = {}; for (const q of shuffle(pool)) (byTopic[q.topic] = byTopic[q.topic] || []).push(q);
+  const keys = shuffle(Object.keys(byTopic)), out = [];
+  while (out.length < n && keys.some(k => byTopic[k].length)) for (const k of keys) if (byTopic[k].length && out.length < n) out.push(byTopic[k].pop());
+  return out;
+}
+function buildRun(mode, opts = {}) {
+  let items = [], label = "";
+  const mcs = B.filter(q => q.t === "mc" || q.t === "tf"), gens = B.filter(q => q.t === "gen"), sas = B.filter(isSA);
+  if (mode === "full") {
+    label = "Full test";
+    items = B.map(instance);
+  } else if (mode === "practice" || mode === "quick") {
+    const big = mode === "practice";
+    label = big ? "Practice test" : "Quick quiz";
+    const nMC = big ? 34 : 12, nGen = big ? 3 : 2, nSA = big ? 3 : 1;
+    items = [...shuffle(gens).slice(0, nGen), ...spread(mcs, nMC), ...spread(sas, nSA)].map(instance);
+  } else if (mode === "sa") {
+    label = "Short answers";
+    items = sas.map(instance);
+  } else if (mode === "vocab") {
+    label = "Vocab match";
+    items = matchItems(VOCAB.map(v => v[0]));
+  } else if (mode === "topics") {
+    const ts = opts.topics;
+    label = ts.length === 1 ? TOPICS[ts[0]] : `Topics (${ts.length})`;
+    items = B.filter(q => ts.includes(q.topic)).map(instance).concat(vocabFor(VOCAB.filter(v => ts.includes(v[2])).map(v => v[0])));
+  } else if (mode === "missed") {
+    label = "Missed questions";
+    const ids = opts.missed || [];
+    const terms = [...new Set(ids.filter(id => id.startsWith("v:")).map(id => id.slice(2)).filter(t => VBY[t]))];
+    items = ids.filter(id => BYID[id]).map(id => instance(BYID[id])).concat(vocabFor(terms));
+  }
+  // short answers go last, like the written section of a real test
+  if (mode !== "vocab") items = [...shuffle(items.filter(it => !isSA(it))), ...shuffle(items.filter(isSA))];
+  return {id: uid(), mode, label, study: S.study, items, resp: [], res: [], i: 0, started: Date.now(), elapsed: 0};
+}
+
+/* ---------- short-answer grading ----------
+   Each idea is a list of cues; the idea counts when any cue is found in the answer.
+   "a|b|c"  any of these (each word matches by its start, so "decreas" matches decrease/decreasing; "ph=" must match exactly)
+   "x ~ y"  x and y in the same part of a sentence: y within 6 words after x ("death rates fall"), or right before it ("falling death rates")
+   "x & y"  both somewhere in the answer */
+const NEG = new Set(["not", "no", "never", "isnt", "arent", "dont", "doesnt", "didnt", "wont", "cant", "cannot", "without", "hardly"]);
+const CONJ = new Set([",", "and", "or", "but", "while", "whereas", "however", "although", "though", "so", "because", "since", "then", "yet"]);
+const RATE_NOUN = /^(birth|births|death|deaths|fertility|mortality)$/;
+const saNorm = s => String(s).toLowerCase().replace(/[’‘`]/g, "'").replace(/'/g, "").replace(/₂/g, "2").replace(/₃/g, "3").replace(/\bh\s*[+⁺]/g, " hion ").replace(/,/g, " , ").replace(/[^a-z0-9, ]+/g, " ").replace(/\s+/g, " ").trim();
+const toks = s => saNorm(s).split(" ").filter(Boolean);
+const cueCache = new Map();
+function parseSide(side) {
+  return side.split("|").map(alt => alt.trim().split(/\s+/).flatMap(raw => { const ex = raw.endsWith("="); return toks(raw.replace(/=$/, "")).filter(t => t !== ",").map(t => ({t, ex: ex || /^\d+$/.test(t)})); })).filter(a => a.length);
+}
+function parseCue(c) {
+  if (!cueCache.has(c)) cueCache.set(c, c.split(" & ").map(part => part.split(" ~ ").map(parseSide)));
+  return cueCache.get(c);
+}
+const altLen = (T, i, alt) => { for (let k = 0; k < alt.length; k++) { const w = T[i + k]; if (w === undefined || (alt[k].ex ? w !== alt[k].t : !w.startsWith(alt[k].t))) return 0; } return alt.length; };
+const sideAt = (T, i, side) => { for (const alt of side) { const l = altLen(T, i, alt); if (l) return l; } return 0; };
+const negated = (T, k) => [T[k - 1], T[k - 2]].some(w => w && NEG.has(w)) && !CONJ.has(T[k - 1]);
+function pairIn(T, A, Bs) {
+  for (let a = 0; a < T.length; a++) {
+    const la = sideAt(T, a, A); if (!la) continue;
+    let j = a + la;
+    if ((T[j] === "and" || T[j] === "or") && RATE_NOUN.test(T[j + 1] || "")) j += 2;
+    for (let k = j; k < Math.min(T.length, j + 6); k++) { if (CONJ.has(T[k])) break; if (sideAt(T, k, Bs) && !negated(T, k)) return true; }
+    let i = a - 1;
+    if (i >= 1 && (T[i] === "and" || T[i] === "or") && RATE_NOUN.test(T[i - 1])) i -= 2;
+    for (let c = 0; c < 2 && i >= 0; c++, i--) { if (CONJ.has(T[i])) break; if (sideAt(T, i, Bs) && !negated(T, i)) return true; }
+  }
+  return false;
+}
+function cueHit(cue, text) {
+  const all = toks(text), clauses = String(text).split(/[;!?:\n]+|\.(?!\d)/).map(toks).filter(t => t.length);
+  return parseCue(cue).every(part => part.length === 1
+    ? all.some((w, i) => sideAt(all, i, part[0]))
+    : clauses.some(T => pairIn(T, part[0], part[1])));
+}
+function gradeSA(it, text, claimed = []) {
+  const words = toks(text).filter(w => w !== ",");
+  const parts = it.ideas.map(idea => words.length >= 3 && idea.slice(1).some(c => cueHit(c, text)));
+  const n = parts.filter((p, k) => p || claimed.includes(k)).length, earned = Math.min(it.pts, n);
+  const missing = it.ideas.filter((idea, k) => !parts[k] && !claimed.includes(k)).map(idea => idea[0]);
+  return {earned, possible: it.pts, ok: earned === it.pts, parts, claimed: claimed.slice(), given: String(text).trim(), correct: it.model, missing: earned === it.pts ? [] : missing};
+}
+
+/* ---------- grading ---------- */
+function grade(it, r) {
+  switch (it.t) {
+    case "mc": { const ok = r === it.ans; return {earned: ok ? 1 : 0, possible: 1, ok, given: it.opts[r], correct: it.opts[it.ans], missedTerms: !ok && it.vterm ? [it.vterm] : []}; }
+    case "sa": return gradeSA(it, r);
+    case "match": { const parts = it.defs.map((d, k) => r[k] === d); const e = parts.filter(Boolean).length; return {earned: e, possible: it.defs.length, ok: e === it.defs.length, parts, given: `${e} of ${it.defs.length} matched`, correct: it.defs.filter((d, k) => !parts[k]).map(d => `${d}: ${VBY[d][1]}`).join(" • "), missedTerms: it.defs.filter((d, k) => !parts[k])}; }
+  }
+}
+
+/* ---------- state ---------- */
+const S = {view: "home", study: store.get("hi3.study", true), topics: store.get("hi3.topics", []), run: null, paused: null, history: [], cloud: null, confirmClear: false, confirmQuit: false, last: null};
+S.history = store.get("hi3.history", []);
+let cur = null; // live response for the current item
+let revealed = false;
+let qStart = Date.now();
+const app = document.getElementById("app");
+
+function saveRun() { if (S.run) store.set("hi3.run", S.run); else store.del("hi3.run"); }
+
+/* ---------- home ---------- */
+const pctCls = p => p >= 85 ? "hi" : p >= 70 ? "mid" : "lo";
+const N_SA = B.filter(isSA).length, N_MC = B.length - N_SA;
+const mins = (mc, sa) => Math.max(5, Math.round((mc * 0.6 + sa * 3) / 5) * 5);
+function renderHome() {
+  S.view = "home";
+  const resumable = store.get("hi3.run", null) || S.paused;
+  const lastMissed = [...S.history].reverse().find(h => h.missed && h.missed.length);
+  const topicChips = Object.entries(TOPICS).map(([k, v]) => `<button class="chip" data-topic="${k}" aria-pressed="${S.topics.includes(k)}">${esc(v)}</button>`).join("");
+  app.innerHTML = `
+  <header class="hero">
+    <div><p class="eyebrow">Biology · Unit 3</p><h1>Human Impact Test</h1>
+    <p class="lede">Human population growth, the demographic transition, age structure, ecological footprints, the Anthropocene, and the ways people change the planet. Multiple choice, plus harder short-answer questions graded on key ideas. Questions and choices shuffle every time, and math problems get new numbers.</p></div>
+    ${HERO_MINI}
+  </header>
+  ${resumable && resumable.items && resumable.i < resumable.items.length ? `<div class="resume" style="margin-top:20px"><p><strong>${esc(resumable.label)} in progress</strong> · question ${resumable.i + 1} of ${resumable.items.length}</p><div class="rowbtns"><button class="btn sun" data-act="resume">Resume</button><button class="btn ghost" data-act="discard">Discard</button></div></div>` : ""}
+  <section class="section" aria-label="Start a test">
+    <div class="modes">
+      <button class="mode primary" data-start="full"><span class="meta">${B.length} questions · about ${mins(N_MC, N_SA)} min</span><h3>Full test</h3><p>Every question in the bank: ${N_MC} multiple choice (some with diagrams and data, some with new numbers each time) and all ${N_SA} short answers at the end. Exit anytime and it saves your spot.</p></button>
+      <button class="mode" data-start="practice"><span class="meta">40 questions · about ${mins(37, 3)} min</span><h3>Practice test</h3><p>A test-length random mix spread across every topic, with 3 short answers at the end.</p></button>
+      <button class="mode" data-start="quick"><span class="meta">15 questions · about ${mins(14, 1)} min</span><h3>Quick quiz</h3><p>A short random mix from the whole unit, with 1 short answer.</p></button>
+      <button class="mode" data-start="sa"><span class="meta">${N_SA} questions · about ${mins(0, N_SA)} min</span><h3>Short answers only</h3><p>Just the harder written questions. Each one is graded on key ideas and shows a model answer.</p></button>
+      <button class="mode" data-start="vocab"><span class="meta">${VOCAB.length} terms · ${Math.ceil(VOCAB.length / 6)} rounds</span><h3>Vocab match</h3><p>Match every vocab term to its definition, 6 at a time.</p></button>
+      <button class="mode wide" data-start="missed" ${lastMissed ? "" : "disabled"}><span class="meta">${lastMissed ? "From your " + esc(lastMissed.mode.toLowerCase()) : "Nothing yet"}</span><h3>Redo what I missed</h3><p>${lastMissed ? "Questions and vocab you got wrong (or only partly right) on your last attempt that had misses." : "Finish a test first. Anything you miss shows up here."}</p></button>
+      <div class="topicbox" style="grid-column:1/-1">
+        <div><h3 style="font-size:21px;font-weight:800">Practice by topic</h3><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Pick one or more topics.</p></div>
+        <div class="chips">${topicChips}</div>
+        <div><button class="btn" data-start="topics" ${S.topics.length ? "" : "disabled"}>Start topic practice</button></div>
+      </div>
+    </div>
+    <div class="setting"><button class="switch" id="studySwitch" role="switch" aria-checked="${S.study}" aria-labelledby="studyLbl"></button><p id="studyLbl"><strong>Show the answer after each question</strong><br>${S.study ? "On: you see if you're right and why, right away (best for studying)." : "Off: real test mode. You only see your score at the end."}</p></div>
+  </section>
+  <section class="section" aria-label="Score history"><h2>Your scores</h2>${renderHistory()}</section>`;
+}
+function renderHistory() {
+  const H = S.history;
+  if (!H.length) return `<div class="hist"><p class="hist-empty">No attempts yet. Finish any test and your score, date, and time show up here, with a chart of how you're improving.</p></div>`;
+  const pts = H.slice(-20);
+  const W = Math.round(Math.max(300, Math.min(620, (app.clientWidth || 686) - 66))), Ht = 200, L = 36, Rr = 14, T = 16, Bt = 28;
+  const x = i => pts.length === 1 ? (L + W - Rr) / 2 : L + i * (W - L - Rr) / (pts.length - 1);
+  const y = p => T + (100 - p) * (Ht - T - Bt) / 100;
+  let g = ""; for (const v of [0, 25, 50, 75, 100]) g += `<line class="gl" x1="${L}" x2="${W - Rr}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}%</text>`;
+  const line = pts.map((h, i) => `${x(i)},${y(h.pct)}`).join(" ");
+  const area = `${x(0)},${y(0)} ${line} ${x(pts.length - 1)},${y(0)}`;
+  const dots = pts.map((h, i) => `<circle class="pt${i === pts.length - 1 ? " last" : ""}" cx="${x(i)}" cy="${y(h.pct)}" r="4.5"><title>${esc(h.mode)}: ${h.pct}%</title></circle>`).join("");
+  const lastP = pts[pts.length - 1];
+  const xl = pts.map((h, i) => (pts.length <= 10 || i % Math.ceil(pts.length / 10) === 0 || i === pts.length - 1) ? `<text x="${x(i)}" y="${Ht - 8}" text-anchor="middle">#${H.length - pts.length + i + 1}</text>` : "").join("");
+  const chart = `<div class="chart"><svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Line chart of your last ${pts.length} scores. Latest: ${lastP.pct}%.">${g}<line class="pass" x1="${L}" x2="${W - Rr}" y1="${y(70)}" y2="${y(70)}"/>${pts.length > 1 ? `<polygon class="ar" points="${area}" opacity=".6"/><polyline class="ln" points="${line}"/>` : ""}${dots}<text class="lbl" x="${Math.min(x(pts.length - 1), W - 40)}" y="${Math.max(y(lastP.pct) - 10, 12)}" text-anchor="middle">${lastP.pct}%</text>${xl}</svg></div>`;
+  const agg = {}; for (const h of H) for (const [k, v] of Object.entries(h.topics || {})) { agg[k] = agg[k] || [0, 0]; agg[k][0] += v[0]; agg[k][1] += v[1]; }
+  const bars = Object.entries(agg).filter(([k, v]) => v[1] > 0 && (TOPICS[k] || k === "vocab")).map(([k, v]) => [k, Math.round(100 * v[0] / v[1])]).sort((a, b) => a[1] - b[1]);
+  const barHtml = bars.map(([k, p]) => `<div class="bar"><span>${esc(TOPICS[k] || "Vocab")}</span><span class="track"><span class="fill ${pctCls(p) === "hi" ? "" : pctCls(p)}" style="display:block;width:${p}%"></span></span><span class="v">${p}%</span></div>`).join("");
+  const best = Math.max(...H.map(h => h.pct));
+  const rows = [...H].reverse().slice(0, 25).map(h => `<tr><td>${new Date(h.at).toLocaleDateString(undefined, {month: "short", day: "numeric"})} <span style="color:var(--muted)">${new Date(h.at).toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"})}</span></td><td>${esc(h.mode)}${h.study ? "" : ` <span class="pill mid" title="Answers hidden until the end">test mode</span>`}</td><td class="n">${fmt(h.earned)}/${fmt(h.possible)}</td><td class="n"><span class="pill ${pctCls(h.pct)}">${h.pct}%</span></td><td class="n">${Math.max(1, Math.round(h.secs / 60))} min</td></tr>`).join("");
+  return `<div class="hist">
+    <div class="hist-head"><h3>${H.length} attempt${H.length === 1 ? "" : "s"} · best ${best}% · latest ${lastP.pct}%</h3><span class="eyebrow">dashed line = 70%</span></div>
+    ${chart}
+    ${bars.length ? `<div><h3 style="font-size:18px;margin-bottom:10px">By topic, all attempts (weakest first)</h3><div class="bars">${barHtml}</div></div>` : ""}
+    <div class="tbl"><table><thead><tr><th>When</th><th>Test</th><th>Points</th><th>Score</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div>${S.confirmClear ? `<div class="confirm"><span>Delete all ${H.length} saved scores? This can't be undone.</span><button class="btn small sun" data-act="clear-yes">Delete scores</button><button class="btn small ghost" data-act="clear-no">Keep them</button></div>` : `<button class="linkbtn" data-act="clear">Clear score history</button>`}</div>
+    ${S.cloud ? "" : `<p class="eyebrow" style="text-transform:none;letter-spacing:0">Scores are saved in this browser.</p>`}
+  </div>`;
+}
+
+/* ---------- test view ---------- */
+const wordCount = s => (String(s).trim().match(/\S+/g) || []).length;
+function renderTest() {
+  S.view = "test";
+  const run = S.run, it = run.items[run.i];
+  const done = run.res.filter(Boolean);
+  const earned = done.reduce((a, r) => a + r.earned, 0), possible = done.reduce((a, r) => a + r.possible, 0);
+  revealed = !!run.res[run.i];
+  if (!revealed) { cur = initResp(it); qStart = Date.now(); } else cur = run.resp[run.i];
+  const pct = Math.round(100 * run.i / run.items.length);
+  const tags = `${it.t === "sa" ? `<span class="tag sa">Short answer · ${it.pts} pts</span>` : ""}${TOPICS[it.topic] ? `<span class="tag">${esc(TOPICS[it.topic])}</span>` : ""}${it.src ? `<span class="tag src">${esc(it.src)}</span>` : ""}`;
+  app.innerHTML = `
+  <div class="bar-top">
+    <div class="bar-row"><span class="count">${esc(run.label)} · ${run.i + 1} / ${run.items.length}</span>
+      <span class="count">${run.study && possible ? `${fmt(earned)}/${fmt(possible)} pts · ${Math.round(100 * earned / possible)}%` : run.study ? "" : "Test mode"}</span>
+      ${S.confirmQuit ? `<span class="quitbox">Leave? Progress is saved.<button class="btn small" data-act="quit-yes">Save & exit</button><button class="btn small ghost" data-act="quit-no">Stay</button></span>` : `<button class="btn small ghost" data-act="quit">Exit</button>`}</div>
+    <div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${run.items.length}" aria-valuenow="${run.i}"><div style="width:${pct}%"></div></div>
+  </div>
+  <article class="card" id="card">
+    <div class="qmeta">${tags}</div>
+    ${it.vterm ? `<p class="eyebrow">Which term matches this definition?</p>` : ""}
+    <p class="qtext">${esc(it.q)}</p>
+    ${hintFor(it)}
+    ${it.fig && FIG[it.fig] ? `<div class="fig">${FIG[it.fig]()}</div>` : ""}
+    <div id="ans">${bodyFor(it)}</div>
+    <div id="fb"></div>
+    <div class="actions" id="actions"></div>
+  </article>`;
+  paint();
+}
+function hintFor(it) {
+  if (it.t === "sa") return `<p class="qhint">Answer in 1–4 sentences. You earn a point for each key idea${it.need ? ` (any ${it.need} earn full credit)` : ""}, so explain your thinking instead of listing words.</p>`;
+  if (it.t === "match") return `<p class="qhint">Tap a term, then tap its definition. Tap a filled definition to clear it.</p>`;
+  return "";
+}
+function initResp(it) {
+  if (it.t === "mc") return null;
+  if (it.t === "sa") return "";
+  if (it.t === "match") return {sel: null, map: it.defs.map(() => null)};
+}
+function bodyFor(it) {
+  if (it.t === "mc") return `<div class="opts">${it.opts.map((o, k) => `<button class="opt" data-k="${k}"><span class="k">${k + 1}</span><span>${esc(o)}</span></button>`).join("")}</div>`;
+  if (it.t === "sa") return `<div class="sa"><textarea id="saIn" rows="5" autocomplete="off" aria-label="Your answer" placeholder="Type your answer…"></textarea><span class="wc" id="wc"></span></div>`;
+  if (it.t === "match") return `<div class="mterms" id="mterms"></div><div class="mdefs" id="mdefs"></div>`;
+  return "";
+}
+function complete(it) {
+  if (it.t === "mc") return cur !== null;
+  if (it.t === "sa") return String(cur).trim() !== "";
+  if (it.t === "match") return cur.map.every(v => v !== null);
+}
+function saFeedback(it, res, run) {
+  const canClaim = run.study && !res.ok;
+  const list = it.ideas.map((idea, k) => {
+    const hit = res.parts[k], cl = (res.claimed || []).includes(k), cls = hit ? "hit" : cl ? "claimed" : res.ok ? "skip" : "nohit";
+    const btn = !hit && cl ? `<button class="claim" data-unclaim="${k}">Undo</button>` : !hit && canClaim ? `<button class="claim" data-claim="${k}">I said this</button>` : "";
+    return `<li class="idea ${cls}"><span class="mk" aria-hidden="true">${hit || cl ? "✓" : res.ok ? "·" : "✗"}</span><span>${esc(idea[0])}${hit ? "" : cl ? " <span style=\"color:var(--muted)\">(you marked this)</span>" : ""}</span>${btn}</li>`;
+  }).join("");
+  return `<p>${it.need ? `Any ${it.need} of these earn full credit:` : "Key ideas the grader looked for:"}</p><ul class="ideas">${list}</ul>
+    <div class="model"><b>Model answer</b>${esc(it.model)}</div>${it.why ? `<p>${esc(it.why)}</p>` : ""}
+    ${it.ideas.some((x, k) => !res.parts[k]) && run.study ? `<p style="font-size:14px;color:var(--muted)">The grader looks for key words. If it missed an idea you really explained, tap “I said this.”</p>` : ""}`;
+}
+function paint() {
+  const run = S.run, it = run.items[run.i], res = run.res[run.i];
+  const card = document.getElementById("card"); if (!card) return;
+  if (it.t === "mc") card.querySelectorAll(".opt").forEach(b => { const k = +b.dataset.k; b.className = "opt" + (res ? (k === it.ans && run.study ? " right" : k === cur && (!res.ok && run.study) ? " wrong" : k === cur ? " sel" : "") : (k === cur ? " sel" : "")); b.disabled = !!res; });
+  if (it.t === "sa") {
+    const ta = card.querySelector("textarea"), wc = document.getElementById("wc");
+    if (ta) { if (document.activeElement !== ta) ta.value = cur; ta.disabled = !!res; ta.className = res && run.study ? (res.ok ? "right" : res.earned > 0 ? "part" : "wrong") : ""; }
+    if (wc) { const n = wordCount(cur); wc.textContent = n ? `${n} word${n === 1 ? "" : "s"}` : ""; }
+  }
+  if (it.t === "match") {
+    const used = new Set(cur.map.filter(Boolean));
+    document.getElementById("mterms").innerHTML = res ? "" : it.terms.map(t => `<button class="mterm${cur.sel === t ? " sel" : ""}${used.has(t) ? " used" : ""}" data-mt="${esc(t)}">${esc(t)}</button>`).join("");
+    document.getElementById("mdefs").innerHTML = it.defs.map((d, k) => `<button class="mdef${res && run.study ? (res.parts[k] ? " right" : " wrong") : ""}" data-md="${k}" ${res ? "disabled" : ""}><span>${esc(VBY[d][1])}</span><span class="slot${cur.map[k] ? " filled" : ""}">${cur.map[k] ? esc(cur.map[k]) : "tap to place a term"}</span>${res && run.study && !res.parts[k] ? `<span class="fix">Answer: ${esc(d)}</span>` : ""}</button>`).join("");
+  }
+  const fb = document.getElementById("fb");
+  if (res && run.study) {
+    const cls = res.ok ? "ok" : res.earned > 0 ? "part" : "no";
+    if (it.t === "sa") {
+      const head = res.ok ? pick(["Full credit", "Nailed it", "Every key idea"]) : res.earned > 0 ? `${res.earned} of ${res.possible} points` : "No key ideas found yet";
+      fb.innerHTML = `<div class="fb ${cls}" role="status"><h4>${head}</h4>${saFeedback(it, res, run)}</div>`;
+    } else {
+      const head = res.ok ? pick(["Correct", "Yes", "Got it", "Right"]) : res.earned > 0 ? `${res.earned} of ${res.possible}` : "Not quite";
+      const showCorrect = !res.ok && it.t === "mc";
+      fb.innerHTML = `<div class="fb ${cls}" role="status"><h4>${head}</h4>${showCorrect ? `<p>Answer: <span class="ans">${esc(res.correct)}</span></p>` : ""}${it.why ? `<p>${esc(it.why)}</p>` : ""}</div>`;
+    }
+  } else fb.innerHTML = "";
+  const actions = document.getElementById("actions");
+  const last = run.i === run.items.length - 1;
+  if (res) actions.innerHTML = `<span class="spacer"></span><button class="btn" data-act="next" id="nextBtn">${last ? "See my score" : "Next"}</button>`;
+  else if (it.t === "mc" && run.study) actions.innerHTML = `<span class="eyebrow" style="text-transform:none;letter-spacing:0">Tip: press 1–${it.opts.length} to answer</span>`;
+  else actions.innerHTML = `${it.t === "sa" ? `<span class="eyebrow" style="text-transform:none;letter-spacing:0">Ctrl+Enter to ${run.study ? "check" : "go on"}</span>` : ""}<span class="spacer"></span><button class="btn" data-act="${run.study ? "check" : "submit"}" ${complete(it) ? "" : "disabled"}>${run.study ? "Check answer" : last ? "Finish" : "Next"}</button>`;
+}
+function submit() {
+  const run = S.run, it = run.items[run.i];
+  if (run.res[run.i] || !complete(it)) return;
+  run.elapsed += Math.min(Date.now() - qStart, 300000);
+  run.resp[run.i] = it.t === "match" ? {sel: null, map: cur.map.slice()} : cur;
+  run.res[run.i] = grade(it, it.t === "match" ? cur.map : cur);
+  saveRun();
+  if (!run.study) { next(); return; }
+  paint();
+  const nb = document.getElementById("nextBtn"); if (nb) nb.focus({preventScroll: true});
+}
+function next() {
+  const run = S.run;
+  if (run.i < run.items.length - 1) { run.i++; saveRun(); renderTest(); window.scrollTo({top: 0}); }
+  else finish();
+}
+function claim(k, on) {
+  const run = S.run, it = run.items[run.i], res = run.res[run.i]; if (!res || it.t !== "sa") return;
+  const cl = new Set(res.claimed || []); if (on) cl.add(k); else cl.delete(k);
+  run.res[run.i] = gradeSA(it, run.resp[run.i], [...cl]);
+  saveRun();
+  const y = window.scrollY; renderTest(); window.scrollTo({top: y});
+}
+
+/* ---------- results ---------- */
+function finish() {
+  const run = S.run;
+  const earned = run.res.reduce((a, r) => a + (r ? r.earned : 0), 0), possible = run.items.reduce((a, it) => a + it.pts, 0);
+  const topics = {}, missed = [];
+  run.items.forEach((it, k) => {
+    const r = run.res[k]; const tp = it.topic;
+    topics[tp] = topics[tp] || [0, 0]; topics[tp][0] += r ? r.earned : 0; topics[tp][1] += it.pts;
+    if (!r || !r.ok) { if (it.t === "match") (r ? r.missedTerms : it.defs).forEach(t => missed.push("v:" + t)); else if (it.vterm) missed.push("v:" + it.vterm); else missed.push(it.id); }
+  });
+  const entry = {id: run.id, at: Date.now(), mode: run.label, study: run.study, earned, possible, pct: possible ? Math.round(100 * earned / possible) : 0, secs: Math.round(run.elapsed / 1000), topics, missed: [...new Set(missed)]};
+  if (!S.history.some(h => h.id === entry.id)) S.history.push(entry);
+  persistHistory();
+  S.last = run; S.run = null; S.paused = null; saveRun();
+  renderResults(run, entry);
+}
+function renderResults(run, entry) {
+  S.view = "results";
+  const letter = entry.pct >= 90 ? "A" : entry.pct >= 80 ? "B" : entry.pct >= 70 ? "C" : entry.pct >= 60 ? "D" : "F";
+  const tb = Object.entries(entry.topics).map(([k, v]) => [k, v, Math.round(100 * v[0] / v[1])]).sort((a, b) => a[2] - b[2]);
+  const misses = run.items.map((it, k) => [it, run.res[k]]).filter(([it, r]) => r && !r.ok);
+  const missHtml = misses.map(([it, r]) => {
+    if (it.t === "sa") return `<div class="miss${r.earned > 0 ? " half" : ""}"><span class="q">${esc(it.q)}</span><span class="yours">You (${r.earned}/${r.possible}): ${esc(r.given || "(blank)")}</span><span class="corr">Missing: ${esc(r.missing.join("; "))}</span><span class="why">Model answer: ${esc(it.model)}</span></div>`;
+    const q = it.t === "match" ? "Vocab matching round" : it.vterm ? `Definition: ${it.q}` : it.q;
+    return `<div class="miss"><span class="q">${esc(q)}</span><span class="yours">You: ${esc(r.given || "(blank)")}</span><span class="corr">${it.t === "match" ? "Fix: " : "Answer: "}${esc(r.correct)}</span>${it.why && it.t !== "match" ? `<span class="why">${esc(it.why)}</span>` : ""}</div>`;
+  }).join("");
+  const prev = S.history.filter(h => h.id !== entry.id && h.mode === entry.mode).pop();
+  app.innerHTML = `
+  <section class="score">
+    <div class="big num">${entry.pct}%</div>
+    <div><p class="eyebrow">${esc(entry.mode)} · grade ${letter}</p><h1>${entry.pct >= 90 ? "You're ready." : entry.pct >= 80 ? "Strong. Clean up the misses below." : entry.pct >= 70 ? "Passing, but review the weak topics." : "Keep studying. Start with the weakest topic."}</h1>
+    <p class="num">${fmt(entry.earned)} of ${fmt(entry.possible)} points · ${Math.max(1, Math.round(entry.secs / 60))} min${prev ? ` · last time ${prev.pct}% (${entry.pct - prev.pct >= 0 ? "+" : ""}${entry.pct - prev.pct})` : ""}</p></div>
+  </section>
+  <section class="section"><h2>By topic</h2><div class="hist"><div class="bars">${tb.map(([k, v, p]) => `<div class="bar"><span>${esc(TOPICS[k] || "Vocab")}</span><span class="track"><span class="fill ${pctCls(p) === "hi" ? "" : pctCls(p)}" style="display:block;width:${p}%"></span></span><span class="v">${p}%</span></div>`).join("")}</div></div></section>
+  <div class="rowbtns" style="margin-top:20px">${entry.missed.length ? `<button class="btn sun" data-act="redo">Redo what I missed</button>` : ""}<button class="btn" data-act="home">Back to start</button></div>
+  <section class="section"><h2>${misses.length ? `What you missed (${misses.length})` : "You missed nothing."}</h2><div class="missed">${missHtml}</div></section>`;
+  window.scrollTo({top: 0});
+}
+
+/* ---------- history persistence (browser + your account when available) ---------- */
+function trimHistory(H) { H = H.slice().sort((a, b) => a.at - b.at).slice(-200); return H.map((h, i) => i < H.length - 10 ? Object.assign({}, h, {missed: []}) : h); }
+let cloudBusy = Promise.resolve();
+function persistHistory() {
+  S.history = trimHistory(S.history);
+  store.set("hi3.history", S.history);
+  if (S.cloud) { const data = {attempts: S.history}; cloudBusy = cloudBusy.then(() => S.cloud.set(data)).catch(() => {}); }
+}
+async function initCloud() {
+  try {
+    const c = window.claude; if (!c || !c.use) return;
+    const [db, user] = await Promise.all([c.use("db"), c.use("user")]);
+    if (!db || !user) return;
+    const id = await user.id(); if (!id) return;
+    const ref = db.doc("data/users/" + id + "/history");
+    const snap = await ref.get();
+    const remote = snap.exists ? (snap.data().attempts || []) : [];
+    const byId = new Map(); for (const h of [...remote, ...S.history]) byId.set(h.id, h);
+    const merged = trimHistory([...byId.values()]);
+    const changed = merged.length !== remote.length;
+    S.cloud = ref; S.history = merged; store.set("hi3.history", merged);
+    if (changed) await ref.set({attempts: merged});
+    if (S.view === "home") renderHome();
+  } catch (e) { S.cloud = null; }
+}
+
+/* ---------- events ---------- */
+function startRun(run) { S.run = run; S.paused = null; S.confirmQuit = false; if (!S.run.items.length) { S.run = null; return; } saveRun(); renderTest(); window.scrollTo({top: 0}); }
+app.addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t || t.disabled) return;
+  if (t.dataset.start) {
+    const mode = t.dataset.start, opts = {};
+    if (mode === "missed") { const lm = [...S.history].reverse().find(h => h.missed && h.missed.length); if (!lm) return; opts.missed = lm.missed; }
+    if (mode === "topics") opts.topics = S.topics.slice();
+    startRun(buildRun(mode, opts)); return;
+  }
+  if (t.dataset.topic) { const k = t.dataset.topic; S.topics = S.topics.includes(k) ? S.topics.filter(x => x !== k) : [...S.topics, k]; store.set("hi3.topics", S.topics); renderHome(); return; }
+  if (t.id === "studySwitch") { S.study = !S.study; store.set("hi3.study", S.study); renderHome(); document.getElementById("studySwitch").focus(); return; }
+  const act = t.dataset.act;
+  if (act === "resume") { S.run = store.get("hi3.run", null) || S.paused; S.paused = null; if (S.run) { renderTest(); window.scrollTo({top: 0}); } return; }
+  if (act === "discard") { S.run = null; S.paused = null; saveRun(); renderHome(); return; }
+  if (act === "clear") { S.confirmClear = true; renderHome(); return; }
+  if (act === "clear-no") { S.confirmClear = false; renderHome(); return; }
+  if (act === "clear-yes") { S.confirmClear = false; S.history = []; persistHistory(); renderHome(); return; }
+  if (act === "home") { renderHome(); window.scrollTo({top: 0}); return; }
+  if (act === "redo") { const lm = S.history[S.history.length - 1]; startRun(buildRun("missed", {missed: lm.missed})); return; }
+  if (act === "quit") { S.confirmQuit = true; renderTestKeep(); return; }
+  if (act === "quit-no") { S.confirmQuit = false; renderTestKeep(); return; }
+  if (act === "quit-yes") { S.confirmQuit = false; saveRun(); S.paused = S.run; S.run = null; renderHome(); window.scrollTo({top: 0}); return; }
+  if (act === "check" || act === "submit") { submit(); return; }
+  if (act === "next") { next(); return; }
+  if (!S.run || S.view !== "test") return;
+  if (t.dataset.claim !== undefined) { claim(+t.dataset.claim, true); return; }
+  if (t.dataset.unclaim !== undefined) { claim(+t.dataset.unclaim, false); return; }
+  const it = S.run.items[S.run.i]; if (S.run.res[S.run.i]) return;
+  if (t.classList.contains("opt")) { cur = +t.dataset.k; if (S.run.study) submit(); else paint(); return; }
+  if (t.dataset.mt !== undefined) {
+    const term = t.dataset.mt; const at = cur.map.indexOf(term);
+    if (at >= 0) { cur.map[at] = null; cur.sel = term; }
+    else cur.sel = cur.sel === term ? null : term;
+    paint(); return;
+  }
+  if (t.dataset.md !== undefined) {
+    const k = +t.dataset.md;
+    if (cur.sel) { const prevAt = cur.map.indexOf(cur.sel); if (prevAt >= 0) cur.map[prevAt] = null; cur.map[k] = cur.sel; cur.sel = null; }
+    else if (cur.map[k]) cur.map[k] = null;
+    paint(); return;
+  }
+});
+function renderTestKeep() { const keep = cur; const wasRevealed = !!S.run.res[S.run.i]; renderTest(); if (!wasRevealed) { cur = keep; paint(); } }
+app.addEventListener("input", e => {
+  if (!S.run || S.view !== "test") return;
+  if (e.target.id === "saIn") {
+    cur = e.target.value;
+    const b = document.querySelector('[data-act="check"],[data-act="submit"]'); if (b) b.disabled = !complete(S.run.items[S.run.i]);
+    const wc = document.getElementById("wc"); if (wc) { const n = wordCount(cur); wc.textContent = n ? `${n} word${n === 1 ? "" : "s"}` : ""; }
+  }
+});
+document.addEventListener("keydown", e => {
+  if (S.view !== "test" || !S.run || e.altKey) return;
+  const it = S.run.items[S.run.i], res = S.run.res[S.run.i], mod = e.ctrlKey || e.metaKey, inText = e.target.tagName === "TEXTAREA";
+  if (e.key === "Enter") {
+    if (inText && !mod) return;
+    if (mod && !inText) return;
+    if (e.target.tagName === "BUTTON" && !e.target.matches('[data-act="next"],[data-act="check"],[data-act="submit"]')) return;
+    e.preventDefault();
+    if (res) next(); else submit();
+    return;
+  }
+  if (mod) return;
+  if (!res && it.t === "mc" && /^[1-9]$/.test(e.key) && !inText && e.target.tagName !== "INPUT") { const k = +e.key - 1; if (k < it.opts.length) { cur = k; if (S.run.study) submit(); else paint(); } }
+});
+
+/* ---------- boot ---------- */
+function boot(data) {
+  if (data && data.run) S.run = data.run;
+  if (data && data.view === "test" && S.run) renderTest(); else renderHome();
+  initCloud();
+}
+const hot = window.claude && window.claude.hot;
+if (hot && hot.snapshot) hot.snapshot(() => ({run: S.run, view: S.view}));
+if (hot && hot.ready) hot.ready(boot); else boot((hot && hot.data) || {});
+})();
+</script>
+</body></html>
