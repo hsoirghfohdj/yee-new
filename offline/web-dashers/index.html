@@ -48,6 +48,26 @@
       } catch (e) { console.warn('Web Dashers cache refresh skipped:', e); }
     </script>
 
+    <!-- Undo the Low Detail Mode setting forced by the older mirror build.
+         LDM skips pulse triggers and sprite animation. Only change it when
+         our old opt-in marker exists; leave every other player setting alone. -->
+    <script>
+      try {
+        if (localStorage.getItem('webdash_hosted_ldm_v1') === '1' &&
+            localStorage.getItem('webdash_hosted_ldm_restored_v1') !== '1') {
+          const saved = localStorage.getItem('gd_settings');
+          if (saved) {
+            const settings = JSON.parse(saved);
+            if (settings && settings.enableLDM === true) {
+              settings.enableLDM = false;
+              localStorage.setItem('gd_settings', JSON.stringify(settings));
+            }
+          }
+          localStorage.setItem('webdash_hosted_ldm_restored_v1', '1');
+        }
+      } catch (e) { console.warn('Web Dashers LDM migration skipped:', e); }
+    </script>
+
     <!-- Libraries and stuff -->
     <script src="assets/scripts/game/allObjects.js?v=13"></script>
     <script src="assets/scripts/game/allLevels.js"></script>
