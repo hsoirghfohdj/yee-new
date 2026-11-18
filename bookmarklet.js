@@ -1494,7 +1494,9 @@ const memSrc = id => { const m = store.get('gameSrc', {})[id]; return m && Date.
 const rememberSrc = (id, src) => { const m = store.get('gameSrc', {}); if (src) m[id] = { src, at: Date.now() }; else delete m[id]; store.set('gameSrc', m); };
 const headOk = u => fetch(u, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok).catch(() => false);
 function frameGame(f, path, muted) {
-const want = memSrc(path) || (repoGame(path) ? 'repo' : 'pages');
+// Web Dashers needs thousands of separate assets. Use the same-repository Vercel
+// deployment first; the large GitHub Pages mirror has intermittently returned 503s.
+const want = path === WEB_DASHERS_GAME ? 'vercel' : memSrc(path) || (repoGame(path) ? 'repo' : 'pages');
 const urlOf = m => m === 'vercel' ? vercelUrl(path) : gameUrl(path);
 // a hosted copy (Vercel or GitHub Pages); if the first one doesn't answer, the other
 const hosted = first => {
