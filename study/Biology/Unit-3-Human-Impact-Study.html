@@ -172,6 +172,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .fig .l4{stroke:var(--muted);stroke-width:2.5;fill:none}
 .fig .gap{fill:var(--sun-soft)}
 .fig .gap2{fill:var(--bad-soft)}
+.fig .heat{stroke:var(--bad);stroke-width:2.5;fill:none;stroke-dasharray:7 4}
+.fig .sunc{fill:var(--sun)}
 .fig .dashl{stroke-dasharray:8 5}
 .fig .band{fill:var(--surface);opacity:.55}
 .fig .pm{fill:var(--moss)} .fig .pf{fill:var(--water)}
@@ -219,6 +221,27 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .model{background:var(--surface);border:1px dashed var(--line-2);border-radius:8px;padding:10px 12px}
 .model b{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;display:block;margin-bottom:2px}
 
+/* Study sheet */
+.mode.stagecard{border-color:var(--sun);background:linear-gradient(135deg,var(--sun-soft),var(--surface) 70%)}
+.mode.stagecard .meta{color:var(--ink)}
+.sheethead{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding-block:10px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.sheettabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px}
+.sheettabs button{border:0;background:none;border-radius:7px;padding:8px 14px;font-weight:700;font-size:15px;cursor:pointer;color:var(--muted)}
+.sheettabs button[aria-selected="true"]{background:var(--moss);color:var(--moss-ink)}
+.sheettitle{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.01em}
+.lede2{margin:0;color:var(--muted)}
+.sheetlist{display:grid;gap:12px;margin-top:16px}
+.iccard,.gcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:10px;min-width:0}
+.iccard h3{font-size:20px;font-weight:800}
+.iccard .mine{border-left:3px solid var(--line-2);padding:2px 0 2px 12px;color:var(--muted);font-style:italic}
+.iccard .full{background:var(--moss-soft);border-radius:8px;padding:10px 12px}
+.iccard b,.gsent b{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;font-style:normal;display:block;margin-bottom:2px;color:var(--muted)}
+.gcard .ghead{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.gcard h3{font-size:19px;font-weight:800}
+.gdef{margin:0;font-size:17px}
+.gsent{margin:0;color:var(--muted);font-size:15px}
+.gsent b{display:inline;margin-right:4px}
+
 /* Results */
 .score{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:center;padding-block:10px 22px;border-bottom:2px solid var(--ink)}
 .big{font-family:var(--f-display);font-weight:800;font-size:clamp(64px,16vw,112px);line-height:.9;letter-spacing:-.03em}
@@ -256,56 +279,91 @@ const store = {
   del(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
 
-const TOPICS = {
-  history: "Human population history",
-  growth: "Population growth factors & country data",
-  dtm: "Demographic transition stages",
-  age: "Age-structure diagrams",
-  footprint: "Ecological footprints",
-  anthro: "Great Acceleration & the Anthropocene",
-  nitrogen: "Nitrogen, acid rain & ocean acidification",
-  biomag: "Biological magnification",
-  habitat: "Deforestation, monoculture & other threats"
-};
-
-/* ---------- vocabulary (every term) ---------- */
-// [term, definition, topic]
-const VOCAB = [
-  ["Demographic transition", "The predictable shift in birth rates, death rates, and population growth as a society moves from a primitive economy to industrialization", "dtm"],
-  ["Birth rate", "The number of live births per 1,000 people in a year", "growth"],
-  ["Death rate", "The number of deaths per 1,000 people in a year (also called the mortality rate)", "growth"],
-  ["Infant mortality", "How often babies die before their first birthday", "dtm"],
-  ["Life expectancy", "The average number of years a person in a population can expect to live", "dtm"],
-  ["Fertility rate", "The average number of children a woman has during her lifetime", "growth"],
-  ["Replacement-level fertility", "The number of children per woman (about 2.1) at which each generation exactly replaces the one before it", "growth"],
-  ["Immigration", "Movement of people INTO a country or area", "growth"],
-  ["Emigration", "Movement of people OUT of a country or area", "growth"],
-  ["Net migration", "People moving in minus people moving out; the overall gain or loss from moving", "growth"],
-  ["Growth rate", "How fast a population is getting bigger each year, usually written as a percent", "growth"],
-  ["Median age", "The middle age of a population: half the people are older and half are younger", "growth"],
-  ["Age structure", "How many people are in each age group of a population, shown as a population pyramid", "age"],
-  ["Dependency ratio", "The number of children and elderly people compared to the number of working-age adults", "age"],
-  ["Carrying capacity", "The largest population an environment can support over time", "history"],
-  ["Density-dependent limiting factor", "Something, like disease, that holds a population back more strongly the more crowded it gets", "history"],
-  ["Industrialization", "A society's shift to factories, machines, and fossil-fuel energy", "history"],
-  ["Ecological footprint", "The total area of healthy land and water ecosystems needed to provide the resources you use and absorb the wastes you produce", "footprint"],
-  ["Global hectare (gha)", "The unit footprints are measured in: one hectare of land or water with world-average productivity", "footprint"],
-  ["Great Acceleration", "The sharp jump in population, resource use, and environmental change that began around 1950", "anthro"],
-  ["Anthropocene", "The \"Age of Humans\": the period during which human activity has become the major cause of global change", "anthro"],
-  ["Anthrome", "A human-altered biome, such as a city, village, cropland, or rangeland", "anthro"],
-  ["Limiting nutrient", "A nutrient in short supply that keeps producers from growing more; adding it causes a burst of growth", "nitrogen"],
-  ["Algal bloom", "A sudden overgrowth of algae in water, triggered by extra nutrients like nitrogen", "nitrogen"],
-  ["Runoff", "Water flowing over land into streams, lakes, and oceans, carrying fertilizer and other pollutants with it", "nitrogen"],
-  ["Acid rain", "Precipitation made acidic when air pollution combines with water; especially damaging to forests and lakes", "nitrogen"],
-  ["Ocean acidification", "The continued drop in seawater pH caused by absorbing carbon dioxide from the atmosphere", "nitrogen"],
-  ["Biological magnification", "The increase in a pollutant's concentration at each higher trophic level of a food chain", "biomag"],
-  ["Deforestation", "The loss of forests, with negative effects on soil, water, carbon storage, and animals", "habitat"],
-  ["Monoculture", "Planting large areas with a single, high-production crop every year", "habitat"],
-  ["Habitat fragmentation", "Breaking up the area where organisms live into smaller, separated pieces, causing biodiversity loss", "habitat"],
-  ["Overharvesting", "Using a natural resource in an unsustainable way, faster than it can be replaced", "habitat"],
-  ["Invasive species", "An organism introduced to a new place by humans that spreads and disrupts the ecosystem", "habitat"],
-  ["Sustainable", "Using resources in a way that meets our needs without using them up for the future", "habitat"]
+/* ---------- the class's I Can statements (Unit 3: Human Impact): the short answer from the class sheet + a fuller answer ---------- */
+const ICAN = [
+  {k: "ic1", n: 1, lesson: "7.1", label: "I Can 1 · Footprint: U.S. vs. world", text: "Compare the ecological footprint of the average American to the global average.",
+   mine: "The average American has a much larger ecological footprint than the global average because they use more resources and energy.",
+   answer: "An ecological footprint is the amount of productive land and water needed to supply a population's resources (energy, food, water, shelter) and absorb its wastes (sewage, trash, greenhouse gases). The average American's footprint is about 8.1 global hectares (gha), much larger than the global average (about 2.7 gha) and about 4 times a person in Ghana (2.0 gha) or Peru (2.1 gha). Americans use more resources and energy (bigger homes, more driving and flying, more stuff), so they also make more waste and greenhouse gases. Greener electricity and less traveling are ways to shrink it."},
+  {k: "ic2", n: 2, lesson: "7.1", label: "I Can 2 · The Anthropocene", text: "Explain what the Anthropocene is and why it is important.",
+   mine: "The Anthropocene is a proposed time period when human activities began significantly changing Earth's atmosphere.",
+   answer: "The Anthropocene (\"Age of Humans\") is the proposed time period during which human activity has become the major cause of global change. It's tied to the Great Acceleration that began around 1950, when world population, fertilizer use, energy use, water use, coastal nitrogen, and marine fish capture all shot up together. It's important because humans are now changing Earth's atmosphere, land, water, and living things: much of the land has become anthromes (cities, villages, croplands, rangelands). Since people are the cause, people's choices can also slow the changes."},
+  {k: "ic3", n: 3, lesson: "7.2", label: "I Can 3 · Humans, air & climate", text: "Describe how human activities affect the atmosphere and climate.",
+   mine: "Humans affect the atmosphere by burning fossil fuels, releasing greenhouse gases, and causing air pollution.",
+   answer: "Burning fossil fuels for electricity, cars, and factories releases greenhouse gases like carbon dioxide, and deforestation adds more CO₂ while removing trees that store carbon. Greenhouse gases (carbon dioxide, methane, water vapor) trap heat in the atmosphere, so more of them means more heat stays in and the climate changes. Burning fossil fuels also releases nitrogen that travels through the air, and air pollution causes acid rain (pollution combined with water) and smog (a gray-brown haze of chemicals)."},
+  {k: "ic4", n: 4, lesson: "7.2", label: "I Can 4 · Atmosphere → climate & Earth systems", text: "Explain how changes in the atmosphere can lead to climate change and affect other Earth systems.",
+   mine: "Changes in greenhouse gases trap more heat, causing climate change and affecting oceans, land, and ecosystems.",
+   answer: "Earth's average temperature depends on the balance of heat that stays in the atmosphere and heat that is lost to space. Carbon dioxide, methane, and water vapor trap heat (the greenhouse effect), so when people add more of these gases, more heat stays in and the climate changes: temperature, clouds, winds, precipitation, and the frequency and severity of extreme weather. That affects the other Earth systems: oceans absorb CO₂ and become more acidic (lower pH) and sea levels rise; on land, Arctic sea ice, glaciers, and snow cover shrink and droughts reduce water; ecosystems lose habitat and wildlife is harmed."},
+  {k: "ic5", n: 5, lesson: "7.2", label: "I Can 5 · Land use", text: "Describe how human land use affects Earth's systems.",
+   mine: "Activities like farming, construction, and deforestation change habitats, soil, water, and natural ecosystems.",
+   answer: "Humans have turned natural land into anthromes: cities, villages, croplands, and rangelands. Deforestation (destruction of forests) harms soil, water, carbon storage, and animals. Monoculture farming plants one high-production crop every year, and nitrogen fertilizer runs off into streams, lakes, and oceans. Construction and roads cause habitat fragmentation, which causes biodiversity loss and makes ecosystems more vulnerable to other disturbances. People also overharvest resources and introduce invasive species that disrupt ecosystems."},
+  {k: "ic6", n: 6, lesson: "7.2", label: "I Can 6 · Types of pollution", text: "Identify different types of pollution and explain how they contribute to global environmental change.",
+   mine: "Air, water, and land pollution harm living things and contribute to global environmental changes.",
+   answer: "Air pollution: greenhouse gases from burning fossil fuels cause climate change; air pollution combines with water and falls as acid rain that damages forests and lakes; smog is a gray-brown haze of chemicals. Water pollution: nitrogen from fertilizer runoff and from burning fossil fuels causes algal blooms, and CO₂ absorbed by the ocean lowers its pH (ocean acidification). Land and chemical pollution: pollutants like DDT build up in food chains (biological magnification), so top predators get the highest concentrations. Because pollutants travel through air and water, they cause changes far from where they started."},
+  {k: "ic7", n: 7, lesson: "7.3", label: "I Can 7 · Evidence of climate change", text: "Describe the evidence that shows climate change is happening.",
+   mine: "Evidence includes rising global temps, melting glaciers, rising sea levels, and changing weather patterns.",
+   answer: "1) Global temperatures, the amount of precipitation, and extreme weather and storms are changing (temperatures are rising). 2) Emissions of greenhouse gases have increased. 3) Sea levels are rising (about 4 inches in 55 years). 4) Arctic sea ice, glaciers, and snow cover are all decreasing."},
+  {k: "ic8", n: 8, lesson: "7.3", label: "I Can 8 · Effects of climate change", text: "Explain the effects of climate change on people and the environment.",
+   mine: "Climate change causes more extreme weather, habitat loss, rising sea levels, and problems for people and wildlife.",
+   answer: "Humans are impacted through: 1) water availability, with more droughts and decreased snowpack (less melting snow to supply water); 2) crop cycles, with a negative impact on crop yield; 3) loss of land, as sea level has risen about 4 inches in 55 years. Climate change also brings more frequent and severe extreme weather like floods, major storms, and heat waves. For the environment, it causes habitat loss, shrinking ice and snow, and more acidic oceans, which cause problems for wildlife."},
+  {k: "ic9", n: 9, lesson: "7.3", label: "I Can 9 · How science helps", text: "Explain how science helps us understand and respond to global environmental changes.",
+   mine: "Scientists collect data and study Earth's systems to understand environmental changes and develop solutions.",
+   answer: "Scientists collect data (temperatures, greenhouse gas levels, sea levels, ice and snow cover) and study how Earth's systems are connected, so we can see what is changing and why. That evidence lets them predict what will happen next and develop solutions: renewable energy like solar and wind, ways to use fewer resources, and plans for droughts and rising seas. Ecological footprints are an example: measuring them shows who uses the most resources and what to change."},
+  {k: "ic10", n: 10, lesson: "7.4", label: "I Can 10 · Judging sustainability", text: "Describe the factors used for evaluating the sustainability of a development.",
+   mine: "Sustainability considers environmental, social, and economic impacts to determine whether development is beneficial long-term.",
+   answer: "Sustainable development is a strategy for using natural resources without depleting them and for providing human needs without causing long-term environmental harm. To evaluate a development, look at the links between the environment, society, and the economy: Does it use renewable resources (solar, wind, hydropower, geothermal, biomass) instead of nonrenewable ones (fossil fuels, coal, natural gas, nuclear)? Does it preserve ecosystem services (provisioning, regulating, cultural, supporting)? Does it meet people's needs and make economic sense? Will it still be good long-term?"},
+  {k: "ic11", n: 11, lesson: "7.4", label: "I Can 11 · Innovation & resilience", text: "Explain why innovation and resilience are important for solving environmental challenges.",
+   mine: "Innovation creates new solutions, while resilience helps people and ecosystems adapt to environmental challenges.",
+   answer: "Innovation means creating new solutions, like better solar panels, wind turbines, and ways to use fewer resources, which reduce the causes of environmental problems. Resilience is the ability to recover after a disturbance, to deal with change and move on. Environmental challenges like droughts, storms, and rising seas are already happening, so people and ecosystems need resilience to adapt and recover, while innovation keeps the problems from getting worse."},
+  {k: "ic12", n: 12, lesson: "5.3", label: "I Can 12 · Population over time", text: "Explain how the human population has changed over time.",
+   mine: "The human population has grown greatly over time, especially because of improvements in medicine, food production, and sanitation.",
+   answer: "For most of human history the population grew very slowly (under about half a billion) because high birth rates were canceled by high death rates. Agriculture, then plowing and irrigation, raised the carrying capacity, and the bubonic plague caused a dip. After the Industrial Revolution, improvements in medicine, food production, and sanitation lowered death rates while birth rates stayed high, so the population shot up in a J-curve (over 1 billion since about 1800). This is the demographic transition: Stage 1 slow, Stage 2 rapid, Stage 3 slowing, Stage 4 stable, Stage 5 declining. Today the population is still increasing, but the rate of growth is decreasing."},
+  {k: "ic13", n: 13, lesson: "5.3", label: "I Can 13 · Growth rates by country", text: "Compare population growth rates in different countries.",
+   mine: "Countries have different population growth rates because of differences in birth rates, death rates, and migration.",
+   answer: "Countries grow at different rates because of differences in birth rates, death rates, and migration (plus fertility and age structure), which depend on their stage in the demographic transition. Angola (Stage 1 on the stage chart) and Kenya (Stage 2) have high birth rates, young populations (median age 18–20), and wide-based age pyramids, so they grow fastest (2.72% and 1.81%). Canada and Denmark (Stage 4) have low birth and death rates, older populations (median age 42), and column-shaped pyramids, so they grow slowly (0.74% and 0.22%), mostly from immigration. Stage 5 countries like Japan, Germany, and Italy are shrinking."}
 ];
+
+/* ---------- the class glossary (Human Impact Glossary Terms), definitions as written on the class sheet ---------- */
+const GLOSSARY = [
+  {term: "Ecological footprint", lesson: "7.1", k: "ic1", def: "Amount of productive land and water needed to supply a population's resources and absorb its wastes",
+   sentence: "Because the average American uses so much energy and so many resources, their ecological footprint (8.1 gha) is much bigger than Ghana's (2.0 gha)."},
+  {term: "Anthrome", lesson: "7.1", k: "ic5", def: "Ecological region created by long-term interactions between humans and ecosystems",
+   sentence: "Croplands, rangelands, villages, and cities are all anthromes because people have changed the land over a long time."},
+  {term: "Weather", lesson: "3.2", k: "ic4", def: "Day-to-day conditions of the atmosphere, including temperature, precipitation, and other factors",
+   sentence: "Today's weather is cold and rainy, but one rainy day doesn't tell you the climate."},
+  {term: "Greenhouse effect", lesson: "3.2", k: "ic4", def: "The process in which certain gases trap sunlight energy in Earth's atmosphere as heat",
+   sentence: "The greenhouse effect keeps Earth warm because carbon dioxide, methane, and water vapor trap heat in the atmosphere."},
+  {term: "Climate change", lesson: "7.2", k: "ic4", def: "Measurable long-term changes in averages of temperatures, clouds, winds, precipitation, and the frequency of extreme weather events such as floods, major storms, and heat waves",
+   sentence: "Climate change is causing more extreme weather events, like floods and heat waves."},
+  {term: "Global warming", lesson: "7.2", k: "ic4", def: "Increase in the average temperatures on Earth",
+   sentence: "Global warming is one reason Arctic sea ice, glaciers, and snow cover are decreasing."},
+  {term: "Deforestation", lesson: "7.2", k: "ic5", def: "Destruction of forests",
+   sentence: "Deforestation harms soil, water, carbon storage, and the animals that lived in the forest."},
+  {term: "Monoculture", lesson: "7.2", k: "ic5", def: "Farming strategy of planting a single, highly productive crop year after year",
+   sentence: "A farm that plants only corn on the same huge field every year is a monoculture."},
+  {term: "Invasive species", lesson: "7.2", k: "ic5", def: "Non-native species whose introduction causes, or is likely to cause, economic harm, environmental harm, or harm to human health",
+   sentence: "Zebra mussels are an invasive species that humans carried to the Great Lakes, where they disrupt the ecosystem."},
+  {term: "Pollutant", lesson: "7.2", k: "ic6", def: "Harmful material that can enter the biosphere through the land, air, or water",
+   sentence: "DDT was a pollutant that entered lakes and built up in the fish and birds that lived there."},
+  {term: "Ozone layer", lesson: "7.2", k: "ic3", def: "Atmospheric layer in which ozone gas is relatively concentrated; protects life on Earth from harmful ultraviolet rays in sunlight",
+   sentence: "The ozone layer protects us from sunburns by blocking most of the sun's ultraviolet rays."},
+  {term: "Smog", lesson: "7.2", k: "ic6", def: "Gray-brown haze formed by a mixture of chemicals",
+   sentence: "On days with heavy traffic, smog can hang over a city like a gray-brown haze."},
+  {term: "Biological magnification", lesson: "7.2", k: "ic6", def: "The increasing concentration of a harmful substance in organisms at higher trophic levels in a food chain or food web",
+   sentence: "Because of biological magnification, fish-eating birds had far more of the pollutant in their bodies than the water did."},
+  {term: "Sustainable development", lesson: "7.4", k: "ic10", def: "Strategy for using natural resources without depleting them and for providing human needs without causing long-term environmental harm",
+   sentence: "A town that runs on solar and wind power and protects its forests and wetlands is practicing sustainable development."},
+  {term: "Renewable resource", lesson: "7.4", k: "ic10", def: "Resource that can be produced or replaced by healthy ecosystem functions",
+   sentence: "Wind is a renewable resource because using it today doesn't use it up."},
+  {term: "Nonrenewable resource", lesson: "7.4", k: "ic10", def: "Resource that cannot be replenished by a natural process within a reasonable amount of time",
+   sentence: "Coal is a nonrenewable resource because it can't replace itself as fast as we burn it."},
+  {term: "Resilience", lesson: "7.4", k: "ic11", def: "The ability to recover after a disturbance; the ability to deal with change and move on",
+   sentence: "A healthy forest shows resilience when it grows back after a wildfire."}
+];
+
+const TOPICS = Object.fromEntries(ICAN.map(c => [c.k, c.label]));
+
+/* ---------- vocabulary = the class glossary (Human Impact Glossary Terms) ---------- */
+const VOCAB = GLOSSARY.map(g => [g.term, g.def, g.k]);
 const CONFLICTS = [];
 
 /* ---------- question bank ---------- */
@@ -322,196 +380,140 @@ const N53 = {src: "5.3 guided notes"}, CH = {src: "Stage chart"}, PW = {src: "Po
 const F = (fig, base) => Object.assign({fig}, base);
 
 /* Human population history */
-MC("h1", "history", "For most of human history, the population stayed below about how many people (its carrying capacity at the time)?", "About half a billion (500 million)", ["About 3 billion", "About 7 billion", "About 50,000"], "On the 10,000 B.C.–2000 A.D. graph the line hugs the bottom, under about 0.5 billion, until the last few hundred years.", F("history", PW));
-MC("h2", "history", "Which 4 events are labeled on the graph of human population history?", "Agriculture begins, plowing and irrigation, the bubonic plague, the Industrial Revolution", ["Agriculture begins, the printing press, the bubonic plague, the moon landing", "Fire is discovered, plowing and irrigation, the Great Depression, the Industrial Revolution", "The Ice Age, agriculture begins, World War II, the internet"], "The graph marks agriculture beginning, plowing and irrigation, the bubonic plague, and the start of the Industrial Revolution.", PW);
-MC("h3", "history", "Which TWO events appear to have INCREASED the human carrying capacity on Earth?", "Plowing and irrigation, and the Industrial Revolution", ["The bubonic plague and the Industrial Revolution", "The bubonic plague and plowing and irrigation", "Agriculture beginning and the bubonic plague"], "After each one, the population climbs to a new, higher level. The plague did the opposite and caused a dip.", F("history", WU));
-MC("h4", "history", "Which density-dependent limiting factor is shown on the human population graph?", "The bubonic plague", ["The Industrial Revolution", "Plowing and irrigation", "Agriculture beginning"], "Disease is density-dependent: it spreads faster when people are crowded together. The plague shows up as a dip in the 1300s.", PW);
-MC("h5", "history", "Why is a disease like the bubonic plague called DENSITY-DEPENDENT?", "It spreads faster and kills more when people are crowded together", ["It affects a population the same way no matter how crowded it is", "It only affects small, spread-out populations", "It raises the carrying capacity of an area"], "The more crowded (dense) a population is, the stronger the effect. A density-independent factor, like a flood, hits the same no matter how crowded.");
-MC("h6", "history", "About how long has Earth's human population been greater than 1 billion?", "Since about 1800", ["Since about 10,000 B.C.", "Since about 1 A.D.", "Only since about 2000"], "The world passed 1 billion people around 1800, as the Industrial Revolution took off. It passed 8 billion in 2022.", PW);
-MC("h7", "history", "Which statement about the world's population today is TRUE?", "The population is still increasing, but the RATE of growth is decreasing", ["The population is decreasing, and so is its growth rate", "The population and its growth rate are both increasing faster than ever", "The population has stopped changing"], "From the notes: the size of the global human population is still increasing, but the rate of global population growth is decreasing.", N53);
-MC("h8", "history", "According to the 1950–2050 projection graph, about how many people will be on Earth in 2042?", "About 9 billion", ["About 5 billion", "About 7 billion", "About 12 billion"], "The projection reaches about 9 billion people in the early 2040s.", PW);
-MC("h9", "history", "What shape does the graph of human population over the last 10,000 years make?", "A J-shape: flat for a long time, then shooting almost straight up", ["An S-shape that has leveled off at carrying capacity", "A straight diagonal line", "A bell curve that rises and then falls"], "Very slow growth for thousands of years, then explosive growth after the Industrial Revolution, gives a J-curve (exponential growth).", F("history", {}));
-MC("h10", "history", "Why did the human population grow so slowly for most of history?", "Birth rates were high, but death rates were also high from disease, famine, and poor sanitation", ["Birth rates were very low", "People had access to birth control", "There was always plenty of food"], "That's Stage 1: high birth rates and high death rates cancel each other out.");
-MC("h11", "history", "The Industrial Revolution let the population explode mainly because…", "Machines, more food, medicine, and sanitation lowered death rates", ["Birth rates suddenly tripled", "Diseases like the plague became more common", "People moved out of cities and back onto farms"], "Death rates fell while birth rates stayed high for a while, so the population shot up.");
-MC("h12", "history", "Plowing and irrigation raised Earth's carrying capacity for humans because they…", "let farmers grow much more food on the same land", ["stopped diseases from spreading", "lowered birth rates", "moved people into crowded cities"], "More food from the same land means the environment can support more people.");
+MC("h1", "ic12", "For most of human history, the population stayed below about how many people (its carrying capacity at the time)?", "About half a billion (500 million)", ["About 3 billion", "About 7 billion", "About 50,000"], "On the 10,000 B.C.–2000 A.D. graph the line hugs the bottom, under about 0.5 billion, until the last few hundred years.", F("history", PW));
+MC("h2", "ic12", "Which 4 events are labeled on the graph of human population history?", "Agriculture begins, plowing and irrigation, the bubonic plague, the Industrial Revolution", ["Agriculture begins, the printing press, the bubonic plague, the moon landing", "Fire is discovered, plowing and irrigation, the Great Depression, the Industrial Revolution", "The Ice Age, agriculture begins, World War II, the internet"], "The graph marks agriculture beginning, plowing and irrigation, the bubonic plague, and the start of the Industrial Revolution.", PW);
+MC("h3", "ic12", "Which TWO events appear to have INCREASED the human carrying capacity on Earth?", "Plowing and irrigation, and the Industrial Revolution", ["The bubonic plague and the Industrial Revolution", "The bubonic plague and plowing and irrigation", "Agriculture beginning and the bubonic plague"], "After each one, the population climbs to a new, higher level. The plague did the opposite and caused a dip.", F("history", WU));
+MC("h4", "ic12", "Which density-dependent limiting factor is shown on the human population graph?", "The bubonic plague", ["The Industrial Revolution", "Plowing and irrigation", "Agriculture beginning"], "Disease is density-dependent: it spreads faster when people are crowded together. The plague shows up as a dip in the 1300s.", PW);
+MC("h5", "ic12", "Why is a disease like the bubonic plague called DENSITY-DEPENDENT?", "It spreads faster and kills more when people are crowded together", ["It affects a population the same way no matter how crowded it is", "It only affects small, spread-out populations", "It raises the carrying capacity of an area"], "The more crowded (dense) a population is, the stronger the effect. A density-independent factor, like a flood, hits the same no matter how crowded.");
+MC("h6", "ic12", "About how long has Earth's human population been greater than 1 billion?", "Since about 1800", ["Since about 10,000 B.C.", "Since about 1 A.D.", "Only since about 2000"], "The world passed 1 billion people around 1800, as the Industrial Revolution took off. It passed 8 billion in 2022.", PW);
+MC("h7", "ic12", "Which statement about the world's population today is TRUE?", "The population is still increasing, but the RATE of growth is decreasing", ["The population is decreasing, and so is its growth rate", "The population and its growth rate are both increasing faster than ever", "The population has stopped changing"], "From the notes: the size of the global human population is still increasing, but the rate of global population growth is decreasing.", N53);
+MC("h8", "ic12", "According to the 1950–2050 projection graph, about how many people will be on Earth in 2042?", "About 9 billion", ["About 5 billion", "About 7 billion", "About 12 billion"], "The projection reaches about 9 billion people in the early 2040s.", PW);
+MC("h9", "ic12", "What shape does the graph of human population over the last 10,000 years make?", "A J-shape: flat for a long time, then shooting almost straight up", ["An S-shape that has leveled off at carrying capacity", "A straight diagonal line", "A bell curve that rises and then falls"], "Very slow growth for thousands of years, then explosive growth after the Industrial Revolution, gives a J-curve (exponential growth).", F("history", {}));
+MC("h10", "ic12", "Why did the human population grow so slowly for most of history?", "Birth rates were high, but death rates were also high from disease, famine, and poor sanitation", ["Birth rates were very low", "People had access to birth control", "There was always plenty of food"], "That's Stage 1: high birth rates and high death rates cancel each other out.");
+MC("h11", "ic12", "The Industrial Revolution let the population explode mainly because…", "Machines, more food, medicine, and sanitation lowered death rates", ["Birth rates suddenly tripled", "Diseases like the plague became more common", "People moved out of cities and back onto farms"], "Death rates fell while birth rates stayed high for a while, so the population shot up.");
 
 /* Population growth factors & country data */
-MC("g1", "growth", "Which 4 factors affect how a population grows?", "Birth rate, death rate, immigration, and emigration", ["Birth rate, death rate, carrying capacity, and biomass", "Immigration, emigration, life expectancy, and median age", "Food, water, shelter, and space"], "Births and immigration add people; deaths and emigration take people away.", PW);
-MC("g2", "growth", "Which list has the 5 factors that affect a COUNTRY's population growth?", "Birth rate, death rate, fertility rate, net migration, and age structure", ["Birth rate, death rate, climate, land area, and religion", "Fertility rate, life expectancy, median age, latitude, and area", "Immigration, emigration, food, water, and space"], "From the practice work: birth rate, death rate, fertility rate, net migration, and age structure.", PW);
-MC("g3", "growth", "Angola's birth rate is 33.6. What does that number mean?", "33.6 live births per 1,000 people each year", ["33.6% of people had a baby this year", "33.6 births per 100 people each year", "Each woman has 33.6 children"], "Birth and death rates are given per 1,000 people per year.", F("countries", PW));
-MC("g4", "growth", "Net migration is…", "immigration minus emigration", ["births minus deaths", "immigration plus emigration", "deaths minus immigration"], "People moving in minus people moving out. A negative number means more people leave than arrive.");
-MC("g5", "growth", "Which country in the data table has the FASTEST growth rate?", "Angola", ["Kenya", "Canada", "Denmark"], "Angola grows 2.72% per year, the highest of the four.", F("countries", Object.assign({order: ["Angola", "Kenya", "Canada", "Denmark"]}, PW)));
-MC("g6", "growth", "Which country in the table has the LOWEST death rate, and why?", "Kenya, because its population is very young and young people rarely die", ["Canada, because it has the best hospitals", "Denmark, because it has the oldest population", "Angola, because it has the most births"], "Kenya's death rate is 6.8. Its median age is only 19.5, so most people are young. Canada (8.5) and Denmark (10.3) have more elderly people, so more deaths per 1,000, even with long life expectancy.", F("countries", PW));
-MC("g7", "growth", "Denmark's birth rate (10.4) and death rate (10.3) are almost equal. What does that tell you?", "Births barely outnumber deaths, so most of its small growth comes from immigration", ["The population is growing rapidly", "The population is crashing", "Denmark is in Stage 2"], "10.4 − 10.3 = 0.1 per 1,000. Its 0.22% growth comes mostly from immigration (2.1 per 1,000).", F("countries", PW));
-MC("g8", "growth", "In the class table, which country has a HIGH birth rate and a LOW death rate?", "Kenya", ["Angola", "Canada", "Denmark"], "High birth + high death = Angola. High birth + low death = Kenya. Low birth + high death = Denmark. Low birth + low death = Canada.", F("countries", Object.assign({order: ["Angola", "Kenya", "Canada", "Denmark"]}, PW)));
-MC("g9", "growth", "In the class table, which country has a LOW birth rate and a HIGH death rate?", "Denmark", ["Angola", "Kenya", "Canada"], "Denmark: birth rate 10.4, death rate 10.3 (the higher of the two developed countries).", F("countries", Object.assign({order: ["Angola", "Kenya", "Canada", "Denmark"]}, PW)));
-MC("g10", "growth", "Angola's median age is 18.2. Canada's is 42. What does that tell you about Angola?", "About half its people are under 18, so it has lots of children and will keep growing", ["Most of its people are elderly", "Its population is shrinking", "Its people live longer than Canadians"], "A low median age means a young population, the wide base of a Stage 2-style pyramid.", F("countries", PW));
-MC("g11", "growth", "Which two countries in the table are DEVELOPED countries?", "Canada and Denmark", ["Angola and Kenya", "Kenya and Canada", "Angola and Denmark"], "Low birth rates, life expectancy around 80, and a median age of 42 are signs of a developed country.", F("countries", PW));
-MC("g12", "growth", "Life expectancy is 56 years in Angola but 81.9 years in Canada. What best explains the difference?", "Better health care, sanitation, clean water, and food supply in Canada", ["Canada has a higher birth rate", "Angola has more immigration", "Canada has a younger population"], "The same improvements that lower death rates in Stage 2 raise life expectancy.", F("countries", {}));
-MC("g13", "growth", "Replacement-level fertility is about…", "2.1 children per woman", ["1 child per woman", "4 children per woman", "10 children per woman"], "Two children replace the two parents; the extra 0.1 makes up for children who don't survive to adulthood. The stage chart says Stage 4 countries are at, or slightly above, replacement.", EX);
-MC("g14", "growth", "If a country's birth rate EQUALS its death rate and nobody moves in or out, its population will…", "stay about the same size", ["grow quickly", "shrink quickly", "double"], "Births and deaths cancel out, so growth is about zero.");
+MC("g1", "ic13", "Which 4 factors affect how a population grows?", "Birth rate, death rate, immigration, and emigration", ["Birth rate, death rate, carrying capacity, and biomass", "Immigration, emigration, life expectancy, and median age", "Food, water, shelter, and space"], "Births and immigration add people; deaths and emigration take people away.", PW);
+MC("g2", "ic13", "Which list has the 5 factors that affect a COUNTRY's population growth?", "Birth rate, death rate, fertility rate, net migration, and age structure", ["Birth rate, death rate, climate, land area, and religion", "Fertility rate, life expectancy, median age, latitude, and area", "Immigration, emigration, food, water, and space"], "From the practice work: birth rate, death rate, fertility rate, net migration, and age structure.", PW);
+MC("g3", "ic13", "Angola's birth rate is 33.6. What does that number mean?", "33.6 live births per 1,000 people each year", ["33.6% of people had a baby this year", "33.6 births per 100 people each year", "Each woman has 33.6 children"], "Birth and death rates are given per 1,000 people per year.", F("countries", PW));
+MC("g5", "ic13", "Which country in the data table has the FASTEST growth rate?", "Angola", ["Kenya", "Canada", "Denmark"], "Angola grows 2.72% per year, the highest of the four.", F("countries", Object.assign({order: ["Angola", "Kenya", "Canada", "Denmark"]}, PW)));
+MC("g6", "ic13", "Which country in the table has the LOWEST death rate, and why?", "Kenya, because its population is very young and young people rarely die", ["Canada, because it has the best hospitals", "Denmark, because it has the oldest population", "Angola, because it has the most births"], "Kenya's death rate is 6.8. Its median age is only 19.5, so most people are young. Canada (8.5) and Denmark (10.3) have more elderly people, so more deaths per 1,000, even with long life expectancy.", F("countries", PW));
+MC("g7", "ic13", "Denmark's birth rate (10.4) and death rate (10.3) are almost equal. What does that tell you?", "Births barely outnumber deaths, so most of its small growth comes from immigration", ["The population is growing rapidly", "The population is crashing", "Denmark is in Stage 2"], "10.4 − 10.3 = 0.1 per 1,000. Its 0.22% growth comes mostly from immigration (2.1 per 1,000).", F("countries", PW));
+MC("g8", "ic13", "In the class table, which country has a HIGH birth rate and a LOW death rate?", "Kenya", ["Angola", "Canada", "Denmark"], "High birth + high death = Angola. High birth + low death = Kenya. Low birth + high death = Denmark. Low birth + low death = Canada.", F("countries", Object.assign({order: ["Angola", "Kenya", "Canada", "Denmark"]}, PW)));
+MC("g9", "ic13", "In the class table, which country has a LOW birth rate and a HIGH death rate?", "Denmark", ["Angola", "Kenya", "Canada"], "Denmark: birth rate 10.4, death rate 10.3 (the higher of the two developed countries).", F("countries", Object.assign({order: ["Angola", "Kenya", "Canada", "Denmark"]}, PW)));
+MC("g10", "ic13", "Angola's median age is 18.2. Canada's is 42. What does that tell you about Angola?", "About half its people are under 18, so it has lots of children and will keep growing", ["Most of its people are elderly", "Its population is shrinking", "Its people live longer than Canadians"], "A low median age means a young population, the wide base of a Stage 2-style pyramid.", F("countries", PW));
+MC("g11", "ic13", "Which two countries in the table are DEVELOPED countries?", "Canada and Denmark", ["Angola and Kenya", "Kenya and Canada", "Angola and Denmark"], "Low birth rates, life expectancy around 80, and a median age of 42 are signs of a developed country.", F("countries", PW));
+MC("g12", "ic13", "Life expectancy is 56 years in Angola but 81.9 years in Canada. What best explains the difference?", "Better health care, sanitation, clean water, and food supply in Canada", ["Canada has a higher birth rate", "Angola has more immigration", "Canada has a younger population"], "The same improvements that lower death rates in Stage 2 raise life expectancy.", F("countries", {}));
+MC("g13", "ic13", "The stage chart says Stage 4 countries have a fertility rate at, or slightly above, \"replacement reproduction.\" What does that mean?", "Each generation has just about enough children to replace the parents, so the population stays stable", ["Each family has 10 or more children", "No children are born at all", "Every person moves to another country"], "Fertility rate = the average number of children per woman. At replacement level, births just replace the people who die, so Stage 4 populations stay about the same size.", CH);
 
 /* Demographic transition stages */
-MC("d1", "dtm", "Fill in the blanks: \"As a society moves from a ____ to ____, population growth predictably shifts.\"", "primitive economy … industrialization", ["industrialization … a primitive economy", "city … farm", "developed country … developing country"], "That shift is the demographic transition.", N53);
-MC("d2", "dtm", "What does population growth do across the 5 stages, in order?", "Slow → rapid → slowing → stable → declining", ["Rapid → slow → stable → slowing → declining", "Slow → slowing → rapid → declining → stable", "Declining → slow → rapid → stable → slowing"], "1 slow, 2 rapid, 3 slowing, 4 stable, 5 declining.", N53);
-MC("d3", "dtm", "In Stage 1, what happens to birth rates and death rates?", "Both are high and cancel each other out", ["Both are low and cancel each other out", "Birth rates are high and death rates are low", "Birth rates are low and death rates are high"], "Birth rates = death rates, both high, so growth is slow.", N53);
-MC("d4", "dtm", "Which describes Stage 1?", "Short life expectancy, high infant mortality, and poor health care and sanitation", ["Long life expectancy and low infant mortality", "Low birth rates from widely available birth control", "High affluence and economic development"], "From the notes: short life expectancy, high infant mortality, poor health care and sanitation.", N53);
-MC("d5", "dtm", "Why are there no good examples of true Stage 1 societies today?", "Almost every country now has at least some modern medicine, food, and sanitation, so death rates have dropped", ["Stage 1 countries are too small to count", "Every country has already reached Stage 5", "Stage 1 only happened before agriculture began"], "Once death rates start falling, a society has moved into Stage 2.", N53);
-STG("d6", "dtm", "In which stage does the birth rate stay HIGH but the death rate DROPS?", 2, "Stage 2: births stay high while better health care and sanitation cut deaths, so births far outnumber deaths.", WU);
-MC("d7", "dtm", "What are some reasons the death rate drops in Stage 2?", "Better sanitation, hygiene, health care, and food supply", ["More access to birth control", "Women gaining independence and work opportunities", "The high cost of raising children"], "Those changes cut deaths from disease and starvation. The other choices lower BIRTH rates (Stages 3–4).", WU);
-MC("d8", "dtm", "According to the stage chart, what do improvements in food supply do in Stage 2?", "Reduce deaths due to starvation", ["Raise the birth rate", "Make the population shrink", "Increase infant mortality"], "The chart also says better transportation reduces deaths from lack of water.", CH);
-STG("d9", "dtm", "Births > deaths, reduced infant mortality, and better health care and sanitation. Which stage is this?", 2, "Stage 2: rapid population growth.", N53);
-STG("d10", "dtm", "In which stage does the population get more access to education and birth control?", 3, "Stage 3: increased access to birth control leads to smaller families, and education improves.", WU);
-MC("d11", "dtm", "In Stage 3, increased access to birth control leads to…", "smaller families", ["larger families", "higher death rates", "more infant mortality"], "Birth rates begin to fall, so growth slows.", N53);
-MC("d12", "dtm", "Which change is listed for Stage 3 on the stage chart?", "The cost of children increases with the introduction of higher education", ["Children must contribute to the economy of the household", "Family planning and contraception are virtually nonexistent", "Population is essentially determined by the food supply"], "The other three describe Stage 1.", CH);
-STG("d13", "dtm", "In which stage do children become high-cost, so having a child becomes a CHOICE?", 4, "Stage 4: children are high cost and are a choice; women gain more independence and work opportunities.", WU);
-MC("d14", "dtm", "Which describes Stage 4?", "Low, stable birth rate, a death rate that climbs slightly, and high affluence", ["High birth rate and a falling death rate", "Death rate higher than the birth rate, with labor shortages", "Short life expectancy and high infant mortality"], "Stage 4: little to no growth, a stable population, high affluence and economic development.", N53);
-STG("d15", "dtm", "In which stage does the death rate EXCEED the birth rate, so the population declines?", 5, "Stage 5: no growth, a declining population (Japan, Germany, Italy).", N53);
-MC("d16", "dtm", "Which countries are the notes' examples of Stage 5 (declining population)?", "Japan, Germany, and Italy", ["Yemen, Afghanistan, and Kenya", "Mexico, India, and Brazil", "Canada, the UK, and the U.S."], "Those three have more deaths than births.", N53);
-STG("d17", "dtm", "Mexico and India are examples of which stage?", 3, "Both the notes and the stage chart put Mexico and India in Stage 3: births falling, deaths low.", N53);
-STG("d18", "dtm", "Yemen and Afghanistan are examples of which stage?", 2, "Stage 2: high birth rates and falling death rates.", N53);
-MC("d19", "dtm", "Which of these describes a Stage 1 society on the stage chart?", "Children must contribute to the economy of the household", ["Children, which are high cost, are a choice", "An expansion in women's status and education", "Fertility rate at or slightly above replacement"], "In Stage 1, kids work for the family, and there are no education or entertainment costs.", CH);
-STG("d20", "dtm", "On the stage chart, \"an expansion in women's status and education\" first appears in which stage?", 3, "Stage 3: women are valued beyond childbearing and motherhood. In Stage 4 they gain even more independence and work opportunities.", CH);
-MC("d21", "dtm", "On the overview chart, which name goes with Stage 4?", "Low stationary", ["High stationary", "Early expanding", "Late expanding"], "1 high stationary, 2 early expanding, 3 late expanding, 4 low stationary, 5 declining.", {src: "Overview chart"});
-MC("d22", "dtm", "On the overview chart, Stage 1 is \"high stationary\" and Stage 4 is \"low stationary.\" What's the difference?", "Both barely grow, but Stage 1 has high birth and death rates while Stage 4 has low ones", ["Stage 1 grows fast and Stage 4 shrinks", "Stage 1 has more people than Stage 4", "There is no difference"], "\"Stationary\" means the population isn't growing much. \"High\" and \"low\" describe the birth and death rates.", {src: "Overview chart"});
-STG("d23", "dtm", "Look at the graph. In which stage is the population growing FASTEST?", 2, "Stage 2: the death rate has dropped but the birth rate is still high, so the gap between them (natural increase) is widest.", F("dtm", {}));
-STG("d24", "dtm", "On the graph, in which stage are birth and death rates both LOW and the total population leveled off at its highest?", 4, "Stage 4: low stationary.", F("dtm", {}));
-MC("d25", "dtm", "On the graph, what does the shaded area between the birth rate and death rate lines show?", "Natural increase: how much faster people are being born than dying", ["The total population", "The number of immigrants", "The carrying capacity"], "When the birth rate is above the death rate, the population grows naturally. In Stage 5 the lines flip, giving natural decrease.", F("dtm", {}));
-MC("d26", "dtm", "Why is the population still growing in Stage 3 even though birth rates are falling?", "Births are still higher than deaths, and the many young people from Stage 2 are now having children", ["Death rates are rising quickly", "Immigration always doubles in Stage 3", "Birth rates are higher than ever"], "Births ≥ deaths (births a bit higher), so growth slows but doesn't stop yet.", EX);
-STG("d27", "dtm", "A country has falling birth rates, low death rates, growing cities, and more girls finishing school. Which stage is it most likely in?", 3, "Falling births + low deaths + increasing urbanization + women's education = Stage 3.", CH);
-STG("d28", "dtm", "A country has a high birth rate, a dropping death rate, and is building new water pipes and sewers. Which stage is it most likely in?", 2, "Improvements in water supply and sewerage reduce death rates in Stage 2.", CH);
-MC("d29", "dtm", "In Stage 5, what happens to the death rate?", "It stays steady or slowly increases as the population gets older", ["It drops to zero", "It falls steeply", "It becomes much lower than the birth rate"], "From the notes: a stable or slowly increasing death rate, with labor shortages and rising health care and social security costs.", N53);
-STG("d30", "dtm", "Which stage do you think the U.S. is in, based on the notes and the stage chart?", 4, "The U.S. is listed as a Stage 4 example: low birth and death rates, little growth.", PW);
-STG("d31", "dtm", "Which stage has high affluence, economic development, fewer young people, and more elderly people?", 4, "Stage 4 (little to no growth). Examples: United States, Australia, Argentina.", N53);
+MC("d1", "ic12", "Fill in the blanks: \"As a society moves from a ____ to ____, population growth predictably shifts.\"", "primitive economy … industrialization", ["industrialization … a primitive economy", "city … farm", "developed country … developing country"], "That shift is the demographic transition.", N53);
+MC("d2", "ic12", "What does population growth do across the 5 stages, in order?", "Slow → rapid → slowing → stable → declining", ["Rapid → slow → stable → slowing → declining", "Slow → slowing → rapid → declining → stable", "Declining → slow → rapid → stable → slowing"], "1 slow, 2 rapid, 3 slowing, 4 stable, 5 declining.", N53);
+MC("d3", "ic12", "In Stage 1, what happens to birth rates and death rates?", "Both are high and cancel each other out", ["Both are low and cancel each other out", "Birth rates are high and death rates are low", "Birth rates are low and death rates are high"], "Birth rates = death rates, both high, so growth is slow.", N53);
+STG("d6", "ic12", "In which stage does the birth rate stay HIGH but the death rate DROPS?", 2, "Stage 2: births stay high while better health care and sanitation cut deaths, so births far outnumber deaths.", WU);
+MC("d7", "ic12", "What are some reasons the death rate drops in Stage 2?", "Better sanitation, hygiene, health care, and food supply", ["More access to birth control", "Women gaining independence and work opportunities", "The high cost of raising children"], "Those changes cut deaths from disease and starvation. The other choices lower BIRTH rates (Stages 3–4).", WU);
+MC("d8", "ic12", "According to the stage chart, what do improvements in food supply do in Stage 2?", "Reduce deaths due to starvation", ["Raise the birth rate", "Make the population shrink", "Increase infant mortality"], "The chart also says better transportation reduces deaths from lack of water.", CH);
+STG("d10", "ic12", "In which stage does the population get more access to education and birth control?", 3, "Stage 3: increased access to birth control leads to smaller families, and education improves.", WU);
+MC("d11", "ic12", "In Stage 3, increased access to birth control leads to…", "smaller families", ["larger families", "higher death rates", "more infant mortality"], "Birth rates begin to fall, so growth slows.", N53);
+MC("d12", "ic12", "Which change is listed for Stage 3 on the stage chart?", "The cost of children increases with the introduction of higher education", ["Children must contribute to the economy of the household", "Family planning and contraception are virtually nonexistent", "Population is essentially determined by the food supply"], "The other three describe Stage 1.", CH);
+STG("d13", "ic12", "In which stage do children become high-cost, so having a child becomes a CHOICE?", 4, "Stage 4: children are high cost and are a choice; women gain more independence and work opportunities.", WU);
+STG("d15", "ic12", "In which stage does the death rate EXCEED the birth rate, so the population declines?", 5, "Stage 5: no growth, a declining population (Japan, Germany, Italy).", N53);
+MC("d16", "ic13", "Which countries are the notes' examples of Stage 5 (declining population)?", "Japan, Germany, and Italy", ["Yemen, Afghanistan, and Kenya", "Mexico, India, and Brazil", "Canada, the UK, and the U.S."], "Those three have more deaths than births.", N53);
+STG("d17", "ic13", "Mexico and India are examples of which stage?", 3, "Both the notes and the stage chart put Mexico and India in Stage 3: births falling, deaths low.", N53);
+STG("d18", "ic13", "Yemen and Afghanistan are examples of which stage?", 2, "Stage 2: high birth rates and falling death rates.", N53);
+STG("d20", "ic12", "On the stage chart, \"an expansion in women's status and education\" first appears in which stage?", 3, "Stage 3: women are valued beyond childbearing and motherhood. In Stage 4 they gain even more independence and work opportunities.", CH);
+MC("d22", "ic12", "On the overview chart, Stage 1 is \"high stationary\" and Stage 4 is \"low stationary.\" What's the difference?", "Both barely grow, but Stage 1 has high birth and death rates while Stage 4 has low ones", ["Stage 1 grows fast and Stage 4 shrinks", "Stage 1 has more people than Stage 4", "There is no difference"], "\"Stationary\" means the population isn't growing much. \"High\" and \"low\" describe the birth and death rates.", {src: "Overview chart"});
+STG("d23", "ic12", "Look at the graph. In which stage is the population growing FASTEST?", 2, "Stage 2: the death rate has dropped but the birth rate is still high, so the gap between them (natural increase) is widest.", F("dtm", {}));
+MC("d25", "ic12", "On the graph, what does the shaded area between the birth rate and death rate lines show?", "Natural increase: how much faster people are being born than dying", ["The total population", "The number of immigrants", "The carrying capacity"], "When the birth rate is above the death rate, the population grows naturally. In Stage 5 the lines flip, giving natural decrease.", F("dtm", {}));
+STG("d27", "ic12", "A country has falling birth rates, low death rates, growing cities, and more girls finishing school. Which stage is it most likely in?", 3, "Falling births + low deaths + increasing urbanization + women's education = Stage 3.", CH);
+STG("d30", "ic13", "Which stage do you think the U.S. is in, based on the notes and the stage chart?", 4, "The U.S. is listed as a Stage 4 example: low birth and death rates, little growth.", PW);
 
 /* Age-structure diagrams */
 const AB = ["A", "B", "C", "D"];
-MC("a1", "age", "Which diagram shows high birth rates with a rapid drop in each older age group because death rates are high (short life expectancy)?", "A", ["B", "C", "D"], "A: a very wide base that pinches in fast. Lots of babies, but few people survive to old age (Stage 1).", F("ages", Object.assign({order: AB}, N53)));
-MC("a2", "age", "Which diagram shows a high birth rate but a falling death rate, so more people live into middle age?", "B", ["A", "C", "D"], "B: still a wide base, but straight sides, because more people survive each age group (Stage 2).", F("ages", Object.assign({order: AB}, N53)));
-MC("a3", "age", "Which diagram shows a declining birth rate, a low death rate, and more people living to old age?", "C", ["A", "B", "D"], "C: about the same number of people in each age group until old age (Stage 3–4, stationary).", F("ages", Object.assign({order: AB}, N53)));
-MC("a4", "age", "Which diagram shows a DECLINING population (Stage 5)?", "D", ["A", "B", "C"], "D: a narrow base and more adults and elderly than children. Fewer births than deaths ahead.", F("ages", Object.assign({order: AB}, N53)));
-MC("a5", "age", "What does a very wide BASE on an age-structure diagram tell you?", "There are many young children, so birth rates are high", ["Most people live past 80", "The population is shrinking", "The death rate is lower than in developed countries"], "The bottom bars are ages 0–4, 5–9, and so on. A wide base means lots of births.");
-MC("a6", "age", "A narrow base and a wider top on an age-structure diagram means…", "few births and many older people, so the population will likely shrink", ["many births, so the population will grow fast", "a high death rate among children", "the population is in Stage 2"], "Fewer young people means fewer future parents, so the population declines.");
-MC("a7", "age", "Stage 4 diagrams have a \"higher dependency ratio.\" What does that mean?", "More elderly dependents compared to working-age adults", ["More babies than adults", "More immigrants than citizens", "More men than women"], "Dependents are the people too young or too old to work. The notes link this to a greater tax burden and strain on health care.", N53);
-MC("a8", "age", "Compared to 2002, the world's age structure in 2050 is expected to be…", "more column-shaped, with many more older people", ["more triangle-shaped, with more children than ever", "exactly the same", "top-heavy with almost no children"], "In the 2050 bars, the base stays about the same while the middle and top fill in.", {src: "Future population growth"});
-MC("a9", "age", "Why does a country with a wide-based age structure keep growing even if families start having fewer children?", "Its many young people are about to reach the age to have children of their own", ["Its death rate is about to rise sharply", "Older people move away", "Wide-based populations can't change"], "Even 2 kids per family adds up when there are so many young future parents. This is why Stage 3 still grows.", EX);
-MC("a10", "age", "An age-structure diagram with straight, nearly vertical sides shows a population that is…", "stable, with about the same number of people in each age group", ["growing rapidly", "declining rapidly", "mostly elderly"], "Column shape = stationary (little growth).");
+MC("a1", "ic13", "Which diagram shows high birth rates with a rapid drop in each older age group because death rates are high (short life expectancy)?", "A", ["B", "C", "D"], "A: a very wide base that pinches in fast. Lots of babies, but few people survive to old age (Stage 1).", F("ages", Object.assign({order: AB}, N53)));
+MC("a2", "ic13", "Which diagram shows a high birth rate but a falling death rate, so more people live into middle age?", "B", ["A", "C", "D"], "B: still a wide base, but straight sides, because more people survive each age group (Stage 2).", F("ages", Object.assign({order: AB}, N53)));
+MC("a3", "ic13", "Which diagram shows a declining birth rate, a low death rate, and more people living to old age?", "C", ["A", "B", "D"], "C: about the same number of people in each age group until old age (Stage 3–4, stationary).", F("ages", Object.assign({order: AB}, N53)));
+MC("a4", "ic13", "Which diagram shows a DECLINING population (Stage 5)?", "D", ["A", "B", "C"], "D: a narrow base and more adults and elderly than children. Fewer births than deaths ahead.", F("ages", Object.assign({order: AB}, N53)));
+MC("a5", "ic13", "What does a very wide BASE on an age-structure diagram tell you?", "There are many young children, so birth rates are high", ["Most people live past 80", "The population is shrinking", "The death rate is lower than in developed countries"], "The bottom bars are ages 0–4, 5–9, and so on. A wide base means lots of births.");
+MC("a7", "ic13", "Stage 4 diagrams have a \"higher dependency ratio.\" What does that mean?", "More elderly dependents compared to working-age adults", ["More babies than adults", "More immigrants than citizens", "More men than women"], "Dependents are the people too young or too old to work. The notes link this to a greater tax burden and strain on health care.", N53);
+MC("a8", "ic12", "Compared to 2002, the world's age structure in 2050 is expected to be…", "more column-shaped, with many more older people", ["more triangle-shaped, with more children than ever", "exactly the same", "top-heavy with almost no children"], "In the 2050 bars, the base stays about the same while the middle and top fill in.", {src: "Future population growth"});
+MC("a9", "ic13", "Why does a country with a wide-based age structure keep growing even if families start having fewer children?", "Its many young people are about to reach the age to have children of their own", ["Its death rate is about to rise sharply", "Older people move away", "Wide-based populations can't change"], "Even 2 kids per family adds up when there are so many young future parents. This is why Stage 3 still grows.", EX);
 
 /* Ecological footprints */
-MC("f1", "footprint", "Which is the best definition of an ecological footprint?", "The total area of healthy land and water ecosystems needed to provide the resources you use", ["The amount of land your house sits on", "The amount of CO₂ one car releases in a year", "The number of species living in an ecosystem"], "From the notes: the total area of healthy land and water ecosystems needed to provide the resources you use (and absorb your wastes).", N71);
-MC("f2", "footprint", "An ecological footprint includes your USE of resources such as…", "energy, food, water, and shelter", ["sewage, trash, and greenhouse gases", "birth rate and death rate", "rocks, minerals, and soil only"], "Use of resources = energy, food, water, and shelter. Sewage, trash, and greenhouse gases are the wastes.", N71);
-MC("f3", "footprint", "An ecological footprint also includes the WASTES you produce, such as…", "sewage, trash, and greenhouse gases", ["energy, food, water, and shelter", "oxygen and water vapor", "seeds and fruit"], "Land and water are needed to absorb wastes too.", N71);
-MC("f4", "footprint", "Which country from the notes has the LARGEST average ecological footprint?", "United States (8.1 gha)", ["Russia (6.1 gha)", "France (4.6 gha)", "Peru (2.1 gha)"], "U.S. 8.1, Russia 6.1, France 4.6, Peru 2.1, Ghana 2.0.", N71);
-MC("f5", "footprint", "Which country from the notes has the SMALLEST average ecological footprint?", "Ghana (2.0 gha)", ["Peru (2.1 gha)", "France (4.6 gha)", "Russia (6.1 gha)"], "U.S. 8.1, Russia 6.1, France 4.6, Peru 2.1, Ghana 2.0.", N71);
-MC("f6", "footprint", "What does \"gha\" stand for in ecological footprint numbers?", "Global hectares", ["Greenhouse gas amount", "Grams of human activity", "Gallons per hour average"], "A global hectare is a hectare of land or water with world-average productivity.", N71);
-MC("f7", "footprint", "The average American's footprint (8.1 gha) is about how many times the average Ghanaian's (2.0 gha)?", "About 4 times", ["About 2 times", "About 8 times", "About 16 times"], "8.1 ÷ 2.0 ≈ 4.", Object.assign({order: ["About 2 times", "About 4 times", "About 8 times", "About 16 times"]}, N71));
-MC("f8", "footprint", "Which choice would SHRINK your ecological footprint the most?", "Switching to greener electricity and traveling less", ["Driving alone instead of taking the bus", "Buying a new phone every year", "Leaving lights on so the bulbs last longer"], "Less energy from fossil fuels and less travel = fewer resources used and less greenhouse gas.", N71);
-MC("f9", "footprint", "Why do developed countries like the U.S. usually have much larger ecological footprints PER PERSON than developing countries?", "Each person uses far more energy and resources and makes more waste", ["They have more people", "Their land is less healthy", "They have higher birth rates"], "A footprint is per person here. Bigger homes, more driving and flying, more meat, and more stuff all add land and water.");
+MC("f1", "ic1", "Which is the best definition of an ecological footprint?", "The total area of healthy land and water ecosystems needed to provide the resources you use", ["The amount of land your house sits on", "The amount of CO₂ one car releases in a year", "The number of species living in an ecosystem"], "From the notes: the total area of healthy land and water ecosystems needed to provide the resources you use (and absorb your wastes).", N71);
+MC("f2", "ic1", "An ecological footprint includes your USE of resources such as…", "energy, food, water, and shelter", ["sewage, trash, and greenhouse gases", "birth rate and death rate", "rocks, minerals, and soil only"], "Use of resources = energy, food, water, and shelter. Sewage, trash, and greenhouse gases are the wastes.", N71);
+MC("f3", "ic1", "An ecological footprint also includes the WASTES you produce, such as…", "sewage, trash, and greenhouse gases", ["energy, food, water, and shelter", "oxygen and water vapor", "seeds and fruit"], "Land and water are needed to absorb wastes too.", N71);
+MC("f4", "ic1", "Which country from the notes has the LARGEST average ecological footprint?", "United States (8.1 gha)", ["Russia (6.1 gha)", "France (4.6 gha)", "Peru (2.1 gha)"], "U.S. 8.1, Russia 6.1, France 4.6, Peru 2.1, Ghana 2.0.", N71);
+MC("f5", "ic1", "Which country from the notes has the SMALLEST average ecological footprint?", "Ghana (2.0 gha)", ["Peru (2.1 gha)", "France (4.6 gha)", "Russia (6.1 gha)"], "U.S. 8.1, Russia 6.1, France 4.6, Peru 2.1, Ghana 2.0.", N71);
+MC("f7", "ic1", "The average American's footprint (8.1 gha) is about how many times the average Ghanaian's (2.0 gha)?", "About 4 times", ["About 2 times", "About 8 times", "About 16 times"], "8.1 ÷ 2.0 ≈ 4.", Object.assign({order: ["About 2 times", "About 4 times", "About 8 times", "About 16 times"]}, N71));
+MC("f8", "ic1", "Which choice would SHRINK your ecological footprint the most?", "Switching to greener electricity and traveling less", ["Driving alone instead of taking the bus", "Buying a new phone every year", "Leaving lights on so the bulbs last longer"], "Less energy from fossil fuels and less travel = fewer resources used and less greenhouse gas.", N71);
 
 /* Great Acceleration & Anthropocene */
-MC("n1", "anthro", "The Great Acceleration began around…", "1950", ["1800", "1900", "2000"], "The graphs run 1950–2010; almost every line turns sharply upward around 1950.", Object.assign({order: ["1800", "1900", "1950", "2000"]}, N71));
-MC("n2", "anthro", "Which of these INCREASED sharply in the Great Acceleration graphs?", "Fertilizer use, energy use, water use, and world population", ["Forest area, wild fish numbers, and glacier size", "Only world population", "Only the number of farms"], "The graphs track fertilizer consumption, primary energy use, water use, world population, coastal nitrogen, and marine fish capture.", N71);
-MC("n3", "anthro", "The Great Acceleration graphs show socio-economic trends and Earth system trends. Which is an EARTH SYSTEM trend?", "Coastal nitrogen and marine fish capture", ["Fertilizer consumption", "Primary energy use", "World population"], "Socio-economic = what people do (fertilizer, energy, water, population). Earth system = the effects on the planet (coastal nitrogen, fish capture).", N71);
-MC("n4", "anthro", "The Anthropocene, or \"Age of Humans,\" is…", "the period during which human activity has become the major cause of global change", ["the time before humans existed", "the age when humans first started farming", "a biome made of cities"], "From the notes: human activity has become the major cause of global change.", N71);
-MC("n5", "anthro", "Anthromes are…", "human-altered biomes, like cities, villages, croplands, and rangelands", ["biomes with no human influence", "the animals that live in cities", "layers of the atmosphere"], "Anthrome = anthropogenic (human-made) biome.", N71);
-MC("n6", "anthro", "Which of these is NOT an anthrome?", "Wildlands with no significant human use", ["Cropland", "Rangeland", "A dense city settlement"], "On the diagram: wildlands → seminatural anthromes → used anthromes (rangeland, cropland, villages, dense settlements).", N71);
-MC("n7", "anthro", "Which order goes from LEAST to MOST human-altered?", "Wildlands → seminatural anthromes → rangeland → cropland → villages → dense settlements", ["Dense settlements → villages → cropland → rangeland → wildlands", "Cropland → wildlands → villages → rangeland → dense settlements", "Rangeland → wildlands → dense settlements → cropland → villages"], "Use increases from wild (left) to used (right) on the anthromes diagram.", N71);
-MC("n8", "anthro", "Which cause-and-effect pair from the Great Acceleration makes sense?", "More fertilizer use → more nitrogen washing into coastal waters", ["More fish capture → more fish in the ocean", "More water use → more fresh water available", "More energy use from fossil fuels → less CO₂ in the air"], "Fertilizer runoff is a big source of coastal nitrogen. The other three have the effect backwards.", EX);
-MC("n9", "anthro", "Look at the graph. What makes this period the \"Great Acceleration\"?", "Many human trends stayed fairly flat, then all shot upward together after about 1950", ["Every trend went down after 1950", "Only population changed; everything else stayed flat", "The trends rose slowly and steadily since 1750"], "The lines bend sharply at about the same time, which is why scientists see it as the start of the Anthropocene.", F("accel", {}));
+MC("n1", "ic2", "The Great Acceleration began around…", "1950", ["1800", "1900", "2000"], "The graphs run 1950–2010; almost every line turns sharply upward around 1950.", Object.assign({order: ["1800", "1900", "1950", "2000"]}, N71));
+MC("n2", "ic2", "Which of these INCREASED sharply in the Great Acceleration graphs?", "Fertilizer use, energy use, water use, and world population", ["Forest area, wild fish numbers, and glacier size", "Only world population", "Only the number of farms"], "The graphs track fertilizer consumption, primary energy use, water use, world population, coastal nitrogen, and marine fish capture.", N71);
+MC("n4", "ic2", "The Anthropocene, or \"Age of Humans,\" is…", "the period during which human activity has become the major cause of global change", ["the time before humans existed", "the age when humans first started farming", "a biome made of cities"], "From the notes: human activity has become the major cause of global change.", N71);
+MC("n5", "ic5", "Anthromes are…", "human-altered biomes, like cities, villages, croplands, and rangelands", ["biomes with no human influence", "the animals that live in cities", "layers of the atmosphere"], "Anthrome = anthropogenic (human-made) biome.", N71);
+MC("n6", "ic5", "Which of these is NOT an anthrome?", "Wildlands with no significant human use", ["Cropland", "Rangeland", "A dense city settlement"], "On the diagram: wildlands → seminatural anthromes → used anthromes (rangeland, cropland, villages, dense settlements).", N71);
+MC("n7", "ic5", "Which order goes from LEAST to MOST human-altered?", "Wildlands → seminatural anthromes → rangeland → cropland → villages → dense settlements", ["Dense settlements → villages → cropland → rangeland → wildlands", "Cropland → wildlands → villages → rangeland → dense settlements", "Rangeland → wildlands → dense settlements → cropland → villages"], "Use increases from wild (left) to used (right) on the anthromes diagram.", N71);
+MC("n8", "ic2", "Which cause-and-effect pair from the Great Acceleration makes sense?", "More fertilizer use → more nitrogen washing into coastal waters", ["More fish capture → more fish in the ocean", "More water use → more fresh water available", "More energy use from fossil fuels → less CO₂ in the air"], "Fertilizer runoff is a big source of coastal nitrogen. The other three have the effect backwards.", EX);
+MC("n9", "ic2", "Look at the graph. What makes this period the \"Great Acceleration\"?", "Many human trends stayed fairly flat, then all shot upward together after about 1950", ["Every trend went down after 1950", "Only population changed; everything else stayed flat", "The trends rose slowly and steadily since 1750"], "The lines bend sharply at about the same time, which is why scientists see it as the start of the Anthropocene.", F("accel", {}));
 
 /* Nitrogen, acid rain & ocean acidification */
-MC("c1", "nitrogen", "Nitrogen released from burning ____ can travel through the air.", "fossil fuels", ["fertilizer", "trees", "rocks"], "Burning fossil fuels releases nitrogen compounds that blow far away and land in lakes and streams.", N72);
-MC("c2", "nitrogen", "Because nitrogen is a LIMITING NUTRIENT for producers, extra nitrogen in a lake can cause…", "algal blooms", ["acid rain", "biological magnification", "habitat fragmentation"], "Producers like algae were held back by too little nitrogen. Add some and they grow out of control.", N72);
-MC("c3", "nitrogen", "Humans produce nitrogen-enriched fertilizer. What is the DOWNSIDE?", "Nitrogen runoff into streams, lakes, and oceans", ["It makes crops grow slower", "It removes nitrogen from the air we breathe", "It causes earthquakes"], "The fertilizer helps produce food for the world, but rain washes extra nitrogen into the water.", N72);
-MC("c4", "nitrogen", "What is the BENEFIT of nitrogen-enriched fertilizer?", "It helps produce food for the people of the world", ["It cleans polluted lakes", "It lowers ocean pH", "It removes CO₂ from the air"], "From the notes: it helps produce food for the people of the world, but it also causes nitrogen runoff.", N72);
-MC("c5", "nitrogen", "Acid rain forms when…", "air pollution combines with water and falls as acidic rain", ["fertilizer washes into a lake", "the ocean absorbs CO₂", "a pollutant moves up a food chain"], "Pollution from burning fossil fuels (like sulfur and nitrogen oxides) mixes with water in the air.", N72);
-MC("c6", "nitrogen", "Acid rain is especially damaging to…", "forests and lakes", ["deserts and glaciers", "the deep ocean floor", "the ozone layer"], "From the notes: especially damaging to forests and lakes.", N72);
-MC("c7", "nitrogen", "Ocean acidification is…", "the continued DECREASE in ocean pH from absorbing CO₂ from the atmosphere", ["the continued increase in ocean pH from absorbing oxygen", "acid rain falling straight into the ocean", "fertilizer runoff causing algal blooms"], "More CO₂ in the air → more CO₂ dissolving in seawater → lower pH.", N72);
-MC("c8", "nitrogen", "As the ocean becomes more acidic, its pH…", "decreases (gets lower)", ["increases (gets higher)", "stays at 7", "becomes basic"], "Lower pH = more acidic.", Object.assign({order: ["decreases (gets lower)", "increases (gets higher)", "stays at 7", "becomes basic"]}, N72));
-MC("c9", "nitrogen", "In the diagram, what happens when CO₂ dissolves in seawater?", "It forms carbonic acid, which releases H⁺ ions and lowers the pH", ["It turns into oxygen", "It raises the pH and makes the water basic", "It turns into nitrogen fertilizer"], "CO₂ + water → carbonic acid → H⁺ ions. More H⁺ = lower pH.", F("ocean", N72));
-MC("c10", "nitrogen", "Why is ocean acidification a problem for clams, corals, and snails?", "Fewer carbonate ions are available to build their shells and skeletons", ["The water gets too warm for them", "Algae grow on their shells", "It makes them sink"], "Shells are made of calcium carbonate. H⁺ ions grab carbonate, so there's less left for building.", N72);
-MC("c11", "nitrogen", "Which human activity is the main source of the extra CO₂ behind ocean acidification?", "Burning fossil fuels", ["Using fertilizer", "Overharvesting fish", "Planting monocultures"], "Most extra CO₂ in the atmosphere comes from burning coal, oil, and natural gas.");
-MC("c12", "nitrogen", "Which problem → main cause pairing is correct?", "Ocean acidification → CO₂ absorbed from the air", ["Algal blooms → CO₂ absorbed from the air", "Acid rain → invasive species", "Biological magnification → nitrogen fertilizer"], "Algal blooms come from extra nitrogen. Acid rain comes from air pollution plus water. Biomagnification is about stored pollutants moving up food chains.", EX);
-MC("c13", "nitrogen", "A farmer spreads extra fertilizer, then a big rainstorm hits. What is most likely to happen to a lake downstream?", "Nitrogen runoff causes an algal bloom", ["The lake's pH rises sharply", "The fish become an invasive species", "The lake freezes"], "Rain carries fertilizer nitrogen into the lake, and the limiting nutrient sets off algae growth.");
-MC("c14", "nitrogen", "When a huge algal bloom dies and decomposers break it down, what often happens to the lake?", "Decomposers use up the oxygen in the water, and fish can die", ["The lake gets more oxygen than ever", "The water becomes too basic for life", "Nothing; dead algae just sink"], "Decomposition uses oxygen. Low-oxygen \"dead zones\" are a common result of nitrogen runoff.", EX);
+MC("c1", "ic6", "Nitrogen released from burning ____ can travel through the air.", "fossil fuels", ["fertilizer", "trees", "rocks"], "Burning fossil fuels releases nitrogen compounds that blow far away and land in lakes and streams.", N72);
+MC("c2", "ic6", "Because nitrogen is a LIMITING NUTRIENT for producers, extra nitrogen in a lake can cause…", "algal blooms", ["acid rain", "biological magnification", "habitat fragmentation"], "Producers like algae were held back by too little nitrogen. Add some and they grow out of control.", N72);
+MC("c3", "ic6", "Humans produce nitrogen-enriched fertilizer. What is the DOWNSIDE?", "Nitrogen runoff into streams, lakes, and oceans", ["It makes crops grow slower", "It removes nitrogen from the air we breathe", "It causes earthquakes"], "The fertilizer helps produce food for the world, but rain washes extra nitrogen into the water.", N72);
+MC("c5", "ic6", "Acid rain forms when…", "air pollution combines with water and falls as acidic rain", ["fertilizer washes into a lake", "the ocean absorbs CO₂", "a pollutant moves up a food chain"], "Pollution from burning fossil fuels (like sulfur and nitrogen oxides) mixes with water in the air.", N72);
+MC("c7", "ic4", "Ocean acidification is…", "the continued DECREASE in ocean pH from absorbing CO₂ from the atmosphere", ["the continued increase in ocean pH from absorbing oxygen", "acid rain falling straight into the ocean", "fertilizer runoff causing algal blooms"], "More CO₂ in the air → more CO₂ dissolving in seawater → lower pH.", N72);
+MC("c8", "ic4", "As the ocean becomes more acidic, its pH…", "decreases (gets lower)", ["increases (gets higher)", "stays at 7", "becomes basic"], "Lower pH = more acidic.", Object.assign({order: ["decreases (gets lower)", "increases (gets higher)", "stays at 7", "becomes basic"]}, N72));
+MC("c9", "ic4", "In the diagram, what happens when CO₂ dissolves in seawater?", "It forms carbonic acid, which releases H⁺ ions and lowers the pH", ["It turns into oxygen", "It raises the pH and makes the water basic", "It turns into nitrogen fertilizer"], "CO₂ + water → carbonic acid → H⁺ ions. More H⁺ = lower pH.", F("ocean", N72));
+MC("c10", "ic4", "Why is ocean acidification a problem for clams, corals, and snails?", "Fewer carbonate ions are available to build their shells and skeletons", ["The water gets too warm for them", "Algae grow on their shells", "It makes them sink"], "Shells are made of calcium carbonate. H⁺ ions grab carbonate, so there's less left for building.", N72);
+MC("c11", "ic4", "Which human activity is the main source of the extra CO₂ behind ocean acidification?", "Burning fossil fuels", ["Using fertilizer", "Overharvesting fish", "Planting monocultures"], "Most extra CO₂ in the atmosphere comes from burning coal, oil, and natural gas.");
+MC("c12", "ic6", "Which problem → main cause pairing is correct?", "Ocean acidification → CO₂ absorbed from the air", ["Algal blooms → CO₂ absorbed from the air", "Acid rain → invasive species", "Biological magnification → nitrogen fertilizer"], "Algal blooms come from extra nitrogen. Acid rain comes from air pollution plus water. Biomagnification is about stored pollutants moving up food chains.", EX);
 
 /* Biological magnification */
-MC("b1", "biomag", "Biological magnification is when…", "a pollutant's concentration increases at each higher trophic level of a food chain", ["a pollutant's concentration decreases up a food chain", "a population grows faster than its food supply", "algae grow out of control in a lake"], "From the notes: the concentration of a pollutant increases as the number of organisms at each trophic level decreases.", N72);
-MC("b2", "biomag", "In the diagram, which organisms have the HIGHEST concentration of the pollutant?", "Fish-eating birds", ["Large fish", "Zooplankton", "Producers"], "They're at the top of the food chain: 10,000,000 compared to 1 in the water.", F("biomag", N72));
-MC("b3", "biomag", "In the diagram, how many times more concentrated is the pollutant in large fish than in zooplankton?", "100 times", ["10 times", "1,000 times", "2 times"], "Zooplankton 10,000 → large fish 1,000,000. 1,000,000 ÷ 10,000 = 100.", F("biomag", Object.assign({order: ["2 times", "10 times", "100 times", "1,000 times"]}, N72)));
-MC("b4", "biomag", "From producers upward, about how many times does the concentration increase at each trophic level in the diagram?", "10 times", ["2 times", "100 times", "It stays the same"], "1,000 → 10,000 → 100,000 → 1,000,000 → 10,000,000: ×10 each step.", F("biomag", Object.assign({order: ["It stays the same", "2 times", "10 times", "100 times"]}, N72)));
-MC("b5", "biomag", "Going UP a food chain, the number of organisms at each level ____, while the concentration of a stored pollutant ____.", "decreases … increases", ["increases … decreases", "increases … increases", "stays the same … stays the same"], "Fewer organisms at the top, but each one has eaten many from below, so the pollutant piles up.", N72);
-MC("b6", "biomag", "Which kind of pollutant biomagnifies?", "One stored in body fat that isn't broken down or excreted, like DDT or mercury", ["One that dissolves and is peed out quickly", "Oxygen gas", "Water vapor"], "If the body can't get rid of it, it builds up over the organism's life and passes to whatever eats it.", EX);
-MC("b7", "biomag", "Why are top predators like eagles, orcas, and tuna the most at risk from biological magnification?", "They eat many organisms that each carry the pollutant, so it builds up the most in them", ["They drink more water than other animals", "They live in the cleanest parts of the ecosystem", "Predators can't digest pollutants, but prey can"], "Each step up multiplies the dose.");
-MC("b8", "biomag", "Pregnant people are often told to limit large fish like swordfish and tuna. Why?", "Large predatory fish build up high mercury levels through biological magnification", ["Large fish have too much protein", "Large fish are an invasive species", "Large fish cause algal blooms"], "Mercury from burning coal ends up in the water and magnifies up to the big predators.", EX);
-MC("b9", "biomag", "DDT was sprayed on crops and marshes in small amounts, but bald eagles laid eggs with shells so thin they broke. Why were eagles hit so hard?", "DDT built up in each level of the food chain, so the fish the eagles ate were loaded with it", ["Eagles ate the crops directly", "DDT made eagles an invasive species", "DDT caused acid rain on eagle nests"], "That's biological magnification. DDT was banned in the U.S. in 1972, and eagles recovered.", EX);
+MC("b1", "ic6", "Biological magnification is when…", "a pollutant's concentration increases at each higher trophic level of a food chain", ["a pollutant's concentration decreases up a food chain", "a population grows faster than its food supply", "algae grow out of control in a lake"], "From the notes: the concentration of a pollutant increases as the number of organisms at each trophic level decreases.", N72);
+MC("b2", "ic6", "In the diagram, which organisms have the HIGHEST concentration of the pollutant?", "Fish-eating birds", ["Large fish", "Zooplankton", "Producers"], "They're at the top of the food chain: 10,000,000 compared to 1 in the water.", F("biomag", N72));
+MC("b3", "ic6", "In the diagram, how many times more concentrated is the pollutant in large fish than in zooplankton?", "100 times", ["10 times", "1,000 times", "2 times"], "Zooplankton 10,000 → large fish 1,000,000. 1,000,000 ÷ 10,000 = 100.", F("biomag", Object.assign({order: ["2 times", "10 times", "100 times", "1,000 times"]}, N72)));
+MC("b4", "ic6", "From producers upward, about how many times does the concentration increase at each trophic level in the diagram?", "10 times", ["2 times", "100 times", "It stays the same"], "1,000 → 10,000 → 100,000 → 1,000,000 → 10,000,000: ×10 each step.", F("biomag", Object.assign({order: ["It stays the same", "2 times", "10 times", "100 times"]}, N72)));
+MC("b5", "ic6", "Going UP a food chain, the number of organisms at each level ____, while the concentration of a stored pollutant ____.", "decreases … increases", ["increases … decreases", "increases … increases", "stays the same … stays the same"], "Fewer organisms at the top, but each one has eaten many from below, so the pollutant piles up.", N72);
+MC("b7", "ic6", "Why are top predators like eagles, orcas, and tuna the most at risk from biological magnification?", "They eat many organisms that each carry the pollutant, so it builds up the most in them", ["They drink more water than other animals", "They live in the cleanest parts of the ecosystem", "Predators can't digest pollutants, but prey can"], "Each step up multiplies the dose.");
+MC("b9", "ic6", "DDT was sprayed on crops and marshes in small amounts, but bald eagles laid eggs with shells so thin they broke. Why were eagles hit so hard?", "DDT built up in each level of the food chain, so the fish the eagles ate were loaded with it", ["Eagles ate the crops directly", "DDT made eagles an invasive species", "DDT caused acid rain on eagle nests"], "That's biological magnification. DDT was banned in the U.S. in 1972, and eagles recovered.", EX);
 
 /* Deforestation, monoculture & other threats */
-MC("t1", "habitat", "Deforestation is the loss of forests. According to the notes, it has negative effects on…", "soil, water, carbon storage, and animals", ["only the trees that are cut", "ocean pH only", "nothing, since trees grow back right away"], "From the notes: loss of forests that can have negative effects on soil, water, carbon storage, and animals.", N72);
-MC("t2", "habitat", "How does deforestation add to climate change?", "Fewer trees take in CO₂, and burned or rotting trees release their stored carbon", ["Trees release nitrogen when cut", "Cutting trees cools the planet", "It causes acid rain"], "Forests store huge amounts of carbon. Losing them both adds CO₂ and removes a carbon sink.");
-MC("t3", "habitat", "Monoculture means…", "planting large areas with a single, high-production crop every year", ["planting many different crops together", "letting land go wild", "raising one animal on a farm"], "From the notes. Example: thousands of acres of nothing but corn.", N72);
-MC("t4", "habitat", "Habitat fragmentation causes ____ loss and makes ecosystems more vulnerable to other disturbances.", "biodiversity", ["carbon", "water", "nitrogen"], "Small, separated patches support fewer species and are easier to wipe out.", N72);
-MC("t5", "habitat", "Which is an example of habitat fragmentation?", "A highway and housing developments split a forest into small, separate patches", ["Clearing an entire forest at once", "Planting only corn on a farm", "Bringing a new species to an island"], "Fragmentation = breaking habitat into pieces. (Clearing all of it is deforestation.)");
-MC("t6", "habitat", "Overharvesting means…", "using a natural resource in an unsustainable way", ["planting the same crop every year", "bringing a species to a new place", "a pollutant building up in a food chain"], "Taking something faster than it can replace itself.", N72);
-MC("t7", "habitat", "Which is an example of overharvesting?", "Catching cod faster than they can reproduce until the population collapses", ["Fishing within limits so the population stays steady", "Releasing pet fish into a lake", "Draining a wetland to build a mall"], "In the 1990s the Atlantic cod fishery collapsed from overfishing.");
-MC("t8", "habitat", "Invasive species are…", "species introduced to new places by humans that disrupt the ecosystem", ["species that have always lived in an area", "species that are endangered", "species that move up a food chain"], "From the notes: introduced to new places by humans, disrupting the ecosystem.", N72);
-MC("t9", "habitat", "Which is an example of an invasive species?", "Zebra mussels carried in ships' ballast water spreading through the Great Lakes", ["Salmon returning to the river where they hatched", "Wolves reintroduced to Yellowstone, where they used to live", "Monarch butterflies migrating to Mexico"], "Zebra mussels were brought by humans from Europe and crowd out native species. Wolves are native to Yellowstone, so they aren't invasive.");
-MC("t10", "habitat", "Why do invasive species often spread so fast in their new home?", "There are no natural predators, diseases, or competitors there to keep them in check", ["They are always larger than native species", "They can't reproduce", "Native species help them spread"], "Without the limiting factors from their home range, their populations can grow almost exponentially.", EX);
-MC("t11", "habitat", "A farmer clears a rainforest and plants nothing but soybeans on it every year. Which TWO human impacts is this?", "Deforestation and monoculture", ["Overharvesting and invasive species", "Acid rain and biological magnification", "Habitat fragmentation and ocean acidification"], "Clearing forest = deforestation. One high-production crop every year = monoculture.");
-MC("t12", "habitat", "Why is a monoculture riskier than a natural, mixed ecosystem?", "A single pest or disease can wipe out the whole crop", ["It has too much biodiversity", "It produces too little food", "It makes the soil more fertile every year"], "With only one species, there's nothing to buffer against a pest that targets it. Same nutrients used every year also wear out the soil.", EX);
-MC("t13", "habitat", "Which action would best REDUCE the harm from habitat fragmentation?", "Building wildlife corridors that connect separated patches", ["Building more roads through the patches", "Planting a monoculture between patches", "Introducing a new predator"], "Corridors let animals move, find mates, and find food between patches.", EX);
-MC("t14", "habitat", "Which statement best describes \"sustainable\" use of a resource?", "Using it in a way that meets our needs without using it up for the future", ["Using as much as possible while it lasts", "Never using the resource at all", "Using it only in developed countries"], "Overharvesting is the opposite: using a resource in an unsustainable way.");
+MC("t1", "ic5", "Deforestation is the loss of forests. According to the notes, it has negative effects on…", "soil, water, carbon storage, and animals", ["only the trees that are cut", "ocean pH only", "nothing, since trees grow back right away"], "From the notes: loss of forests that can have negative effects on soil, water, carbon storage, and animals.", N72);
+MC("t2", "ic5", "How does deforestation add to climate change?", "Fewer trees take in CO₂, and burned or rotting trees release their stored carbon", ["Trees release nitrogen when cut", "Cutting trees cools the planet", "It causes acid rain"], "Forests store huge amounts of carbon. Losing them both adds CO₂ and removes a carbon sink.");
+MC("t3", "ic5", "Monoculture means…", "planting large areas with a single, high-production crop every year", ["planting many different crops together", "letting land go wild", "raising one animal on a farm"], "From the notes. Example: thousands of acres of nothing but corn.", N72);
+MC("t4", "ic5", "Habitat fragmentation causes ____ loss and makes ecosystems more vulnerable to other disturbances.", "biodiversity", ["carbon", "water", "nitrogen"], "Small, separated patches support fewer species and are easier to wipe out.", N72);
+MC("t5", "ic5", "Which is an example of habitat fragmentation?", "A highway and housing developments split a forest into small, separate patches", ["Clearing an entire forest at once", "Planting only corn on a farm", "Bringing a new species to an island"], "Fragmentation = breaking habitat into pieces. (Clearing all of it is deforestation.)");
+MC("t7", "ic5", "Which is an example of overharvesting?", "Catching cod faster than they can reproduce until the population collapses", ["Fishing within limits so the population stays steady", "Releasing pet fish into a lake", "Draining a wetland to build a mall"], "In the 1990s the Atlantic cod fishery collapsed from overfishing.");
+MC("t8", "ic5", "Invasive species are…", "species introduced to new places by humans that disrupt the ecosystem", ["species that have always lived in an area", "species that are endangered", "species that move up a food chain"], "From the notes: introduced to new places by humans, disrupting the ecosystem.", N72);
+MC("t9", "ic5", "Which is an example of an invasive species?", "Zebra mussels carried in ships' ballast water spreading through the Great Lakes", ["Salmon returning to the river where they hatched", "Wolves reintroduced to Yellowstone, where they used to live", "Monarch butterflies migrating to Mexico"], "Zebra mussels were brought by humans from Europe and crowd out native species. Wolves are native to Yellowstone, so they aren't invasive.");
+MC("t11", "ic5", "A farmer clears a rainforest and plants nothing but soybeans on it every year. Which TWO human impacts is this?", "Deforestation and monoculture", ["Overharvesting and invasive species", "Acid rain and biological magnification", "Habitat fragmentation and ocean acidification"], "Clearing forest = deforestation. One high-production crop every year = monoculture.");
+MC("t14", "ic10", "Which statement best describes \"sustainable\" use of a resource?", "Using it in a way that meets our needs without using it up for the future", ["Using as much as possible while it lasts", "Never using the resource at all", "Using it only in developed countries"], "Overharvesting is the opposite: using a resource in an unsustainable way.");
 
 /* Harder short-answer questions */
 const DEATH = "death|deaths|mortality|dying|die|dies|people die|people dying";
 const DOWN = "fall|drop|decreas|declin|lower|low|reduc|go down|goes down|went down|less|fewer|shrink";
 const BIRTH = "birth|births|fertility|babies|baby|born|having kids|having children";
 const UP = "high|stay|remain|same|still|increas|rise|rising|grow|many|lots|large|more|big";
-SA("s1", "dtm", "Explain why a country's population grows FASTEST in Stage 2. Describe what happens to birth rates and death rates, and give at least one reason for the change.",
+SA("s1", "ic12", "Explain why a country's population grows FASTEST in Stage 2. Describe what happens to birth rates and death rates, and give at least one reason for the change.",
   "In Stage 2, improvements in food supply, health care, sanitation, and clean water make the death rate fall (especially infant mortality), but the birth rate stays high. Births far outnumber deaths, so the population grows rapidly.",
   [["Death rate falls", `${DEATH} ~ ${DOWN}`, "live longer|living longer|longer life|survive|surviving|fewer people die|less people die|people stop dying"],
    ["Birth rate stays high", `${BIRTH} ~ ${UP}`, "large famil|big famil|many children|many kids|lots of kids|lots of children|more babies|lots of babies|births outnumber|more births than deaths|births are higher"],
    ["A reason: health care, sanitation, food, or clean water", "health|medic|doctor|hospital|sanitat|hygien|clean water|water supply|sewer|sewage|vaccin|food|farming|transport|cure|disease"]],
   "The key is the GAP: deaths drop first, births drop later, and the space between them is rapid growth.", N53);
-SA("s2", "dtm", "Give TWO reasons birth rates start to fall in Stage 3, and explain how each one leads to fewer births.",
-  "1) More access to birth control and family planning lets families choose to have fewer children. 2) More education, especially for women, and better jobs mean women start careers and have kids later. Also: children cost more (higher education), people move to cities where kids don't work on farms, and lower infant mortality means families don't need many kids to make sure some survive.",
-  [["Birth control or family planning", "birth control|contracept|family planning|condom|the pill|plan their famil|plan famil"],
-   ["Education (especially for women)", "educat|school|college|universit|learn"],
-   ["Women's status, jobs, or independence", "women|woman|female|career|job|work|employ|independ|wage"],
-   ["Children cost more or are no longer needed for work", "cost|expens|afford|money|price|farm|labor|labour|work on|help the family|help their family|economy of the household"],
-   ["Moving to cities (urbanization)", "urban|city|cities|move to town"],
-   ["Lower infant mortality, so fewer births are needed", "infant|survive|surviving|don't need as many|dont need as many|do not need as many|need fewer|need less"]],
-  "Any two well-explained reasons earn full credit.", Object.assign({need: 2}, N53));
-SA("s3", "age", "A country's age-structure diagram is a wide triangle with a very large base. Predict what will happen to its population over the next 20–30 years, and explain why.",
+SA("s3", "ic13", "A country's age-structure diagram is a wide triangle with a very large base. Predict what will happen to its population over the next 20–30 years, and explain why.",
   "The population will keep growing. The wide base means a huge share of the population is children, and in 20–30 years they will reach the age to have children of their own, so even more babies will be born.",
   [["Lots of young people / children", "young|child|kid|youth|baby|babies|base|teen|infant|0-4|under 15"],
    ["The population will grow", "grow|increas|expand|rise|rising|get bigger|gets bigger|go up|goes up|more people"],
    ["Because they will reach reproductive age and have kids", "reproduc|have kids|have children|have babies|having kids|having children|having babies|their own|parents|childbearing|grow up|become adults|reach adult|start families|start a family"]],
   "This \"population momentum\" is why Stage 2 and 3 countries keep growing for decades.", EX);
-SA("s4", "age", "Japan, Germany, and Italy have more elderly people than young people. Describe TWO problems this causes for those countries.",
-  "1) Labor shortages: fewer young adults are available to work. 2) Health care and social security costs rise: more elderly people need care and pensions, but there are fewer workers paying taxes, so the tax burden grows. The population also starts to shrink.",
-  [["Labor shortages / fewer workers", "labor|labour|worker|workforce|work force|jobs|employ|not enough people to work|fewer people working"],
-   ["Higher health care costs", "health|medical|hospital|doctor|nurs|care for"],
-   ["Social security, pensions, or taxes", "social security|pension|retire|tax|benefit|government money|support the elderly"],
-   ["The population shrinks", "shrink|declin|decreas|fewer people|population drop|population goes down|dying out|die out"]],
-  "From the notes: labor shortages and increased health care and social security costs; a greater tax burden.", Object.assign({need: 2}, N53));
-SA("s5", "history", "Use the graph to explain how plowing and irrigation and the Industrial Revolution changed Earth's carrying capacity for humans, and why.",
-  "Both RAISED the carrying capacity. Plowing and irrigation let farmers grow much more food on the same land, so more people could be fed. The Industrial Revolution brought machines, fertilizer, transportation, medicine, and sanitation, which produced even more food and lowered death rates, so the population shot up into the J-curve.",
-  [["Both raised carrying capacity", "increas|raise|rais|higher|more people|grow|boost|went up|go up|goes up|expand"],
-   ["Farming produced more food", "food|crop|farm|harvest|grow more|agricultur"],
-   ["Industrial Revolution: machines, medicine, sanitation, or lower death rates", "machin|factor|technolog|medic|sanitat|health|hospital|vaccin|transport|death|die|fertiliz|energy|fossil|industr"]],
-  "Notice the bubonic plague is the event that lowered the population, not raised the carrying capacity.", F("history", PW));
-SA("s6", "growth", "Canada and Denmark have almost the same birth rate (10.3 vs 10.4), yet Canada grows over 3 times faster (0.74% vs 0.22%). Use the data table to explain why.",
+SA("s6", "ic13", "Canada and Denmark have almost the same birth rate (10.3 vs 10.4), yet Canada grows over 3 times faster (0.74% vs 0.22%). Use the data table to explain why.",
   "Canada has a much higher immigration rate (5.7 vs 2.1 per 1,000), so many more people move in. Canada also has a lower death rate (8.5 vs 10.3), so births outnumber deaths by more (natural increase of 1.8 vs 0.1 per 1,000).",
   [["Canada has more immigration", "immigra|migra|moving in|move in|moves in|5.7|people come|come to canada|newcomers"],
    ["Canada has a lower death rate (or Denmark's is higher)", `${DEATH} ~ ${DOWN}`, "denmark has a higher death|denmark's death|denmark death|10.3|8.5|fewer deaths|less deaths|fewer people die|less people die"]],
   "Growth rate ≈ (birth rate − death rate + immigration rate) ÷ 10. Canada: (10.3 − 8.5 + 5.7) ÷ 10 = 0.75%. Denmark: (10.4 − 10.3 + 2.1) ÷ 10 = 0.22%.", F("countries", PW));
-SA("s7", "footprint", "The average U.S. footprint is 8.1 gha, about 4 times Ghana's 2.0 gha. Use the two parts of what a footprint measures to explain the difference.",
-  "A footprint measures (1) the resources you use and (2) the wastes you make. The average American uses much more energy, food, water, and housing (bigger homes, more driving and flying, more meat and stuff), and produces much more trash, sewage, and greenhouse gases, so it takes more land and water to support them.",
-  [["Americans use more resources (energy, food, water, shelter)", "resourc|energy|electric|food|water|shelter|house|home|car=|cars=|driv|fly|flight|travel|meat|consum|stuff|buy|gas|fuel"],
-   ["Americans produce more wastes (trash, sewage, greenhouse gases)", "waste|trash|garbage|sewage|greenhouse|co2|carbon|emission|pollut"]],
-  "Both parts count: use of resources AND the wastes produced.", N71);
-SA("s8", "footprint", "Describe TWO specific changes a person could make to shrink their ecological footprint.",
+SA("s8", "ic1", "Describe TWO specific changes a person could make to shrink their ecological footprint.",
   "Examples: switch to greener (solar or wind) electricity; travel less by car or plane and bike, walk, or take the bus; eat less meat or more local food; reduce, reuse, recycle, and compost; use less water; buy less new stuff.",
   [["Travel less, or walk, bike, carpool, or use public transit", "travel|driv|car=|cars=|bike|bicycl|walk|bus=|buses|train|transit|carpool|fly|flight|plane"],
    ["Greener electricity or less energy", "solar|wind|renewabl|green|electric|energy|lights|unplug|thermostat|heat|power"],
@@ -520,40 +522,35 @@ SA("s8", "footprint", "Describe TWO specific changes a person could make to shri
    ["Use less water", "water|shower"],
    ["Smaller home", "smaller house|smaller home|tiny home|apartment"]],
   "Two changes from different categories earn full credit.", Object.assign({need: 2}, N71));
-SA("s9", "nitrogen", "Explain how burning fossil fuels in a city can cause an algal bloom in a lake many miles away.",
+SA("s9", "ic6", "Explain how burning fossil fuels in a city can cause an algal bloom in a lake many miles away.",
   "Burning fossil fuels releases nitrogen into the air. Wind carries it far away, and it falls back down (in rain) into the lake. Nitrogen is a limiting nutrient for producers, so the extra nitrogen lets algae grow out of control: an algal bloom.",
   [["Nitrogen is released into the air", "nitrogen ~ air|atmos|wind|travel|sky|released|smoke", "air ~ nitrogen", "emission|exhaust|smoke|pollut"],
    ["It travels and falls into the lake (often with rain)", "rain|fall|falls|deposit|land|lands|settl|wash|carried|blow|wind|travel"],
    ["Nitrogen is a limiting nutrient, so algae grow fast", "limit|nutrient|fertiliz|feed|food for", "algae ~ grow|multipl|spread|explod|bloom|increas|thrive"]],
   "Pollution doesn't stay where it's made. Air and water carry it across whole regions.", N72);
-SA("s10", "nitrogen", "Explain how extra CO₂ in the atmosphere makes it harder for clams, corals, and snails to build their shells.",
+SA("s10", "ic4", "Explain how extra CO₂ in the atmosphere makes it harder for clams, corals, and snails to build their shells.",
   "The ocean absorbs CO₂ from the atmosphere. In seawater, CO₂ forms carbonic acid, which releases H⁺ ions and lowers the pH (ocean acidification). The H⁺ ions bind to carbonate ions, so fewer carbonate ions are left for building calcium carbonate shells and skeletons.",
   [["The ocean absorbs CO₂", "ocean|sea|seawater|water ~ absorb|dissolv|take in|takes in|soak|mix|enter", "absorb|dissolv"],
    ["It forms acid and lowers the pH", "carbonic|acid|ph=|hion|hydrogen"],
    ["Fewer carbonate ions for shells", "carbonate|calcium|bicarbonat|minerals for|building material"]],
   "The diagram in your notes shows CO₂ + water → carbonic acid → H⁺, with fewer carbonate ions left for shell builders.", N72);
-SA("s11", "biomag", "DDT was sprayed in small amounts, but fish-eating birds ended up with very high levels in their bodies. Explain why.",
+SA("s11", "ic6", "DDT was sprayed in small amounts, but fish-eating birds ended up with very high levels in their bodies. Explain why.",
   "DDT is stored in fat and isn't broken down or excreted, so it builds up in each organism. Each predator eats many organisms from the level below, taking in all of their DDT. So the concentration multiplies at each trophic level (biological magnification), and the birds at the top get the most.",
   [["DDT is stored and builds up in the body", "stor|build|accumul|stay|stays|fat=|fats|fatty|not broken|isn't broken|can't break|cannot break|doesn't break|not excret|can't get rid|cannot get rid|doesn't leave|collect"],
    ["Each predator eats MANY organisms below it", "many|lots|alot|multiple|large amount|a lot|hundreds|thousands|more fish|several"],
    ["Concentration increases up each trophic level", "magnif|concentrat|level|food chain|chain|up the|higher|increas|multipl|top"]],
   "Water 1 → producers 1,000 → zooplankton 10,000 → small fish 100,000 → large fish 1,000,000 → fish-eating birds 10,000,000.", F("biomag", N72));
-SA("s12", "habitat", "A new highway is built through a large forest. Explain how habitat fragmentation could reduce biodiversity there, even though most of the forest is still standing.",
+SA("s12", "ic5", "A new highway is built through a large forest. Explain how habitat fragmentation could reduce biodiversity there, even though most of the forest is still standing.",
   "The highway splits the forest into smaller, isolated patches. Animals can't move safely between them to find food, mates, or territory, and many get hit crossing. The smaller populations in each patch are more vulnerable to disturbances like disease, fire, or inbreeding and can die out, so the number of species drops.",
   [["The forest is split into smaller, isolated patches", "split|divid|separat|isolat|patch|piece|fragment|cut|smaller|broken"],
    ["Animals can't move, find mates, food, or territory", "move|migrat|cross|mate|mating|travel|reach|territor|find food|roam|roadkill|hit by|wander|get to"],
    ["Small populations are more vulnerable and can die out", "vulnerab|die out|dies out|extinct|disturb|disease|fire|inbreed|small population|smaller population|declin|lose species|fewer species|biodiversity"]],
   "From the notes: habitat fragmentation causes biodiversity loss and makes ecosystems more vulnerable to other disturbances.", N72);
-SA("s13", "anthro", "What is the Anthropocene, and what evidence from the Great Acceleration graphs supports the idea that we are living in it?",
-  "The Anthropocene (\"Age of Humans\") is the period when human activity became the major cause of global change. Evidence: since about 1950, world population, energy use, fertilizer use, and water use have shot up, and so have their effects on Earth, like coastal nitrogen and marine fish capture.",
-  [["Human activity is the major cause of global change", "human ~ major|main|biggest|largest|domin|cause|change|impact|effect|control", "people ~ major|main|biggest|domin|cause|change|impact", "age of humans|age of man"],
-   ["Evidence: sharp increases since about 1950", "1950|population|energy|fertiliz|water use|fish|nitrogen|co2|carbon dioxide|skyrocket|sharp|spike|exponent|shot up|accelerat|rapid"]],
-  "The Great Acceleration is often used to mark the start of the Anthropocene.", F("accel", N71));
 
 /* Randomized math (new numbers every attempt; still multiple choice) */
 const signed = n => (n > 0 ? "+" : n < 0 ? "−" : "") + fmt(Math.abs(n));
 const uniq = (a, w) => new Set([a, ...w]).size === w.length + 1;
-GEN("x1", "growth", () => {
+GEN("x1", "ic13", () => {
   let b, d, i, e, ch, w;
   do {
     b = rand(120, 480) * 100; d = rand(60, 400) * 100; i = rand(5, 90) * 100; e = rand(5, 90) * 100; ch = b + i - d - e;
@@ -561,24 +558,7 @@ GEN("x1", "growth", () => {
   } while (!uniq(`${signed(ch)} people`, w) || i === e);
   return {t: "mc", q: `In one year, a country has ${fmt(b)} births, ${fmt(d)} deaths, ${fmt(i)} immigrants, and ${fmt(e)} emigrants. How much does its population change?`, a: `${signed(ch)} people`, w, why: `(births + immigration) − (deaths + emigration) = (${fmt(b)} + ${fmt(i)}) − (${fmt(d)} + ${fmt(e)}) = ${signed(ch)} people.`};
 });
-GEN("x2", "growth", () => {
-  let br, dr, nm, r, w;
-  const p = n => `${(Math.round(n * 100) / 100).toFixed(2).replace("-", "−")}% per year`, sn = n => n < 0 ? "−" + Math.abs(n) : String(n);
-  do {
-    br = rand(80, 450) / 10; dr = rand(50, 150) / 10; nm = rand(-30, 60) / 10; r = (br - dr + nm) / 10;
-    w = [p((br - dr) / 10), p(br - dr + nm), p((br + dr + nm) / 10)];
-  } while (Math.abs(nm) < 0.5 || !uniq(p(r), w));
-  return {t: "mc", q: `A country has a birth rate of ${br} per 1,000, a death rate of ${dr} per 1,000, and a net migration rate of ${sn(nm)} per 1,000. What is its growth rate?`, a: p(r), w, why: `Growth rate (%) = (birth rate − death rate + net migration) ÷ 10, because the rates are per 1,000 and a percent is per 100. (${br} − ${dr} ${nm < 0 ? "−" : "+"} ${Math.abs(nm)}) ÷ 10 = ${p(r)}. Check it on the class data: Kenya (25.1 − 6.8 − 0.2) ÷ 10 = 1.81%.`};
-});
-GEN("x3", "growth", () => {
-  let P, br, dr, add, w;
-  do {
-    P = pick([4, 6, 10, 20, 30, 50, 80]); br = rand(10, 40); dr = rand(5, 12); add = P * 1e6 * (br - dr) / 1000;
-    w = [P * 1e6 * (br - dr) / 100, P * 1e6 * br / 1000, P * 1e6 * (br - dr) / 10000].map(n => `About ${fmt(n)} people`);
-  } while (br <= dr || !uniq(`About ${fmt(add)} people`, w));
-  return {t: "mc", q: `A country of ${P} million people has a birth rate of ${br} and a death rate of ${dr} (per 1,000). Ignoring migration, about how many people does it gain in a year?`, a: `About ${fmt(add)} people`, w, why: `It gains ${br} − ${dr} = ${br - dr} people for every 1,000. ${P} million ÷ 1,000 = ${fmt(P * 1000)} groups of 1,000, so ${fmt(P * 1000)} × ${br - dr} = ${fmt(add)} people.`};
-});
-GEN("x4", "biomag", () => {
+GEN("x4", "ic6", () => {
   const L = ["zooplankton", "small fish", "large fish", "fish-eating birds"];
   let s, t, c, ans, w;
   const r = n => Math.round(n * 1e6) / 1e6, u = n => `${fmt(r(n))} ppm`;
@@ -588,12 +568,269 @@ GEN("x4", "biomag", () => {
   } while (!uniq(u(ans), w));
   return {t: "mc", q: `Mercury is found at ${fmt(c)} ppm in ${L[s]}. If its concentration increases about 10 times at each trophic level, about what will it be in ${L[t]}?`, a: u(ans), w, why: `${L.slice(s, t + 1).join(" → ")} is ${t - s} step${t - s > 1 ? "s" : ""} up: ${fmt(c)} × ${fmt(Math.pow(10, t - s))} = ${u(ans)}.`};
 });
-GEN("x5", "footprint", () => {
-  const who = pick([["the average American", 8.1], ["the average person in Russia", 6.1], ["the average person in France", 4.6], ["the average person in Peru", 2.1], ["someone", rand(25, 120) / 10]]);
-  const fp = who[1], e = n => `About ${(Math.round(n * 10) / 10).toFixed(1)} Earths`;
-  const a = e(fp / 1.6), w = [e(fp * 1.6), e(fp - 1.6), e(1.6 / fp)];
-  return {t: "mc", q: `Earth can supply about 1.6 gha of productive land and water per person. If everyone lived like ${who[0]} (a footprint of ${fp} gha), about how many Earths would we need?`, a, w: uniq(a, w) ? w : [e(fp * 2), e(fp + 1.6), e(1.6 / fp)], why: `Earths needed = footprint ÷ what Earth supplies per person = ${fp} ÷ 1.6 ≈ ${(Math.round(fp / 1.6 * 10) / 10).toFixed(1)}.`};
-});
+
+/* ---------- I Can 3–11: the Climate System notes, "Humans are impacted by" + Sustainable Development notes, the glossary, and the I Can sheet ---------- */
+const IC = {src: "I Can sheet"}, GL = {src: "Glossary"}, CS = {src: "Climate System notes"}, SD = {src: "Sustainable development notes"};
+
+/* I Can 3: human activities, the atmosphere & climate */
+MC("at8", "ic3", "According to the I Can sheet, how do humans affect the atmosphere?", "By burning fossil fuels, releasing greenhouse gases, and causing air pollution", ["By planting forests and using solar power", "By breathing out oxygen", "By making the ozone layer thicker"], "Burning fossil fuels releases greenhouse gases and other air pollution.", IC);
+MC("at1", "ic3", "Which human activity adds the MOST carbon dioxide to the atmosphere?", "Burning fossil fuels for electricity, transportation, and industry", ["Breathing", "Planting trees", "Using wind turbines"], "Fossil fuels (coal, oil, natural gas) are stored carbon; burning them releases it as CO₂.", IC);
+MC("at2", "ic3", "Which pair are both greenhouse gases?", "Carbon dioxide and methane", ["Oxygen and nitrogen", "Helium and argon", "Oxygen and hydrogen"], "The notes list the 3 main greenhouse gases: carbon dioxide, methane, and water vapor.", CS);
+MC("at5", "ic3", "Why is the ozone layer important to living things?", "It protects life on Earth from harmful ultraviolet rays in sunlight", ["It traps heat and causes global warming", "It makes rain acidic", "It produces the oxygen we breathe"], "Glossary: the ozone layer is an atmospheric layer where ozone gas is concentrated; it protects life from harmful UV rays. Don't mix it up with greenhouse gases, which trap heat.", GL);
+MC("at7", "ic3", "Which change would REDUCE the greenhouse gases people add to the atmosphere?", "Getting electricity from wind and solar instead of coal", ["Clearing forests for farmland", "Driving more gasoline cars", "Building more coal power plants"], "Wind and solar are renewable and don't burn anything. The other three add CO₂.", SD);
+
+/* I Can 4: the climate system and how atmosphere changes spread to other Earth systems */
+MC("cs1", "ic4", "According to the Climate System notes, Earth's average temperature is determined by…", "the balance of heat that stays in the atmosphere and the amount of heat lost to space", ["how close Earth is to the sun each day", "the amount of ocean water on Earth", "the number of volcanoes erupting"], "More heat kept in (or less lost to space) = a warmer Earth.", CS);
+MC("cs2", "ic4", "The greenhouse effect is mostly controlled by which 3 gases?", "Carbon dioxide, methane, and water vapor", ["Oxygen, nitrogen, and argon", "Ozone, helium, and hydrogen", "Carbon dioxide, oxygen, and nitrogen"], "These gases trap heat inside Earth's atmosphere.", CS);
+MC("cs3", "ic4", "In the greenhouse drawing in your notes, energy enters as ____, and much of it is trapped as ____.", "light … heat", ["heat … light", "wind … water", "sound … light"], "Energy enters as light; much of it is trapped as heat; a smaller amount passes back out through the walls.", CS);
+MC("cs4", "ic4", "Why does a greenhouse stay warmer inside than outside?", "Energy enters as light, but only a smaller amount passes back out through the walls, so much of it is trapped as heat", ["The glass makes its own heat", "Plants inside give off fire", "Cold air can't get in at all"], "Greenhouse gases do the same thing for Earth.", CS);
+MC("cs5", "ic4", "The concentrations of greenhouse gases go up and down with the ____ cycles and can be affected by ____ activities.", "biogeochemical … both nonhuman and human", ["water … only human", "life … only volcanic", "rock … no"], "From the notes: they fluctuate with the biogeochemical cycles and can be affected by both nonhuman and human activities.", CS);
+MC("cs6", "ic4", "According to the greenhouse effect diagram, what happens to sunlight that hits Earth?", "Some is reflected and some becomes heat, which CO₂ and other gases trap, keeping Earth warm", ["All of it bounces back to space", "All of it turns into oxygen", "Greenhouse gases block it before it reaches Earth"], "Sunlight gets in; the heat it becomes has a harder time getting out.", F("greenhouse", CS));
+MC("cs7", "ic4", "According to the notes, climate change involves changes in…", "temperature, clouds, winds, precipitation, and the frequency and severity of extreme weather events", ["only temperature", "only the number of hurricanes", "Earth's distance from the sun"], "That matches the glossary definition of climate change.", CS);
+MC("cs8", "ic4", "Which is NOT one of the things climate change involves changes in?", "The length of a day", ["Clouds", "Winds", "Precipitation"], "Climate change: temperature, clouds, winds, precipitation, and extreme weather events.", Object.assign({order: ["Clouds", "Winds", "Precipitation", "The length of a day"]}, CS));
+MC("cl1", "ic4", "Look at the diagram. Which best describes the greenhouse effect?", "Certain gases trap sunlight energy in Earth's atmosphere as heat", ["The ozone layer blocking ultraviolet light", "Plants growing faster inside greenhouses", "Ice reflecting sunlight back to space"], "Glossary: the process in which certain gases trap sunlight energy in Earth's atmosphere as heat.", F("greenhouse", GL));
+MC("cl3", "ic4", "How do EXTRA greenhouse gases cause warming?", "They trap more heat, so less heat is lost to space", ["They let in more sunlight by thinning the ozone layer", "They make the sun shine brighter", "They reflect sunlight away from Earth"], "Earth's temperature is the balance of heat kept vs. heat lost to space. More greenhouse gas tips the balance toward warming.", F("greenhouse", CS));
+MC("cl4", "ic4", "Which describes WEATHER rather than climate?", "It's 45 °F and rainy in Seattle today", ["Seattle has mild, wet winters", "Over the last 50 years, average temperatures have risen", "Arctic winters are long and cold"], "Glossary: weather is the day-to-day conditions of the atmosphere. Climate change is about long-term averages.", GL);
+MC("cl5", "ic4", "What is the difference between global warming and climate change?", "Global warming is the increase in Earth's average temperature; climate change also includes long-term changes in clouds, winds, precipitation, and extreme weather", ["They mean exactly the same thing", "Global warming only happens in summer", "Climate change is about one day's weather"], "Global warming is one part of climate change.", GL);
+MC("cl6", "ic4", "As the atmosphere warms, what happens to Earth's ice and oceans?", "Arctic sea ice, glaciers, and snow cover decrease, and sea levels rise", ["More sea ice forms every year", "Glaciers grow and sea levels fall", "Nothing changes"], "Those are two of the pieces of evidence for climate change in your notes.", CS);
+MC("cl7", "ic4", "According to the I Can sheet, changes in greenhouse gases trap more heat, causing climate change and affecting…", "oceans, land, and ecosystems", ["only the atmosphere", "only the ozone layer", "nothing outside the atmosphere"], "One change in the atmosphere spreads to the other Earth systems.", IC);
+MC("cl8", "ic4", "Which chain of events is correct?", "More CO₂ in the air → more heat trapped → ice melts and sea levels rise → coastal land is lost", ["More CO₂ in the air → a thicker ozone layer → colder winters", "More CO₂ in the air → less acidic oceans → more shellfish", "More CO₂ in the air → more sea ice → lower sea levels"], "A change in the atmosphere ripples into the oceans and onto land.", IC);
+
+/* I Can 6: types of pollution */
+MC("po1", "ic6", "Which of these is a pollutant?", "DDT sprayed on crops that washes into a lake", ["Oxygen made by photosynthesis", "Water vapor from a lake", "Sunlight"], "Glossary: a pollutant is a harmful material that can enter the biosphere through the land, air, or water.", GL);
+MC("po2", "ic6", "Which pollutant → effect pairing is correct?", "Nitrogen fertilizer runoff → algal blooms", ["CO₂ absorbed by the ocean → algal blooms", "DDT → acid rain", "Smog → ocean acidification"], "Nitrogen → algal blooms. CO₂ in the ocean → ocean acidification. DDT → biological magnification. Air pollution + water → acid rain.", N72);
+MC("po3", "ic6", "Which type of pollution is mostly responsible for climate change?", "Greenhouse gases like carbon dioxide and methane", ["Fertilizer runoff", "DDT", "Trash in landfills"], "Greenhouse gases trap heat in the atmosphere.", CS);
+MC("po4", "ic6", "Why can pollution released in one place cause GLOBAL environmental change?", "Air and water carry pollutants far away, like nitrogen from burning fossil fuels traveling through the air", ["Pollutants never leave the place they're made", "Only pollution near the poles matters", "Pollutants become harmless after one day"], "From the 7.2 notes: nitrogen released from burning fossil fuels can travel through the air.", N72);
+MC("po5", "ic6", "A city's air turns a gray-brown haze on days with heavy traffic. What is this?", "Smog", ["Acid rain", "The ozone layer", "An algal bloom"], "Glossary: smog is a gray-brown haze formed by a mixture of chemicals.", GL);
+MC("po8", "ic6", "According to the I Can sheet, what are the 3 main types of pollution?", "Air, water, and land pollution", ["Hot, cold, and warm pollution", "Plant, animal, and fungus pollution", "Renewable, nonrenewable, and nuclear pollution"], "Air, water, and land pollution harm living things and contribute to global environmental change.", IC);
+
+/* I Can 7: evidence that climate change is happening */
+MC("ev10", "ic7", "Which list matches the evidence for climate change in your notes?", "Changing global temperatures, precipitation, and extreme storms; more greenhouse gas emissions; rising sea levels; less sea ice, glaciers, and snow cover", ["Falling sea levels and growing glaciers", "Fewer greenhouse gases and colder temperatures", "More Arctic sea ice and more snow cover"], "Those are the 4 pieces of evidence on the Climate System notes.", CS);
+MC("ev11", "ic7", "According to your notes, Arctic sea ice, glaciers, and snow cover are all…", "decreasing", ["increasing", "staying the same", "moving toward the equator"], "Less ice and snow is evidence the climate is warming.", Object.assign({order: ["increasing", "decreasing", "staying the same", "moving toward the equator"]}, CS));
+MC("ev12", "ic7", "Increased emissions of ____ are evidence of climate change.", "greenhouse gases", ["oxygen", "nitrogen gas", "helium"], "More greenhouse gas means more heat trapped in the atmosphere.", CS);
+MC("ev1", "ic7", "Which is evidence that Earth's climate is warming?", "Global average temperatures have risen over many decades", ["One record-cold winter in one city", "A single strong storm", "Summer being hotter than winter"], "Evidence has to be long-term and worldwide. One cold winter or one storm is just weather.", CS);
+MC("ev2", "ic7", "One piece of evidence is increased greenhouse gases. This graph shows CO₂ measured at Mauna Loa, Hawaii. What does it show?", "CO₂ has gone up every year, from about 315 to about 425 parts per million", ["CO₂ has stayed about the same", "CO₂ has gone down", "CO₂ only goes up in summer"], "Burning fossil fuels keeps adding CO₂. (The little yearly zigzag is the seasons.)", F("keeling", CS));
+MC("ev7", "ic7", "Which is evidence of climate change from Earth's ice and oceans?", "Arctic sea ice, glaciers, and snow cover are decreasing, and sea levels are rising", ["Glaciers are growing and sea levels are falling", "Arctic sea ice is increasing", "Sea level hasn't changed in 100 years"], "Both are on the evidence list in your notes.", CS);
+MC("ev8", "ic7", "Why doesn't one unusually cold week disprove climate change?", "Weather is day-to-day; climate change is about long-term averages", ["Cold weeks prove the planet is cooling", "Climate change only affects summer", "Thermometers don't work in the cold"], "Glossary: climate change is measurable long-term changes in averages.", GL);
+
+/* I Can 8: effects of climate change on people and the environment */
+MC("hi1", "ic8", "According to your notes, humans are impacted by climate change through which 3 things?", "Water availability, crop cycles, and loss of land", ["Faster internet, longer days, and more oxygen", "More snowpack, bigger crops, and lower seas", "Earthquakes, volcanoes, and tsunamis"], "1) water availability, 2) crop cycles, 3) loss of land.", CS);
+MC("hi2", "ic8", "Droughts and decreased snowpack affect people mainly through…", "water availability", ["loss of land", "crop cycles", "the ozone layer"], "Less snowpack means less melting snow to fill rivers and reservoirs.", Object.assign({order: ["water availability", "crop cycles", "loss of land", "the ozone layer"]}, CS));
+MC("hi3", "ic8", "How does climate change affect crop cycles?", "It has a negative impact on crop yield", ["It always doubles crop yield", "It has no effect on farming", "It lets every crop grow all year"], "Heat, drought, and changing seasons mean smaller harvests.", CS);
+MC("hi4", "ic8", "According to your notes, about how much has sea level risen in 55 years?", "About 4 inches", ["About 4 feet", "About 40 feet", "It has dropped 4 inches"], "That causes loss of land along coasts.", Object.assign({order: ["About 4 inches", "About 4 feet", "About 40 feet", "It has dropped 4 inches"]}, CS));
+MC("hi5", "ic8", "Rising sea level affects people mostly through…", "loss of land", ["crop cycles", "water availability", "smog"], "Coastal land floods or washes away.", Object.assign({order: ["water availability", "crop cycles", "loss of land", "smog"]}, CS));
+MC("ef3", "ic8", "In Washington, warmer winters mean smaller mountain snowpacks. Why is that a problem?", "Less snowmelt means less water in summer for farms, fish, and cities", ["More snow is left for skiing", "Rivers flood all summer long", "It makes the air cleaner"], "Decreased snowpack is a water availability problem.", CS);
+MC("ef1", "ic8", "Which is an effect of climate change on PEOPLE?", "Coastal homes and land flooding as sea level rises", ["More oxygen in the air", "Longer-lasting glaciers", "Bigger crop yields everywhere"], "Loss of land.", CS);
+MC("ef7", "ic8", "Which weather events become more frequent and severe as the climate changes?", "Floods, major storms, and heat waves", ["Fewer storms of every kind", "Colder winters everywhere", "No change in extreme weather"], "Glossary: climate change includes the frequency of extreme weather events such as floods, major storms, and heat waves.", GL);
+MC("ef9", "ic8", "According to the I Can sheet, what does climate change cause for people and the environment?", "More extreme weather, habitat loss, rising sea levels, and problems for people and wildlife", ["Cleaner air and more ice", "Fewer storms and lower seas", "Only warmer summers, nothing else"], "Your class answer for I Can 8.", IC);
+
+/* I Can 9: how science helps us understand and respond */
+MC("sc8", "ic9", "According to the I Can sheet, how does science help us with global environmental changes?", "Scientists collect data and study Earth's systems to understand the changes and develop solutions", ["Scientists stop all changes from happening", "Scientists guess without data", "Science only describes the past"], "Your class answer for I Can 9.", IC);
+MC("sc2", "ic9", "Why do scientists study how Earth's systems are connected?", "To understand how a change in one system (like the atmosphere) affects the others, and predict what will happen", ["To control the weather", "So they don't need to collect data", "To guess tomorrow's high temperature"], "Example: more greenhouse gas → more heat → melting ice → rising seas → loss of land.", IC);
+MC("sc4", "ic9", "Which is an example of science helping develop a SOLUTION to climate change?", "Developing better solar panels and wind turbines to replace fossil fuels", ["Measuring the weather once", "Ignoring data that is hard to collect", "Building more coal power plants"], "Renewable energy cuts greenhouse gas emissions.", SD);
+MC("sc6", "ic9", "Scientists track Arctic sea ice, glaciers, and snow cover across the whole planet. What does this data show?", "They are decreasing, which is evidence of climate change", ["They are increasing", "They never change", "They only change in summer"], "Collecting data over many years is how we know what's changing.", CS);
+MC("sc7", "ic9", "What makes the claim \"Earth's average temperature has risen\" scientific?", "It's supported by data that others can measure and check", ["Many people believe it", "It was said on TV", "No one is allowed to question it"], "Science is based on collecting data and evidence.", IC);
+
+/* I Can 10: sustainable development, resources, and ecosystem services */
+MC("sd1", "ic10", "Your notes say sustainable development means using ____ in ways that preserve the ____ services.", "resources … ecosystem", ["money … government", "fossil fuels … factory", "land … shopping"], "Sustainable development: using resources in ways that preserve the ecosystem services.", SD);
+MC("su7", "ic10", "Your notes say there are links between which three things?", "The environment, society, and the economy", ["Speed, size, and cost", "Birth rate, death rate, and migration", "Sunlight, wind, and water"], "A development has to work for all three to be sustainable.", SD);
+MC("sd7", "ic10", "In the nested-circles diagram, the economy is inside society, which is inside the environment. What does that show?", "The economy depends on society, and both depend on the environment", ["The environment depends on the economy", "Society and the economy aren't connected", "The economy is bigger than the environment"], "Without a healthy environment, there is no society or economy.", SD);
+MC("sd2", "ic10", "Which list has ONLY renewable energy resources?", "Solar, biomass, geothermal, wind, and hydropower", ["Coal, natural gas, and nuclear", "Solar, coal, and wind", "Fossil fuels, wind, and nuclear"], "Those are the renewable examples in your notes.", SD);
+MC("sd3", "ic10", "Which list has ONLY nonrenewable energy resources?", "Fossil fuels, coal, natural gas, and nuclear", ["Solar, wind, and hydropower", "Biomass, geothermal, and coal", "Wind, nuclear, and solar"], "Those are the nonrenewable examples in your notes.", SD);
+MC("sd4", "ic10", "Nuclear power is listed as which type of resource in your notes?", "Nonrenewable", ["Renewable", "Biomass", "An ecosystem service"], "It uses uranium, which can't be replaced as fast as it's used.", Object.assign({order: ["Renewable", "Nonrenewable", "Biomass", "An ecosystem service"]}, SD));
+MC("sd5", "ic10", "According to your notes, a renewable resource is one that…", "can replace itself or keep existing even while it's being used", ["can never be used again", "takes millions of years to form", "only exists underground"], "Glossary: a resource that can be produced or replaced by healthy ecosystem functions.", SD);
+MC("sd6", "ic10", "According to your notes, a nonrenewable resource is…", "a natural resource that can't replenish itself at the rate it's being consumed", ["a resource that replaces itself every day", "any resource that comes from the sun", "a resource that is never used"], "Glossary: it can't be replenished by a natural process within a reasonable amount of time.", SD);
+MC("su3", "ic10", "Which is a renewable resource?", "Wind", ["Coal", "Natural gas", "Nuclear fuel"], "Wind replaces itself; the others can't be replaced as fast as we use them.", SD);
+MC("su4", "ic10", "Which is a nonrenewable resource?", "Natural gas", ["Sunlight", "Wind", "Hydropower"], "Natural gas is a fossil fuel.", SD);
+MC("su5", "ic10", "Why is coal called nonrenewable even though new coal still slowly forms underground?", "It can't be replaced within a reasonable amount of time, so we use it far faster than it forms", ["It can be recycled", "It's found everywhere", "It regrows every year"], "\"Within a reasonable amount of time\" is the key part of the definition.", GL);
+MC("su6", "ic10", "Forests are renewable. How can they still run out?", "If people use them faster than they can be replaced (overharvesting)", ["They can't; renewable resources never run out", "Only if it stops raining forever", "Only if they turn into fossil fuels"], "From the 7.2 notes: overharvesting is using a natural resource in an unsustainable way.", N72);
+MC("su1", "ic10", "Which development is MOST sustainable?", "A neighborhood powered by solar and wind that protects its nearby wetland and forest", ["A mall built by draining a wetland", "A coal plant that dumps waste in a river", "Clear-cutting a forest for one-time lumber profits"], "It provides human needs without depleting resources or causing long-term environmental harm.", GL);
+MC("su2", "ic10", "Which question best helps you judge whether a development is sustainable?", "Does it use resources without depleting them and avoid long-term environmental harm?", ["Will it be finished quickly?", "Is it the tallest building in town?", "Does it use as much energy as possible?"], "That's the glossary definition of sustainable development.", GL);
+MC("su8", "ic10", "According to the I Can sheet, sustainability considers which impacts to decide if a development is good long-term?", "Environmental, social, and economic", ["Only economic", "Only how fast it's built", "Only how it looks"], "Environment, society, and economy: the three linked circles.", IC);
+MC("es1", "ic10", "The 4 kinds of ecosystem services (\"What natural areas do for us\") are…", "Provisioning, regulating, cultural, and supporting", ["Renewable, nonrenewable, nuclear, and fossil", "Producers, consumers, decomposers, and scavengers", "Atmosphere, hydrosphere, geosphere, and biosphere"], "Sustainable development preserves these services.", SD);
+MC("es2", "ic10", "Food, fresh water, wood, and medicine we get from nature are which kind of ecosystem service?", "Provisioning", ["Regulating", "Cultural", "Supporting"], "Provisioning = products obtained from ecosystems.", Object.assign({order: ["Provisioning", "Regulating", "Cultural", "Supporting"]}, SD));
+MC("es3", "ic10", "Wetlands soaking up floodwater, plants cleaning the air, and bees pollinating crops are which kind of ecosystem service?", "Regulating", ["Provisioning", "Cultural", "Supporting"], "Regulating = benefits from nature controlling (regulating) ecosystem processes.", Object.assign({order: ["Provisioning", "Regulating", "Cultural", "Supporting"]}, SD));
+MC("es4", "ic10", "Hiking, beautiful views, and inspiration people get from nature are which kind of ecosystem service?", "Cultural", ["Provisioning", "Regulating", "Supporting"], "Cultural = non-material benefits people get from ecosystems.", Object.assign({order: ["Provisioning", "Regulating", "Cultural", "Supporting"]}, SD));
+MC("es5", "ic10", "Soil formation and nutrient cycling, which every other service depends on, are which kind of ecosystem service?", "Supporting", ["Provisioning", "Regulating", "Cultural"], "Supporting = services needed to produce all the other ecosystem services.", Object.assign({order: ["Provisioning", "Regulating", "Cultural", "Supporting"]}, SD));
+
+/* I Can 11: innovation and resilience */
+MC("re7", "ic11", "According to the I Can sheet, why are innovation and resilience important?", "Innovation creates new solutions, while resilience helps people and ecosystems adapt to environmental challenges", ["Innovation stops all weather, and resilience stops all change", "They only matter for building bridges", "They make resources nonrenewable"], "Your class answer for I Can 11.", IC);
+MC("re1", "ic11", "Which shows resilience?", "A forest growing back after a wildfire", ["A forest being cut down", "A lake filling with algae", "A glacier melting away"], "Glossary: resilience is the ability to recover after a disturbance; the ability to deal with change and move on.", GL);
+MC("re2", "ic11", "Which is an example of innovation solving an environmental problem?", "Inventing better solar panels and wind turbines to replace fossil fuels", ["Building more coal power plants", "Clearing more forest for farmland", "Dumping more fertilizer into rivers"], "Innovation = new solutions.", SD);
+MC("re3", "ic11", "Why do we need resilience, not just innovation?", "Droughts, storms, and rising seas are already happening, so people and ecosystems must be able to recover and adapt", ["Innovation always fixes everything right away", "Resilience means stopping all change", "Resilience only matters for buildings"], "Innovation reduces the problems; resilience helps us handle the effects that are already here.", IC);
+MC("re4", "ic11", "How does protecting a wetland make a coastal town more resilient?", "Wetlands soak up floodwater (a regulating ecosystem service), so the town recovers faster after storms", ["Wetlands make storms stronger", "Wetlands raise the sea level", "Wetlands produce smog"], "Preserving ecosystem services is part of sustainable development.", SD);
+MC("re6", "ic11", "Which pairing shows innovation first and resilience second?", "Electric buses … a town rebuilding quickly after a flood", ["A drought … a wildfire", "Planting one crop … paving a wetland", "Burning coal … draining a marsh"], "Innovation = a new solution. Resilience = recovering after a disturbance.", IC);
+
+/* One short answer for every I Can statement; the model answer is the same one on the study sheet */
+const ICA = k => ICAN.find(c => c.k === k).answer;
+SA("ican1", "ic1", "Compare the ecological footprint of the average American to the global average, and explain why they are so different.", ICA("ic1"),
+  [["The U.S. footprint is much bigger (8.1 gha)", "8.1|8 gha|3 times|three times|4 times|four times|triple|2.7|2.0", "america|u= s=|us=|usa=|united states ~ bigger|larger|higher|greater|more|much|times|over"],
+   ["Americans use more resources and energy", "resourc|energy|electric|food|water|shelter|house|home|car=|cars=|driv|fly|flight|travel|consum|stuff|buy|gas|fuel"],
+   ["Americans produce more wastes (trash, sewage, greenhouse gases)", "waste|trash|garbage|sewage|greenhouse|co2|carbon|emission|pollut"]],
+  "Use both parts of the definition: the resources used AND the wastes absorbed.", IC);
+SA("ican2", "ic2", "Explain what the Anthropocene is and why it is important.", ICA("ic2"),
+  [["Human activity is now the major cause of global change", "human ~ major|main|biggest|largest|domin|cause|change|chang|impact|effect|control", "people ~ major|main|biggest|domin|cause|change|chang|impact", "age of humans|age of man"],
+   ["It's tied to the Great Acceleration around 1950", "1950|great acceleration|accelerat|skyrocket|shot up|sharp|spike"],
+   ["Why it matters: humans are changing Earth's systems", "important|matter|responsib|choice|protect|future|reduce|fix|careful|damage|harm|atmosphere|climate|anthrome|earths systems|planet|global"]],
+  "Answer both parts: what it is, and why it's important.", Object.assign({need: 2}, IC));
+SA("ican3", "ic3", "Describe how human activities affect the atmosphere and climate.", ICA("ic3"),
+  [["Burning fossil fuels", "fossil|coal|oil=|gasoline|natural gas|burn"],
+   ["Releasing greenhouse gases (CO₂, methane)", "greenhouse|co2|carbon|methane|emission"],
+   ["More heat is trapped, so the climate changes", "trap|heat|warm|temperatur|climate change"],
+   ["Air pollution like acid rain or smog (or deforestation)", "smog|acid rain|air pollution|pollut|deforest|nitrogen"]],
+  "Any 3 of these earn full credit.", Object.assign({need: 3}, IC));
+SA("ican4", "ic4", "Explain how changes in the atmosphere can lead to climate change and affect other Earth systems.", ICA("ic4"),
+  [["More greenhouse gases trap more heat (less heat lost to space)", "greenhouse|co2|carbon dioxide|methane|water vapor & heat|warm|temperatur|trap|space"],
+   ["The climate changes: temperature, precipitation, extreme weather", "warm|temperatur|climate change|global warming|cloud|wind|precip|rain|drought|storm|extreme|weather"],
+   ["Oceans: sea level rises, oceans become more acidic", "ocean|sea level|acid|ph=|flood"],
+   ["Land and ecosystems: ice and snow shrink, habitats and wildlife harmed", "land|ice|glacier|snow|ecosystem|habitat|wildlife|species|animal|plant|crop"]],
+  "Name at least two other Earth systems that get affected.", Object.assign({need: 3}, IC));
+SA("ican5", "ic5", "Describe how human land use affects Earth's systems.", ICA("ic5"),
+  [["Deforestation", "deforest|cut down|cutting down|clear|logging|forest|trees"],
+   ["Farming: monoculture, fertilizer runoff", "monocult|farm|crop|agricultur|fertiliz|runoff|cattle|rangeland|cropland"],
+   ["Construction and roads: habitat fragmentation, biodiversity loss", "fragment|road|highway|construct|city|cities|urban|build|development|anthrome|biodivers"],
+   ["Effects on habitats, soil, water, carbon, ecosystems", "habitat|soil|water|carbon|ecosystem|animal|species|wildlife|erosion"]],
+  "Any 3 of these earn full credit.", Object.assign({need: 3}, IC));
+SA("ican6", "ic6", "Identify different types of pollution and explain how they contribute to global environmental change.", ICA("ic6"),
+  [["Names the types: air, water, and land pollution", "air= & water= & land=", "air pollution & water pollution"],
+   ["Air pollution: greenhouse gases → climate change", "global warming|climate change", "greenhouse|co2|carbon dioxide|methane & climate|warm|heat|temperatur|trap"],
+   ["Air pollution + water → acid rain (forests and lakes)", "acid rain"],
+   ["Smog", "smog"],
+   ["Water pollution: nitrogen or fertilizer runoff → algal blooms", "fertiliz|nitrogen|runoff|algae|algal|water pollution"],
+   ["Pollutants like DDT build up through biological magnification", "ddt|pesticid|toxic|biomagnif|biological magnif|food chain|trophic"],
+   ["Ocean acidification from CO₂", "acidif", "ocean ~ acid|ph="]],
+  "Any 3 types, each with its effect, earn full credit.", Object.assign({need: 3}, IC));
+SA("ican7", "ic7", "Describe the evidence that shows climate change is happening.", ICA("ic7"),
+  [["Changing global temperatures, precipitation, and extreme storms", "temperatur|warm|hotter|heat|precip|rain|storm|extreme|weather"],
+   ["Increased greenhouse gas emissions", "greenhouse|co2|carbon|emission|methane"],
+   ["Rising sea levels", "sea level|sea levels|ocean"],
+   ["Shrinking Arctic sea ice, glaciers, and snow cover", "glacier|sea ice|ice=|snow|melt|arctic"]],
+  "Any 3 pieces of evidence earn full credit.", Object.assign({need: 3, fig: "keeling"}, IC));
+SA("ican8", "ic8", "Explain the effects of climate change on people and the environment.", ICA("ic8"),
+  [["Water availability: droughts, decreased snowpack", "water|drought|snow"],
+   ["Crop cycles: lower crop yields", "crop|farm|food|harvest|yield"],
+   ["Loss of land from rising sea levels", "sea level|coast|loss of land|lose land|land loss|flood"],
+   ["Extreme weather, habitat loss, problems for wildlife", "extreme|storm|heat wave|heatwave|flood|habitat|wildlife|animal|species|ecosystem"]],
+  "Cover both people and the environment.", Object.assign({need: 3}, IC));
+SA("ican9", "ic9", "Explain how science helps us understand and respond to global environmental changes.", ICA("ic9"),
+  [["Scientists collect data", "data|measur|monitor|record|observ|collect|evidence|track"],
+   ["They study Earth's systems to understand and predict changes", "study|studi|understand|predict|earths systems|system|model|research|cause"],
+   ["They develop solutions", "solution|solve|technolog|invent|renewabl|solar|wind|plan|respond|fix|help"]],
+  "Your class answer covers all three: collect data, understand, develop solutions.", IC);
+SA("ican10", "ic10", "Describe the factors used for evaluating the sustainability of a development.", ICA("ic10"),
+  [["Environmental, social, and economic impacts", "environment|societ|social|econom|people|community|money|cost|job"],
+   ["Renewable vs. nonrenewable resources (not depleting them)", "renewabl|nonrenewabl|resourc|deplet|run out|fossil|solar|wind|energy"],
+   ["Preserving ecosystem services", "ecosystem|service|habitat|biodivers|wetland|forest|nature"],
+   ["Long-term: no long-term environmental harm, future generations", "long term|long-term|future|generation|last|sustain|harm"]],
+  "Any 3 factors earn full credit.", Object.assign({need: 3}, IC));
+SA("ican11", "ic11", "Explain why innovation and resilience are important for solving environmental challenges.", ICA("ic11"),
+  [["Innovation creates new solutions (like renewable energy)", "innovat|technolog|invent|new solution|new idea|new way|solar|wind|renewabl"],
+   ["Resilience: recovering after a disturbance, adapting to change", "recover|bounce back|adapt|deal with change|move on|withstand|cope"],
+   ["Why: environmental challenges are already happening", "already|happening|challenge|disturb|disaster|drought|flood|storm|fire=|fires|sea level|climate change|problem"]],
+  "Explain both words, not just one.", IC);
+SA("ican12", "ic12", "Explain how the human population has changed over time.", ICA("ic12"),
+  [["Very slow growth for most of history", "slow|flat|stable|small|half a billion|500 million|barely|thousands of years"],
+   ["Medicine, food production, sanitation, agriculture, or the Industrial Revolution let it grow", "agricultur|farm|plow|irrigat|industrial|carrying capacity|medicin|sanitat|food"],
+   ["Huge recent growth (J-curve)", "j curve|j-curve|exponent|explod|rapid|skyrocket|shot up|billion|fast|grown greatly|grew greatly|greatly"],
+   ["Today: still increasing, but the growth rate is decreasing", "rate ~ decreas|slow|declin|drop|fall|lower", "slowing|slower|demographic transition|still increas|still grow"]],
+  "Any 3 of these earn full credit.", Object.assign({need: 3, fig: "history"}, IC));
+SA("ican13", "ic13", "Compare population growth rates in different countries, and explain why they are different.", ICA("ic13"),
+  [["Developing countries (Angola, Kenya) grow fast", "angola|kenya|developing|yemen|afghanistan|africa ~ fast|high|rapid|quick|grow|2.72|1.81|most|more", "fast|rapid|quick ~ angola|kenya|developing"],
+   ["Developed countries (Canada, Denmark) grow slowly or shrink", "canada|denmark|developed|japan|germany|italy ~ slow|low|barely|less|0.74|0.22|stable|shrink|declin|little|negative"],
+   ["Because of birth and death rates", "birth|death|fertility"],
+   ["Because of migration, age structure, or stage", "migra|immigra|emigra|age|young|old|median|pyramid|stage|demographic"]],
+  "Any 3 of these earn full credit.", Object.assign({need: 3, fig: "countries"}, IC));
+
+/* ---------- stages of the demographic transition (the class says this is a big part of the test) ---------- */
+const OV = {src: "Overview chart"}, PY = {src: "Pyramids in the 5.3 notes"};
+
+/* the 5 phases in the 5.3 guided notes */
+MC("d4", "ic12", "Which describes Stage 1?", "Short life expectancy, high infant mortality, and poor health care and sanitation", ["Long life expectancy and low infant mortality", "Low birth rates from widely available birth control", "High affluence and economic development"], "From the notes: short life expectancy, high infant mortality, poor health care and sanitation.", N53);
+MC("d5", "ic12", "What do the 5.3 notes say about examples of true Stage 1 societies?", "There are no good examples of true Stage 1 societies today", ["Most countries are in Stage 1", "Japan and Italy are Stage 1", "Only Europe has Stage 1 societies"], "Almost every country has at least some modern medicine and sanitation now, so death rates have started falling.", N53);
+STG("d9", "ic12", "Births > deaths, reduced infant mortality, and better health care and sanitation. Which stage is this?", 2, "Stage 2: rapid population growth.", N53);
+MC("d14", "ic12", "Which describes Stage 4?", "Low, stable birth rate, a death rate that climbs slightly, and high affluence", ["High birth rate and a falling death rate", "Death rate higher than the birth rate, with labor shortages", "Short life expectancy and high infant mortality"], "Stage 4: little to no growth, a stable population, high affluence and economic development.", N53);
+MC("d26", "ic12", "Why is the population still growing in Stage 3 even though birth rates are falling?", "Births are still a bit higher than deaths", ["Death rates are rising quickly", "Immigration doubles in Stage 3", "Birth rates are higher than ever"], "The notes say births ≥ deaths in Stage 3 (births a BIT higher), so growth slows but doesn't stop.", N53);
+MC("d29", "ic12", "In Stage 5, what happens to the death rate?", "It stays steady or slowly increases as the population gets older", ["It drops to zero", "It falls steeply", "It becomes much lower than the birth rate"], "From the notes: a stable or slowly increasing death rate, with labor shortages and rising health care and social security costs.", N53);
+STG("d31", "ic12", "Which stage has high affluence, economic development, fewer young people, and more elderly people?", 4, "Stage 4 (little to no growth). Examples: United States, Australia, Argentina.", N53);
+STG("st1", "ic12", "In which stage do high birth rates and high death rates effectively cancel each other out?", 1, "Stage 1: birth rates = death rates, so growth is slow.", N53);
+STG("st3", "ic12", "Births ≥ deaths (births just a BIT higher), the birth rate begins to fall, and the death rate stays low. Which stage?", 3, "Stage 3: slowing growth.", N53);
+STG("st4", "ic12", "Births ≤ deaths, the birth rate is low and stable, and the death rate climbs slightly. Which stage?", 4, "Stage 4: little to no growth, a stable population.", N53);
+STG("st5", "ic12", "The death rate exceeds the birth rate, and the country has labor shortages and rising health care and social security costs. Which stage?", 5, "Stage 5: no growth, a declining population.", N53);
+STG("st6", "ic12", "Fewer young people and more elderly people lead to a greater tax burden and a lack of health care. Which stage do the notes describe this way?", 4, "Stage 4 in the 5.3 notes. (Stage 5 goes further: labor shortages and rising social security costs.)", N53);
+STG("st7", "ic12", "In which stage is there a short life expectancy and high infant mortality?", 1, "Stage 1: poor health care and sanitation.", N53);
+STG("st8", "ic12", "Reduced infant mortality and better health care and sanitation first show up in which stage?", 2, "Those changes cut the death rate in Stage 2 while births stay high.", N53);
+STG("st9", "ic12", "Increased access to birth control leads to smaller families, along with improved education and relative affluence. Which stage?", 3, "Stage 3: slowing population growth.", N53);
+
+/* country examples (guided notes + stage chart) */
+STG("st11", "ic13", "The 5.3 notes give Brazil as an example of which stage?", 3, "Notes: Stage 3 examples are Mexico, India, and Brazil.", N53);
+STG("st12", "ic13", "The 5.3 notes give Australia and Argentina as examples of which stage?", 4, "Notes: Stage 4 examples are the United States, Australia, and Argentina.", N53);
+STG("st13", "ic13", "Germany is an example of which stage?", 5, "Notes: Stage 5 examples are Japan, Germany, and Italy.", N53);
+STG("st14", "ic13", "According to the stage chart, Ethiopia is in which stage?", 2, "Stage chart: Stage 2 examples are Kenya, Ethiopia, Yemen, and Afghanistan.", CH);
+STG("st15", "ic13", "According to the stage chart, South Africa is in which stage?", 3, "Stage chart: Stage 3 examples are India, Mexico, and South Africa.", CH);
+STG("st16", "ic13", "According to the stage chart, the UK, Turkey, and Peru are in which stage?", 4, "Stage chart: Stage 4 examples are Canada, the UK, Guam, Turkey, Peru, and the U.S.", CH);
+STG("st17", "ic13", "According to the stage chart, Amazon basin tribes are in which stage?", 1, "Stage chart: Stage 1 examples are Angola and Amazon basin tribes.", CH);
+STG("st18", "ic13", "According to the stage chart and your practice work, Angola is in which stage?", 1, "The stage chart lists Angola as a Stage 1 example, and in the class data table it has a high birth rate (33.6) and the highest death rate (11.3).", F("countries", CH));
+STG("st19", "ic13", "Using the country data, Kenya is in which stage?", 2, "High birth rate (25.1) and low death rate (6.8): births far outnumber deaths, so it grows fast. The stage chart also lists Kenya in Stage 2.", F("countries", PW));
+STG("st20", "ic13", "Using the country data, Canada is in which stage?", 4, "Low birth rate (10.3) and low death rate (8.5), an older population (median age 42), and slow growth. The stage chart lists Canada in Stage 4.", F("countries", PW));
+MC("st21", "ic13", "Denmark's birth rate (10.4) and death rate (10.3) are almost equal, and it grows only 0.22% a year. Which stage does it fit best?", "Stage 4, close to Stage 5", ["Stage 1", "Stage 2", "Stage 3"], "Births barely beat deaths. If its death rate passes its birth rate, it moves into Stage 5.", F("countries", Object.assign({order: ["Stage 1", "Stage 2", "Stage 3", "Stage 4, close to Stage 5"]}, PW)));
+STG("st22", "ic13", "The 5.3 notes give Sub-Saharan Africa as an example of which stage?", 2, "Notes: Stage 2 examples are Yemen, Afghanistan, and Sub-Saharan Africa.", N53);
+MC("st51", "ic13", "Which list puts the countries in order from Stage 2 to Stage 5?", "Yemen → India → United States → Japan", ["Japan → United States → India → Yemen", "India → Yemen → Japan → United States", "United States → Japan → Yemen → India"], "Yemen (2), India (3), United States (4), Japan (5).", N53);
+
+/* the stage chart, row by row */
+STG("d19", "ic12", "\"Children must contribute to the economy of the household.\" Which stage is this on the stage chart?", 1, "In Stage 1, kids work for the family, and there are no education or entertainment costs.", CH);
+STG("st23", "ic12", "\"Population essentially determined by the food supply.\" Which stage is this on the stage chart?", 1, "Stage 1: when food runs short, people die, so food sets the population.", CH);
+STG("st24", "ic12", "\"Family planning and contraception are virtually nonexistent.\" Which stage is this on the stage chart?", 1, "Stage 1. (Access to contraception increases in Stage 3 and is widely available in Stage 4.)", CH);
+STG("st25", "ic12", "\"No education or entertainment expenses.\" Which stage is this on the stage chart?", 1, "Stage 1: children cost little and help with work.", CH);
+STG("st26", "ic12", "\"Population fluctuates rapidly due to natural events.\" Which stage is this on the stage chart?", 1, "Stage 1: droughts, disease, and famine swing the population up and down.", CH);
+STG("st27", "ic12", "\"Pre-industrial society.\" Which stage is this on the stage chart?", 1, "Stage 1: before industrialization.", CH);
+STG("d8b", "ic12", "\"Improvements in food supply reduce death due to starvation.\" Which stage is this on the stage chart?", 2, "Stage 2: food, water, and public health improvements cut the death rate.", CH);
+STG("st29", "ic12", "\"Better transportation reduces death due to lack of water.\" Which stage is this on the stage chart?", 2, "Stage 2.", CH);
+STG("st30", "ic12", "\"Improvements in public health reduce death rates.\" Which stage is this on the stage chart?", 2, "Stage 2.", CH);
+STG("d28", "ic12", "\"Improvements in water supply, sewerage, and general personal hygiene.\" Which stage is this on the stage chart?", 2, "Stage 2: cleaner water and sewers mean fewer deaths from disease.", CH);
+STG("st31", "ic12", "\"Developing countries.\" Which stage is this on the stage chart?", 2, "Stage 2 on the stage chart. (Stage 1 is pre-industrial; Stage 3 has increasing urbanization.)", CH);
+STG("st32", "ic12", "\"Age structure triangular with a large portion of the population at the base.\" Which stage is this on the stage chart?", 2, "Stage 2: lots of children, because births are high and more of them survive.", CH);
+STG("st33", "ic12", "\"Increasing urbanization.\" Which stage is this on the stage chart?", 3, "Stage 3: people move to cities.", CH);
+STG("st34", "ic12", "\"Cost of children increases by the introduction of higher education.\" Which stage is this on the stage chart?", 3, "Stage 3: children cost more, so families have fewer.", CH);
+STG("st35", "ic12", "\"Age structure less triangular at the base, more columnar.\" Which stage is this on the stage chart?", 3, "Stage 3: fewer births make the base narrower.", CH);
+STG("st36", "ic12", "\"Increased value of women beyond childbearing and motherhood.\" Which stage is this on the stage chart?", 3, "Stage 3, along with an expansion in women's status and education.", CH);
+STG("st37", "ic12", "\"Total population is stable.\" Which stage is this on the stage chart?", 4, "Stage 4: birth and death rates are both low.", CH);
+STG("st38", "ic12", "\"Low rates of disease and high production of food.\" Which stage is this on the stage chart?", 4, "Stage 4.", CH);
+STG("st39", "ic12", "\"Women gaining more independence and work opportunities.\" Which stage is this on the stage chart?", 4, "Stage 4. (Stage 3 is where women's status and education start to expand.)", CH);
+STG("st40", "ic12", "\"Improvements in and widely available access to contraception and/or family planning.\" Which stage is this on the stage chart?", 4, "Stage 4. (Stage 3 has increased access; Stage 4 has widely available access.)", CH);
+STG("st41", "ic12", "\"Fertility rate at, or slightly above, replacement reproduction.\" Which stage is this on the stage chart?", 4, "Stage 4: about enough children to replace the parents, so the population stays stable.", CH);
+
+/* overview chart, pyramids, and the graph */
+MC("d21", "ic12", "On the overview chart, which name goes with Stage 4?", "Low stationary", ["High stationary", "Early expanding", "Late expanding"], "1 high stationary, 2 early expanding, 3 late expanding, 4 low stationary, 5 declining.", OV);
+MC("st42", "ic12", "On the overview chart, Stage 2 is called…", "Early expanding", ["High stationary", "Late expanding", "Low stationary"], "1 high stationary, 2 early expanding, 3 late expanding, 4 low stationary, 5 declining.", OV);
+MC("st43", "ic12", "On the overview chart, Stage 3 is called…", "Late expanding", ["Early expanding", "High stationary", "Low stationary"], "Stage 3 still grows (expanding), but growth is slowing as birth rates fall.", OV);
+STG("st44", "ic12", "Which stage has question marks on the overview chart (\"Declining?\") because scientists aren't sure how it will play out?", 5, "Stage 5: natural decrease, with deaths outnumbering births.", OV);
+STG("st45", "ic13", "Which stage's age-structure diagram is labeled \"contracting\" with a low birth rate, low death rate, higher dependency ratio, and longer life expectancy?", 4, "The Stage 4 pyramid in the notes: a narrow base and lots of older people.", PY);
+STG("st46", "ic13", "Which stage's age-structure diagram is labeled \"stationary\" with a declining birth rate, low death rate, and more people living to old age?", 3, "The Stage 3 pyramid in the notes.", PY);
+STG("st47", "ic13", "Which stage's age-structure diagram shows a high birth rate with a rapid fall in each upward age group because of high death rates?", 1, "The Stage 1 pyramid in the notes: short life expectancy.", PY);
+STG("d24", "ic12", "On the graph, in which stage are birth and death rates both LOW and the total population leveled off at its highest?", 4, "Stage 4: low stationary.", F("dtm", {}));
+STG("st48", "ic12", "On the graph, in which stage does the death rate rise above the birth rate?", 5, "Stage 5: natural decrease, so the total population starts to fall.", F("dtm", {}));
+STG("st49", "ic12", "On the graph, in which stage does the BIRTH rate start to fall?", 3, "The death rate falls first (Stage 2); the birth rate follows in Stage 3.", F("dtm", {}));
+STG("st50", "ic12", "On the graph, in which stage does the DEATH rate first fall steeply?", 2, "Stage 2: better food, water, and health care.", F("dtm", {}));
+
+/* written answers about the stages */
+SA("s14", "ic12", "Describe what happens to birth rates, death rates, and population growth in Stages 1, 2, 3, and 4.",
+  "Stage 1: birth and death rates are both high, so growth is slow. Stage 2: the birth rate stays high but the death rate falls, so growth is rapid. Stage 3: the birth rate starts to fall and the death rate stays low, so growth slows. Stage 4: birth and death rates are both low, so there's little to no growth and the population is stable.",
+  [["Stage 1: both rates high, slow growth", "stage 1|1= ~ high|slow|cancel|equal|same", "both high|both rates are high"],
+   ["Stage 2: births stay high, deaths fall, rapid growth", "stage 2|2= ~ rapid|fast|death|deaths|fall|drop"],
+   ["Stage 3: births start to fall, growth slows", "stage 3|3= ~ birth|births|slow|slowing|fall|drop|decreas"],
+   ["Stage 4: both rates low, stable or no growth", "stage 4|4= ~ low|stable|stationary|little|no growth|both"]],
+  "Any 3 stages described correctly earn full credit.", Object.assign({need: 3}, N53));
+SA("s15", "ic13", "Use the data table to decide which stage Kenya and Canada are each in, and explain your evidence.",
+  "Kenya is in Stage 2: its birth rate is high (25.1) but its death rate is low (6.8), so it grows fast (1.81%). Canada is in Stage 4: its birth rate (10.3) and death rate (8.5) are both low, it has an older population (median age 42), and it grows slowly (0.74%).",
+  [["Kenya is in Stage 2", "kenya ~ stage 2|2=|two"],
+   ["Kenya: high birth rate, low death rate", "25.1|6.8|1.81", "high birth|birth rate is high|birth rates are high|births are high", "kenya ~ high|young|fast"],
+   ["Canada is in Stage 4", "canada ~ stage 4|4=|four"],
+   ["Canada: low birth and death rates, older, slow growth", "10.3|8.5|0.74", "both low|low birth|birth rate is low|birth rates are low|low death", "canada ~ low|old|slow|42"]],
+  "Name the stage AND back it up with numbers from the table.", F("countries", PW));
+
+/* questions that count as "stages" for the Stages drill and for weighting practice tests */
+const STAGE_IDS = new Set(["s1", "s14", "s15", "g8", "g9", "a1", "a2", "a3", "a4"]);
+for (const q of B) if (/^(d|st)\d/.test(q.id) || STAGE_IDS.has(q.id)) q.stage = true;
 
 /* ---------- figures (inline SVG, drawn for this test) ---------- */
 const AH = id => `<defs><marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs>`;
@@ -719,7 +956,32 @@ FIG.ocean = () => `<svg viewBox="0 0 600 248" role="img" aria-label="Ocean acidi
   <rect class="bx3" x="100" y="180" width="236" height="50" rx="6"/><text class="tx b" x="218" y="201" text-anchor="middle">H⁺ ties up carbonate ions,</text><text class="tx b" x="218" y="219" text-anchor="middle">fewer are left for shells</text>
 </svg>`;
 
-const HERO_MINI = `<svg class="mini" viewBox="0 0 140 112" aria-hidden="true"><line x1="14" y1="96" x2="134" y2="96" stroke="var(--ink)" stroke-width="1.5"/><line x1="14" y1="8" x2="14" y2="96" stroke="var(--ink)" stroke-width="1.5"/><polyline points="${pts(spline([[16, 93], [70, 91], [100, 86], [116, 70], [124, 40], [128, 12]], 10))}" fill="none" stroke="var(--moss)" stroke-width="3" stroke-linecap="round"/><circle cx="128" cy="12" r="4.5" fill="var(--sun)"/><text x="14" y="108">10,000 B.C.</text><text x="134" y="108" text-anchor="end">now</text></svg>`;
+FIG.greenhouse = () => `<svg viewBox="0 0 600 270" role="img" aria-label="Greenhouse effect diagram. Sunlight passes through the atmosphere and warms Earth's surface. The surface gives off heat. Greenhouse gases absorb some of that heat and send it back down; some heat escapes to space.">${AH("ahG")}
+  <text class="tx s" x="300" y="24" text-anchor="middle">Space</text>
+  <rect class="v2" x="0" y="68" width="600" height="44" opacity=".9"/><text class="tx b" x="300" y="95" text-anchor="middle">Greenhouse gases (CO₂, methane, water vapor)</text>
+  <rect class="v3" x="0" y="214" width="600" height="48"/><text class="tx b" x="300" y="243" text-anchor="middle">Earth's surface absorbs sunlight and gives off heat</text>
+  <circle class="sunc" cx="48" cy="38" r="20"/>
+  <line class="l2" x1="64" y1="54" x2="168" y2="208" marker-end="url(#ahG)"/><text class="tx" x="118" y="150" text-anchor="end"><tspan x="118">Sunlight</tspan><tspan x="118" dy="15">passes through</tspan></text>
+  <polyline class="heat" points="230,212 280,100 330,208" marker-end="url(#ahG)"/><text class="tx" x="316" y="146"><tspan x="316">Some heat is trapped</tspan><tspan x="316" dy="15">and sent back down</tspan></text>
+  <line class="heat" x1="500" y1="212" x2="548" y2="22" marker-end="url(#ahG)"/><text class="tx" x="528" y="40" text-anchor="end"><tspan x="528">Some heat</tspan><tspan x="528" dy="15">escapes</tspan></text>
+</svg>`;
+
+FIG.keeling = () => {
+  const ann = [[1958, 315.2], [1965, 320], [1970, 325.7], [1975, 331.1], [1980, 338.8], [1985, 346.4], [1990, 354.4], [1995, 360.9], [2000, 369.7], [2005, 379.8], [2010, 389.9], [2015, 401], [2020, 414.2], [2024, 424.6], [2025, 427]];
+  const X = yr => 64 + (yr - 1958) / 67 * 506, Y = ppm => 222 - (ppm - 300) / 140 * 190;
+  const base = t => { for (let i = 1; i < ann.length; i++) if (ann[i][0] >= t) { const [a, p] = ann[i - 1], [b, q] = ann[i]; return p + (q - p) * (t - a) / (b - a); } return ann[ann.length - 1][1]; };
+  const pts2 = []; for (let t = 1958.2; t <= 2025; t += 1 / 12) pts2.push([X(t), Y(base(t) + 3.2 * Math.cos(2 * Math.PI * (t - 0.37)))]);
+  let g = ""; for (let v = 300; v <= 440; v += 20) g += `<line class="gr" x1="64" x2="574" y1="${Y(v)}" y2="${Y(v)}" opacity=".5"/><text class="tx m" x="56" y="${Y(v) + 4}" text-anchor="end">${v}</text>`;
+  const xt = [1960, 1970, 1980, 1990, 2000, 2010, 2020].map(yr => `<text class="tx m" x="${X(yr)}" y="240" text-anchor="middle">${yr}</text>`).join("");
+  return `<svg viewBox="0 0 600 262" role="img" aria-label="The Keeling curve: carbon dioxide measured at Mauna Loa, Hawaii, rising from about 315 parts per million in 1958 to about 425 in 2025, with a small up-and-down zigzag every year.">
+    ${g}<line class="ax" x1="64" y1="222" x2="574" y2="222"/><line class="ax" x1="64" y1="30" x2="64" y2="222"/>${xt}
+    <polyline class="l1" style="stroke-width:1.6" points="${pts(pts2)}"/>
+    <text class="tx s" transform="translate(18 126) rotate(-90)" text-anchor="middle">CO₂ (parts per million)</text><text class="tx s" x="320" y="258" text-anchor="middle">Year (measured at Mauna Loa, Hawaii)</text>
+    <text class="tx b" x="${X(1958) + 6}" y="${Y(342)}">≈315 (1958)</text><text class="tx b" x="${X(2025) - 4}" y="${Y(427) - 12}" text-anchor="end">≈425 (2025)</text>
+  </svg>`;
+};
+
+const HERO_MINI =`<svg class="mini" viewBox="0 0 140 112" aria-hidden="true"><line x1="14" y1="96" x2="134" y2="96" stroke="var(--ink)" stroke-width="1.5"/><line x1="14" y1="8" x2="14" y2="96" stroke="var(--ink)" stroke-width="1.5"/><polyline points="${pts(spline([[16, 93], [70, 91], [100, 86], [116, 70], [124, 40], [128, 12]], 10))}" fill="none" stroke="var(--moss)" stroke-width="3" stroke-linecap="round"/><circle cx="128" cy="12" r="4.5" fill="var(--sun)"/><text x="14" y="108">10,000 B.C.</text><text x="134" y="108" text-anchor="end">now</text></svg>`;
 
 /* ---------- building a test ---------- */
 const BYID = Object.fromEntries(B.map(q => [q.id, q]));
@@ -762,29 +1024,36 @@ function spread(pool, n) {
 function buildRun(mode, opts = {}) {
   let items = [], label = "";
   const mcs = B.filter(q => q.t === "mc" || q.t === "tf"), gens = B.filter(q => q.t === "gen"), sas = B.filter(isSA);
+  const stageMC = mcs.filter(q => q.stage), otherMC = mcs.filter(q => !q.stage);
+  const terms = VOCAB.map(v => v[0]);
   if (mode === "full") {
     label = "Full test";
-    items = B.map(instance);
+    items = B.map(instance).concat(terms.map(vocabMC));
   } else if (mode === "practice" || mode === "quick") {
     const big = mode === "practice";
     label = big ? "Practice test" : "Quick quiz";
-    const nMC = big ? 34 : 12, nGen = big ? 3 : 2, nSA = big ? 3 : 1;
-    items = [...shuffle(gens).slice(0, nGen), ...spread(mcs, nMC), ...spread(sas, nSA)].map(instance);
+    // the stages of the demographic transition are a big part of the real test, so about a third of the multiple choice is stages
+    const nStage = big ? 12 : 5, nMC = big ? 22 : 7, nGen = big ? 2 : 1, nSA = big ? 3 : 1, nVocab = big ? 3 : 1;
+    items = [...shuffle(gens).slice(0, nGen), ...shuffle(stageMC).slice(0, nStage), ...spread(otherMC, nMC), ...spread(sas, nSA)].map(instance)
+      .concat(shuffle(terms).slice(0, nVocab).map(vocabMC));
+  } else if (mode === "stages") {
+    label = "Stages drill";
+    items = [...shuffle(stageMC).slice(0, 30), ...shuffle(sas.filter(q => q.stage)).slice(0, 1)].map(instance);
   } else if (mode === "sa") {
     label = "Short answers";
     items = sas.map(instance);
   } else if (mode === "vocab") {
     label = "Vocab match";
-    items = matchItems(VOCAB.map(v => v[0]));
+    items = matchItems(terms);
   } else if (mode === "topics") {
     const ts = opts.topics;
-    label = ts.length === 1 ? TOPICS[ts[0]] : `Topics (${ts.length})`;
+    label = ts.length === 1 ? TOPICS[ts[0]] : `I Can statements (${ts.length})`;
     items = B.filter(q => ts.includes(q.topic)).map(instance).concat(vocabFor(VOCAB.filter(v => ts.includes(v[2])).map(v => v[0])));
   } else if (mode === "missed") {
     label = "Missed questions";
     const ids = opts.missed || [];
-    const terms = [...new Set(ids.filter(id => id.startsWith("v:")).map(id => id.slice(2)).filter(t => VBY[t]))];
-    items = ids.filter(id => BYID[id]).map(id => instance(BYID[id])).concat(vocabFor(terms));
+    const missedTerms = [...new Set(ids.filter(id => id.startsWith("v:")).map(id => id.slice(2)).filter(t => VBY[t]))];
+    items = ids.filter(id => BYID[id]).map(id => instance(BYID[id])).concat(vocabFor(missedTerms));
   }
   // short answers go last, like the written section of a real test
   if (mode !== "vocab") items = [...shuffle(items.filter(it => !isSA(it))), ...shuffle(items.filter(isSA))];
@@ -817,7 +1086,7 @@ function pairIn(T, A, Bs) {
     const la = sideAt(T, a, A); if (!la) continue;
     let j = a + la;
     if ((T[j] === "and" || T[j] === "or") && RATE_NOUN.test(T[j + 1] || "")) j += 2;
-    for (let k = j; k < Math.min(T.length, j + 6); k++) { if (CONJ.has(T[k])) break; if (sideAt(T, k, Bs) && !negated(T, k)) return true; }
+    for (let k = j; k < Math.min(T.length, j + 7); k++) { if ((T[k] === "and" || T[k] === "or") && RATE_NOUN.test(T[k + 1] || "")) { k++; continue; } if (CONJ.has(T[k])) break; if (sideAt(T, k, Bs) && !negated(T, k)) return true; }
     let i = a - 1;
     if (i >= 1 && (T[i] === "and" || T[i] === "or") && RATE_NOUN.test(T[i - 1])) i -= 2;
     for (let c = 0; c < 2 && i >= 0; c++, i--) { if (CONJ.has(T[i])) break; if (sideAt(T, i, Bs) && !negated(T, i)) return true; }
@@ -825,7 +1094,7 @@ function pairIn(T, A, Bs) {
   return false;
 }
 function cueHit(cue, text) {
-  const all = toks(text), clauses = String(text).split(/[;!?:\n]+|\.(?!\d)/).map(toks).filter(t => t.length);
+  const all = toks(text), clauses = String(text).split(/[;!?\n]+|\.(?!\d)/).map(toks).filter(t => t.length);
   return parseCue(cue).every(part => part.length === 1
     ? all.some((w, i) => sideAt(all, i, part[0]))
     : clauses.some(T => pairIn(T, part[0], part[1])));
@@ -860,36 +1129,63 @@ function saveRun() { if (S.run) store.set("hi3.run", S.run); else store.del("hi3
 /* ---------- home ---------- */
 const pctCls = p => p >= 85 ? "hi" : p >= 70 ? "mid" : "lo";
 const N_SA = B.filter(isSA).length, N_MC = B.length - N_SA;
-const mins = (mc, sa) => Math.max(5, Math.round((mc * 0.6 + sa * 3) / 5) * 5);
+const mins = (mc, sa) => { const m = Math.max(5, Math.round((mc * 0.6 + sa * 3) / 5) * 5); return m >= 90 ? `${Math.round(m / 30) / 2} hours` : `${m} min`; };
 function renderHome() {
   S.view = "home";
   const resumable = store.get("hi3.run", null) || S.paused;
   const lastMissed = [...S.history].reverse().find(h => h.missed && h.missed.length);
   const topicChips = Object.entries(TOPICS).map(([k, v]) => `<button class="chip" data-topic="${k}" aria-pressed="${S.topics.includes(k)}">${esc(v)}</button>`).join("");
+  const nStage = B.filter(q => q.stage).length, fullN = B.length + VOCAB.length;
   app.innerHTML = `
   <header class="hero">
     <div><p class="eyebrow">Biology · Unit 3</p><h1>Human Impact Test</h1>
-    <p class="lede">Human population growth, the demographic transition, age structure, ecological footprints, the Anthropocene, and the ways people change the planet. Multiple choice, plus harder short-answer questions graded on key ideas. Questions and choices shuffle every time, and math problems get new numbers.</p></div>
+    <p class="lede">Human population growth and the stages of the demographic transition, ecological footprints, the Anthropocene, the climate system, pollution, and sustainable development. Built from the class notes, worksheets, I Can statements, and glossary. Multiple choice plus harder short answers graded on key ideas; everything shuffles every time.</p></div>
     ${HERO_MINI}
   </header>
   ${resumable && resumable.items && resumable.i < resumable.items.length ? `<div class="resume" style="margin-top:20px"><p><strong>${esc(resumable.label)} in progress</strong> · question ${resumable.i + 1} of ${resumable.items.length}</p><div class="rowbtns"><button class="btn sun" data-act="resume">Resume</button><button class="btn ghost" data-act="discard">Discard</button></div></div>` : ""}
   <section class="section" aria-label="Start a test">
     <div class="modes">
-      <button class="mode primary" data-start="full"><span class="meta">${B.length} questions · about ${mins(N_MC, N_SA)} min</span><h3>Full test</h3><p>Every question in the bank: ${N_MC} multiple choice (some with diagrams and data, some with new numbers each time) and all ${N_SA} short answers at the end. Exit anytime and it saves your spot.</p></button>
-      <button class="mode" data-start="practice"><span class="meta">40 questions · about ${mins(37, 3)} min</span><h3>Practice test</h3><p>A test-length random mix spread across every topic, with 3 short answers at the end.</p></button>
-      <button class="mode" data-start="quick"><span class="meta">15 questions · about ${mins(14, 1)} min</span><h3>Quick quiz</h3><p>A short random mix from the whole unit, with 1 short answer.</p></button>
-      <button class="mode" data-start="sa"><span class="meta">${N_SA} questions · about ${mins(0, N_SA)} min</span><h3>Short answers only</h3><p>Just the harder written questions. Each one is graded on key ideas and shows a model answer.</p></button>
-      <button class="mode" data-start="vocab"><span class="meta">${VOCAB.length} terms · ${Math.ceil(VOCAB.length / 6)} rounds</span><h3>Vocab match</h3><p>Match every vocab term to its definition, 6 at a time.</p></button>
+      <button class="mode primary" data-start="full"><span class="meta">${fullN} questions · about ${mins(N_MC + VOCAB.length, N_SA)}</span><h3>Full test</h3><p>Every question in the bank: ${N_MC + VOCAB.length} multiple choice (diagrams, the country data, every glossary term) and all ${N_SA} short answers at the end, including one for every I Can statement. Exit anytime and it saves your spot.</p></button>
+      <button class="mode" data-start="practice"><span class="meta">42 questions · about ${mins(39, 3)}</span><h3>Practice test</h3><p>A test-length mix: a third of it on the stages, the rest spread across every I Can statement, with 3 short answers at the end.</p></button>
+      <button class="mode stagecard" data-start="stages"><span class="meta">31 questions · about ${mins(30, 1)} · ${nStage} in the bank</span><h3>Stages drill</h3><p>Just the demographic transition: which stage a country or trait belongs to, the stage chart, the pyramids, the graph, and the country data.</p></button>
+      <button class="mode" data-start="quick"><span class="meta">15 questions · about ${mins(14, 1)}</span><h3>Quick quiz</h3><p>A short mix from the whole unit, with 1 short answer.</p></button>
+      <button class="mode" data-start="sa"><span class="meta">${N_SA} questions · about ${mins(0, N_SA)}</span><h3>Short answers only</h3><p>The written questions, including all 13 I Can statements. Each one is graded on key ideas and shows a model answer.</p></button>
+      <button class="mode" data-start="vocab"><span class="meta">${VOCAB.length} glossary terms · ${Math.ceil(VOCAB.length / 6)} rounds</span><h3>Vocab match</h3><p>The Human Impact glossary: match each term to its class definition.</p></button>
+      <button class="mode" data-act="sheet"><span class="meta">13 I Cans · ${GLOSSARY.length} terms</span><h3>I Can answers & glossary</h3><p>Every I Can statement answered (your class answer plus a fuller one) and the whole glossary with sentences.</p></button>
       <button class="mode wide" data-start="missed" ${lastMissed ? "" : "disabled"}><span class="meta">${lastMissed ? "From your " + esc(lastMissed.mode.toLowerCase()) : "Nothing yet"}</span><h3>Redo what I missed</h3><p>${lastMissed ? "Questions and vocab you got wrong (or only partly right) on your last attempt that had misses." : "Finish a test first. Anything you miss shows up here."}</p></button>
       <div class="topicbox" style="grid-column:1/-1">
-        <div><h3 style="font-size:21px;font-weight:800">Practice by topic</h3><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Pick one or more topics.</p></div>
+        <div><h3 style="font-size:21px;font-weight:800">Practice by I Can statement</h3><p style="margin:4px 0 0;color:var(--muted);font-size:15px">Pick one or more. Each one includes its short answer and its glossary terms.</p></div>
         <div class="chips">${topicChips}</div>
-        <div><button class="btn" data-start="topics" ${S.topics.length ? "" : "disabled"}>Start topic practice</button></div>
+        <div><button class="btn" data-start="topics" ${S.topics.length ? "" : "disabled"}>Start practice</button></div>
       </div>
     </div>
     <div class="setting"><button class="switch" id="studySwitch" role="switch" aria-checked="${S.study}" aria-labelledby="studyLbl"></button><p id="studyLbl"><strong>Show the answer after each question</strong><br>${S.study ? "On: you see if you're right and why, right away (best for studying)." : "Off: real test mode. You only see your score at the end."}</p></div>
   </section>
   <section class="section" aria-label="Score history"><h2>Your scores</h2>${renderHistory()}</section>`;
+}
+/* ---------- study sheet: I Can answers + glossary ---------- */
+function renderSheet() {
+  S.view = "sheet";
+  const tab = S.sheetTab === "glossary" ? "glossary" : "ican";
+  const ican = ICAN.map(c => `<article class="iccard" id="${c.k}">
+      <p class="eyebrow">I Can ${c.n} · ${c.lesson}</p><h3>${esc(c.text)}</h3>
+      <div class="mine"><b>Class sheet answer</b>${esc(c.mine)}</div>
+      <div class="full"><b>Fuller answer for the test</b>${esc(c.answer)}</div>
+      <div><button class="btn small ghost" data-icpractice="${c.k}">Practice I Can ${c.n}</button></div>
+    </article>`).join("");
+  const gloss = GLOSSARY.map((g, i) => `<article class="gcard">
+      <div class="ghead"><h3>${i + 1}. ${esc(g.term)}</h3><span class="eyebrow">${g.lesson}</span></div>
+      <p class="gdef">${esc(g.def)}.</p>
+      <p class="gsent"><b>In a sentence:</b> ${esc(g.sentence)}</p>
+    </article>`).join("");
+  app.innerHTML = `
+  <div class="sheethead">
+    <button class="btn small ghost" data-act="home">← Back</button>
+    <div role="tablist" class="sheettabs"><button role="tab" aria-selected="${tab === "ican"}" data-sheettab="ican">I Can statements</button><button role="tab" aria-selected="${tab === "glossary"}" data-sheettab="glossary">Glossary</button></div>
+  </div>
+  ${tab === "ican"
+    ? `<header class="section"><h1 class="sheettitle">I Can Statements for Unit 3: Human Impact</h1><p class="lede2">The class sheet answer is the short version; the fuller answer is what the short-answer questions are graded against.</p></header><div class="sheetlist">${ican}</div>`
+    : `<header class="section"><h1 class="sheettitle">Human Impact Glossary Terms</h1><p class="lede2">Definitions as written on the class glossary. <button class="linkbtn" data-start="vocab">Quiz me on these</button></p></header><div class="sheetlist">${gloss}</div>`}`;
 }
 function renderHistory() {
   const H = S.history;
@@ -907,7 +1203,7 @@ function renderHistory() {
   const chart = `<div class="chart"><svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Line chart of your last ${pts.length} scores. Latest: ${lastP.pct}%.">${g}<line class="pass" x1="${L}" x2="${W - Rr}" y1="${y(70)}" y2="${y(70)}"/>${pts.length > 1 ? `<polygon class="ar" points="${area}" opacity=".6"/><polyline class="ln" points="${line}"/>` : ""}${dots}<text class="lbl" x="${Math.min(x(pts.length - 1), W - 40)}" y="${Math.max(y(lastP.pct) - 10, 12)}" text-anchor="middle">${lastP.pct}%</text>${xl}</svg></div>`;
   const agg = {}; for (const h of H) for (const [k, v] of Object.entries(h.topics || {})) { agg[k] = agg[k] || [0, 0]; agg[k][0] += v[0]; agg[k][1] += v[1]; }
   const bars = Object.entries(agg).filter(([k, v]) => v[1] > 0 && (TOPICS[k] || k === "vocab")).map(([k, v]) => [k, Math.round(100 * v[0] / v[1])]).sort((a, b) => a[1] - b[1]);
-  const barHtml = bars.map(([k, p]) => `<div class="bar"><span>${esc(TOPICS[k] || "Vocab")}</span><span class="track"><span class="fill ${pctCls(p) === "hi" ? "" : pctCls(p)}" style="display:block;width:${p}%"></span></span><span class="v">${p}%</span></div>`).join("");
+  const barHtml = bars.map(([k, p]) => `<div class="bar"><span>${esc(TOPICS[k] || "Glossary vocab")}</span><span class="track"><span class="fill ${pctCls(p) === "hi" ? "" : pctCls(p)}" style="display:block;width:${p}%"></span></span><span class="v">${p}%</span></div>`).join("");
   const best = Math.max(...H.map(h => h.pct));
   const rows = [...H].reverse().slice(0, 25).map(h => `<tr><td>${new Date(h.at).toLocaleDateString(undefined, {month: "short", day: "numeric"})} <span style="color:var(--muted)">${new Date(h.at).toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"})}</span></td><td>${esc(h.mode)}${h.study ? "" : ` <span class="pill mid" title="Answers hidden until the end">test mode</span>`}</td><td class="n">${fmt(h.earned)}/${fmt(h.possible)}</td><td class="n"><span class="pill ${pctCls(h.pct)}">${h.pct}%</span></td><td class="n">${Math.max(1, Math.round(h.secs / 60))} min</td></tr>`).join("");
   return `<div class="hist">
@@ -1071,7 +1367,7 @@ function renderResults(run, entry) {
     <div><p class="eyebrow">${esc(entry.mode)} · grade ${letter}</p><h1>${entry.pct >= 90 ? "You're ready." : entry.pct >= 80 ? "Strong. Clean up the misses below." : entry.pct >= 70 ? "Passing, but review the weak topics." : "Keep studying. Start with the weakest topic."}</h1>
     <p class="num">${fmt(entry.earned)} of ${fmt(entry.possible)} points · ${Math.max(1, Math.round(entry.secs / 60))} min${prev ? ` · last time ${prev.pct}% (${entry.pct - prev.pct >= 0 ? "+" : ""}${entry.pct - prev.pct})` : ""}</p></div>
   </section>
-  <section class="section"><h2>By topic</h2><div class="hist"><div class="bars">${tb.map(([k, v, p]) => `<div class="bar"><span>${esc(TOPICS[k] || "Vocab")}</span><span class="track"><span class="fill ${pctCls(p) === "hi" ? "" : pctCls(p)}" style="display:block;width:${p}%"></span></span><span class="v">${p}%</span></div>`).join("")}</div></div></section>
+  <section class="section"><h2>By topic</h2><div class="hist"><div class="bars">${tb.map(([k, v, p]) => `<div class="bar"><span>${esc(TOPICS[k] || "Glossary vocab")}</span><span class="track"><span class="fill ${pctCls(p) === "hi" ? "" : pctCls(p)}" style="display:block;width:${p}%"></span></span><span class="v">${p}%</span></div>`).join("")}</div></div></section>
   <div class="rowbtns" style="margin-top:20px">${entry.missed.length ? `<button class="btn sun" data-act="redo">Redo what I missed</button>` : ""}<button class="btn" data-act="home">Back to start</button></div>
   <section class="section"><h2>${misses.length ? `What you missed (${misses.length})` : "You missed nothing."}</h2><div class="missed">${missHtml}</div></section>`;
   window.scrollTo({top: 0});
@@ -1116,6 +1412,9 @@ app.addEventListener("click", e => {
   if (t.dataset.topic) { const k = t.dataset.topic; S.topics = S.topics.includes(k) ? S.topics.filter(x => x !== k) : [...S.topics, k]; store.set("hi3.topics", S.topics); renderHome(); return; }
   if (t.id === "studySwitch") { S.study = !S.study; store.set("hi3.study", S.study); renderHome(); document.getElementById("studySwitch").focus(); return; }
   const act = t.dataset.act;
+  if (act === "sheet") { S.sheetTab = S.sheetTab || "ican"; renderSheet(); window.scrollTo({top: 0}); return; }
+  if (t.dataset.sheettab) { S.sheetTab = t.dataset.sheettab; renderSheet(); return; }
+  if (t.dataset.icpractice) { startRun(buildRun("topics", {topics: [t.dataset.icpractice]})); return; }
   if (act === "resume") { S.run = store.get("hi3.run", null) || S.paused; S.paused = null; if (S.run) { renderTest(); window.scrollTo({top: 0}); } return; }
   if (act === "discard") { S.run = null; S.paused = null; saveRun(); renderHome(); return; }
   if (act === "clear") { S.confirmClear = true; renderHome(); return; }
