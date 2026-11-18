@@ -9,6 +9,7 @@ const DAY = 864e5;
 const REPO = 'hsoirghfohdj/yee-new', BRANCH = 'main', DIR = 'offline/', STUDY = 'study/';
 const PAGES = 'https://hsoirghfohdj.github.io/yee-new/';
 const WEB_DASHERS_GAME = 'offline/web-dashers/index.html';
+const INTERSTELLAR_GAME = 'offline/interstellar/index.html';
 const rawOf = p => 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + p.split('/').map(encodeURIComponent).join('/');
 const store = {
 get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
@@ -26,7 +27,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Study classes fold up now: yours stay open, the rest start folded, and clicking any class opens or folds it, with the classes sliding together so there are no empty gaps. New game: Web Dashers (it plays best in its own tab), and New this week now sits at the top of Games. Daily streaks: light your flame every day you open Classboard to keep it going.';
+const WHATSNEW = 'Study classes fold up now: yours stay open, the rest start folded, and clicking any class opens or folds it, with the classes sliding together so there are no empty gaps. New games: Web Dashers and an Interstellar self-hosted launcher (both work best in their own tabs). New this week now sits at the top of Games. Daily streaks: light your flame every day you open Classboard to keep it going.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -1208,6 +1209,7 @@ const hiddenG = new Set(((S.draft || SITE || {}).hiddenGames) || []);
 const gamePaths = S.lib && Array.isArray(S.lib.paths) ? S.lib.paths.slice() : [];
 // Web Dashers is a multi-file Phaser game; keep it visible even with an older saved game list.
 if (!gamePaths.includes(WEB_DASHERS_GAME)) gamePaths.push(WEB_DASHERS_GAME);
+if (!gamePaths.includes(INTERSTELLAR_GAME)) gamePaths.push(INTERSTELLAR_GAME);
 PACK = gamePaths.filter(p => !hiddenG.has(p)).map(toPack).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 DOCS = pairKeys((S.lib && S.lib.study || []).map(toDoc)).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 };
@@ -1218,9 +1220,10 @@ const imgs = {}, pics = {};
 files.filter(p => IMG.test(p)).forEach(p => { imgs[p.replace(IMG, '').toLowerCase()] = p; });
 const paths = files.filter(isGame);
 if (!paths.includes(WEB_DASHERS_GAME)) paths.push(WEB_DASHERS_GAME);
+if (!paths.includes(INTERSTELLAR_GAME)) paths.push(INTERSTELLAR_GAME);
 paths.forEach(p => { const a = artFor(p, imgs); if (a) pics[p] = a; });
 const dirs = [...new Set(files.filter(p => p.startsWith(STUDY)).map(p => p.slice(STUDY.length).split('/')).filter(a => a.length > 1).map(a => a[0]))];
-const fromPages = paths.filter(p => p === WEB_DASHERS_GAME || files.includes(pagesMarker(p)));
+const fromPages = paths.filter(p => p === WEB_DASHERS_GAME || p === INTERSTELLAR_GAME || files.includes(pagesMarker(p)));
 return { at: Date.now(), paths, art: pics, study: files.filter(isDoc), dirs, fromPages };
 }
 // Games added to the repo in the last 7 days, worked out from GitHub (compare last week's commit with now). Cached for an hour.
@@ -1490,7 +1493,7 @@ const VERCEL = 'https://classboardd.vercel.app/';
 const vercelUrl = p => VERCEL + p.split('/').map(encodeURIComponent).join('/');
 // Games that run better on their own page than inside Classboard. Their loading screen says so, and "New tab"
 // opens the game's real address on Vercel instead of an about:blank copy.
-const BEST_IN_TAB = [WEB_DASHERS_GAME];
+const BEST_IN_TAB = [WEB_DASHERS_GAME, INTERSTELLAR_GAME];
 const tabUrl = id => BEST_IN_TAB.includes(id) ? vercelUrl(id) : null;
 const tabPitch = (p, cls) => `<div class="${cls}"><div class="tpt"><b>This game works best in a new tab</b><span>${esc(p.name)} runs smoother on its own page.</span></div>
 <button class="btn pri" data-act="besttab">${I.ext}Open in new tab</button>${cls === 'tabnote' ? `<button class="ib" data-act="tabnoteclose" title="Keep playing here" aria-label="Keep playing here">${I.x}</button>` : ''}</div>`;
@@ -1516,7 +1519,7 @@ const headOk = u => fetch(u, { method: 'HEAD', cache: 'no-store' }).then(r => r.
 function frameGame(f, path, muted) {
 // Web Dashers needs thousands of separate assets. Use the same-repository Vercel
 // deployment first; the large GitHub Pages mirror has intermittently returned 503s.
-const want = path === WEB_DASHERS_GAME ? 'vercel' : memSrc(path) || (repoGame(path) ? 'repo' : 'pages');
+const want = path === WEB_DASHERS_GAME || path === INTERSTELLAR_GAME ? 'vercel' : memSrc(path) || (repoGame(path) ? 'repo' : 'pages');
 const urlOf = m => m === 'vercel' ? vercelUrl(path) : gameUrl(path);
 // a hosted copy (Vercel or GitHub Pages); if the first one doesn't answer, the other
 const hosted = first => {
