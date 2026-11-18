@@ -1,0 +1,60 @@
+name: Verify Web Dashers hosting
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-web-dashers.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compare-cdn:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compare asset responses on original and game mirror
+        run: |
+          python3 - <<'PY'
+          import urllib.request, urllib.error, hashlib
+          hosts = ('https://web-dashers.github.io/', 'https://hsoirghfohdj.github.io/yee-new/offline/web-dashers/')
+          paths = [
+            'index.html',
+            'assets/style.css',
+            'assets/scripts/game/allObjects.js',
+            'assets/scripts/game/allLevels.js',
+            'assets/scripts/libs/phaser.min.js',
+            'assets/scripts/libs/pako.min.js',
+            'assets/scripts/utils/config.js',
+            'assets/scripts/utils/cache-manager.js',
+            'assets/scripts/core/animations.js',
+            'assets/scripts/core/triggers.js',
+            'assets/scripts/core/level.js',
+            'assets/scripts/core/player.js',
+            'assets/scripts/core/audio.js',
+            'assets/scripts/core/loading-screen.js',
+            'assets/scripts/core/level-editor.js',
+            'assets/scripts/core/game-scene.js',
+            'assets/scripts/core/main.js',
+            'assets/sheets/GJ_WebSheet.png',
+            'assets/sheets/GJ_WebSheet.json',
+            'assets/sheets/GJ_GameSheet.png',
+            'assets/sheets/GJ_LaunchSheet.png',
+            'assets/sheets/GJ_LaunchSheet.json',
+            'assets/fonts/goldFont.fnt',
+            'assets/fonts/goldFont.png',
+            'assets/game-bg/game_bg_01_001-hd.png',
+            'assets/sprites/GJ_MenuBeta.png',
+          ]
+          for path in paths:
+            got=[]
+            for host in hosts:
+              try:
+                req=urllib.request.Request(host+path, headers={'User-Agent':'WebDashersAssetAudit/1.0'})
+                with urllib.request.urlopen(req, timeout=30) as response:
+                  data=response.read()
+                  got.append((response.status,len(data),hashlib.sha256(data).hexdigest()[:12],response.headers.get('Content-Type')))
+              except Exception as err:
+                got.append(('ERROR',str(err)[:100]))
+            print(('MATCH' if got[0] == got[1] else ('SAME' if len(got[0])>=3 and len(got[1])>=3 and got[0][2]==got[1][2] else 'DIFF')),path,got,flush=True)
+          PY
