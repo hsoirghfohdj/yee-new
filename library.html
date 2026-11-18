@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Classboard Library</title>
+<meta name="description" content="Every Classboard study guide, practice test and game, right in your browser. No bookmark needed.">
+<meta name="theme-color" content="#0b0a10">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23b39bff'/%3E%3Cstop offset='1' stop-color='%23e2559b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='%2307060a'/%3E%3Crect x='6' y='6' width='20' height='20' rx='6' fill='none' stroke='%23f3f0f6' stroke-width='2'/%3E%3Cpath d='M16 6v20M6 16h20' stroke='%23f3f0f6' stroke-width='2'/%3E%3Cpath d='M16 6h4a6 6 0 0 1 6 6v4H16z' fill='url(%23g)'/%3E%3C/svg%3E">
+<style>
+:root { --bg: #0b0a10; --tx: #f3f0f6; --mu: #8f889c; --ln: rgba(255,255,255,.1); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--tx); color-scheme: dark; }
+body { font: 15px/1.5 Geist, Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+.boot { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px; text-align: center; }
+.boot svg { width: 44px; height: 44px; animation: breathe 1.6s ease-in-out infinite; }
+.boot p { color: var(--mu); max-width: 380px; }
+.boot a, .boot button { font: inherit; color: var(--tx); background: rgba(255,255,255,.06); border: 1px solid var(--ln); border-radius: 999px; padding: 9px 18px; text-decoration: none; cursor: pointer; }
+.boot .row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.boot.err svg { animation: none; opacity: .5; }
+@keyframes breathe { 50% { opacity: .45; transform: scale(.94); } }
+@media (prefers-reduced-motion: reduce) { .boot svg { animation: none; } }
+</style>
+</head>
+<body>
+<div class="boot" id="boot" role="status">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4b2ff"/><stop offset="1" stop-color="#e2559b"/></linearGradient></defs><rect x="2.5" y="2.5" width="19" height="19" rx="6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v19M2.5 12h19" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5h3.5a6 6 0 0 1 6 6V12H12z" fill="url(#mg)"/></svg>
+  <p id="msg">Opening the study + game library…</p>
+</div>
+<script>
+// Runs the Classboard app in library mode (just Study and Games), the same way the "open in a new tab" button
+// inside Classboard does. library.html#study opens on Study. Tries the newest copy on GitHub first, then this site's.
+(function () {
+  var boot = document.getElementById('boot');
+  var get = function (url) {
+    return fetch(url + '?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); });
+  };
+  var fail = function () {
+    boot.className = 'boot err';
+    boot.innerHTML = boot.querySelector('svg').outerHTML + '<p>Couldn\'t open the library. Check you\'re online and try again.</p><div class="row"><button type="button" onclick="location.reload()">Try again</button><a href="./">Back to Classboard</a></div>';
+  };
+  get('https://raw.githubusercontent.com/hsoirghfohdj/yee-new/main/bookmarklet.js')
+    .catch(function () { return get('bookmarklet.js'); })
+    .then(function (code) {
+      window.__classDashMode = 'library';
+      window.__classDashStart = /^#study\b/i.test(location.hash) ? 'study' : 'games';
+      new Function(code)();
+      boot.remove();
+    })
+    .catch(fail);
+})();
+</script>
+</body>
+</html>

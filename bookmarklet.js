@@ -20,13 +20,13 @@ let P = Object.assign({}, PREF_DEFAULT, store.get('prefs', {}));
 const VIEWS = ['home', 'todo', 'grades', 'classes', 'calendar', 'schedule', 'hallpass', 'study', 'games'];
 const CANVAS_VIEWS = ['home', 'todo', 'grades', 'classes', 'calendar'];
 function startView() {
-if (LIB) return 'games';
+if (LIB) return window.__classDashStart === 'study' ? 'study' : 'games';
 let v = P.start === 'last' ? store.get('lastView', 'home') : P.start;
 if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'New game: Web Dashers, featured at the top of Games (it plays best in its own tab, so it has an Open in new tab button). Daily streaks are here: light your flame every day you open Classboard to keep it going. Updates now play a warp-speed install screen. Study requests ask for your teacher, and Study has a bigger Biology Unit 3 Human Impact test (stages drill, I Can answers, glossary) plus Algebra 2 Topics 4, 5 and 6.';
+const WHATSNEW = 'Study classes fold up now: yours stay open, the rest start folded, and clicking any class opens or folds it. New game: Web Dashers, featured at the top of Games (it plays best in its own tab). Daily streaks: light your flame every day you open Classboard to keep it going.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -106,6 +106,7 @@ brief: svg('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2
 vol: svg('<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>'),
 mute: svg('<path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/>'),
 key: svg('<circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 9.2-9.2M16 7l3 3M14 9l2 2"/>'),
+chev: svg('<path d="m6 9 6 6 6-6"/>'),
 tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
 };
 const CSS = `
@@ -387,6 +388,14 @@ background:radial-gradient(120% 160% at 0% 0%,color-mix(in srgb,var(--ac) 20%,tr
 .cph .ssi svg{width:17px;height:17px}
 .cph .chip{font-size:10.5px;padding:1px 8px}
 .cph .t{white-space:normal;line-height:1.25}
+.cph[data-sfold]{cursor:pointer;user-select:none;transition:background .15s}
+.cph[data-sfold]:hover{background:var(--p2)}
+.cph[data-sfold]:focus-visible{outline:2px solid var(--ac);outline-offset:-2px}
+.cph .fch{width:24px;height:24px;display:grid;place-items:center;flex:none;color:var(--mu);transition:transform .25s}
+.cph .fch svg{width:16px;height:16px}
+.cpan.shut .fch{transform:rotate(-90deg)}
+.cpan.shut .rr{display:none}
+.cpan.nofold .cph{cursor:default}.cpan.nofold .cph:hover{background:none}.cpan.nofold .fch{display:none}
 .rr{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 12px;cursor:pointer;border-top:1px solid var(--ln);min-width:0}
 .rr:hover,.rr:focus-visible{background:var(--p2);outline:none}
 .rr[hidden]{display:none}
@@ -527,8 +536,8 @@ a.ares:hover .t{color:var(--act)}
 .asteps{margin:10px 0 4px 20px;display:flex;flex-direction:column;gap:6px;font-size:13px}
 .asteps a{color:var(--act);text-decoration:underline}
 .bd.lib{background:var(--bg);backdrop-filter:none;animation:none}
-.bd.lib .win{width:calc(100vw / var(--z,1));height:calc(100vh / var(--z,1));border:0;border-radius:0;box-shadow:none;animation:none;grid-template-columns:1fr;grid-template-rows:1fr}
-.bd.lib .sb,.bd.lib [data-act="close"]{display:none}
+.bd.lib .win{width:calc(100vw / var(--z,1));height:calc(100vh / var(--z,1));border:0;border-radius:0;box-shadow:none;animation:none}
+.bd.lib [data-act="close"],.bd.lib [data-act="checkupd"],.bd.lib .ver,.bd.lib .qsw,.bd.lib .stkb{display:none}
 .sbl{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:10px}
 .sbl .cupd{margin-top:0;gap:5px}
 .cupd.on{color:var(--tx)}
@@ -782,6 +791,7 @@ api('/api/v1/users/self/colors').catch(() => ({}))
 ]);
 S.me = me;
 S.courses = courses.filter(c => c.name && !c.access_restricted_by_date).map(c => decorate(c, (colors && colors.custom_colors) || {}));
+store.set('myCourses', S.courses.map(c => c.name));
 const codes = S.courses.map(c => 'context_codes[]=course_' + c.id).join('&');
 const [planner, missing, stream, ann] = await Promise.all([
 api('/api/v1/planner/items?start_date=' + iso(-14) + '&end_date=' + iso(42) + '&per_page=100').catch(() => []),
@@ -1153,7 +1163,8 @@ return docs.filter(d => !keys.has(d));
 }
 // a shared word is enough ("Biology" ~ "BIOLOGY H A_Smith_S1"), but any number in the folder name has to match too, so Algebra 1 and Algebra 2 stay apart
 const clsMatch = (cls, name) => { const n = (name || '').toLowerCase(), k = cls.toLowerCase(), nums = k.match(/\d+/g) || []; return n.includes(k) || (k.split(/[^a-z0-9]+/).some(w => w.length > 3 && n.includes(w)) && nums.every(d => new RegExp('(^|[^a-z0-9])' + d + '($|[^0-9])').test(n))); };
-const myClass = cls => S.courses.some(c => clsMatch(cls, c.name));
+// Your classes: from Canvas, or (off Canvas, like the games library tab) the last list Canvas gave this browser
+const myClass = cls => (S.courses.length ? S.courses.map(c => c.name) : store.get('myCourses', [])).some(n => clsMatch(cls, n));
 // "AP HUMAN GEOGRAPHY A_Hakes_S1" -> "AP Human Geography"
 const KEEP_CAPS = /^(AP|IB|US|UK|PE|CS|ELA|ESL|STEM|JROTC|AVID|CTE|II|III|IV)$/;
 const niceCourse = name => {
@@ -1859,10 +1870,13 @@ const resRow = p => `<div class="rr" ${docAttrs(p)}><span class="rri" style="--c
 ${p.key ? `<button class="ib rnt" data-dockey="${esc(p.id)}" title="Open the answer key">${I.key}</button>` : ''}<button class="ib rnt" data-docnew="${esc(p.id)}" title="Open in a new tab">${I.ext}</button></div>`;
 const contCard = (p, at) => `<div class="ccard" ${docAttrs(p)}><span class="rri" style="--c:${p.color}">${kindIcon(p)}</span>
 <span class="grow"><span class="t" style="display:block">${esc(p.name)}</span><span class="sub" style="display:block">${esc(p.cls)} · ${esc(rel(new Date(at).toISOString()))}</span></span></div>`;
+// Study classes fold up: yours start open and the others start folded. Clicking a class header flips it, and this
+// browser remembers that choice (classdash_studyFold). Searching or picking one class shows everything that matches.
+const foldOf = (cls, mine) => { const f = store.get('studyFold', {})[cls]; return typeof f === 'boolean' ? f : !mine; };
 const vStudy = () => {
 const groups = {};
 DOCS.forEach(p => { (groups[p.cls] = groups[p.cls] || []).push(p); });
-const list = Object.keys(groups).map(cls => ({ cls, docs: groups[cls], mine: isCanvas && cls !== 'Other' && myClass(cls), color: groups[cls][0].color, icon: groups[cls][0].icon }))
+const list = Object.keys(groups).map(cls => ({ cls, docs: groups[cls], mine: cls !== 'Other' && myClass(cls), color: groups[cls][0].color, icon: groups[cls][0].icon }))
 .sort((a, b) => (b.mine - a.mine) || ((a.cls === 'Other') - (b.cls === 'Other')) || a.cls.toLowerCase().localeCompare(b.cls.toLowerCase()));
 if (S.scls !== 'All' && !groups[S.scls]) S.scls = 'All';
 const kinds = STUDY_KINDS.filter(k => k[0] === 'all' || DOCS.some(p => p.kind === k[0]));
@@ -1881,9 +1895,10 @@ ${kindBtns || clsBtns ? `<div class="sbar">${kindBtns}${kindBtns && clsBtns ? '<
 ${S.libError && n ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
 ${fcPanel()}
 ${recent.length ? `<div class="scont"><div class="grp">Continue studying</div><div class="ccards">${recent.map(x => contCard(x.p, x.r.at)).join('')}</div></div>` : ''}
-${state}${n ? `<div class="spans">${list.map(g => `<section class="cpan" data-sec="${esc(g.cls)}" style="--c:${g.color}"><div class="cph"><span class="ssi">${g.icon}</span>
-<div class="grow"><div class="t">${esc(g.cls)}</div><div class="sub">${g.docs.length} ${g.docs.length === 1 ? 'resource' : 'resources'}</div></div>${g.mine ? '<span class="chip ac" title="You take this class">Yours</span>' : ''}</div>
-${sortDocs(g.docs).map(resRow).join('')}</section>`).join('')}</div>
+${state}${n ? `<div class="spans">${list.map(g => { const shut = !S.sq.trim() && S.scls === 'All' && foldOf(g.cls, g.mine), fresh = g.docs.filter(isNewDoc).length;
+return `<section class="cpan${shut ? ' shut' : ''}" data-sec="${esc(g.cls)}" data-mine="${g.mine ? 1 : 0}" style="--c:${g.color}"><div class="cph" data-sfold="${esc(g.cls)}" role="button" tabindex="0" aria-expanded="${!shut}" title="Show or hide ${esc(g.cls)}"><span class="ssi">${g.icon}</span>
+<div class="grow"><div class="t">${esc(g.cls)}</div><div class="sub">${g.docs.length} ${g.docs.length === 1 ? 'resource' : 'resources'}</div></div>${fresh ? `<span class="chip new">${fresh} new</span>` : ''}${g.mine ? '<span class="chip ac" title="You take this class">Yours</span>' : ''}<span class="fch">${I.chev}</span></div>
+${sortDocs(g.docs).map(resRow).join('')}</section>`; }).join('')}</div>
 <div class="snone" hidden><div class="t">Nothing matches</div><div class="sub wrap nmtxt"></div><button class="btn pri" data-reqtopic="1">${I.send}Request it</button></div>` : ''}
 <div class="sreq"><div class="grp">Can't find what you need?</div>${missing.length && n ? `<div class="sneed"><span class="t">Nothing yet for</span>${missing.map(c => `<button data-reqcls="${esc(niceCourse(c.name))}" title="Request study help for ${esc(niceCourse(c.name))}">${I.plus}${esc(niceCourse(c.name))}</button>`).join('')}</div>` : ''}
 ${reqCard('study')}</div>`;
@@ -1891,14 +1906,19 @@ ${reqCard('study')}</div>`;
 function filterStudy() {
 const ct = $('.ct'), q = S.sq.trim().toLowerCase();
 let shown = 0;
+const free = !q && S.scls === 'All';
 ct.querySelectorAll('.cpan').forEach(sec => {
 const inCls = !!q || S.scls === 'All' || sec.dataset.sec === S.scls;
+const shut = free && foldOf(sec.dataset.sec, sec.dataset.mine === '1');
 let inSec = 0;
 sec.querySelectorAll('.rr').forEach(t => {
-t.hidden = !inCls || (S.skind !== 'all' && t.dataset.kind !== S.skind) || (!!q && !q.split(/\s+/).every(w => t.dataset.name.includes(w)));
-if (!t.hidden) inSec++;
+const hit = inCls && (S.skind === 'all' || t.dataset.kind === S.skind) && (!q || q.split(/\s+/).every(w => t.dataset.name.includes(w)));
+t.hidden = !hit || shut;
+if (hit) inSec++;
 });
 sec.hidden = !inSec; shown += inSec;
+sec.classList.toggle('shut', shut); sec.classList.toggle('nofold', !free);
+const h = sec.querySelector('.cph'); if (h) h.setAttribute('aria-expanded', String(!shut));
 });
 const cont = ct.querySelector('.scont');
 if (cont) cont.hidden = !!q || S.skind !== 'all' || S.scls !== 'All';
@@ -2079,7 +2099,7 @@ const w = window.open(blankUrl(), '_blank');
 if (!w) return;
 w.opener = null;
 const d = w.document;
-d.title = 'Classboard games';
+d.title = 'Classboard library';
 d.body.style.cssText = 'margin:0;height:100vh;display:grid;place-items:center;background:#0b0a10;color:#918aa0;font:15px system-ui,sans-serif';
 d.body.textContent = 'Loading games…';
 const get = url => fetch(url + '?t=' + Date.now(), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); });
@@ -2102,7 +2122,7 @@ const fresh = [...newSet()].map(id => PACK.find(p => p.id === id)).filter(Boolea
 const libState = PACK.length ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoading ? empty('No games yet. Add an .html file to the offline folder, then hit refresh.') : '<div class="spin"></div>';
 return `${PATTERNS}<div class="ghero"><div class="ghead"><div class="grow"><div class="gh">Game library</div>
 <div class="sub">${PACK.length} ${PACK.length === 1 ? 'game' : 'games'}${playLine(false)} · press <span class="kbd">/</span> to search</div></div>
-${LIB ? '' : `<button class="ib" data-act="libtab" title="Open the games library in a new tab">${I.ext}</button>`}</div>
+${LIB ? '' : `<button class="ib" data-act="libtab" title="Open the study + game library in a new tab">${I.ext}</button>`}</div>
 <div class="gfind"><label class="gsearch">${I.search}<input data-search placeholder="Search games…" value="${esc(S.q)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label>
 <button class="btn pri big" data-act="random">${I.shuffle}Random</button></div></div>
 ${cats.length > 2 ? `<div class="seg">${cats.map(([l, n]) => `<button data-cat="${l}" class="${S.cat === l ? 'on' : ''}">${l}<b>${n}</b></button>`).join('')}</div>` : ''}
@@ -2203,7 +2223,7 @@ return s;
 }
 var SITE = fixSite(store.get('site', null));
 const curSite = () => S.draft || SITE;
-function shownNav() { const h = curSite().hidden || []; return NAV.filter(n => !h.includes(n[0])); }
+function shownNav() { const h = curSite().hidden || []; return NAV.filter(n => !h.includes(n[0]) && (!LIB || n[0] === 'study' || n[0] === 'games')); }
 const inWindow = b => { const now = Date.now(), a = b.start ? new Date(b.start).getTime() : -Infinity, z = b.end ? new Date(b.end).getTime() : Infinity; return now >= a && now < z; };
 function paintBanners() {
 const s = curSite(), gone = store.get('bannersClosed', []);
@@ -3261,7 +3281,7 @@ const gm = root.querySelector('.gmenu');
 if (gm && !gm.hidden && !e.target.closest('[data-act="gmore"]')) gm.hidden = true;
 const why = e.target.closest('[data-why]');
 if (why) { S.rep.why = why.dataset.why; root.querySelectorAll('[data-why]').forEach(b => b.classList.toggle('on', b === why)); return; }
-const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-skind],[data-reqcls],[data-reqtopic],[data-sched],[data-lunch],[data-pack],[data-docnew],[data-dockey],[data-dockeyview],[data-rstar],[data-doc],[data-pref],[data-pacc],[data-act]');
+const t = e.target.closest('[data-go],[data-course],[data-done],[data-seg],[data-cat],[data-scls],[data-sfold],[data-skind],[data-reqcls],[data-reqtopic],[data-sched],[data-lunch],[data-pack],[data-docnew],[data-dockey],[data-dockeyview],[data-rstar],[data-doc],[data-pref],[data-pacc],[data-act]');
 if (!t) return;
 const d = t.dataset;
 const toReq = sel => { const el = root.querySelector(sel) || root.querySelector('[data-req="scls"]'); if (el) { el.scrollIntoView({ block: 'center', behavior: P.motion ? 'smooth' : 'auto' }); el.focus({ preventScroll: true }); } };
@@ -3308,6 +3328,7 @@ renderMain(true);
 else if (d.seg) { S.seg = d.seg; renderMain(true); }
 else if (d.cat) { S.cat = d.cat; renderMain(true); }
 else if (d.scls) { S.scls = d.scls; renderMain(true); }
+else if (d.sfold) { const sec = t.closest('.cpan'); if (sec && !sec.classList.contains('nofold')) { const m = store.get('studyFold', {}); m[d.sfold] = !sec.classList.contains('shut'); store.set('studyFold', m); filterStudy(); } }
 else if (d.doc) openDoc(d.doc);
 else if (d.sched) { S.schedKey = d.sched; renderMain(true); }
 else if (d.lunch) { S.lunch = Number(d.lunch); store.set('lunch', S.lunch); paintSched(); renderMain(true); }
@@ -3400,7 +3421,7 @@ if (act) { e.preventDefault(); e.stopPropagation(); fcAct({ act }); return; }
 if (root.activeElement === omniBox) { omniKey(e); e.stopPropagation(); return; }
 if (down && !LIB && (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); e.stopPropagation(); omniBox.focus(); return; }
 if (down && e.key === 'Enter' && root.activeElement && root.activeElement.matches('[data-rtext]')) { e.preventDefault(); e.stopPropagation(); sendRating(); return; }
-if (down && (e.key === 'Enter' || e.key === ' ') && root.activeElement && root.activeElement.matches('.rr,.ccard')) { e.preventDefault(); e.stopPropagation(); root.activeElement.click(); return; }
+if (down && (e.key === 'Enter' || e.key === ' ') && root.activeElement && root.activeElement.matches('.rr,.ccard,.cph[data-sfold]')) { e.preventDefault(); e.stopPropagation(); root.activeElement.click(); return; }
 const box = usesLib(S.view) && $('[data-search]'), typing = box && root.activeElement === box;
 const q = study ? S.sq : S.q;
 const inField = root.activeElement && root.activeElement.matches('input,textarea,select');
@@ -3477,6 +3498,6 @@ store.set('justUpdated', null);
 const t = document.createElement('div'); t.className = 'cd-toast'; t.setAttribute('role', 'status');
 t.innerHTML = `<span>${I.refresh}</span><span><b>Classboard is up to date</b>${esc(ju.note || '')}</span>`;
 $('.bd').appendChild(t); setTimeout(() => t.remove(), 5800);
-} else if (P.streakIntro !== false && !streakNow().lit) setTimeout(openStreak, 450);
+} else if (!LIB && P.streakIntro !== false && !streakNow().lit) setTimeout(openStreak, 450);
 }
 })();
