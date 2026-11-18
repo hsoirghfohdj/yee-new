@@ -26,7 +26,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Daily streaks are here: light your flame every day you open Classboard to keep it going. Updates now play a warp-speed install screen. Study requests ask for your teacher, and Study has a bigger Biology Unit 3 Human Impact test (stages drill, I Can answers, glossary) plus Algebra 2 Topics 4, 5 and 6.';
+const WHATSNEW = 'New game: Web Dashers, featured at the top of Games (it plays best in its own tab, so it has an Open in new tab button). Daily streaks are here: light your flame every day you open Classboard to keep it going. Updates now play a warp-speed install screen. Study requests ask for your teacher, and Study has a bigger Biology Unit 3 Human Impact test (stages drill, I Can answers, glossary) plus Algebra 2 Topics 4, 5 and 6.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -468,6 +468,19 @@ background:radial-gradient(120% 160% at 0% 0%,color-mix(in srgb,var(--ac) 20%,tr
 .gload .gltime{font-size:12px;color:var(--mu);font-variant-numeric:tabular-nums;min-height:1em}
 .gload .glb{display:flex;gap:8px;margin-top:2px}
 .gload .glb[hidden]{display:none}
+.gltab,.tabnote{display:flex;align-items:center;gap:14px;text-align:left;border-radius:14px;border:1px solid color-mix(in srgb,var(--ac) 45%,transparent)}
+.gltab{margin-top:6px;padding:12px 12px 12px 16px;max-width:470px;background:color-mix(in srgb,var(--ac) 13%,var(--p2))}
+.tabnote{position:absolute;top:12px;left:50%;z-index:3;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);box-sizing:border-box;padding:9px 8px 9px 16px;background:color-mix(in srgb,var(--p1) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 14px 36px rgba(0,0,0,.45);animation:tabin .35s ease-out}
+.tabnote.out{opacity:0;transform:translate(-50%,-8px);transition:opacity .3s,transform .3s}
+@keyframes tabin{from{opacity:0;transform:translate(-50%,-10px)}}
+.tpt{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.tpt b{font-size:14px;font-weight:700;color:var(--tx)}
+.tpt span{font-size:12.5px;line-height:1.4;color:var(--mu)}
+.gltab .btn,.tabnote .btn,.gload .glb .btn{display:inline-flex;align-items:center;gap:6px;flex:none}
+.gltab .btn svg,.tabnote .btn svg,.gload .glb .btn svg{width:15px;height:15px;margin:0}
+.tabnote .ib{width:30px;height:30px;flex:none;background:transparent}
+.tabnote .ib svg{width:15px;height:15px}
+@media (max-width:560px){.gltab,.tabnote{flex-wrap:wrap;gap:10px}.tpt{flex:1 1 100%}.tabnote{top:8px}}
 .cupd[hidden]{display:none}
 .atop{margin-bottom:12px}
 .ahd{display:flex;align-items:center;gap:12px}
@@ -1297,7 +1310,7 @@ const LOAD_TIPS = [
 [20, "Still downloading. School Wi-Fi can be slow with big games, so hang tight. It's working."],
 [45, "This one's taking a while. You can keep waiting, or try Restart or New tab."]
 ];
-const gameLoader = (p, buttons) => `<div class="gload">${p.img !== undefined ? `<div class="gt gla">${art(p)}</div>` : ''}<div class="spin"></div><div class="glt">Loading ${esc(p.name)}</div><div class="gls"></div><div class="gltime"></div>${buttons ? '<div class="glb" hidden><button class="btn" data-act="reload">Restart</button><button class="btn" data-act="newtab">New tab</button></div>' : ''}</div>`;
+const gameLoader = (p, buttons) => `<div class="gload">${p.img !== undefined ? `<div class="gt gla">${art(p)}</div>` : ''}<div class="spin"></div><div class="glt">Loading ${esc(p.name)}</div><div class="gls"></div><div class="gltime"></div>${buttons && tabUrl(p.id) ? tabPitch(p, 'gltab') : ''}${buttons ? '<div class="glb" hidden><button class="btn" data-act="reload">Restart</button><button class="btn" data-act="newtab">New tab</button></div>' : ''}</div>`;
 function watchLoad(f, ov, w) {
 w = w || window;
 const t0 = Date.now();
@@ -1444,6 +1457,28 @@ const GAME_SANDBOX = 'allow-scripts allow-pointer-lock allow-forms allow-modals 
 // sounds) from Vercel too: raw GitHub sends those as plain text, which browsers refuse to run.
 const VERCEL = 'https://classboardd.vercel.app/';
 const vercelUrl = p => VERCEL + p.split('/').map(encodeURIComponent).join('/');
+// Games that run better on their own page than inside Classboard. Their loading screen says so, and "New tab"
+// opens the game's real address on Vercel instead of an about:blank copy.
+const BEST_IN_TAB = [WEB_DASHERS_GAME];
+const tabUrl = id => BEST_IN_TAB.includes(id) ? vercelUrl(id) : null;
+const tabPitch = (p, cls) => `<div class="${cls}"><div class="tpt"><b>This game works best in a new tab</b><span>${esc(p.name)} runs smoother on its own page.</span></div>
+<button class="btn pri" data-act="besttab">${I.ext}Open in new tab</button>${cls === 'tabnote' ? `<button class="ib" data-act="tabnoteclose" title="Keep playing here" aria-label="Keep playing here">${I.x}</button>` : ''}</div>`;
+function openGameTab(p, url) {
+const w = window.open(url, '_blank');
+if (!w) return false;
+try { w.opener = null; } catch (e) {}
+// stop the copy inside Classboard so the two don't fight over the computer
+const box = S.view === 'play' && S.game === p.id && root.querySelector('.frame');
+if (!box) return true;
+box.dataset.tabbed = '1';
+const sub = root.querySelector('.gbar .gsrc'), snd = root.querySelector('[data-act="sound"]');
+if (sub) sub.textContent = 'open in a new tab';
+if (snd) snd.hidden = true;
+box.innerHTML = `<div class="gload"><div class="gt gla">${art(p)}</div><div class="glt">${esc(p.name)} is open in a new tab</div>
+<div class="gls">Switch to that tab to play. Closed it by accident? Open it again, or play here instead.</div>
+<div class="glb"><button class="btn pri" data-act="besttab">${I.ext}Open in new tab</button><button class="btn" data-act="reload">Play here instead</button></div></div>`;
+return true;
+}
 const memSrc = id => { const m = store.get('gameSrc', {})[id]; return m && Date.now() - m.at < 3 * DAY ? m.src : null; };
 const rememberSrc = (id, src) => { const m = store.get('gameSrc', {}); if (src) m[id] = { src, at: Date.now() }; else delete m[id]; store.set('gameSrc', m); };
 const headOk = u => fetch(u, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok).catch(() => false);
@@ -1500,8 +1535,16 @@ f.setAttribute('allow', 'fullscreen; autoplay; gamepad');
 f.addEventListener('load', () => { try { f.contentWindow.focus(); } catch (e) {} });
 box.innerHTML = gameLoader(p, true);
 watchLoad(f, box.querySelector('.gload'));
+// loaded before there was time to read the "works best in a new tab" note on the loading screen: show it over the game for a bit
+const t0 = Date.now();
+if (tabUrl(path)) f.addEventListener('load', () => {
+if (Date.now() - t0 > 5000 || !box.isConnected || box.querySelector('.tabnote')) return;
+box.insertAdjacentHTML('beforeend', tabPitch(p, 'tabnote'));
+const n = box.querySelector('.tabnote');
+setTimeout(() => { if (n.isConnected) { n.classList.add('out'); setTimeout(() => n.remove(), 300); } }, 15000);
+}, { once: true });
 S.gameMode = null;
-frameGame(f, path, !S.soundOn).then(mode => { S.gameMode = mode; paintSound(); const sub = root.querySelector('.gbar .gsrc'); if (sub) sub.textContent = (SRC_LABEL[mode] || '') + (S.altWhy && mode === 'vercel' && S.altTried === path ? " (the repo copy didn't load right)" : ''); if (box.isConnected) box.appendChild(f); });
+frameGame(f, path, !S.soundOn).then(mode => { if (box.dataset.tabbed) return; S.gameMode = mode; paintSound(); const sub = root.querySelector('.gbar .gsrc'); if (sub) sub.textContent = (SRC_LABEL[mode] || '') + (S.altWhy && mode === 'vercel' && S.altTried === path ? " (the repo copy didn't load right)" : ''); if (box.isConnected) box.appendChild(f); });
 }
 const startPack = ct => startFrame(ct, S.game);
 // Study pages load straight from the repo (raw.githubusercontent.com), so a new upload shows up
@@ -1951,6 +1994,7 @@ function openBlank(item) {
 const read = item ? !!item.cls : S.view === 'read';
 let p = item || (read ? DOCS.find(x => x.id === S.doc) : PACK.find(x => x.id === S.game));
 if (read && !item && p && S.docKey && p.key) p = p.key;
+if (!read && p && tabUrl(p.id)) return openGameTab(p, tabUrl(p.id));
 const w = p && window.open(blankUrl(), '_blank');
 if (!w) return false;
 w.opener = null;
@@ -2063,8 +2107,8 @@ ${LIB ? '' : `<button class="ib" data-act="libtab" title="Open the games library
 <button class="btn pri big" data-act="random">${I.shuffle}Random</button></div></div>
 ${cats.length > 2 ? `<div class="seg">${cats.map(([l, n]) => `<button data-cat="${l}" class="${S.cat === l ? 'on' : ''}">${l}<b>${n}</b></button>`).join('')}</div>` : ''}
 ${S.libError && PACK.length ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
-${recent.length ? `<div class="rec"><div class="grp">Jump back in</div><div class="tgrid one">${recent.slice(0, 6).map(gameTile).join('')}</div></div>` : ''}
 ${featured.length ? `<div class="rec"><div class="grp">Featured</div><div class="tgrid one">${featured.slice(0, 6).map(gameTile).join('')}</div></div>` : ''}
+${recent.length ? `<div class="rec"><div class="grp">Jump back in</div><div class="tgrid one">${recent.slice(0, 6).map(gameTile).join('')}</div></div>` : ''}
 ${fresh.length ? `<div class="rec"><div class="grp">New this week</div><div class="tgrid one">${fresh.slice(0, 6).map(gameTile).join('')}</div></div>` : ''}
 <div class="grp">${S.cat === 'All' ? 'All games' : esc(S.cat)}</div>
 ${libState}<div class="tgrid all">${list.map(gameTile).join('')}</div><div class="empty nomatch" hidden></div>
@@ -3271,6 +3315,8 @@ else if (d.pack) playGame(d.pack);
 else if (d.act === 'random') { const v = visibleTiles(); if (v.length) v[Math.floor(Math.random() * v.length)].click(); }
 else if (d.act === 'license') showLicense($('.ct'));
 else if (d.act === 'newtab') openBlank();
+else if (d.act === 'besttab') { const p = PACK.find(x => x.id === S.game); if (p) openBlank(p); }
+else if (d.act === 'tabnoteclose') { const n = root.querySelector('.tabnote'); if (n) n.remove(); }
 else if (d.act === 'ratesend') sendRating();
 else if (d.act === 'rateedit') { const was = store.get('ratings', {})[S.doc]; S.rate = { id: S.doc, stars: was ? was.s : 0, text: '' }; paintRate(); }
 else if (d.act === 'libtab') openLibraryTab();

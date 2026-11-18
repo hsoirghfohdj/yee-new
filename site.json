@@ -30,6 +30,8 @@
   ],
   "hidden": [],
   "hallpass": "https://pass.securly.com/",
-  "featured": [],
+  "featured": [
+    "offline/web-dashers/index.html"
+  ],
   "hiddenGames": []
 }
