@@ -6210,11 +6210,19 @@ _buildSettingsPopup() {
  enablePortalGuide: true,
  enableOrbGuide: false,
  enableMiniIcon: false,
- enableLDM: false,
+ enableLDM: true,
  cullDistance: 3
  };
 
  const data = { ...defaults, ...(saved ? JSON.parse(saved) : {}) };
+ // One-time performance default for this hosted build: high-decoration levels can
+ // stall at the beginning on some devices. Keep every other saved setting intact.
+ // Players can still disable Low Detail Mode from the in-game Help menu.
+ if (localStorage.getItem("webdash_hosted_ldm_v1") !== "1") {
+   data.enableLDM = true;
+   localStorage.setItem("webdash_hosted_ldm_v1", "1");
+   localStorage.setItem("gd_settings", JSON.stringify(data));
+ }
 
  window.noClip = data.noclip;
  window.showPercentage = data.showPercentage;
