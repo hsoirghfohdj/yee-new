@@ -8,6 +8,7 @@ const LIB = window.__classDashMode === 'library';
 const DAY = 864e5;
 const REPO = 'hsoirghfohdj/yee-new', BRANCH = 'main', DIR = 'offline/', STUDY = 'study/';
 const PAGES = 'https://hsoirghfohdj.github.io/yee-new/';
+const WEB_DASHERS_GAME = 'offline/web-dashers/index.html';
 const rawOf = p => 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + p.split('/').map(encodeURIComponent).join('/');
 const store = {
 get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
@@ -1070,7 +1071,7 @@ return parts.length === 1 || (parts.length === 2 && /^index\.html?$/i.test(parts
 // Games load straight from the repo (raw.githubusercontent.com). One with a LOAD-FROM-PAGES.txt next to it
 // (offline/<game>/LOAD-FROM-PAGES.txt or offline/<game>.LOAD-FROM-PAGES.txt) loads from GitHub Pages instead.
 const pagesMarker = p => /\/index\.html?$/i.test(p) ? p.replace(/index\.html?$/i, 'LOAD-FROM-PAGES.txt') : p.replace(/\.html?$/i, '.LOAD-FROM-PAGES.txt');
-const repoGame = id => !(S.lib && (S.lib.fromPages || []).includes(id));
+const repoGame = id => id !== WEB_DASHERS_GAME && !(S.lib && (S.lib.fromPages || []).includes(id));
 const toPack = path => {
 const rel = path.slice(DIR.length), parts = rel.split('/');
 const base = parts.length === 2 ? parts[0] : parts[0].replace(/\.html?$/i, '');
@@ -1160,7 +1161,10 @@ const isNewDoc = p => !!SEEN && SEEN[p.id] > Date.now() - 7 * DAY;
 let PACK = [], DOCS = [];
 const setPack = () => {
 const hiddenG = new Set(((S.draft || SITE || {}).hiddenGames) || []);
-PACK = (S.lib ? S.lib.paths : []).filter(p => !hiddenG.has(p)).map(toPack).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+const gamePaths = S.lib && Array.isArray(S.lib.paths) ? S.lib.paths.slice() : [];
+// Web Dashers is a multi-file Phaser game; keep it visible even with an older saved game list.
+if (!gamePaths.includes(WEB_DASHERS_GAME)) gamePaths.push(WEB_DASHERS_GAME);
+PACK = gamePaths.filter(p => !hiddenG.has(p)).map(toPack).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 DOCS = pairKeys((S.lib && S.lib.study || []).map(toDoc)).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 };
 setPack();
@@ -1169,9 +1173,10 @@ files = files.filter(p => p.startsWith(DIR) || p.startsWith(STUDY));
 const imgs = {}, pics = {};
 files.filter(p => IMG.test(p)).forEach(p => { imgs[p.replace(IMG, '').toLowerCase()] = p; });
 const paths = files.filter(isGame);
+if (!paths.includes(WEB_DASHERS_GAME)) paths.push(WEB_DASHERS_GAME);
 paths.forEach(p => { const a = artFor(p, imgs); if (a) pics[p] = a; });
 const dirs = [...new Set(files.filter(p => p.startsWith(STUDY)).map(p => p.slice(STUDY.length).split('/')).filter(a => a.length > 1).map(a => a[0]))];
-const fromPages = paths.filter(p => files.includes(pagesMarker(p)));
+const fromPages = paths.filter(p => p === WEB_DASHERS_GAME || files.includes(pagesMarker(p)));
 return { at: Date.now(), paths, art: pics, study: files.filter(isDoc), dirs, fromPages };
 }
 // Games added to the repo in the last 7 days, worked out from GitHub (compare last week's commit with now). Cached for an hour.
@@ -1205,7 +1210,7 @@ try {
 // The game list comes from library.json in the repo (kept up to date by a GitHub Action), so it doesn't
 // count against GitHub's 60-an-hour limit for a school network. The GitHub API is only a backup.
 let files = [], added = null;
-const lj = await fetch(RAW + 'library.json?t=' + Math.floor(Date.now() / 6e4), { cache: 'no-store' }).then(x => x.ok ? x.json() : null).catch(() => null);
+const lj = await fetch(RAW + 'library.json?t=' + Date.now(), { cache: 'no-store' }).then(x => x.ok ? x.json() : null).catch(() => null);
 if (lj && Array.isArray(lj.files) && lj.files.length) { files = lj.files.filter(p => typeof p === 'string'); added = lj.added && typeof lj.added === 'object' ? lj.added : {}; }
 else {
 const r = await fetch('https://api.github.com/repos/' + REPO + '/git/trees/' + BRANCH + '?recursive=1');
