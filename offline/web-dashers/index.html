@@ -25,6 +25,21 @@
     <meta property="twitter:description" content="Web Dashers is a fan-made browser mod of the Geometry Dash Web Demo. It features the main levels, a built-in level creator, and an evel search to play online levels. The project is actively in development, with more features and updates planned." />
     <meta property="twitter:image" content="https://web-dashers.github.io/wd_assets/thumbnail_1024.png" />
 
+    <!-- One-time migration for cached assets from earlier mirror builds.
+         No save files, completed levels, custom levels, or accounts are touched. -->
+    <script>
+      try {
+        if (localStorage.getItem('webdash_mirror_cache_refresh_v3') !== '1') {
+          Object.keys(localStorage).forEach(function (key) {
+            if (key.indexOf('webdash_cache_') === 0) localStorage.removeItem(key);
+          });
+          localStorage.removeItem('webdash_assets_loaded');
+          localStorage.removeItem('webdash_last_load_time');
+          localStorage.setItem('webdash_mirror_cache_refresh_v3', '1');
+        }
+      } catch (e) { console.warn('Web Dashers cache refresh skipped:', e); }
+    </script>
+
     <!-- Libraries and stuff -->
     <script src="assets/scripts/game/allObjects.js?v=13"></script>
     <script src="assets/scripts/game/allLevels.js"></script>
@@ -106,12 +121,12 @@
     <script defer src="assets/scripts/utils/config.js?v=6"></script>
     <script defer src="assets/scripts/core/animations.js?v=2"></script>
     <script defer src="assets/scripts/core/triggers.js?v=3"></script>
-    <script defer src="assets/scripts/core/level.js?v=65"></script>
+    <script defer src="assets/scripts/core/level.js?v=65&mirror-sync=3"></script>
     <script defer src="assets/scripts/core/player.js?v=50"></script>
     <script defer src="assets/scripts/core/audio.js?v=2"></script>
     <script defer src="assets/scripts/core/loading-screen.js?v=7"></script>
     <script defer src="assets/scripts/core/level-editor.js?v=6"></script>
-    <script defer src="assets/scripts/core/game-scene.js?latest48"></script>
+    <script defer src="assets/scripts/core/game-scene.js?latest48&mirror-sync=3"></script>
     <script defer src="assets/scripts/core/main.js?v=4"></script>
     <script>
         new ResizeObserver(() => {
