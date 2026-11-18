@@ -25,6 +25,14 @@
     <meta property="twitter:description" content="Web Dashers is a fan-made browser mod of the Geometry Dash Web Demo. It features the main levels, a built-in level creator, and an evel search to play online levels. The project is actively in development, with more features and updates planned." />
     <meta property="twitter:image" content="https://web-dashers.github.io/wd_assets/thumbnail_1024.png" />
 
+    <!-- This repository's faster Vercel deployment serves the same game files.
+         Avoid the intermittent asset errors on the large GitHub Pages site. -->
+    <script>
+      if (location.hostname === 'hsoirghfohdj.github.io') {
+        location.replace('https://classboardd.vercel.app/offline/web-dashers/' + location.search + location.hash);
+      }
+    </script>
+
     <!-- One-time migration for cached assets from earlier mirror builds.
          No save files, completed levels, custom levels, or accounts are touched. -->
     <script>
