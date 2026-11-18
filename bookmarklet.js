@@ -26,7 +26,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Study classes fold up now: yours stay open, the rest start folded, and clicking any class opens or folds it, with the classes sliding together so there are no empty gaps. New game: Web Dashers, featured at the top of Games (it plays best in its own tab). Daily streaks: light your flame every day you open Classboard to keep it going.';
+const WHATSNEW = 'Study classes fold up now: yours stay open, the rest start folded, and clicking any class opens or folds it, with the classes sliding together so there are no empty gaps. New game: Web Dashers (it plays best in its own tab), and New this week now sits at the top of Games. Daily streaks: light your flame every day you open Classboard to keep it going.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -2152,7 +2152,6 @@ const cats = [['All', PACK.length], ...[...THEMES, ARCADE].map(t => [t[0], PACK.
 if (!cats.some(c => c[0] === S.cat)) S.cat = 'All';
 const list = S.cat === 'All' ? PACK : PACK.filter(p => p.theme[0] === S.cat);
 const recent = P.recent ? store.get('recent', []).map(findItem).filter(Boolean) : [];
-const featured = (curSite().featured || []).map(id => PACK.find(p => p.id === id)).filter(Boolean);
 const fresh = [...newSet()].map(id => PACK.find(p => p.id === id)).filter(Boolean).sort((a, b) => a.name.localeCompare(b.name));
 const libState = PACK.length ? '' : S.libError ? empty(esc(S.libError)) : S.lib && !S.libLoading ? empty('No games yet. Add an .html file to the offline folder, then hit refresh.') : '<div class="spin"></div>';
 return `${PATTERNS}<div class="ghero"><div class="ghead"><div class="grow"><div class="gh">Game library</div>
@@ -2162,9 +2161,8 @@ ${LIB ? '' : `<button class="ib" data-act="libtab" title="Open the study + game 
 <button class="btn pri big" data-act="random">${I.shuffle}Random</button></div></div>
 ${cats.length > 2 ? `<div class="seg">${cats.map(([l, n]) => `<button data-cat="${l}" class="${S.cat === l ? 'on' : ''}">${l}<b>${n}</b></button>`).join('')}</div>` : ''}
 ${S.libError && PACK.length ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
-${featured.length ? `<div class="rec"><div class="grp">Featured</div><div class="tgrid one">${featured.slice(0, 6).map(gameTile).join('')}</div></div>` : ''}
-${recent.length ? `<div class="rec"><div class="grp">Jump back in</div><div class="tgrid one">${recent.slice(0, 6).map(gameTile).join('')}</div></div>` : ''}
 ${fresh.length ? `<div class="rec"><div class="grp">New this week</div><div class="tgrid one">${fresh.slice(0, 6).map(gameTile).join('')}</div></div>` : ''}
+${recent.length ? `<div class="rec"><div class="grp">Jump back in</div><div class="tgrid one">${recent.slice(0, 6).map(gameTile).join('')}</div></div>` : ''}
 <div class="grp">${S.cat === 'All' ? 'All games' : esc(S.cat)}</div>
 ${libState}<div class="tgrid all">${list.map(gameTile).join('')}</div><div class="empty nomatch" hidden></div>
 <div class="sreq"><div class="grp">Can't find a game?</div>${reqCard('games')}</div>`;
