@@ -1,0 +1,1 @@
+Interstellar launcher must run as a normal HTTPS page so its navigation and storage work reliably. The proxy itself runs only on a separately hosted Node.js server.
