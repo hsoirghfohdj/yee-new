@@ -3082,7 +3082,7 @@ ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', 'Updating Class
 const STEPS = ['Download', 'Check', 'Save', 'Install', 'Launch'];
 ov.innerHTML = `<canvas class="cos"></canvas><canvas class="upd-fx"></canvas>
 <div class="upd-stage"><div class="upd-logo">${I.board}</div><div class="upd-k">Classboard update</div>
-<h2 class="upd-h">Warping to the new version</h2>${m && m[2] ? `<p class="upd-new">${esc(m[2])}</p>` : ''}
+<h2 class="upd-h">Updating version</h2>${m && m[2] ? `<p class="upd-new">${esc(m[2])}</p>` : ''}
 <div class="upd-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="upd-fill"><i></i></div><span class="upd-head"></span></div>
 <div class="upd-row"><span class="upd-step">Downloading the newest version…</span><span class="upd-pct">0%</span></div>
 <ol class="upd-steps">${STEPS.map((s, i) => `<li data-s="${i}"><b></b>${s}</li>`).join('')}</ol></div><div class="upd-flash"></div>`;
