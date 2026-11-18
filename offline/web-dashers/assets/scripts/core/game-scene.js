@@ -6210,19 +6210,11 @@ _buildSettingsPopup() {
  enablePortalGuide: true,
  enableOrbGuide: false,
  enableMiniIcon: false,
- enableLDM: true,
+ enableLDM: false,
  cullDistance: 3
  };
 
  const data = { ...defaults, ...(saved ? JSON.parse(saved) : {}) };
- // One-time performance default for this hosted build: high-decoration levels can
- // stall at the beginning on some devices. Keep every other saved setting intact.
- // Players can still disable Low Detail Mode from the in-game Help menu.
- if (localStorage.getItem("webdash_hosted_ldm_v1") !== "1") {
-   data.enableLDM = true;
-   localStorage.setItem("webdash_hosted_ldm_v1", "1");
-   localStorage.setItem("gd_settings", JSON.stringify(data));
- }
 
  window.noClip = data.noclip;
  window.showPercentage = data.showPercentage;
@@ -9092,18 +9084,17 @@ _showwippopup() {
  }
  _quantizeDelta(_0x654f39) {
  const speed = window.speedHack || 1;
- // Avoid a spiral of death after one slow frame. The original 60-tick
- // catch-up could run up to 240 collision substeps in a single render frame.
- // Keep normal 60 Hz physics and the fractional remainder, but never queue
- // more than six full ticks when the machine cannot keep up.
- const pending = (_0x654f39 * speed) / 1000 + this._deltaBuffer;
- const wanted = Math.max(0, Math.round(pending / u));
- const ticks = Math.min(wanted, 6);
- const simulated = ticks * u;
- // Drop excess whole ticks on overload instead of carrying unbounded work.
- // Retain sub-tick precision so normal-speed gameplay stays smooth.
- this._deltaBuffer = wanted > 6 ? 0 : pending - simulated;
- return simulated * 60;
+ let _0x578d1b = (_0x654f39 * speed) / 1000 + this._deltaBuffer;
+ let _0x53e02e = Math.round(_0x578d1b / u);
+ if (_0x53e02e < 0) {
+ _0x53e02e = 0;
+ }
+ if (_0x53e02e > 60) {
+ _0x53e02e = 60;
+ }
+ let _0xd8019e = _0x53e02e * u;
+ this._deltaBuffer = _0x578d1b - _0xd8019e;
+ return _0xd8019e * 60;
  }
  update(_0x54fa47, deltaTime) {
  this._restoreMirrorTransforms();
