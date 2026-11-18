@@ -26,7 +26,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Study classes fold up now: yours stay open, the rest start folded, and clicking any class opens or folds it. New game: Web Dashers, featured at the top of Games (it plays best in its own tab). Daily streaks: light your flame every day you open Classboard to keep it going.';
+const WHATSNEW = 'Study classes fold up now: yours stay open, the rest start folded, and clicking any class opens or folds it, with the classes sliding together so there are no empty gaps. New game: Web Dashers, featured at the top of Games (it plays best in its own tab). Daily streaks: light your flame every day you open Classboard to keep it going.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -380,7 +380,9 @@ background:radial-gradient(120% 160% at 0% 0%,color-mix(in srgb,var(--ac) 20%,tr
 .ccard:hover,.ccard:focus-visible{border-color:var(--ac);outline:none}
 .ccard .t{font-size:13px}
 .ccard .sub{font-size:11.5px}
-.spans{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;align-items:start;margin-bottom:14px}
+.spans{position:relative;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;align-items:start;margin-bottom:14px}
+.spans.mas{grid-auto-rows:2px;row-gap:0}
+.cpan.opening .rr{animation:fd .32s ease-out}
 .cpan{min-width:0;background:var(--p1);border:1px solid var(--ln);border-radius:14px;overflow:hidden}
 .cpan[hidden]{display:none}
 .cph{display:flex;align-items:center;gap:10px;padding:11px 12px 9px;border-top:3px solid var(--c)}
@@ -1930,6 +1932,37 @@ nm.hidden = shown > 0 || !ct.querySelector('.cpan');
 const what = [q && '"' + S.sq.trim() + '"', S.skind !== 'all' && (STUDY_KINDS.find(k => k[0] === S.skind) || [])[1], S.scls !== 'All' && !q && S.scls].filter(Boolean).join(' · ');
 nm.querySelector('.nmtxt').textContent = what ? 'No study resources for ' + what + ' yet. Ask for it and we\'ll most likely add it.' : '';
 }
+packStudy();
+}
+// Class panels pack like a masonry wall: each one spans as many 2px grid rows as it is tall, so a folded class never
+// leaves a hole under it and an open one drops into whichever column has the most room. Re-packs whenever a panel
+// changes size (folding, searching, the window getting wider or narrower).
+let packRO = null;
+function packStudy() {
+const sp = $('.ct').querySelector('.spans');
+if (!sp) return;
+const all = [...sp.querySelectorAll('.cpan')], secs = all.filter(x => !x.hidden);
+sp.classList.add('mas');
+const gap = parseFloat(getComputedStyle(sp).columnGap) || 12, hs = secs.map(x => x.offsetHeight);
+secs.forEach((x, i) => { const v = 'span ' + Math.max(1, Math.ceil((hs[i] + gap) / 2)); if (x.style.gridRowEnd !== v) x.style.gridRowEnd = v; });
+if (!window.ResizeObserver) return;
+if (!packRO) packRO = new ResizeObserver(() => { if (!packRO.q) packRO.q = requestAnimationFrame(() => { packRO.q = 0; if (S.view === 'study') packStudy(); }); });
+if (packRO.els && packRO.els.length === all.length && packRO.els.every((x, i) => x === all[i])) return;
+packRO.disconnect(); packRO.els = all; all.forEach(x => packRO.observe(x));
+}
+// Where every class panel sits now, so a fold can slide the others into their new spots instead of jumping
+const studySpots = () => new Map([...$('.ct').querySelectorAll('.spans .cpan')].filter(x => !x.hidden).map(x => [x, [x.offsetLeft, x.offsetTop]]));
+function slideStudy(from, opened) {
+from.forEach((p, x) => {
+const dx = p[0] - x.offsetLeft, dy = p[1] - x.offsetTop;
+if ((dx || dy) && !x.hidden) x.animate([{ transform: `translate(${dx}px,${dy}px)` }, { transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' });
+});
+if (!opened) return;
+opened.classList.remove('opening'); void opened.offsetWidth; opened.classList.add('opening');
+setTimeout(() => opened.classList.remove('opening'), 400);
+// opened a class near the bottom: scroll just enough to see it (or its top, if it's taller than the screen)
+const ct = $('.ct'), r = opened.getBoundingClientRect(), c = ct.getBoundingClientRect();
+if (r.bottom > c.bottom - 8) ct.scrollTo({ top: ct.scrollTop + (r.height > c.height - 24 ? r.top - c.top - 12 : r.bottom - c.bottom + 16), behavior: 'smooth' });
 }
 const visibleDocs = () => [...$('.ct').querySelectorAll('.cpan .rr')].filter(t => !t.hidden);
 async function showLicense(ct) {
@@ -3330,7 +3363,7 @@ renderMain(true);
 else if (d.seg) { S.seg = d.seg; renderMain(true); }
 else if (d.cat) { S.cat = d.cat; renderMain(true); }
 else if (d.scls) { S.scls = d.scls; renderMain(true); }
-else if (d.sfold) { const sec = t.closest('.cpan'); if (sec && !sec.classList.contains('nofold')) { const m = store.get('studyFold', {}); m[d.sfold] = !sec.classList.contains('shut'); store.set('studyFold', m); filterStudy(); } }
+else if (d.sfold) { const sec = t.closest('.cpan'); if (sec && !sec.classList.contains('nofold')) { const from = still() ? null : studySpots(), m = store.get('studyFold', {}); m[d.sfold] = !sec.classList.contains('shut'); store.set('studyFold', m); filterStudy(); if (from) slideStudy(from, sec.classList.contains('shut') ? null : sec); } }
 else if (d.doc) openDoc(d.doc);
 else if (d.sched) { S.schedKey = d.sched; renderMain(true); }
 else if (d.lunch) { S.lunch = Number(d.lunch); store.set('lunch', S.lunch); paintSched(); renderMain(true); }
