@@ -107,6 +107,7 @@ vol: svg('<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 
 mute: svg('<path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/>'),
 key: svg('<circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 9.2-9.2M16 7l3 3M14 9l2 2"/>'),
 chev: svg('<path d="m6 9 6 6 6-6"/>'),
+lock: svg('<rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 15v2"/>'),
 tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
 };
 const CSS = `
@@ -360,6 +361,23 @@ background:radial-gradient(120% 160% at 0% 0%,color-mix(in srgb,var(--ac) 20%,tr
 .nc .logo{width:52px;height:52px;border-radius:14px;margin:0 auto 14px}
 .nc h3{font-size:18px;margin-bottom:6px}
 .nc p{margin-bottom:18px;white-space:normal}
+.alock{max-width:440px}
+.alock .logo{background:color-mix(in srgb,var(--ac) 18%,var(--p2));color:var(--act);border:1px solid color-mix(in srgb,var(--ac) 40%,transparent)}
+.alock .logo svg{width:24px;height:24px}
+.alk{display:flex;gap:8px;text-align:left}
+.adm .alk input{flex:1;height:38px}
+.alk .btn{display:inline-flex;align-items:center;gap:7px;height:38px;box-sizing:border-box;padding:0 16px}
+.alk .btn svg{width:15px;height:15px;margin:0}
+.alk .btn[disabled],.adm .alk input[disabled]{opacity:.6;cursor:default}
+.alock .amsg{min-height:1.4em;margin-top:10px;font-size:12.5px}
+.ahow{margin-top:14px;text-align:left;font-size:13px;color:var(--mu)}
+.ahow summary{cursor:pointer;text-align:center;color:var(--act);list-style:none}
+.ahow summary::-webkit-details-marker{display:none}
+.ahow .asteps{margin:10px 0 0 18px}
+.alkf{display:flex;justify-content:center;gap:18px;margin-top:18px;padding-top:14px;border-top:1px solid var(--ln)}
+.alkf .lnk{all:unset;cursor:pointer;font-size:12.5px;color:var(--mu)}
+.alkf .lnk:hover{color:var(--tx)}
+@media (max-width:480px){.alk{flex-direction:column}}
 .ann .sub{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .ghero.shero{background:radial-gradient(120% 160% at 0% 0%,rgba(62,207,142,.18),transparent 55%),radial-gradient(120% 160% at 100% 100%,color-mix(in srgb,var(--ac) 14%,transparent),transparent 55%),var(--p1)}
 .shead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
@@ -2397,6 +2415,7 @@ return 'Published! Everyone gets it within about 5 minutes.';
 }
 // ---- Admin page ----
 function vAdmin() {
+if (!hasKey()) return vLock();
 const m = A.msg || { text: '', cls: '' }, key = hasKey();
 const head = `<div class="card adm atop"><div class="ahd"><span class="logo">${I.gear}</span><div class="grow"><div class="t" style="font-size:17px">Admin</div>
 <div class="sub wrap">Changes here are for everyone. Study and Games changes save to GitHub as soon as you make them.</div></div>
@@ -2529,15 +2548,47 @@ function aAdvanced() {
 return `<div class="card adm"><h2>Everything (advanced)<span>edit the raw site settings, then Apply</span></h2>
 <textarea data-sitejson spellcheck="false">${esc(JSON.stringify(S.draft, null, 2))}</textarea><div class="arow"><button class="btn" data-act="adm-json">Apply</button></div></div>`;
 }
+const KEY_STEPS = save => `<ol class="asteps"><li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Open GitHub's new key page</a> (signed in as you).</li>
+<li>Name it <b>Classboard</b>. Under <b>Repository access</b>, pick <b>Only select repositories</b>, then <b>yee-new</b>.</li>
+<li>Under <b>Permissions</b>, set <b>Contents</b> to <b>Read and write</b>. Click <b>Generate token</b> and copy it.</li>
+<li>Paste it ${save ? 'below and click <b>Save key</b>' : 'above and click <b>Unlock</b>'}.</li></ol>`;
+// Admin stays locked on a computer until a working GitHub key is entered (checked with GitHub before it's saved)
+function vLock() {
+const m = A.msg || { text: '', cls: '' };
+return `<div class="card nc adm alock"><div class="logo">${I.lock}</div><h3>Admin is locked</h3>
+<p class="sub">Enter the GitHub key for the yee-new repo to open Admin. It's checked with GitHub, then saved only on this computer.</p>
+<form class="alk" data-unlock novalidate><input type="password" data-tok placeholder="Paste your GitHub key" autocomplete="off" spellcheck="false" aria-label="GitHub key"${A.busy ? ' disabled' : ''}>
+<button class="btn pri" type="submit"${A.busy ? ' disabled' : ''}>${A.busy ? '<span class="aspin"></span>Checking…' : I.lock + 'Unlock'}</button></form>
+<div class="amsg ${m.cls}" role="status">${esc(m.text)}</div>
+<details class="ahow"><summary>Don't have a key? Make one</summary>${KEY_STEPS(false)}</details>
+<div class="alkf"><button class="lnk" data-go="${isCanvas && !LIB ? 'home' : 'games'}">Back</button><button class="lnk" data-act="adm-lock">Hide the Admin button here</button></div></div>`;
+}
+async function unlockAdmin() {
+const inp = root.querySelector('[data-unlock] [data-tok]'), v = ((inp && inp.value) || '').trim();
+if (A.busy) return;
+if (!v) { A.msg = { text: 'Paste the key first.', cls: 'err' }; renderMain(true); return focusTok(); }
+A.busy = 'Checking the key'; A.msg = null; renderMain(true);
+let err = '';
+try {
+const r = await fetch(GH, { cache: 'no-store', headers: { Accept: 'application/vnd.github+json', Authorization: 'Bearer ' + v } });
+if (r.status === 401) err = "GitHub didn't accept that key. Check you copied all of it, or make a new one.";
+else if (!r.ok) err = ghErr(r.status);
+else { const j = await r.json().catch(() => ({})); if (j && j.permissions && j.permissions.push === false) err = "That key works, but it can't change yee-new. Give it Contents: Read and write."; }
+} catch (e) { err = "Couldn't reach GitHub. Check you're online, then try again."; }
+A.busy = '';
+if (err) { A.msg = { text: err, cls: 'err' }; renderMain(true); return focusTok(); }
+store.set('admintoken', v);
+if (A.tab === 'key') A.tab = 'study';
+A.msg = { text: 'Unlocked. The key is saved on this computer.', cls: 'ok' };
+renderMain(true);
+}
+const focusTok = () => { const i = root.querySelector('[data-unlock] [data-tok]'); if (i) i.focus(); };
 function aKey() {
 const key = hasKey();
 return `<div class="card adm"><h2>GitHub key<span>${key ? 'saved on this computer' : 'not set up yet'}</span></h2>
 <p class="sub wrap">Admin needs a GitHub key to save changes to the yee-new repo. It's stored only on this computer.</p>
-<ol class="asteps"><li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Open GitHub's new key page</a> (signed in as you).</li>
-<li>Name it <b>Classboard</b>. Under <b>Repository access</b>, pick <b>Only select repositories</b>, then <b>yee-new</b>.</li>
-<li>Under <b>Permissions</b>, set <b>Contents</b> to <b>Read and write</b>. Click <b>Generate token</b> and copy it.</li>
-<li>Paste it below and click <b>Save key</b>.</li></ol>
-${key ? '<div class="arow"><button class="btn" data-act="adm-testkey">Test the key</button><button class="btn" data-act="adm-forget">Remove key from this computer</button></div>'
+${KEY_STEPS(true)}
+${key ? '<div class="arow"><button class="btn" data-act="adm-testkey">Test the key</button><button class="btn" data-act="adm-forget">Remove key and lock Admin</button></div>'
 : '<div class="arow"><input type="password" data-tok class="wide" placeholder="Paste your key (starts with github_pat_)" autocomplete="off"><button class="btn pri" data-act="adm-savetok">Save key</button></div>'}</div>
 <div class="card adm" style="margin-top:16px"><h2>This computer</h2><p class="sub wrap">The Admin button shows in the sidebar on computers where you've opened Admin.</p>
 <div class="arow"><button class="btn" data-act="adm-lock">Hide the Admin button here</button></div></div>`;
@@ -2585,7 +2636,7 @@ case 'adm-cancel': A.edit = null; A.arm = null; return renderMain(true);
 case 'adm-publish': return aRun('Publishing', publishSite);
 case 'adm-discard': S.draft = clone(SITE); A.msg = { text: 'Changes discarded.', cls: '' }; applySite(); return renderMain(true);
 case 'adm-savetok': { const v = ((root.querySelector('[data-tok]') || {}).value || '').trim(); if (!v) return aSay('Paste the key first.', 'err'); store.set('admintoken', v); A.msg = { text: 'Key saved on this computer. Click "Test the key" to check it.', cls: 'ok' }; return renderMain(true); }
-case 'adm-forget': try { localStorage.removeItem('classdash_admintoken'); } catch (err) {} A.msg = { text: 'Key removed from this computer.', cls: '' }; return renderMain(true);
+case 'adm-forget': try { localStorage.removeItem('classdash_admintoken'); } catch (err) {} A.msg = { text: 'Key removed, so Admin is locked on this computer.', cls: '' }; renderMain(true); return focusTok();
 case 'adm-testkey': return aRun('Testing the key', async () => { await ghHead(); return 'The key works and can see the repo.'; });
 case 'adm-lock': store.set('admin', false); paintAdminLink(); S.draft = null; applySite(); return go(isCanvas ? 'home' : 'games');
 case 'adm-json': try { S.draft = fixSite(JSON.parse(root.querySelector('[data-sitejson]').value)); A.msg = { text: 'Applied. Publish to save it for everyone.', cls: 'ok' }; } catch (err) { return aSay("That isn't valid JSON: " + err.message, 'err'); } applySite(); return renderMain(true);
@@ -3406,6 +3457,7 @@ root.addEventListener('pointerdown', e => { if (holdEl(e) && S.stk) { e.preventD
 ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => root.addEventListener(ev, () => { if (S.stk && S.stk.holding) streakHold(false); }));
 root.addEventListener('contextmenu', e => { if (holdEl(e)) e.preventDefault(); });
 root.addEventListener('submit', e => {
+if (e.target.closest && e.target.closest('[data-unlock]')) { e.preventDefault(); unlockAdmin(); return; }
 const f = e.target.closest && e.target.closest('[data-reqform]');
 if (!f) return;
 e.preventDefault();
@@ -3454,6 +3506,7 @@ if (act) { e.preventDefault(); e.stopPropagation(); fcAct({ act }); return; }
 if (root.activeElement === omniBox) { omniKey(e); e.stopPropagation(); return; }
 if (down && !LIB && (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); e.stopPropagation(); omniBox.focus(); return; }
 if (down && e.key === 'Enter' && root.activeElement && root.activeElement.matches('[data-rtext]')) { e.preventDefault(); e.stopPropagation(); sendRating(); return; }
+if (down && e.key === 'Enter' && root.activeElement && root.activeElement.matches('[data-unlock] [data-tok]')) { e.preventDefault(); e.stopPropagation(); unlockAdmin(); return; }
 if (down && (e.key === 'Enter' || e.key === ' ') && root.activeElement && root.activeElement.matches('.rr,.ccard,.cph[data-sfold]')) { e.preventDefault(); e.stopPropagation(); root.activeElement.click(); return; }
 const box = usesLib(S.view) && $('[data-search]'), typing = box && root.activeElement === box;
 const q = study ? S.sq : S.q;
