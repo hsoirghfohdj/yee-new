@@ -1,5 +1,5 @@
 {
-"generated": "2026-11-18T02:06:33Z",
+"generated": "2026-11-18T02:42:11Z",
 "files": [
 "offline/1-on-1-soccer.html",
 "offline/1-on-1-soccer.jpg",
@@ -8185,6 +8185,7 @@
 "offline/web-dashers/assets/sprites/tutorial_04.png",
 "offline/web-dashers/assets/sprites/tutorial_05.png",
 "offline/web-dashers/assets/style.css",
+"offline/web-dashers/cover.jpg",
 "offline/web-dashers/db/schema.sql",
 "offline/web-dashers/index.html",
 "offline/web-dashers/package.json",
