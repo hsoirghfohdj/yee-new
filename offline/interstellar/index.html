@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Interstellar · Classboard</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f6f3ff;background:#090914}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse 60% 45% at 50% 10%,#31205b 0,transparent 80%),#090914;display:grid;place-items:center;padding:28px}.wrap{width:min(100%,650px)}header{display:flex;align-items:center;gap:12px;margin-bottom:38px}.logo{width:45px;height:45px;border:1px solid #7762ba;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,#8b5cf6,#373067);font-size:26px}.brand{font-size:20px;font-weight:750;letter-spacing:.01em}small,.muted{color:#b3a9cd}h1{font-size:clamp(30px,5vw,43px);margin:0 0 12px;letter-spacing:-.05em}p{color:#bbb3d1;line-height:1.65;margin:0 0 25px}.panel{border:1px solid #393047;background:#171325d9;border-radius:22px;padding:26px;box-shadow:0 18px 65px #03020880}.pill{display:inline-block;border:1px solid #62518d;padding:6px 11px;border-radius:99px;font-size:12px;color:#dacfff;background:#322447;margin-bottom:16px}label{font-size:13px;font-weight:700;display:block;margin-bottom:10px;color:#e8e2f8}.controls{display:flex;gap:9px}input{min-width:0;flex:1;background:#0d0c18;border:1px solid #534866;color:#fff;border-radius:11px;padding:14px 13px;font-size:15px}input:focus{outline:2px solid #936ffb}button,.button{background:#9566f2;border:0;border-radius:11px;color:#fff;padding:14px 18px;font-size:14px;font-weight:750;cursor:pointer;text-decoration:none;display:inline-block}button:hover,.button:hover{background:#ac84ff}.secondary{background:#342a4b}.secondary:hover{background:#493765}.hint{margin-top:14px;font-size:12px;line-height:1.5;color:#b3a9c9}.status{margin-top:14px;min-height:20px;font-size:13px;color:#cdb8ff}.divider{height:1px;background:#3b324c;margin:23px 0}.help{background:#100e1d;border-radius:14px;padding:19px;border:1px solid #342e44}.help strong{display:block;margin-bottom:8px}.help p{font-size:13px;margin:0 0 10px}.help code{display:block;font-size:13px;white-space:pre-wrap;word-break:break-word;padding:12px;border-radius:9px;background:#080811;color:#e5d8ff;margin:10px 0}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}footer{text-align:center;color:#857d9e;font-size:12px;margin-top:25px}a{color:#cfb4ff}@media(max-width:450px){.panel{padding:18px}.controls{flex-direction:column}button{width:100%}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header><div class="logo" aria-hidden="true">✦</div><div><div class="brand">Interstellar</div><small>Classboard · Self-hosted launcher</small></div></header>
+<section class="panel">
+<span class="pill">Open source · Runs on your own server</span>
+<h1>Your own Interstellar.</h1>
+<p>Launch a copy of Interstellar that you host yourself. This page does not load anything from gointerstellar.app. Interstellar's web proxy requires a running server, so it cannot run as a single standalone HTML file inside the game library.</p>
+<form id="launch">
+<label for="instance">Your Interstellar server address</label>
+<div class="controls"><input id="instance" type="url" required spellcheck="false" placeholder="http://localhost:8080" autocomplete="url"><button type="submit">Open Interstellar ↗</button></div>
+<div class="hint">Example: http://localhost:8080 for a locally running copy. Or paste your own HTTPS-hosted Interstellar URL. Addresses are saved only in this browser.</div>
+<div class="status" id="status" role="status"></div>
+</form>
+<div class="divider"></div>
+<div class="help">
+<strong>Don't have a server running?</strong>
+<p>Install the real application from the official open-source repository. On your own computer, with Node.js 22 and Git installed, run:</p>
+<code>git clone https://github.com/UseInterstellar/Interstellar.git
+cd Interstellar
+npm install
+npm run start</code>
+<p>Then enter <b>http://localhost:8080</b> above. The source and dependencies are downloaded from GitHub/npm during setup; the running app is served by your own computer. Remote websites still need internet access.</p>
+<div class="actions"><a class="button secondary" href="https://github.com/UseInterstellar/Interstellar" target="_blank" rel="noopener noreferrer">Source code ↗</a><button type="button" class="secondary" id="local">Use localhost</button></div>
+</div>
+</section>
+<footer>This is a launcher, not a hosted proxy. No connection to gointerstellar.app is needed.</footer>
+</main>
+<script>
+(() => {
+  const input=document.getElementById('instance'),status=document.getElementById('status');
+  try { input.value=localStorage.getItem('classboard_interstellar_instance')||'http://localhost:8080'; } catch { input.value='http://localhost:8080'; }
+  document.getElementById('local').addEventListener('click',()=>{input.value='http://localhost:8080';input.focus();status.textContent='';});
+  document.getElementById('launch').addEventListener('submit',e=>{
+    e.preventDefault();let url;
+    try {url=new URL(input.value.trim());} catch {status.textContent='Enter a valid http:// or https:// address.';return;}
+    if(!['http:','https:'].includes(url.protocol)||url.username||url.password){status.textContent='Only HTTP or HTTPS addresses without credentials are supported.';return;}
+    if (url.hostname==='gointerstellar.app'||url.hostname.endsWith('.gointerstellar.app')){status.textContent='Use your own Interstellar deployment, not the official website.';return;}
+    try{localStorage.setItem('classboard_interstellar_instance',url.href);}catch{}
+    const win=window.open(url.href,'_blank','noopener,noreferrer');
+    if (!win) {status.textContent='Your browser may have blocked the new tab. Allow pop-ups, or copy the address and open it manually.';}
+    else status.textContent='Opened your self-hosted instance in a new tab.';
+  });
+})();
+</script>
+</body>
+</html>
