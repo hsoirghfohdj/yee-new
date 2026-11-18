@@ -1,0 +1,37 @@
+name: Compare Web Dashers delivery
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/compare-web-dashers-delivery.yml']
+  workflow_dispatch:
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check CDN availability and errors
+        run: |
+          python3 - <<'PY'
+          import urllib.request, urllib.error, time
+          sites={
+            'original':'https://web-dashers.github.io/',
+            'github':'https://hsoirghfohdj.github.io/yee-new/offline/web-dashers/',
+            'vercel':'https://classboardd.vercel.app/offline/web-dashers/'
+          }
+          paths=['index.html','assets/scripts/core/level.js','assets/scripts/core/game-scene.js','assets/game-ground/groundSquare_10_001.png','assets/game-ground/groundSquare_11_001.png','assets/sheets/GJ_GameSheet.png','assets/sprites/player_01_001.png','assets/levels/level_1.txt','assets/audio/stereo_madness.mp3']
+          for path in paths:
+            for site,base in sites.items():
+              try:
+                req=urllib.request.Request(base+path,headers={'User-Agent':'Mozilla/5.0','Cache-Control':'no-cache'})
+                with urllib.request.urlopen(req,timeout=25) as res:
+                  data=res.read()
+                  print(site,path,res.status,len(data),res.headers.get('Content-Type'),flush=True)
+              except urllib.error.HTTPError as e: print(site,path,'HTTP',e.code,flush=True)
+              except Exception as e: print(site,path,'ERROR',str(e)[:100],flush=True)
+          for site,base in sites.items():
+            for i in range(8):
+              try:
+                req=urllib.request.Request(base+'assets/game-ground/groundSquare_10_001.png?v='+str(i),headers={'User-Agent':'Mozilla/5.0'})
+                with urllib.request.urlopen(req,timeout=25) as res:print('REPEAT',site,i,res.status,len(res.read()),flush=True)
+              except urllib.error.HTTPError as e:print('REPEAT',site,i,'HTTP',e.code,flush=True)
+              except Exception as e:print('REPEAT',site,i,'ERROR',str(e)[:100],flush=True)
+          PY
