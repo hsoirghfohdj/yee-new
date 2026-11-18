@@ -1,0 +1,50 @@
+name: Browser compare Web Dashers
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/browser-compare-web-dashers.yml'
+  workflow_dispatch:
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Install headless browser driver
+        run: |
+          python3 -m pip install --quiet --break-system-packages playwright
+          (which google-chrome || which chromium || which chromium-browser || true)
+      - name: Play official level on both sites and report errors
+        run: |
+          python3 - <<'PY'
+          from playwright.sync_api import sync_playwright
+          import shutil
+          hosts=['https://web-dashers.github.io/','https://hsoirghfohdj.github.io/yee-new/offline/web-dashers/']
+          with sync_playwright() as p:
+            chrome=next((shutil.which(x) for x in ['google-chrome','chromium','chromium-browser'] if shutil.which(x)),None)
+            if not chrome: raise RuntimeError('No Chromium-based browser installed')
+            b=p.chromium.launch(executable_path=chrome,headless=True,args=['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-webgl','--disable-dev-shm-usage'])
+            for host in hosts:
+              print('HOST',host,flush=True)
+              ctx=b.new_context(viewport={'width':1280,'height':720},ignore_https_errors=True)
+              page=ctx.new_page()
+              problems=[]
+              page.on('pageerror',lambda e:problems.append(('PAGEERROR',str(e)[:250])))
+              page.on('response',lambda r:problems.append(('HTTP',r.status,r.url[:180])) if r.status>=400 else None)
+              page.on('console',lambda m:problems.append(('CONSOLE',m.text[:250])) if m.type=='error' else None)
+              try:
+                page.goto(host,wait_until='domcontentloaded',timeout=35000)
+                page.wait_for_timeout(10000)
+                def stats():
+                  return page.evaluate('''() => {const g=window.scene?.get?.("GameScene");return {scene:!!g,menu:g?g._menuActive:null,playing:g?!g._menuActive:null,percentage:g?g._percentage:null,playerX:g?g._player?.x:null,levelX:g?g._level?.x:null,gameTime:g?g._playTime:null,canvas:document.querySelectorAll("canvas").length,settings:!!window.settingsMap,level:window.currentlevel?.[2]};}''')
+                print('before',stats(),flush=True)
+                page.evaluate('''() => {let g=window.scene?.get?.("GameScene");if(!g)return;window.noClip=true;if(g._menuActive)g._startGame();}''')
+                for i in range(12):
+                  page.wait_for_timeout(1000)
+                  if i%2==0: print('frame',i,stats(),flush=True)
+              except Exception as e:
+                print('EXCEPTION',str(e)[:350],flush=True)
+              print('PROBLEMS',problems[:45],flush=True)
+              ctx.close()
+            b.close()
+          PY
