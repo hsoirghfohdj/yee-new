@@ -27,7 +27,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Move your study progress to another device: on the Study page, click Get save code, then on your other device click Enter a save code and paste it. Practice test scores and saved spots, flashcards and recent study all come along.';
+const WHATSNEW = 'A calmer daily streak: click Ignite to light today’s flame. Updates now show a simple progress bar inside Classboard. Game pages no longer show where each game is loaded from.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -145,7 +145,7 @@ display:grid;grid-template-columns:208px 1fr;overflow:hidden;box-shadow:0 40px 1
 .schnow .big{font-size:24px}
 .schbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
 .row.past{opacity:.5}
-.mn{display:flex;flex-direction:column;min-width:0;min-height:0}
+.mn{display:flex;flex-direction:column;min-width:0;min-height:0;position:relative}
 .hd{display:flex;align-items:center;gap:10px;padding:14px 20px 14px 24px;border-bottom:1px solid var(--ln)}
 .hd h1{font-size:18px;font-weight:650;flex:0 1 auto;max-width:28%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .omni{position:relative;flex:1;max-width:580px;margin:0 auto;display:flex;align-items:center;gap:8px;height:38px;padding:0 8px 0 12px;border-radius:11px;background:var(--p2);border:1px solid var(--ln);color:var(--mu);transition:border-color .12s,box-shadow .12s}
@@ -628,108 +628,58 @@ a.ares:hover .t{color:var(--act)}
 .ib.stkb.lit b{background:linear-gradient(135deg,#ff8a3d,#e36bd6);color:#fff}
 .ib.stkb:hover svg{transform:scale(1.15) rotate(-6deg)}
 @keyframes stkping{70%{box-shadow:0 0 0 7px rgba(255,138,61,0)}100%{box-shadow:0 0 0 0 rgba(255,138,61,0)}}
-.cos{position:absolute;inset:0;width:100%;height:100%;display:block}
-.cos.nogl{background:radial-gradient(ellipse 80% 55% at 50% 62%,rgba(167,139,250,.35),transparent 70%),radial-gradient(ellipse 60% 40% at 35% 40%,rgba(244,114,182,.22),transparent 70%),#07060a}
-.stk-ov,.upd-ov{position:fixed;inset:0;z-index:80;background:#07060a;color:#f5f1ff;font-family:Geist,system-ui,sans-serif;overflow:hidden;animation:cdovin .45s ease both}
-.stk-ov.out,.upd-ov.out{animation:cdovout .38s ease both}
-@keyframes cdovin{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
-@keyframes cdovout{to{opacity:0;transform:scale(.97)}}
-.stk-fx,.upd-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;mix-blend-mode:screen}
-.stk-stage{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;box-sizing:border-box;text-align:center}
-.stk-top{position:absolute;top:18px;left:22px;right:18px;display:flex;justify-content:space-between;align-items:center}
-.stk-k{font:600 12px Geist,system-ui;letter-spacing:.22em;text-transform:uppercase;color:rgba(245,241,255,.6)}
-.stk-x{all:unset;cursor:pointer;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:rgba(245,241,255,.7);background:rgba(255,255,255,.06)}
-.stk-x:hover{background:rgba(255,255,255,.12);color:#fff}
-.stk-hero{position:relative;width:min(240px,52vw);aspect-ratio:1;display:grid;place-items:center;margin-bottom:4px}
-.stk-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
-.stk-track{fill:none;stroke:rgba(255,255,255,.08);stroke-width:3}
-.stk-prog{fill:none;stroke:url(#cdstkR);stroke-width:6;stroke-linecap:round;filter:drop-shadow(0 0 6px rgba(255,140,120,.9))}
-.stk-ov.done .stk-ring{opacity:0;transition:opacity .5s}
-.stk-flb{all:unset;cursor:pointer;width:62%;aspect-ratio:120/150;display:block;touch-action:none;-webkit-tap-highlight-color:transparent;transform:scale(calc(1 + var(--charge,0) * .12));transition:transform .08s}
-.stk-ov.done .stk-flb{cursor:default}
-.stk-fl{width:100%;height:100%;display:block;overflow:visible;transform-origin:50% 92%}
-.stk-fl:not(.lit) .f-out,.stk-fl:not(.lit) .f-mid{fill:#2a2433;transition:fill .3s}
-.stk-fl:not(.lit) .f-mid{fill:#352d40}
-.stk-fl:not(.lit) .f-core{fill:#ff7a45;opacity:calc(.3 + var(--charge,0) * .7);animation:stkember 2.4s ease-in-out infinite}
-.stk-ov.holding .stk-fl:not(.lit){animation:stkshiver .09s linear infinite}
-.stk-fl.lit{filter:drop-shadow(0 0 18px rgba(255,138,61,.75)) drop-shadow(0 0 54px rgba(227,107,214,.55)) drop-shadow(0 0 110px rgba(124,92,255,.45))}
-.stk-fl.lit .f-out{transform-origin:50% 95%;animation:stkflick 1.7s ease-in-out infinite}
-.stk-fl.lit .f-mid{transform-origin:50% 95%;animation:stkflick 1.25s ease-in-out infinite reverse}
-.stk-fl.lit .f-core{transform-origin:50% 95%;animation:stkcore .9s ease-in-out infinite}
-.stk-ov.igniting .stk-fl{animation:stkboom .9s cubic-bezier(.2,1.6,.35,1) both}
-@keyframes stkember{50%{opacity:.75}}
-@keyframes stkshiver{0%{transform:translate(1px,0) rotate(.6deg)}50%{transform:translate(-1px,1px) rotate(-.6deg)}100%{transform:translate(0,-1px)}}
-@keyframes stkflick{0%,100%{transform:scale(1,1) skewX(0)}25%{transform:scale(.98,1.04) skewX(1.6deg)}50%{transform:scale(1.02,.97) skewX(-1deg)}75%{transform:scale(.99,1.05) skewX(-2deg)}}
-@keyframes stkcore{50%{transform:scale(1.08,.92)}}
-@keyframes stkboom{0%{transform:scale(.55)}35%{transform:scale(1.45)}100%{transform:scale(1)}}
-.stk-waves{position:absolute;inset:0;pointer-events:none}
-.stk-waves i{position:absolute;left:50%;top:58%;width:40%;aspect-ratio:1;border-radius:50%;border:3px solid rgba(255,190,140,.9);box-shadow:0 0 30px rgba(255,120,160,.7),inset 0 0 30px rgba(167,139,250,.6);transform:translate(-50%,-50%) scale(0);opacity:0}
-.stk-ov.igniting .stk-waves i{animation:stkwave 1.1s cubic-bezier(.15,.7,.3,1) forwards}
-.stk-ov.igniting .stk-waves i:nth-child(2){animation-delay:.12s;border-color:rgba(227,107,214,.85)}
-.stk-ov.igniting .stk-waves i:nth-child(3){animation-delay:.26s;border-color:rgba(167,139,250,.8)}
-@keyframes stkwave{0%{transform:translate(-50%,-50%) scale(.2);opacity:1}100%{transform:translate(-50%,-50%) scale(7);opacity:0}}
-.stk-flash{position:absolute;inset:0;z-index:4;pointer-events:none;background:radial-gradient(circle at 50% 42%,#fff 0,#ffe7c2 18%,rgba(227,107,214,.55) 42%,transparent 70%);opacity:0}
-.stk-ov.igniting .stk-flash{animation:stkflash .7s ease-out}
-@keyframes stkflash{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
-.stk-ov.igniting .stk-stage{animation:stkshake .65s cubic-bezier(.36,.07,.19,.97)}
-@keyframes stkshake{10%{transform:translate(-6px,3px) rotate(-.6deg)}20%{transform:translate(8px,-4px) rotate(.8deg)}30%{transform:translate(-10px,2px)}40%{transform:translate(9px,5px) rotate(-.5deg)}50%{transform:translate(-6px,-6px)}60%{transform:translate(4px,4px)}75%{transform:translate(-2px,-2px)}100%{transform:none}}
-.stk-count{display:flex;align-items:baseline;gap:12px;line-height:1}
-.stk-num{font:800 clamp(72px,15vw,132px)/.9 Geist,system-ui;letter-spacing:-.04em;color:rgba(245,241,255,.35);display:inline-block}
-.stk-ov.done .stk-num{background:linear-gradient(180deg,#fff6d6 0%,#ffb35c 35%,#ff6a9a 70%,#a78bfa 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 30px rgba(255,106,154,.45))}
-.stk-num.roll{animation:stkroll .5s cubic-bezier(.2,1.5,.4,1)}
-@keyframes stkroll{0%{transform:translateY(45%) scale(1.5);filter:blur(6px);opacity:.2}100%{transform:none;filter:none;opacity:1}}
-.stk-unit{font:600 clamp(16px,2.6vw,22px) Geist,system-ui;color:rgba(245,241,255,.65)}
-.stk-msg{margin:4px 0 6px;max-width:420px;font-size:16px;line-height:1.45;color:rgba(245,241,255,.82);min-height:1.45em}
-.stk-ov.mile .stk-msg{font-weight:700;font-size:20px;background:linear-gradient(90deg,#ffd166,#ff8fb0,#c4b5fd,#ffd166);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:stkshine 2.4s linear infinite}
-@keyframes stkshine{to{background-position:-200% 0}}
-.stk-week{display:flex;gap:clamp(6px,1.6vw,12px);margin:6px 0 10px}
-.stk-day{display:grid;justify-items:center;gap:5px;animation:stkpop .5s cubic-bezier(.2,1.6,.4,1) both;animation-delay:calc(var(--i) * 60ms)}
-.stk-dot{width:clamp(30px,6vw,40px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.18)}
-.stk-day.on .stk-dot{background:radial-gradient(circle at 50% 70%,rgba(255,138,61,.35),rgba(124,92,255,.18));border-color:rgba(255,160,120,.55);color:#ffb35c;box-shadow:0 0 16px rgba(255,120,90,.35)}
-.stk-day.today .stk-dot{outline:2px solid rgba(255,255,255,.35);outline-offset:3px}
-.stk-day.today.on .stk-dot{color:#fff;background:radial-gradient(circle at 50% 70%,#ff8a3d,#e36bd6 70%,#7c5cff);box-shadow:0 0 22px rgba(255,120,160,.8)}
-.stk-dn{font:600 11px Geist,system-ui;color:rgba(245,241,255,.45)}
-@keyframes stkpop{from{transform:scale(.3);opacity:0}}
-.stk-cta{display:flex;flex-direction:column;align-items:center;gap:8px}
-.stk-btn{all:unset;cursor:pointer;position:relative;overflow:hidden;min-width:230px;text-align:center;padding:15px 30px;border-radius:999px;font:700 16px Geist,system-ui;color:#1b0f12;background:linear-gradient(90deg,#ffd166,#ff8a3d 45%,#ff6aa2);box-shadow:0 10px 40px rgba(255,120,120,.35),inset 0 1px 0 rgba(255,255,255,.5);touch-action:none;-webkit-user-select:none;user-select:none;transition:transform .15s}
-.stk-btn:hover{transform:translateY(-1px) scale(1.02)}
-.stk-btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
-.stk-btn.hold{color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);box-shadow:none}
-.stk-btn .stk-btxt{position:relative;z-index:1}
-.stk-btn .stk-bfill{position:absolute;inset:0;transform-origin:0 50%;transform:scaleX(var(--charge,0));background:linear-gradient(90deg,#ffd166,#ff8a3d 45%,#ff6aa2)}
-.stk-ov.holding .stk-btn.hold .stk-btxt{color:#1b0f12}
-.stk-skip{all:unset;cursor:pointer;font-size:13px;color:rgba(245,241,255,.5);padding:4px 10px}
-.stk-skip:hover{color:#fff}
-.stk-best{margin:0;font-size:13px;color:rgba(245,241,255,.45);min-height:1em}
-.upd-stage{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;box-sizing:border-box;text-align:center}
-.upd-logo{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);box-shadow:0 0 50px rgba(167,139,250,.45);animation:updfloat 3s ease-in-out infinite}
-.upd-logo svg{width:34px;height:34px}
-@keyframes updfloat{50%{transform:translateY(-6px)}}
-.upd-k{font:600 12px Geist,system-ui;letter-spacing:.24em;text-transform:uppercase;color:rgba(245,241,255,.55)}
-.upd-h{margin:0;font:700 clamp(26px,4.6vw,46px)/1.05 Geist,system-ui;letter-spacing:-.03em;background:linear-gradient(90deg,#fff,#e9d5ff 40%,#ffb3d1);-webkit-background-clip:text;background-clip:text;color:transparent}
-.upd-new{margin:0 0 10px;max-width:560px;font-size:15px;line-height:1.5;color:rgba(245,241,255,.72)}
-.upd-bar{position:relative;width:min(560px,82vw);height:14px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 2px 8px rgba(0,0,0,.5);margin-top:6px}
-.upd-fill{position:absolute;inset:0 auto 0 0;width:0;border-radius:inherit;overflow:hidden;background:linear-gradient(90deg,#7c5cff,#a78bfa 35%,#e879f9 70%,#ff8fb0);box-shadow:0 0 18px rgba(167,139,250,.8),0 0 40px rgba(244,114,182,.45)}
-.upd-fill i{position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,0) 0 14px,rgba(255,255,255,.22) 14px 22px);background-size:200% 100%;animation:updstripe .7s linear infinite}
-@keyframes updstripe{to{background-position:-44px 0}}
-.upd-head{position:absolute;top:50%;left:0;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:radial-gradient(circle,#fff 0,#f5d0fe 30%,rgba(232,121,249,.6) 55%,transparent 72%);filter:blur(.3px);box-shadow:0 0 30px 8px rgba(232,121,249,.55)}
-.upd-row{width:min(560px,82vw);display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px;color:rgba(245,241,255,.75)}
-.upd-pct{font:700 22px Geist,system-ui;font-variant-numeric:tabular-nums;color:#fff}
-.upd-steps{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-.upd-steps li{display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:600;color:rgba(245,241,255,.4);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);transition:all .3s}
-.upd-steps b{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2)}
-.upd-steps li.on{color:#fff;border-color:rgba(232,121,249,.6);background:rgba(232,121,249,.12)}
-.upd-steps li.on b{background:#f0abfc;box-shadow:0 0 10px #f0abfc;animation:updblink .8s ease-in-out infinite}
-.upd-steps li.ok{color:rgba(245,241,255,.85)}
-.upd-steps li.ok b{background:#86efac;box-shadow:0 0 8px rgba(134,239,172,.8)}
-@keyframes updblink{50%{opacity:.35}}
-.upd-ov.err .upd-fill{background:#f2637a;box-shadow:0 0 18px rgba(242,99,122,.7)}
-.upd-flash{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 50%,#fff 0,#f5e9ff 25%,rgba(167,139,250,.5) 50%,transparent 75%)}
-.upd-ov.warp .upd-stage{animation:updwarp .65s cubic-bezier(.6,0,.9,.4) forwards}
-.upd-ov.warp .upd-flash{animation:updflash .65s ease-in forwards}
-@keyframes updwarp{to{transform:scale(1.6);opacity:0;filter:blur(8px)}}
-@keyframes updflash{to{opacity:1}}
-.cd-toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:70;max-width:min(560px,92vw);display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(124,92,255,.95),rgba(232,121,249,.92));color:#fff;font-size:14px;line-height:1.4;box-shadow:0 18px 50px rgba(124,92,255,.45);animation:cdtoast 5.6s ease both}
+.win{position:relative}
+.stk-ov,.upd-ov{position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;box-sizing:border-box;text-align:center;overflow:auto;background:var(--bg);color:var(--tx);animation:cdfade .22s ease both}
+.stk-ov.out,.upd-ov.out{animation:cdfade .2s ease reverse both}
+@keyframes cdfade{from{opacity:0}to{opacity:1}}
+.stk-x{all:unset;cursor:pointer;position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--mu);background:var(--p2)}
+.stk-x:hover{color:var(--tx);background:var(--p3)}
+.stk-x:focus-visible{outline:2px solid var(--ac)}
+.stk-fw{width:104px;height:130px;margin-bottom:6px}
+.stk-fl{width:100%;height:100%;display:block;overflow:visible;transform-origin:50% 90%}
+.stk-fl:not(.lit) .f-out{fill:var(--p3)}
+.stk-fl:not(.lit) .f-mid{fill:color-mix(in srgb,var(--p3) 65%,var(--mu))}
+.stk-fl:not(.lit) .f-core{fill:var(--mu);opacity:.4}
+.stk-fl.lit{filter:drop-shadow(0 8px 24px rgba(255,138,61,.4))}
+.stk-fl.lit .f-out,.stk-fl.lit .f-mid{transform-origin:50% 95%;animation:stkflick 2.4s ease-in-out infinite}
+.stk-fl.lit .f-mid{animation-duration:1.7s;animation-direction:reverse}
+@keyframes stkflick{50%{transform:scaleY(1.04) scaleX(.98)}}
+.stk-ov.igniting .stk-fl{animation:stkpop .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes stkpop{0%{transform:scale(.85)}60%{transform:scale(1.1)}100%{transform:scale(1)}}
+.stk-num{font:800 60px/1 Geist,system-ui,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--mu)}
+.stk-ov.done .stk-num{color:#ff8a3d}
+.stk-num.bump{animation:stkbump .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes stkbump{50%{transform:scale(1.18)}}
+.stk-unit{font-size:17px;font-weight:700;margin-top:-2px}
+.stk-msg{margin:2px 0 8px;max-width:380px;font-size:14px;line-height:1.5;color:var(--mu);min-height:1.5em}
+.stk-week{display:flex;gap:4px;padding:12px 12px 10px;border-radius:14px;background:var(--p1);border:1px solid var(--ln);margin-bottom:14px}
+.stk-day{display:grid;justify-items:center;gap:6px;width:34px}
+.stk-dn{font:600 11px Geist,system-ui,sans-serif;color:var(--mu)}
+.stk-day.today .stk-dn{color:var(--tx)}
+.stk-dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--p3);color:transparent}
+.stk-dot svg{width:12px;height:14px}
+.stk-day.on .stk-dot{background:#ff8a3d;color:#fff}
+.stk-day.today:not(.on) .stk-dot{box-shadow:inset 0 0 0 2px #ff8a3d}
+.stk-day.pop .stk-dot{animation:stkbump .45s .15s cubic-bezier(.3,1.6,.5,1) both}
+.stk-cta{display:flex;flex-direction:column;align-items:center;gap:6px}
+.stk-btn{all:unset;cursor:pointer;min-width:220px;text-align:center;padding:13px 26px;border-radius:14px;font:700 15px Geist,system-ui,sans-serif;letter-spacing:.02em;color:#fff;background:#ff8a3d;box-shadow:0 4px 0 #c45d1c;transition:transform .08s,box-shadow .08s}
+.stk-btn:hover{filter:brightness(1.06)}
+.stk-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c45d1c}
+.stk-btn:focus-visible{outline:3px solid var(--tx);outline-offset:3px}
+.stk-skip{all:unset;cursor:pointer;font-size:13px;color:var(--mu);padding:4px 10px;border-radius:8px}
+.stk-skip:hover,.stk-skip:focus-visible{color:var(--tx)}
+.stk-best{margin:6px 0 0;font-size:12px;color:var(--mu);min-height:1em}
+.upd-ov{background:var(--p1);gap:12px}
+.upd-logo{width:88px;height:88px;border-radius:22px;display:grid;place-items:center;color:#0b0a10;background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 35%,#e2559b));box-shadow:0 12px 30px rgba(0,0,0,.35);margin-bottom:4px}
+.upd-logo svg{width:42px;height:42px}
+.upd-t{font-size:17px;font-weight:700}
+.upd-new{max-width:430px;margin:0;color:var(--mu);font-size:13px;line-height:1.5}
+.upd-bar{width:min(320px,80%);height:8px;border-radius:999px;background:var(--p3);overflow:hidden;margin-top:4px}
+.upd-fill{height:100%;width:0;border-radius:inherit;background:var(--ac);transition:width .25s ease}
+.upd-ov.err .upd-fill{background:var(--bad)}
+.upd-row{font-size:12px;color:var(--mu);font-variant-numeric:tabular-nums;min-height:1em}
+.bd.updating .sb{pointer-events:none;opacity:.55}
+.cd-toast{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:70;max-width:min(560px,92vw);display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(124,92,255,.95),rgba(232,121,249,.92));color:#fff;font-size:14px;line-height:1.4;box-shadow:0 18px 50px rgba(124,92,255,.45);animation:cdtoast 5.6s ease both}
 .cd-toast b{display:block;font-size:15px}
 @keyframes cdtoast{0%{opacity:0;transform:translate(-50%,20px)}8%,88%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,10px)}}
 `;
@@ -940,7 +890,7 @@ ct.scrollTop = keepScroll ? top : 0;
 }
 const BROWSER_URL = 'https://invisiproxyltsl.onrender.com/mycs?cache=943449902';
 const vBrowser = () => `<div class="browser-page"><div class="browser-bar"><span class="sub">InvisiProxy</span><a href="${BROWSER_URL}" target="_blank" rel="noopener noreferrer">${I.ext} Open in new tab</a></div><iframe class="browser-frame" title="InvisiProxy Browser" src="${BROWSER_URL}" allow="fullscreen; clipboard-read; clipboard-write" referrerpolicy="no-referrer"></iframe></div>`;
-const go = v => { if (S.view === 'play') flushPlay(); S.view = v; if (VIEWS.includes(v)) store.set('lastView', v); renderMain(); };
+const go = v => { if (S.stk) closeStreak(); if (S.view === 'play') flushPlay(); S.view = v; if (VIEWS.includes(v)) store.set('lastView', v); renderMain(); };
 const tile = (k, v, s, color, g) => `<div class="card tile${g ? ' gtile' : ''}"><div class="k">${k}</div><div class="v" style="color:${color || 'var(--tx)'}">${v}</div><div class="sub">${s}</div></div>`;
 function status(x) {
 const now = Date.now(), d = x.due ? new Date(x.due) : null;
@@ -3027,110 +2977,7 @@ if (!pendingUpdate) return;
 try { new Function(pendingUpdate.code); } catch (e) { $('.unote').textContent = "The new version has an error, so you're staying on this one."; return; }
 runUpdate();
 }
-// ---- Cosmos: the website's aurora (violet → pink light ribbon) with a spiral galaxy and a star field that can jump to warp ----
 const still = () => !P.motion || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-function cosmos(cv, o) {
-o = Object.assign({ a: [.48, .33, 1], b: [.88, .26, .58], y: -.28, g: 1 }, o || {});
-let gl = null;
-try { gl = cv.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' }); } catch (e) {}
-if (!gl) { cv.classList.add('nogl'); return { w: 0, stop() {} }; }
-const fs = `precision mediump float;
-uniform vec2 R;uniform float T;uniform vec3 A;uniform vec3 B;uniform float Y;uniform float W;uniform float G;uniform float S;
-float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),f.x),f.y);}
-float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
-float stars(vec2 p){float s=0.;vec2 nr=normalize(p+1e-4);vec2 tg=vec2(-nr.y,nr.x);
-for(int i=0;i<3;i++){float z=fract(S+float(i)/3.);float sc=mix(16.,1.,z);vec2 q=p*sc+float(i)*7.31;vec2 g=floor(q);vec2 f=fract(q)-.5;float r=h(g);
-if(r>.9){vec2 fo=f-(vec2(h(g+3.1),h(g+7.7))-.5)*.6;float d=length(vec2(dot(fo,nr)/(1.+W*10.),dot(fo,tg)));
-float tw=.55+.45*sin(T*2.6+r*60.);s+=smoothstep(.07,.0,d)*tw*smoothstep(0.,.35,z)*smoothstep(1.,.8,z)*(1.+W*1.6);}}return s;}
-void main(){
-vec2 p=(gl_FragCoord.xy-.5*R)/R.y;float t=T*.035;
-vec2 q=vec2(fbm(p*1.3+vec2(0.,t)),fbm(p*1.3+vec2(4.3,-t)));
-float f=fbm(p*1.1+q*1.8+vec2(t*.7,0.));
-float b=p.y+.22*sin(p.x*1.4+t*2.4)+(q.x-.5)*.75-Y;
-float r1=exp(-b*b*26.)*(.25+1.2*f*f);float r2=exp(-(b+.16)*(b+.16)*60.)*.7*f;float r3=exp(-(b-.2)*(b-.2)*90.)*.45*q.y;float hz=exp(-b*b*3.)*.10;
-vec3 c=mix(A,B,smoothstep(.3,.8,f+p.x*.4));
-vec3 o=c*(r1+r2+r3+hz)*.62+A*.012;
-float r=length(p);float a=atan(p.y,p.x);
-float arms=.5+.5*sin(2.*a-log(r+.03)*5.5-T*(.12+W*1.6));
-float core=exp(-r*r*18.)*.8+exp(-r*3.6)*arms*fbm(p*3.2+vec2(t,-t))*1.1;
-o+=mix(B,A,smoothstep(0.,.55,r))*core*G*(.55+W*.9);
-o+=vec3(.86,.84,1.)*stars(p);
-o+=(h(gl_FragCoord.xy+fract(T))-.5)/120.;
-gl_FragColor=vec4(o,1.);}`;
-const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null; };
-const v = sh(gl.VERTEX_SHADER, 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}'), f = sh(gl.FRAGMENT_SHADER, fs);
-const pr = v && f && gl.createProgram();
-if (pr) { gl.attachShader(pr, v); gl.attachShader(pr, f); gl.linkProgram(pr); }
-if (!pr || !gl.getProgramParameter(pr, gl.LINK_STATUS)) { cv.classList.add('nogl'); return { w: 0, stop() {} }; }
-gl.useProgram(pr);
-gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-const U = {}; ['R', 'T', 'A', 'B', 'Y', 'W', 'G', 'S'].forEach(k => { U[k] = gl.getUniformLocation(pr, k); });
-const api = { w: 0, stop() { api.dead = true; } };
-let raf = 0, last = performance.now(), sp = 0, wNow = 0;
-const t0 = performance.now();
-const size = () => { const k = innerWidth < 700 ? .4 : .5; cv.width = Math.max(2, Math.round(innerWidth * k)); cv.height = Math.max(2, Math.round(innerHeight * k)); gl.viewport(0, 0, cv.width, cv.height); };
-size();
-const frame = now => {
-if (api.dead || !cv.isConnected) { cancelAnimationFrame(raf); return; }
-const dt = Math.min(.05, (now - last) / 1000); last = now;
-wNow += (api.w - wNow) * Math.min(1, dt * 3);
-sp += dt * (.018 + wNow * wNow * 1.4);
-if (cv.width !== Math.round(innerWidth * (innerWidth < 700 ? .4 : .5))) size();
-gl.uniform2f(U.R, cv.width, cv.height); gl.uniform1f(U.T, (now - t0) / 1000 + 40);
-gl.uniform3fv(U.A, o.a); gl.uniform3fv(U.B, o.b); gl.uniform1f(U.Y, o.y); gl.uniform1f(U.G, o.g);
-gl.uniform1f(U.W, wNow); gl.uniform1f(U.S, sp);
-gl.drawArrays(gl.TRIANGLES, 0, 3);
-if (!still()) raf = requestAnimationFrame(frame);
-};
-raf = requestAnimationFrame(frame);
-return api;
-}
-// Particles on a 2D canvas (sparks, embers, a charge that pulls inward), drawn additively so they glow
-function sparkle(cv) {
-const c = cv.getContext('2d'), ps = [];
-let raf = 0, dead = false, dpr = Math.min(2, window.devicePixelRatio || 1), last = performance.now();
-const fit = () => { cv.width = Math.round(innerWidth * dpr); cv.height = Math.round(innerHeight * dpr); };
-fit();
-const api = {
-add(p) { if (!still() && ps.length < 900) ps.push(Object.assign({ life: 0, max: 1, size: 2, grav: 0, drag: .985, kind: 'spark', a: 1 }, p)); },
-burst(x, y, n, cols, sp = 9) { for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, v = (Math.random() ** .55) * sp; api.add({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 1.2, max: .7 + Math.random() * 1.1, size: 1.2 + Math.random() * 2.6, grav: .09, color: cols[i % cols.length], kind: Math.random() < .7 ? 'spark' : 'ember' }); } },
-stop() { dead = true; cancelAnimationFrame(raf); }
-};
-const frame = now => {
-if (dead || !cv.isConnected) return;
-const dt = Math.min(.05, (now - last) / 1000) * 60; last = now;
-if (cv.width !== Math.round(innerWidth * dpr)) fit();
-c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, cv.width, cv.height); c.setTransform(dpr, 0, 0, dpr, 0, 0);
-c.globalCompositeOperation = 'lighter';
-for (let i = ps.length - 1; i >= 0; i--) {
-const p = ps[i];
-p.life += dt / 60;
-if (p.life >= p.max) { ps.splice(i, 1); continue; }
-if (p.tx != null) { p.vx += (p.tx - p.x) * .012 * dt; p.vy += (p.ty - p.y) * .012 * dt; p.vx *= .9; p.vy *= .9; }
-else { p.vy += p.grav * dt; p.vx *= Math.pow(p.drag, dt); p.vy *= Math.pow(p.drag, dt); if (p.kind === 'ember') p.vx += Math.sin((p.life + p.size) * 9) * .04 * dt; }
-p.x += p.vx * dt; p.y += p.vy * dt;
-const k = 1 - p.life / p.max, al = p.a * Math.min(1, k * 1.6);
-c.globalAlpha = al;
-if (p.kind === 'spark') {
-c.strokeStyle = p.color; c.lineWidth = p.size; c.lineCap = 'round';
-c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx * 2.4, p.y - p.vy * 2.4); c.stroke();
-} else {
-const r = p.size * (1.6 + k);
-const g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 3);
-g.addColorStop(0, p.color); g.addColorStop(1, 'rgba(0,0,0,0)');
-c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, r * 3, 0, Math.PI * 2); c.fill();
-}
-}
-c.globalAlpha = 1;
-raf = requestAnimationFrame(frame);
-};
-raf = requestAnimationFrame(frame);
-return api;
-}
-
 // ---- Daily streak: open Classboard and ignite the flame once a day to keep it going ----
 const dkey = d => { const x = new Date(d); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); };
 const dayShift = n => { const x = new Date(); return new Date(x.getFullYear(), x.getMonth(), x.getDate() + n); };
@@ -3156,91 +3003,53 @@ b.title = st.lit ? st.s.count + '-day streak · lit today' : st.shown ? 'Light t
 }
 function openStreak() {
 if (S.stk || S.updating) return;
-const st = streakNow(), fire = ['#ffd166', '#ff8a3d', '#ff4d6d', '#e36bd6', '#a78bfa', '#fff4cf'];
+const st = streakNow();
 const ov = document.createElement('div');
 ov.className = 'stk-ov' + (st.lit ? ' done' : '');
 ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', 'Daily streak');
-const week = () => [...Array(7)].map((_, i) => { const d = dayShift(i - 6), k = dkey(d), on = st.s.days.includes(k) || (k === st.today && S.stk && S.stk.lit); return `<div class="stk-day${on ? ' on' : ''}${k === st.today ? ' today' : ''}" style="--i:${i}"><span class="stk-dot">${flameIco}</span><span class="stk-dn">${'SMTWTFS'[d.getDay()]}</span></div>`; }).join('');
-const msg = st.lit ? (STK_MILE[st.s.count] || 'Lit for today. Come back tomorrow to keep it going.') : st.broke ? `Your ${st.broke}-day streak burned out. Light a new one!` : st.shown ? `Day ${st.next} is waiting. Don't let it go out!` : 'Light your first flame. Open Classboard every day to keep it burning.';
-ov.innerHTML = `<canvas class="cos"></canvas><div class="stk-flash"></div>
-<div class="stk-stage"><div class="stk-top"><span class="stk-k">Daily streak</span><button class="stk-x" data-act="stkclose" aria-label="Close">${I.x}</button></div>
-<div class="stk-hero"><div class="stk-waves"><i></i><i></i><i></i></div>
-<svg class="stk-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="cdstkR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd166"/><stop offset=".5" stop-color="#ff6aa2"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs><circle cx="100" cy="100" r="92" class="stk-track"/><circle cx="100" cy="100" r="92" class="stk-prog"/></svg>
-<button class="stk-flb" data-act="stkhold" aria-label="${st.lit ? 'Your flame is lit' : 'Hold to ignite'}">${FLAME}</button></div>
-<div class="stk-count"><span class="stk-num">${st.lit ? st.s.count : st.shown}</span><span class="stk-unit">day streak</span></div>
-<p class="stk-msg">${esc(msg)}</p>
-<div class="stk-week">${week()}</div>
-<div class="stk-cta">${st.lit ? `<button class="stk-btn" data-act="stkclose">Let's go</button>` : `<button class="stk-btn hold" data-act="stkhold"><span class="stk-btxt">Hold to ignite</span><i class="stk-bfill"></i></button><button class="stk-skip" data-act="stkclose">Not now</button>`}</div>
-<p class="stk-best">${st.s.best > 1 ? 'Best streak: ' + st.s.best + ' days' : ''}</p></div><canvas class="stk-fx"></canvas>`;
-$('.bd').appendChild(ov);
+ov.innerHTML = `<button class="stk-x" data-act="stkclose" aria-label="Close">${I.x}</button><div class="stk-fw">${FLAME}</div>
+<div class="stk-num">${st.lit ? st.s.count : st.shown}</div><div class="stk-unit">day streak</div>
+<p class="stk-msg"></p><div class="stk-week"></div><div class="stk-cta"></div><p class="stk-best"></p>`;
+$('.mn').appendChild(ov);
+S.stk = { ov, st, lit: st.lit };
 if (st.lit) ov.querySelector('.stk-fl').classList.add('lit');
-const bg = cosmos(ov.querySelector('.cos'), { a: [.62, .32, 1], b: [1, .42, .3], y: -.42, g: .7 });
-const fx = sparkle(ov.querySelector('.stk-fx'));
-const center = () => { const r = ov.querySelector('.stk-flb').getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height * .62]; };
-const prog = ov.querySelector('.stk-prog'), CIRC = 2 * Math.PI * 92;
-prog.style.strokeDasharray = CIRC; prog.style.strokeDashoffset = CIRC;
-const S2 = S.stk = { ov, st, charge: 0, holding: false, lit: st.lit, raf: 0, bg, fx };
-const ember = (n, spread, up) => { const [x, y] = center(); for (let i = 0; i < n; i++) fx.add({ x: x + (Math.random() - .5) * spread, y: y + 10 - Math.random() * 20, vx: (Math.random() - .5) * .6, vy: -(.6 + Math.random() * up), max: 1 + Math.random() * 1.6, size: 1 + Math.random() * 2, grav: -.004, drag: .995, color: fire[(Math.random() * 4) | 0], kind: 'ember', a: S2.lit ? .9 : .45 }); };
-let tick = 0;
-const loop = () => {
-if (!ov.isConnected) return;
-tick++;
-if (S2.holding && !S2.lit) {
-S2.charge = Math.min(1, S2.charge + 1 / 54);
-const [x, y] = center();
-for (let i = 0; i < 3; i++) { const a = Math.random() * Math.PI * 2, r = 150 + Math.random() * 160; fx.add({ x: x + Math.cos(a) * r, y: y + Math.sin(a) * r, vx: 0, vy: 0, tx: x, ty: y, max: .55, size: 1.4 + Math.random() * 1.6, color: fire[(Math.random() * fire.length) | 0], kind: 'spark' }); }
-bg.w = S2.charge * .35;
-if (S2.charge >= 1) ignite();
-} else if (!S2.lit && S2.charge > 0) { S2.charge = Math.max(0, S2.charge - 1 / 30); bg.w = S2.charge * .35; }
-ov.style.setProperty('--charge', S2.charge.toFixed(3));
-prog.style.strokeDashoffset = CIRC * (1 - S2.charge);
-if (tick % (S2.lit ? 3 : 14) === 0) ember(S2.lit ? 2 : 1, S2.lit ? 50 : 30, S2.lit ? 2.2 : 1);
-S2.raf = requestAnimationFrame(loop);
-};
-S2.raf = requestAnimationFrame(loop);
-function ignite() {
-if (S2.lit) return;
-S2.lit = true; S2.holding = false; ov.classList.remove('holding');
-const prev = st.shown, s = st.s, n = st.next;
+paintStreak(st.lit ? (STK_MILE[st.s.count] || 'Lit for today. Come back tomorrow to keep it going.') : st.broke ? `Your ${st.broke}-day streak went out. Ignite a new one!` : st.shown ? `Day ${st.next} is waiting. Ignite it to keep your streak going.` : 'Ignite your first flame. Open Classboard every day to keep it going.');
+}
+// fills in the message, the week of flames, and the buttons
+function paintStreak(msg, popToday) {
+const S2 = S.stk; if (!S2) return;
+const { ov, st } = S2, s = st.s;
+ov.querySelector('.stk-msg').textContent = msg;
+ov.querySelector('.stk-week').innerHTML = [...Array(7)].map((_, i) => { const d = dayShift(i - 6), k = dkey(d), on = (s.days || []).includes(k); return `<div class="stk-day${on ? ' on' : ''}${k === st.today ? ' today' : ''}${popToday && k === st.today ? ' pop' : ''}"><span class="stk-dn">${'SMTWTFS'[d.getDay()]}</span><span class="stk-dot">${flameIco}</span></div>`; }).join('');
+ov.querySelector('.stk-cta').innerHTML = S2.lit ? `<button class="stk-btn" data-act="stkclose">Continue</button>` : `<button class="stk-btn" data-act="stkignite">Ignite</button><button class="stk-skip" data-act="stkclose">Not now</button>`;
+ov.querySelector('.stk-best').textContent = s.best > 1 ? 'Best streak: ' + s.best + ' days' : '';
+const b = ov.querySelector('.stk-btn'); if (b) b.focus({ preventScroll: true });
+}
+function igniteStreak() {
+const S2 = S.stk; if (!S2 || S2.lit) return;
+const { ov, st } = S2, s = st.s, n = st.next, calm = still();
+S2.lit = true;
 s.count = n; s.best = Math.max(s.best || 0, n); s.last = st.today;
 s.days = [...new Set([...(s.days || []), st.today])].filter(k => k >= dkey(dayShift(-60)));
 store.set('streak', s);
-ov.classList.add('igniting');
+ov.classList.add('done');
+if (!calm) { ov.classList.add('igniting'); setTimeout(() => ov.classList.remove('igniting'), 700); }
 ov.querySelector('.stk-fl').classList.add('lit');
-const [x, y] = center();
-const mile = !!STK_MILE[n];
-fx.burst(x, y, still() ? 0 : mile ? 420 : 260, fire, mile ? 15 : 11);
-setTimeout(() => fx.burst(x, y - 30, still() ? 0 : 120, ['#fff4cf', '#ffd166', '#ff8fb0'], 6), 160);
-bg.w = 1; setTimeout(() => { bg.w = .12; }, 900);
 const num = ov.querySelector('.stk-num');
-const steps = Math.min(12, Math.max(1, n - prev));
-for (let i = 1; i <= steps; i++) setTimeout(() => { num.textContent = Math.round(prev + (n - prev) * i / steps); num.classList.remove('roll'); void num.offsetWidth; num.classList.add('roll'); }, 260 + i * (520 / steps));
-setTimeout(() => {
-ov.querySelector('.stk-msg').textContent = mile ? STK_MILE[n] : n === 1 ? 'Streak started! Come back tomorrow for day 2.' : `Day ${n}! Your streak is still burning.`;
-ov.querySelector('.stk-week').innerHTML = week();
-ov.querySelector('.stk-cta').innerHTML = `<button class="stk-btn" data-act="stkclose">Let's go</button>`;
-const b = ov.querySelector('.stk-best'); b.textContent = s.best > 1 ? 'Best streak: ' + s.best + ' days' : '';
-ov.classList.add('done'); if (mile) ov.classList.add('mile');
+num.textContent = n;
+if (!calm) { num.classList.remove('bump'); void num.offsetWidth; num.classList.add('bump'); }
+paintStreak(STK_MILE[n] || (n === 1 ? 'Streak started! Come back tomorrow for day 2.' : `Day ${n}! Your streak is still going.`), !calm);
 paintStreakChip();
-}, 900);
-setTimeout(() => ov.classList.remove('igniting'), 1400);
-}
-S2.ignite = ignite;
 }
 function closeStreak() {
 const S2 = S.stk; if (!S2) return;
 S.stk = null;
 S2.ov.classList.add('out');
-setTimeout(() => { cancelAnimationFrame(S2.raf); S2.bg.stop(); S2.fx.stop(); S2.ov.remove(); }, 380);
+setTimeout(() => S2.ov.remove(), still() ? 0 : 200);
 paintStreakChip();
 }
-function streakHold(on) {
-const S2 = S.stk; if (!S2 || S2.lit) return;
-S2.holding = on;
-S2.ov.classList.toggle('holding', on);
-}
 
-// ---- Update screen: a warp through the galaxy while the new version downloads, gets checked, and installs ----
+// ---- Update screen: shown in the main pane like a game's loading screen, with a progress bar ----
 async function runUpdate() {
 if (!pendingUpdate || S.updating) return;
 if (S.stk) closeStreak();
@@ -3249,41 +3058,24 @@ const m = pendingUpdate.code.match(/const WHATSNEW = (['"])(.*?)\1;/);
 const ov = document.createElement('div');
 ov.className = 'upd-ov';
 ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', 'Updating Classboard');
-const STEPS = ['Download', 'Check', 'Save', 'Install', 'Launch'];
-ov.innerHTML = `<canvas class="cos"></canvas><canvas class="upd-fx"></canvas>
-<div class="upd-stage"><div class="upd-logo">${I.board}</div><div class="upd-k">Classboard update</div>
-<h2 class="upd-h">Updating version</h2>${m && m[2] ? `<p class="upd-new">${esc(m[2])}</p>` : ''}
-<div class="upd-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="upd-fill"><i></i></div><span class="upd-head"></span></div>
-<div class="upd-row"><span class="upd-step">Downloading the newest version…</span><span class="upd-pct">0%</span></div>
-<ol class="upd-steps">${STEPS.map((s, i) => `<li data-s="${i}"><b></b>${s}</li>`).join('')}</ol></div><div class="upd-flash"></div>`;
-$('.bd').appendChild(ov);
-const bg = cosmos(ov.querySelector('.cos')), fx = sparkle(ov.querySelector('.upd-fx'));
-const bar = ov.querySelector('.upd-bar'), fill = ov.querySelector('.upd-fill'), head = ov.querySelector('.upd-head'), pctEl = ov.querySelector('.upd-pct'), stepEl = ov.querySelector('.upd-step');
-let shown = 0, target = 0, raf = 0;
-const cols = ['#c4b5fd', '#a78bfa', '#f0abfc', '#ff8fb0', '#ffffff'];
-const loop = () => {
-if (!ov.isConnected) return;
-const before = shown;
-shown += (target - shown) * (still() ? 1 : .085);
-if (target - shown < .05) shown = target;
-fill.style.width = shown + '%'; head.style.left = shown + '%';
-pctEl.textContent = Math.floor(shown) + '%'; bar.setAttribute('aria-valuenow', Math.floor(shown));
-bg.w = Math.pow(shown / 100, 1.6) * .85;
-const r = bar.getBoundingClientRect(), hx = r.left + r.width * shown / 100, hy = r.top + r.height / 2, speed = shown - before;
-for (let i = 0; i < Math.min(6, 1 + speed * 4); i++) fx.add({ x: hx, y: hy, vx: -1 - Math.random() * 3 - speed * 2, vy: (Math.random() - .5) * 2.4, max: .4 + Math.random() * .5, size: .8 + Math.random() * 1.6, grav: .02, color: cols[(Math.random() * cols.length) | 0], kind: Math.random() < .8 ? 'spark' : 'ember' });
-raf = requestAnimationFrame(loop);
-};
-raf = requestAnimationFrame(loop);
+ov.innerHTML = `<div class="upd-logo">${I.board}</div><div class="upd-t">Updating Classboard</div>${m && m[2] ? `<p class="upd-new">${esc(m[2])}</p>` : ''}
+<div class="upd-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="upd-fill"></div></div>
+<div class="upd-row"><span class="upd-step"></span> · <span class="upd-pct">0%</span></div>`;
+const bd = $('.bd');
+bd.classList.add('updating');
+$('.mn').appendChild(ov);
+const bar = ov.querySelector('.upd-bar'), fill = ov.querySelector('.upd-fill'), pctEl = ov.querySelector('.upd-pct'), stepEl = ov.querySelector('.upd-step');
+const set = (pct, text) => { pct = Math.round(pct); fill.style.width = pct + '%'; pctEl.textContent = pct + '%'; bar.setAttribute('aria-valuenow', pct); if (text) stepEl.textContent = text; };
 const wait = ms => new Promise(r => setTimeout(r, still() ? Math.min(ms, 150) : ms));
-const step = (i, text) => { stepEl.textContent = text; ov.querySelectorAll('.upd-steps li').forEach((li, k) => { li.className = k < i ? 'ok' : k === i ? 'on' : ''; }); };
 const fail = async msg => {
-ov.classList.add('err'); step(-1, msg); stepEl.textContent = msg;
+ov.classList.add('err'); stepEl.textContent = msg;
 await wait(2600);
-ov.classList.add('out'); setTimeout(() => { cancelAnimationFrame(raf); bg.stop(); fx.stop(); ov.remove(); }, 400);
+ov.classList.add('out'); setTimeout(() => ov.remove(), 200);
+bd.classList.remove('updating');
 S.updating = false;
 };
 // 1. download the newest copy (with real progress); if GitHub can't be reached, use the copy the update check already got
-step(0, 'Downloading the newest version…');
+set(2, 'Downloading the newest version…');
 let code = pendingUpdate.code;
 const t1 = Date.now();
 try {
@@ -3291,43 +3083,29 @@ const res = await fetch(RAW + 'bookmarklet.js?t=' + Date.now(), { cache: 'no-sto
 if (!res.ok || !res.body) throw new Error(res.status);
 const rd = res.body.getReader(), parts = [], est = Math.max(pendingUpdate.code.length, Number(res.headers.get('content-length')) || 0);
 let got = 0;
-for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); got += value.length; target = 4 + 48 * Math.min(1, got / est); }
+for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); got += value.length; set(2 + 58 * Math.min(1, got / est)); }
 const all = new Uint8Array(got); let o = 0; for (const p of parts) { all.set(p, o); o += p.length; }
 const txt = new TextDecoder().decode(all);
 if (txt.length > 1000) code = txt;
 } catch (e) {}
-target = 52; await wait(Math.max(0, 900 - (Date.now() - t1)));
+set(60); await wait(Math.max(0, 600 - (Date.now() - t1)));
 // 2. make sure it runs before switching to it
-step(1, 'Checking the new code…');
+set(60, 'Checking the new version…');
 let run;
 try { run = new Function(code); } catch (e) {
 try { run = new Function(pendingUpdate.code); code = pendingUpdate.code; } catch (e2) { return fail("This update has an error, so you're staying on your current version."); }
 }
-target = 70; await wait(550);
-// 3. your settings, streak, saves and flashcards live in this browser; nothing to move, just say so
-step(2, 'Keeping your settings, streak, and saves…');
-target = 84; await wait(520);
-// 4. install
-step(3, 'Installing…');
+await wait(350);
+// 3. install (settings, streak, saves and flashcards stay in this browser)
+set(82, 'Installing…');
 store.set('installed', { code, at: Date.now() });
 store.set('justUpdated', { at: Date.now(), note: m && m[2] ? m[2] : '' });
-target = 100; await wait(700);
-// 5. warp out and start the new version
-step(4, 'Launching…');
-ov.classList.add('warp');
-bg.w = 1.4;
-const r = bar.getBoundingClientRect();
-fx.burst(r.left + r.width, r.top + r.height / 2, still() ? 0 : 320, cols, 14);
-await wait(650);
-const flash = document.createElement('div');
-flash.id = 'classboard-update-flash';
-flash.style.cssText = 'position:fixed;inset:0;z-index:2147483647;pointer-events:none;background:radial-gradient(circle at 50% 50%,#fff 0%,#f5e9ff 30%,#0b0a10 100%);opacity:1;transition:opacity .7s ease';
-document.documentElement.appendChild(flash);
-cancelAnimationFrame(raf); bg.stop(); fx.stop();
+await wait(350);
+set(100, 'Starting the new version…');
+await wait(450);
 close();
 window.__classDashPinned = true;
 run();
-setTimeout(() => { flash.style.opacity = '0'; setTimeout(() => flash.remove(), 800); }, 120);
 }
 // ---- Address bar: search everything, or type an address like study.ecology-study / games.2048 ----
 const slug = s => String(s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -3551,7 +3329,7 @@ else if (d.act === 'close') close();
 else if (d.act === 'later') $('.ubar').hidden = true;
 else if (d.act === 'streak') openStreak();
 else if (d.act === 'stkclose') closeStreak();
-else if (d.act === 'stkhold') { if (S.stk && !S.stk.lit && !S.stk.charge) { const m = S.stk.ov.querySelector('.stk-msg'); if (m) m.textContent = 'Press and HOLD the flame (or the button) until it lights!'; } }
+else if (d.act === 'stkignite') igniteStreak();
 else if (d.act === 'hallpass') openHallPass();
 else if (d.act === 'checkupd') checkUpdates();
 else if (d.act === 'update') applyUpdate();
@@ -3573,9 +3351,6 @@ else if (t.matches('[data-pcolor]') && hexOk(t.value)) setPref('accent', t.value
 root.addEventListener('input', e => {
 if (e.target.matches('[data-pcolor]') && hexOk(e.target.value)) $('.bd').style.setProperty('--ac', e.target.value);
 });
-const holdEl = e => e.target.closest && e.target.closest('[data-act="stkhold"]');
-root.addEventListener('pointerdown', e => { if (holdEl(e) && S.stk) { e.preventDefault(); try { holdEl(e).setPointerCapture(e.pointerId); } catch (x) {} streakHold(true); } });
-['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => root.addEventListener(ev, () => { if (S.stk && S.stk.holding) streakHold(false); }));
 root.addEventListener('contextmenu', e => { if (holdEl(e)) e.preventDefault(); });
 root.addEventListener('submit', e => {
 if (e.target.closest && e.target.closest('[data-unlock]')) { e.preventDefault(); unlockAdmin(); return; }
@@ -3606,7 +3381,7 @@ if (S.updating) { e.preventDefault(); e.stopPropagation(); return; }
 if (S.stk) {
 e.stopPropagation();
 if (e.key === 'Escape' && down) { e.preventDefault(); closeStreak(); }
-else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (S.stk.lit) { if (down && !e.repeat) closeStreak(); } else if (!e.repeat) streakHold(down); }
+else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (down && !e.repeat) { const f = root.activeElement; if (f && f.closest && f.closest('.stk-ov') && f.matches('button')) f.click(); else if (S.stk.lit) closeStreak(); else igniteStreak(); } }
 else if (e.key === 'Tab') return;
 else e.preventDefault();
 return;
@@ -3705,7 +3480,7 @@ if (ju && Date.now() - ju.at < 30000) {
 store.set('justUpdated', null);
 const t = document.createElement('div'); t.className = 'cd-toast'; t.setAttribute('role', 'status');
 t.innerHTML = `<span>${I.refresh}</span><span><b>Classboard is up to date</b>${esc(ju.note || '')}</span>`;
-$('.bd').appendChild(t); setTimeout(() => t.remove(), 5800);
+$('.win').appendChild(t); setTimeout(() => t.remove(), 5800);
 } else if (!LIB && P.streakIntro !== false && !streakNow().lit) setTimeout(openStreak, 450);
 }
 })();
