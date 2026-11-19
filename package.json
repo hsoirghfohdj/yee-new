@@ -1,7 +1,0 @@
-{
-  "private": true,
-  "description": "Server functions in api/ (the site itself is static files).",
-  "dependencies": {
-    "@anthropic-ai/sdk": "1.10.0"
-  }
-}
