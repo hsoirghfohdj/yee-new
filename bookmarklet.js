@@ -27,7 +27,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Study classes fold up now: yours stay open, the rest start folded, and clicking any class opens or folds it, with the classes sliding together so there are no empty gaps. New games: Web Dashers and an Interstellar self-hosted launcher (both work best in their own tabs). New this week now sits at the top of Games. Daily streaks: light your flame every day you open Classboard to keep it going.';
+const WHATSNEW = 'Move your study progress to another device: on the Study page, click Get save code, then on your other device click Enter a save code and paste it. Practice test scores and saved spots, flashcards and recent study all come along.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -60,7 +60,8 @@ periods: store.get('periods', {}),
 req: {}, reqMsg: {},
 delArm: null,
 resetArm: false, setMsg: null,
-fc: { id: null, mode: 'study' }, rep: { open: false, why: '' }
+fc: { id: null, mode: 'study' }, rep: { open: false, why: '' },
+xfer: { open: null, code: '', info: '', msg: null, copied: false, inCode: '' }
 };
 const svg = p => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
 const I = {
@@ -101,6 +102,7 @@ pic: svg('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10
 file: svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>'),
 plus: svg('<path d="M12 5v14M5 12h14"/>'),
 cards: svg('<rect x="2" y="6" width="15" height="13" rx="2"/><path d="M7 3h13a2 2 0 0 1 2 2v11"/>'),
+sync: svg('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/>'),
 flag: svg('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'),
 dots: svg('<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>'),
 brief: svg('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>'),
@@ -453,6 +455,9 @@ background:radial-gradient(120% 160% at 0% 0%,color-mix(in srgb,var(--ac) 20%,tr
 .fcslim .ssi{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#0b0a10;flex:none}
 .fcslim .ssi svg{width:15px;height:15px}
 .fcslim .fcimp{flex-basis:100%;margin-top:4px;padding-top:8px}
+.fcslim .fcshare{flex-basis:100%}
+.fcslim.xfer .grow{flex:1 1 260px;min-width:0}
+.fcslim.xfer .grow .sub{white-space:normal}
 .gmw{position:relative}
 .gmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:5;min-width:230px;padding:6px;border-radius:12px;background:var(--p1);border:1px solid var(--ln);box-shadow:0 18px 40px rgba(0,0,0,.45)}
 .gmenu[hidden]{display:none}
@@ -1898,6 +1903,107 @@ const contCard = (p, at) => `<div class="ccard" ${docAttrs(p)}><span class="rri"
 // Study classes fold up: yours start open and the others start folded. Clicking a class header flips it, and this
 // browser remembers that choice (classdash_studyFold). Searching or picking one class shows everything that matches.
 const foldOf = (cls, mine) => { const f = store.get('studyFold', {})[cls]; return typeof f === 'boolean' ? f : !mine; };
+// ---- Save code: moves study progress (practice-test saves, flashcards, recent study, ratings) to another device ----
+const XFER_KEYS = ['cards', 'recentDocs', 'ratings'];
+const DOCSAVE = 'classdash_docsave:';
+async function packProgress() {
+const docs = {};
+for (let i = 0; i < localStorage.length; i++) {
+const k = localStorage.key(i);
+if (!k || !k.startsWith(DOCSAVE)) continue;
+try { const v = JSON.parse(localStorage.getItem(k)); if (v && typeof v === 'object' && Object.keys(v).length) docs[k.slice(DOCSAVE.length)] = v; } catch (e) {}
+}
+const o = { v: 1, at: Date.now(), docs };
+XFER_KEYS.forEach(k => { const v = store.get(k, null); if (v != null) o[k] = v; });
+const sets = Array.isArray(o.cards) ? o.cards.length : 0, pages = Object.keys(docs).length;
+if (!pages && !sets && !(o.recentDocs || []).length) return null;
+const z = new Blob([JSON.stringify(o)]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+return { code: 'CBS1-' + b64url(new Uint8Array(await new Response(z).arrayBuffer())), pages, sets };
+}
+async function loadProgress(code) {
+code = String(code || '').replace(/\s+/g, '');
+const m = code.match(/CBS1-([A-Za-z0-9_-]+)/);
+if (!m) throw new Error(/CD1-/.test(code) ? 'flashcards' : 'code');
+let b = m[1].replace(/-/g, '+').replace(/_/g, '/');
+while (b.length % 4) b += '=';
+const u8 = Uint8Array.from(atob(b), ch => ch.charCodeAt(0));
+const j = JSON.parse(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text());
+if (!j || j.v !== 1) throw new Error('code');
+let pages = 0, sets = 0;
+// a page's saved progress from the code replaces this browser's save for that page
+if (j.docs && typeof j.docs === 'object') Object.entries(j.docs).forEach(([path, v]) => {
+if (typeof path !== 'string' || !path.startsWith(STUDY) || path.length > 400 || !v || typeof v !== 'object' || Array.isArray(v)) return;
+const clean = {};
+Object.entries(v).forEach(([k, x]) => { if (typeof x === 'string') clean[k] = x; });
+saveDoc(path, clean); pages++;
+});
+// flashcard sets: add the ones this browser doesn't have; when both have a set, keep the newer one
+if (Array.isArray(j.cards)) {
+const byId = new Map(fcSets().map(x => [x.id, x]));
+j.cards.forEach(x => {
+if (!x || typeof x.id !== 'string' || !Array.isArray(x.cards)) return;
+const have = byId.get(x.id);
+if (!have || (Number(x.at) || 0) > (Number(have.at) || 0)) {
+byId.set(x.id, { id: x.id, title: String(x.title || 'Untitled').slice(0, 80), at: Number(x.at) || Date.now(), cards: x.cards.filter(c => c && typeof c === 'object').slice(0, 500).map(c => ({ t: String(c.t || '').slice(0, 500), d: String(c.d || '').slice(0, 1500), ...(c.k != null ? { k: !!c.k } : {}) })) });
+sets++;
+}
+});
+fcSave([...byId.values()].sort((a, c) => (c.at || 0) - (a.at || 0)));
+}
+if (Array.isArray(j.recentDocs)) {
+const all = [...store.get('recentDocs', []), ...j.recentDocs.filter(r => r && typeof r.id === 'string' && typeof r.at === 'number')].sort((a, c) => c.at - a.at);
+store.set('recentDocs', all.filter((r, i) => all.findIndex(x => x.id === r.id) === i).slice(0, 6));
+}
+if (j.ratings && typeof j.ratings === 'object') {
+const mine = store.get('ratings', {});
+Object.entries(j.ratings).forEach(([id, r]) => { if (r && typeof r === 'object' && (!mine[id] || (r.at || 0) > (mine[id].at || 0))) mine[id] = { s: Number(r.s) || 0, at: Number(r.at) || 0 }; });
+store.set('ratings', mine);
+}
+return { pages, sets };
+}
+function xferRow() {
+const X = S.xfer;
+const out = X.open === 'out' ? `<div class="fcshare"><div class="sub wrap">${esc(X.info)} On your other device, open Classboard, go to <b>Study</b>, click <b>Enter a save code</b> and paste it. Anyone with this code can copy your progress.</div><textarea readonly data-xcode>${esc(X.code)}</textarea><div class="sacts"><button class="btn sm pri" data-act="xfercopy">Copy code</button><span class="amsg ok">${X.copied ? 'Copied!' : ''}</span></div></div>` : '';
+const inn = X.open === 'in' ? `<div class="fcimp"><input data-xin placeholder="Paste a save code here (starts with CBS1-)" value="${esc(X.inCode)}" autocomplete="off" spellcheck="false"><button class="btn" data-act="xferload">Load progress</button><span class="amsg ${X.msg ? X.msg.cls : ''}">${esc(X.msg ? X.msg.text : '')}</span></div>` : X.msg ? `<div class="fcimp"><span class="amsg ${X.msg.cls}">${esc(X.msg.text)}</span></div>` : '';
+return `<div class="fcslim xfer"><span class="ssi" style="background:var(--ac)">${I.sync}</span><div class="grow"><b>Move your progress to another device</b> <span class="sub">Practice test scores and saved spots, flashcards and recent study.</span></div>
+<button class="btn sm${X.open === 'out' ? ' pri' : ''}" data-act="xferout">Get save code</button><button class="btn sm${X.open === 'in' ? ' pri' : ''}" data-act="xferin">Enter a save code</button>${out}${inn}</div>`;
+}
+async function xferAct(d) {
+const X = S.xfer;
+switch (d.act) {
+case 'xferout':
+if (X.open === 'out') { X.open = null; return renderMain(true); }
+X.msg = null; X.copied = false;
+try {
+const got = await packProgress();
+if (!got) { X.open = null; X.msg = { text: "There's no study progress saved in this browser yet.", cls: 'err' }; return renderMain(true); }
+const bits = [got.pages ? got.pages + ' study ' + (got.pages === 1 ? 'page' : 'pages') : '', got.sets ? got.sets + ' flashcard ' + (got.sets === 1 ? 'set' : 'sets') : ''].filter(Boolean);
+Object.assign(X, { open: 'out', code: got.code, info: 'This code holds your progress' + (bits.length ? ' on ' + bits.join(' and ') : '') + '.' });
+} catch (e) { X.open = null; X.msg = { text: "Couldn't make a save code in this browser.", cls: 'err' }; }
+return renderMain(true);
+case 'xferin':
+X.open = X.open === 'in' ? null : 'in'; X.msg = null; renderMain(true);
+{ const i = root.querySelector('[data-xin]'); if (i) i.focus(); }
+return;
+case 'xfercopy': {
+const t = root.querySelector('[data-xcode]');
+try { await navigator.clipboard.writeText(X.code); } catch (e) { if (t) { t.select(); try { document.execCommand('copy'); } catch (x) {} } }
+X.copied = true; const m = root.querySelector('.xfer .fcshare .amsg'); if (m) m.textContent = 'Copied!';
+return;
+}
+case 'xferload': {
+const code = (root.querySelector('[data-xin]') || {}).value || X.inCode || '';
+try {
+const got = await loadProgress(code);
+const bits = [got.pages ? got.pages + ' study ' + (got.pages === 1 ? 'page' : 'pages') : '', got.sets ? got.sets + ' flashcard ' + (got.sets === 1 ? 'set' : 'sets') : ''].filter(Boolean);
+Object.assign(X, { open: null, inCode: '', msg: { text: 'Progress loaded' + (bits.length ? ': ' + bits.join(' and ') : '') + '.', cls: 'ok' } });
+} catch (e) {
+X.msg = { text: e.message === 'flashcards' ? "That's a flashcard code. Paste it into Import a code under My flashcards instead." : "That save code doesn't look right. Make sure you copied all of it.", cls: 'err' };
+}
+return renderMain(true);
+}
+}
+}
 const vStudy = () => {
 const groups = {};
 DOCS.forEach(p => { (groups[p.cls] = groups[p.cls] || []).push(p); });
@@ -1918,7 +2024,7 @@ return `<div class="shead"><div><div class="gh">Study</div>
 <label class="gsearch">${I.search}<input data-search placeholder="Search by class, unit or topic…" value="${esc(S.sq)}" autocomplete="off" spellcheck="false"><span class="kbd">/</span></label></div>
 ${kindBtns || clsBtns ? `<div class="sbar">${kindBtns}${kindBtns && clsBtns ? '<span class="sep"></span>' : ''}${clsBtns}</div>` : ''}
 ${S.libError && n ? `<p class="note" style="margin-bottom:10px">${esc(S.libError)} Showing the last list.</p>` : ''}
-${fcPanel()}
+${fcPanel()}${xferRow()}
 ${recent.length ? `<div class="scont"><div class="grp">Continue studying</div><div class="ccards">${recent.map(x => contCard(x.p, x.r.at)).join('')}</div></div>` : ''}
 ${state}${n ? `<div class="spans">${list.map(g => { const shut = !S.sq.trim() && S.scls === 'All' && foldOf(g.cls, g.mine), fresh = g.docs.filter(isNewDoc).length;
 return `<section class="cpan${shut ? ' shut' : ''}" data-sec="${esc(g.cls)}" data-mine="${g.mine ? 1 : 0}" style="--c:${g.color}"><div class="cph" data-sfold="${esc(g.cls)}" role="button" tabindex="0" aria-expanded="${!shut}" title="Show or hide ${esc(g.cls)}"><span class="ssi">${g.icon}</span>
@@ -3387,6 +3493,7 @@ else if (d.pref) setPref(d.pref, d.val === 'true' ? true : d.val === 'false' ? f
 else if (d.pacc != null) setPref('accent', d.pacc);
 else if (d.act === 'settings') go('settings');
 else if (d.act && d.act.startsWith('fc')) fcAct(d);
+else if (d.act && d.act.startsWith('xfer')) xferAct(d);
 else if (d.act === 'gmore') { const m = root.querySelector('.gmenu'); if (m) m.hidden = !m.hidden; }
 else if (d.act === 'report') { const b = root.querySelector('.rep'); if (b) b.hidden = !b.hidden; const m = root.querySelector('.gmenu'); if (m) m.hidden = true; }
 else if (d.act === 'reportsend') sendReport();
@@ -3445,6 +3552,7 @@ const t = e.target;
 if (t.matches('[data-fct]')) fcUpdate(S.fc.id, x => { x.title = t.value; });
 else if (t.matches('[data-fcc]')) { const [i, f] = t.dataset.fcc.split(':'); fcUpdate(S.fc.id, x => { if (x.cards[i]) x.cards[i][f] = t.value; }); }
 else if (t.matches('[data-fcimp]')) S.fc.imp = t.value;
+else if (t.matches('[data-xin]')) S.xfer.inCode = t.value;
 });
 root.addEventListener('change', e => {
 const t = e.target;
@@ -3509,6 +3617,7 @@ if (act) { e.preventDefault(); e.stopPropagation(); fcAct({ act }); return; }
 if (root.activeElement === omniBox) { omniKey(e); e.stopPropagation(); return; }
 if (down && !LIB && (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); e.stopPropagation(); omniBox.focus(); return; }
 if (down && e.key === 'Enter' && root.activeElement && root.activeElement.matches('[data-rtext]')) { e.preventDefault(); e.stopPropagation(); sendRating(); return; }
+if (down && e.key === 'Enter' && root.activeElement && root.activeElement.matches('[data-xin]')) { e.preventDefault(); e.stopPropagation(); xferAct({ act: 'xferload' }); return; }
 if (down && e.key === 'Enter' && root.activeElement && root.activeElement.matches('[data-unlock] [data-tok]')) { e.preventDefault(); e.stopPropagation(); unlockAdmin(); return; }
 if (down && (e.key === 'Enter' || e.key === ' ') && root.activeElement && root.activeElement.matches('.rr,.ccard,.cph[data-sfold]')) { e.preventDefault(); e.stopPropagation(); root.activeElement.click(); return; }
 const box = usesLib(S.view) && $('[data-search]'), typing = box && root.activeElement === box;
