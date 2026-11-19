@@ -94,55 +94,70 @@
             var nativeFetch = window.fetch.bind(window);
             function matchingHost(url) {
                 for (var i = 0; i < GD_PROXY_HOSTS.length; i++) {
-                    var h = GD_PROXY_HOSTS[i].replace(/\/$/, "");
-                    if (url.indexOf(h) === 0) return GD_PROXY_HOSTS[i];
+                    var host = GD_PROXY_HOSTS[i].replace(/\/$/, "");
+                    if (url === host || url.indexOf(host + "/") === 0) return host;
                 }
                 return null;
             }
-            function withHost(url, oldHost, newHost) {
-                var cleanOld = oldHost.replace(/\/$/, "");
-                var cleanNew = newHost.replace(/\/$/, "");
-                var path = url.slice(cleanOld.length);
-                if (path.indexOf('/') !== 0) path = '/' + path;
-                return cleanNew + path;
-            }
+            // Online searches must try the other GD proxies when a worker returns
+            // an error page, a failed request, or an invalid API response.
             window.fetch = function (input, init) {
-                var isRequestObj = (typeof Request !== "undefined") && (input instanceof Request);
-                var url = isRequestObj ? input.url : input;
-                if (typeof url !== "string") {
-                    return nativeFetch(input, init);
-                }
-            var oldHost = matchingHost(url);
-                if (!oldHost) {
-                    return nativeFetch(input, init);
-                }
-                var attempts = 0;
+                var requestObject = typeof Request !== "undefined" && input instanceof Request;
+                var url = requestObject ? input.url : input;
+                if (typeof url !== "string") return nativeFetch(input, init);
+                var originHost = matchingHost(url);
+                if (!originHost) return nativeFetch(input, init);
+                var path = url.slice(originHost.length);
+                if (path.charAt(0) !== "/") path = "/" + path;
+                var isGdApi = /\/(?:getGJLevels21|downloadGJLevel22|getGJSongInfo|.*GJ.*)\.php(?:\?|$)/i.test(path);
+                var lastResponse = null;
                 var lastError = null;
-                function tryHost(hostIndex) {
-                    var host = GD_PROXY_HOSTS[hostIndex];
-                    var attemptUrl = withHost(url, oldHost, host);
-                    var attemptInput = isRequestObj ? new Request(attemptUrl, input) : attemptUrl;
-
-                    return nativeFetch(attemptInput, init).then(function (res) {
-                        if ((res.status === 429 || res.status === 503) && attempts < GD_PROXY_HOSTS.length - 1) {
-                            attempts++;
-                            var nextIndex = (hostIndex + 1) % GD_PROXY_HOSTS.length;
-                            return tryHost(nextIndex);
+                var first = activeIndex;
+                var originalSignal = (init && init.signal) || (requestObject && input.signal);
+                async function attempt(index) {
+                    var controller = new AbortController();
+                    var abort = function () { controller.abort(); };
+                    if (originalSignal) {
+                        if (originalSignal.aborted) throw new DOMException("Aborted", "AbortError");
+                        originalSignal.addEventListener("abort", abort, { once: true });
+                    }
+                    var timer = setTimeout(abort, 10000);
+                    try {
+                        var host = GD_PROXY_HOSTS[index];
+                        var target = host.replace(/\/$/, "") + path;
+                        var options = Object.assign({}, init || {}, { signal: controller.signal });
+                        var req = requestObject ? new Request(target, input) : target;
+                        var response = await nativeFetch(req, options);
+                        lastResponse = response;
+                        if (!response.ok) return false;
+                        if (isGdApi) {
+                            var body = (await response.clone().text()).trim();
+                            if (!body || body === "-1" || /^<!doctype html|^<html\b/i.test(body) ||
+                                /^\s*(?:error|rate limit|too many requests|forbidden|bad gateway)/i.test(body)) {
+                                return false;
+                            }
                         }
-                        activeIndex = hostIndex;
+                        activeIndex = index;
                         window._gdProxyUrl = host;
-                        return res;
-                    }, function (err) {
-                        lastError = err;
-                        if (attempts < GD_PROXY_HOSTS.length - 1) {
-                            attempts++;
-                            var nextIndex = (hostIndex + 1) % GD_PROXY_HOSTS.length;
-                            return tryHost(nextIndex);
-                        }
-                        throw lastError;
-                    });
+                        return response;
+                    } catch (error) {
+                        if (originalSignal && originalSignal.aborted) throw error;
+                        lastError = error;
+                        return false;
+                    } finally {
+                        clearTimeout(timer);
+                        if (originalSignal) originalSignal.removeEventListener("abort", abort);
+                    }
                 }
-                return tryHost(activeIndex);
+                return (async function () {
+                    for (var offset = 0; offset < GD_PROXY_HOSTS.length; offset++) {
+                        var response = await attempt((first + offset) % GD_PROXY_HOSTS.length);
+                        if (response) return response;
+                    }
+                    // Preserve the normal HTTP response for a genuinely missing level.
+                    if (lastResponse) return lastResponse;
+                    throw lastError || new Error("All Geometry Dash proxy servers failed");
+                })();
             };
         })();
     </script>
