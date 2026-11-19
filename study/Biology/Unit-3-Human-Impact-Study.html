@@ -194,16 +194,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .sa textarea:disabled{opacity:1;background:var(--sunk)}
 .sa .wc{font-family:var(--f-mono);font-size:12px;color:var(--muted);justify-self:end}
 
-/* AI grading */
-.grading{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:15px;padding:4px 2px}
-.spin{flex:none;width:20px;height:20px;border-radius:50%;border:3px solid var(--line-2);border-top-color:var(--moss);animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.fb .pts{font-family:var(--f-mono);font-size:13px;font-weight:700;letter-spacing:.04em}
-.fb ul{margin:0;padding-left:20px;display:grid;gap:2px}
-.fb .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.model{background:var(--surface);border:1px dashed var(--line-2);border-radius:8px;padding:10px 12px}
-.model b{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;display:block;margin-bottom:2px}
-.selfscore{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+/* AI grading prompt */
+.prompt{gap:12px}
+.prompt textarea{width:100%;min-height:200px;font-family:var(--f-mono);font-size:13px;line-height:1.5;padding:12px;border-radius:10px;border:1px solid var(--line-2);background:var(--sunk);color:var(--ink);resize:vertical}
+.steps{margin:0;padding-left:22px;display:grid;gap:4px}
 .keyhint{font-size:13px;color:var(--muted);margin:0}
 @media (hover:none){.keyhint{display:none}}
 
@@ -388,8 +382,8 @@ const SA = [
   {id: "a02", t: "stages", q: "What causes birth rates to fall in Stage 3 of the demographic transition? Give at least two causes.", key: ["More access to birth control / contraception", "Improved education, especially for women; women's status and value beyond motherhood increase", "Children cost more (higher education)", "Increasing urbanization", "Smaller families result"], model: "Birth rates fall in Stage 3 because people get more access to birth control and education. Women's status grows, so they are valued for more than having children, and kids cost more because they need more schooling. These changes, along with more people living in cities, lead to smaller families."},
   {id: "a03", t: "stages", q: "Describe the problems a country faces in Stage 4 and Stage 5 of the demographic transition. Give an example country for Stage 5.", key: ["Fewer young people and more elderly", "Greater tax burden and a lack of health care", "Stage 5: death rate exceeds birth rate, so population declines", "Labor shortages and higher health care and social security costs", "Examples: Japan, Germany, Italy"], model: "In Stage 4 there are fewer young people and more elderly people, which creates a bigger tax burden and a lack of health care. In Stage 5 the death rate is higher than the birth rate, so the population shrinks. That causes labor shortages and higher health care and social security costs. Japan is an example of a Stage 5 country."},
   {id: "a04", t: "stages", q: "Describe all five stages of the demographic transition, including what happens to birth rates and death rates in each.", key: ["Stage 1: high birth and death rates, slow growth", "Stage 2: birth rate stays high, death rate falls, rapid growth", "Stage 3: death rate low, birth rate falls, growth slows", "Stage 4: both low, population stable", "Stage 5: death rate higher than birth rate, population declines"], model: "Stage 1: birth and death rates are both high, so growth is slow. Stage 2: the death rate falls but births stay high, so the population grows rapidly. Stage 3: the death rate is low and the birth rate starts falling, so growth slows. Stage 4: both rates are low and the population is stable. Stage 5: the death rate is higher than the birth rate, so the population declines."},
-  {id: "a05", t: "pop", fig: "history", q: "Explain how the human population has changed over time. Mention at least two events that affected it.", key: ["Stayed low (around 500 million or less) for most of human history", "Agriculture, plowing and irrigation, and the Industrial Revolution increased carrying capacity", "The bubonic plague (density-dependent factor) made it drop", "Grew extremely fast after the Industrial Revolution (over 1 billion since about 1800, about 6 billion by 2000)", "Still increasing today but the growth rate is decreasing"], model: "For most of history the human population stayed low, around 500 million or less. Plowing and irrigation and then the Industrial Revolution increased Earth's carrying capacity for humans, while the bubonic plague caused a drop. After the Industrial Revolution the population exploded, passing 1 billion around 1800 and reaching about 6 billion by 2000. It is still increasing today, but the rate of growth is slowing down."},
-  {id: "a06", t: "countries", fig: "countries", q: "Compare the population growth of Angola and Canada using the data. Which stage is each country in, and why?", key: ["Angola: high birth rate (33.6), growth 2.72%, young median age (18.2), short life expectancy (56)", "Angola grows fast; it is an early stage (Stage 1 or 2, developing)", "Canada: low birth rate (10.3) and low death rate (8.5), growth 0.74%, mostly from immigration (5.7), median age 42", "Canada is Stage 4 (developed), population fairly stable", "Differences come from birth rates, death rates and migration"], model: "Angola's birth rate (33.6) is much higher than its death rate (11.3), so it grows fast (2.72% a year). It has a young population (median age 18.2) and a short life expectancy (56), so it is in an early stage (Stage 1, a developing country). Canada has a low birth rate (10.3) and a low death rate (8.5), so it only grows 0.74%, mostly from immigration. Its median age is 42 and life expectancy is 81.9, which puts it in Stage 4 as a developed country."},
+  {id: "a05", t: "pop", fig: "history", ft: "Graph: human population from 10,000 B.C. to 2000 A.D. It stays near 500 million or less for most of history, dips at the bubonic plague, then shoots up to about 6 billion after the Industrial Revolution. Marked events: agriculture begins, plowing and irrigation, bubonic plague, Industrial Revolution begins.", q: "Explain how the human population has changed over time. Mention at least two events that affected it.", key: ["Stayed low (around 500 million or less) for most of human history", "Agriculture, plowing and irrigation, and the Industrial Revolution increased carrying capacity", "The bubonic plague (density-dependent factor) made it drop", "Grew extremely fast after the Industrial Revolution (over 1 billion since about 1800, about 6 billion by 2000)", "Still increasing today but the growth rate is decreasing"], model: "For most of history the human population stayed low, around 500 million or less. Plowing and irrigation and then the Industrial Revolution increased Earth's carrying capacity for humans, while the bubonic plague caused a drop. After the Industrial Revolution the population exploded, passing 1 billion around 1800 and reaching about 6 billion by 2000. It is still increasing today, but the rate of growth is slowing down."},
+  {id: "a06", t: "countries", fig: "countries", ft: "Data per 1,000 people: Angola birth rate 33.6, death rate 11.3, immigration -0.1, growth 2.72% per year, median age 18.2, life expectancy 56. Kenya 25.1, 6.8, -0.2, 1.81%, 19.5, 64. Canada 10.3, 8.5, 5.7, 0.74%, 42, 81.9. Denmark 10.4, 10.3, 2.1, 0.22%, 42, 79.4.", q: "Compare the population growth of Angola and Canada using the data. Which stage is each country in, and why?", key: ["Angola: high birth rate (33.6), growth 2.72%, young median age (18.2), short life expectancy (56)", "Angola grows fast; it is an early stage (Stage 1 or 2, developing)", "Canada: low birth rate (10.3) and low death rate (8.5), growth 0.74%, mostly from immigration (5.7), median age 42", "Canada is Stage 4 (developed), population fairly stable", "Differences come from birth rates, death rates and migration"], model: "Angola's birth rate (33.6) is much higher than its death rate (11.3), so it grows fast (2.72% a year). It has a young population (median age 18.2) and a short life expectancy (56), so it is in an early stage (Stage 1, a developing country). Canada has a low birth rate (10.3) and a low death rate (8.5), so it only grows 0.74%, mostly from immigration. Its median age is 42 and life expectancy is 81.9, which puts it in Stage 4 as a developed country."},
   {id: "a07", t: "countries", q: "Explain why different countries have different population growth rates.", key: ["Differences in birth rates and death rates", "Migration (immigration/emigration)", "Fertility and age structure (young vs old populations)", "Level of development: health care, education, birth control", "Developing countries grow faster; developed countries grow slowly or are stable"], model: "Countries grow at different rates because their birth rates, death rates and migration are different. Developing countries like Angola have high birth rates and many young people, so they grow fast. Developed countries like Canada have low birth and death rates because of health care, education and birth control, so they grow slowly and depend more on immigration."},
   {id: "a08", t: "footprint", q: "Compare the ecological footprint of the average American to people in other countries. Explain why it is different.", key: ["U.S. average is about 8.1 gha", "Much larger than countries like Ghana (2.0) or Peru (2.1) (about 4 times)", "Americans use more resources and energy (food, water, shelter, energy)", "Americans produce more waste (trash, sewage, greenhouse gases)"], model: "The average American's ecological footprint is about 8.1 gha, around four times bigger than Ghana (2.0) or Peru (2.1). That's because Americans use more resources and energy per person, like electricity, gas for cars, food and bigger homes, and they produce more waste such as trash and greenhouse gases."},
   {id: "a09", t: "footprint", q: "What is the Anthropocene, and why is it important?", key: ["The “Age of Humans”", "A period when human activity has become the major cause of global change", "Humans change land (anthromes), the atmosphere/climate and ecosystems", "Important because human choices now affect the whole planet, so we need to reduce our impact"], model: "The Anthropocene is the “Age of Humans,” a period when human activity has become the major cause of global change. It's important because humans now change the climate, land and ecosystems all over Earth, like turning wild land into cities and cropland, so our choices affect the whole planet and we need to reduce our impact."},
@@ -397,11 +391,11 @@ const SA = [
   {id: "a11", t: "climate", q: "Explain how changes in the atmosphere can lead to climate change and affect other Earth systems.", key: ["More greenhouse gases (CO2, methane, water vapor) trap more heat", "Balance shifts: more heat stays in than is lost to space, so temperature rises", "Oceans: absorb CO2 (acidification), sea levels rise", "Ice: glaciers, sea ice and snow melt", "Land and ecosystems: droughts, crops, habitats change"], model: "When greenhouse gases like carbon dioxide and methane increase, they trap more heat in the atmosphere, so more heat stays in than is lost to space and Earth warms. This affects other systems: the ocean absorbs CO₂ and becomes more acidic, ice and glaciers melt so sea levels rise, and changing weather affects land, crops and ecosystems."},
   {id: "a12", t: "causes", q: "Describe how human land use affects Earth's systems. Give at least two examples.", key: ["Deforestation harms soil, water, carbon storage and animals", "Monoculture: one crop over large areas", "Habitat fragmentation causes biodiversity loss and weaker ecosystems", "Agriculture/fertilizer causes nitrogen runoff into water", "Construction and cities (anthromes) change habitats, soil and water"], model: "Human land use changes habitats, soil, water and ecosystems. For example, deforestation removes forests, which harms soil, water, carbon storage and animals. Habitat fragmentation from roads and construction breaks habitats into pieces, which causes biodiversity loss. Farming with fertilizer causes nitrogen runoff into streams, lakes and oceans."},
   {id: "a13", t: "causes", q: "Identify two types of pollution and explain how each contributes to global environmental change.", key: ["Air pollution / fossil fuels: greenhouse gases cause climate change; acid rain damages forests and lakes; smog", "Water pollution: nitrogen runoff causes algal blooms", "CO2 absorbed by the ocean causes ocean acidification", "Pollutants biomagnify up food chains", "Land pollution: trash and waste harm organisms"], model: "Air pollution from burning fossil fuels releases greenhouse gases that trap heat and cause climate change, and it mixes with water to make acid rain that damages forests and lakes. Water pollution like nitrogen runoff from fertilizer causes algal blooms, and pollutants in water can build up in food chains through biological magnification."},
-  {id: "a14", t: "causes", fig: "biomag", q: "Explain biological magnification using this food chain.", key: ["A pollutant gets into the water and is taken in by producers", "Each consumer eats many organisms from the level below, so the pollutant builds up", "Concentration increases at each higher trophic level as the number of organisms decreases", "Top predators (fish-eating birds) have the highest concentration (10,000,000 times the water)"], model: "A pollutant in the water gets taken in by producers. Zooplankton eat lots of producers, small fish eat lots of zooplankton, and so on, so the pollutant builds up in their bodies. The concentration increases at each higher trophic level while the number of organisms decreases, so fish-eating birds at the top end up with 10,000,000 times the concentration in the water."},
+  {id: "a14", t: "causes", fig: "biomag", ft: "Food chain with pollutant concentration (water = 1): water 1, producers 1,000, zooplankton 10,000, small fish 100,000, large fish 1,000,000, fish-eating birds 10,000,000.", q: "Explain biological magnification using this food chain.", key: ["A pollutant gets into the water and is taken in by producers", "Each consumer eats many organisms from the level below, so the pollutant builds up", "Concentration increases at each higher trophic level as the number of organisms decreases", "Top predators (fish-eating birds) have the highest concentration (10,000,000 times the water)"], model: "A pollutant in the water gets taken in by producers. Zooplankton eat lots of producers, small fish eat lots of zooplankton, and so on, so the pollutant builds up in their bodies. The concentration increases at each higher trophic level while the number of organisms decreases, so fish-eating birds at the top end up with 10,000,000 times the concentration in the water."},
   {id: "a15", t: "climate", q: "Describe the evidence that shows climate change is happening. Give at least three pieces of evidence.", key: ["Rising global temperatures", "Rising sea levels (about 4 inches in 55 years)", "Decreasing Arctic sea ice, glaciers and snow cover", "Changes in precipitation and more extreme storms", "Increased greenhouse gas emissions"], model: "Global temperatures are rising, and sea levels are rising too, about 4 inches in 55 years. Arctic sea ice, glaciers and snow cover are all decreasing. Precipitation is changing and there are more extreme storms, and greenhouse gas emissions keep increasing."},
   {id: "a16", t: "climate", q: "Explain the effects of climate change on people and the environment.", key: ["Water availability: droughts and less snowpack", "Crop cycles: lower crop yields", "Loss of land from rising sea levels", "More extreme weather (floods, storms, heat waves)", "Habitat loss and problems for wildlife"], model: "Climate change affects people through water availability (more droughts and less snowpack), crop cycles (lower crop yields) and loss of land as sea levels rise. It also brings more extreme weather like floods, storms and heat waves, and it causes habitat loss that hurts wildlife and ecosystems."},
   {id: "a17", t: "climate", q: "Explain how science helps us understand and respond to global environmental changes.", key: ["Scientists collect data (temperature, sea level, ice, greenhouse gases)", "They study Earth's systems to find causes and trends", "Evidence shows what humans are changing", "Science helps develop solutions (renewable energy, sustainable practices) and predict future changes"], model: "Scientists collect data like temperatures, sea levels, ice and greenhouse gas levels and study how Earth's systems work. This shows what is changing and what is causing it, such as humans burning fossil fuels. Then science helps us develop solutions, like renewable energy and more sustainable farming, and predict what might happen next."},
-  {id: "a18", t: "climate", fig: "greenhouse", q: "Explain how the greenhouse effect works and how humans are changing it.", key: ["Sunlight enters and warms Earth's surface; some is reflected", "The surface gives off heat", "Greenhouse gases (CO2, methane, water vapor) trap some heat in the atmosphere; some escapes to space", "This keeps Earth warm (natural)", "Humans add more greenhouse gases (burning fossil fuels), so more heat is trapped and Earth warms"], model: "Sunlight passes through the atmosphere and warms Earth's surface, which gives off heat. Greenhouse gases like carbon dioxide, methane and water vapor trap some of that heat in the atmosphere while some escapes to space, which keeps Earth warm. Humans burn fossil fuels and add more greenhouse gases, so more heat gets trapped and Earth's average temperature rises."},
+  {id: "a18", t: "climate", fig: "greenhouse", ft: "Diagram: sunlight passes through the atmosphere and warms Earth's surface; the surface gives off heat; greenhouse gases (CO2, methane, water vapor) trap some of the heat and send it back down; some heat escapes to space.", q: "Explain how the greenhouse effect works and how humans are changing it.", key: ["Sunlight enters and warms Earth's surface; some is reflected", "The surface gives off heat", "Greenhouse gases (CO2, methane, water vapor) trap some heat in the atmosphere; some escapes to space", "This keeps Earth warm (natural)", "Humans add more greenhouse gases (burning fossil fuels), so more heat is trapped and Earth warms"], model: "Sunlight passes through the atmosphere and warms Earth's surface, which gives off heat. Greenhouse gases like carbon dioxide, methane and water vapor trap some of that heat in the atmosphere while some escapes to space, which keeps Earth warm. Humans burn fossil fuels and add more greenhouse gases, so more heat gets trapped and Earth's average temperature rises."},
   {id: "a19", t: "sustain", q: "Describe the factors used to evaluate the sustainability of a development.", key: ["Environmental impact (preserves ecosystem services, doesn't deplete resources)", "Social impact (society, human needs)", "Economic impact", "Long-term effects", "Uses renewable instead of nonrenewable resources"], model: "To decide if a development is sustainable, you look at its environmental, social and economic impacts. It should use resources without using them up, preserve ecosystem services, meet people's needs and still make economic sense over the long term, for example by using renewable energy instead of fossil fuels."},
   {id: "a20", t: "sustain", q: "Explain why innovation and resilience are important for solving environmental challenges.", key: ["Innovation creates new solutions and technology (e.g., renewable energy, greener electricity)", "Resilience is the ability to recover after a disturbance", "Resilience helps people and ecosystems adapt to change", "Together they help deal with problems like climate change"], model: "Innovation creates new solutions, like better renewable energy and greener electricity, that reduce our impact. Resilience is the ability to recover after a disturbance, so resilient communities and ecosystems can bounce back and adapt when things like storms or droughts happen. Both are needed to handle problems like climate change."},
   {id: "a21", t: "sustain", q: "Compare renewable and nonrenewable resources. Give two examples of each.", key: ["Renewable: can replace itself / be replaced by healthy ecosystem functions", "Nonrenewable: cannot be replenished within a reasonable amount of time", "Renewable examples: solar, wind, biomass, geothermal, hydropower", "Nonrenewable examples: coal, natural gas, fossil fuels, nuclear"], model: "Renewable resources can replace themselves or keep existing even while we use them, like solar and wind energy. Nonrenewable resources can't be replenished by nature in a reasonable amount of time, so they run out, like coal and natural gas (and nuclear)."}
@@ -539,7 +533,6 @@ const HERO_MINI =`<svg class="mini" viewBox="0 0 140 112" aria-hidden="true"><li
 
 /* ---------- engine ---------- */
 const K = "hu3.";
-const GRADER = window.GRADER_URL || "https://classboardd.vercel.app/api/grade";
 const SA_PTS = 3;
 const app = document.getElementById("app");
 
@@ -551,7 +544,6 @@ const topicName = t => t === "vocab" ? "Vocabulary" : TOPICS[t];
 
 let run = store.get(K + "run", null);
 if (run && !(run.items || []).every(it => ITEMS[it.id])) run = null;
-if (run) for (const [id, a] of Object.entries(run.res)) if (a && a.pending) run.res[id] = {text: a.text, err: "Grading was interrupted."};
 const saveRun = () => run ? store.set(K + "run", run) : store.del(K + "run");
 
 /* ---------- building a test ---------- */
@@ -587,7 +579,7 @@ const MODES = {
   stages: {title: "Stages drill", build: () => take([...mcOf("stages"), ...mcOf("countries")], 12)},
   sa: {title: "Short answers", build: () => pickSA(5)},
   vocab: {title: "Vocabulary", build: () => shuffle(Object.keys(ITEMS).filter(id => ITEMS[id].kind === "vocab"))},
-  missed: {title: "Redo missed", build: () => take(store.get(K + "missed", []).filter(id => ITEMS[id]), 20)},
+  missed: {title: "Redo missed", build: () => take(missedIds(), 20)},
   topic: {title: "Topic practice", build: t => [...take(mcOf(t), 10), ...take(SA.filter(q => q.t === t).map(q => q.id), 1)]}
 };
 
@@ -598,38 +590,42 @@ function start(mode, arg) {
   saveRun(); show();
 }
 
-/* ---------- scoring ---------- */
+const missedIds = () => store.get(K + "missed", []).filter(id => ITEMS[id] && ITEMS[id].kind !== "sa");
+
+/* ---------- scoring (multiple choice only; short answers go to an AI) ---------- */
 function tally(r) {
   let got = 0, max = 0;
   const by = {};
   for (const it of r.items) {
-    const q = ITEMS[it.id], a = r.res[it.id], m = q.kind === "sa" ? SA_PTS : 1;
-    const g = !a ? 0 : q.kind === "sa" ? (a.score || 0) : (a.ok ? 1 : 0);
-    got += g; max += m;
+    const q = ITEMS[it.id], a = r.res[it.id];
+    if (q.kind === "sa") continue;
+    const g = a && a.ok ? 1 : 0;
+    got += g; max += 1;
     const b = by[q.t] = by[q.t] || {got: 0, max: 0};
-    b.got += g; b.max += m;
+    b.got += g; b.max += 1;
   }
   return {got, max, pct: max ? Math.round(100 * got / max) : 0, by};
 }
-const answered = id => { const a = run.res[id]; return a && (ITEMS[id].kind !== "sa" || typeof a.score === "number"); };
+const answered = id => { const a = run.res[id]; return !!a && (ITEMS[id].kind !== "sa" || !!(a.text || "").trim()); };
+const canGoOn = id => ITEMS[id].kind === "sa" || !!run.res[id];
 
 /* ---------- home ---------- */
 function home() {
   const hist = store.get(K + "hist", []);
-  const missed = store.get(K + "missed", []).filter(id => ITEMS[id]);
+  const missed = missedIds();
   const resume = run ? `<div class="resume"><p><strong>${esc(run.title)}</strong> in progress, question ${run.i + 1} of ${run.items.length}.</p><div class="rowbtns"><button class="btn" data-go="resume">Keep going</button><button class="btn ghost" data-go="discard">Start over</button></div></div>` : "";
   const histHtml = hist.length ? `<div class="tbl"><table><thead><tr><th>When</th><th>Test</th><th>Score</th></tr></thead><tbody>${hist.slice(-8).reverse().map(h => `<tr><td class="n">${esc(new Date(h.d).toLocaleDateString("en-US", {month: "short", day: "numeric"}))}</td><td>${esc(h.title)}</td><td><span class="pill ${h.pct >= 80 ? "hi" : h.pct >= 60 ? "mid" : "lo"}">${h.pct}%</span></td></tr>`).join("")}</tbody></table></div>
     <div class="hist-head"><span></span><button class="linkbtn" data-go="clearhist">Clear history</button></div>` : `<p class="hist-empty">Your scores will show up here.</p>`;
   app.innerHTML = `
-    <header class="hero"><div><p class="eyebrow">Biology · Unit 3</p><h1>Human Impact</h1><p class="lede">Practice test, not the real one. Short answers are graded by AI the way a 9th grade biology teacher would grade them.</p></div>${HERO_MINI}</header>
+    <header class="hero"><div><p class="eyebrow">Biology · Unit 3</p><h1>Human Impact</h1><p class="lede">Practice test, not the real one. At the end you get a prompt to paste into an AI chat, which grades your short answers like a 9th grade biology teacher.</p></div>${HERO_MINI}</header>
     ${resume ? `<section class="section">${resume}</section>` : ""}
     <section class="section"><h2>Start</h2><div class="modes">
       <button class="mode primary" data-start="full"><span class="meta">30 multiple choice + 5 short answers</span><h3>Full practice test</h3><p>Covers the whole unit, with extra questions on the demographic transition.</p></button>
       <button class="mode" data-start="quick"><span class="meta">12 multiple choice</span><h3>Quick quiz</h3><p>A short mixed review.</p></button>
-      <button class="mode" data-start="sa"><span class="meta">5 short answers · AI graded</span><h3>Short answers</h3><p>Write answers and get a score out of 3 with feedback.</p></button>
+      <button class="mode" data-start="sa"><span class="meta">5 short answers</span><h3>Short answers</h3><p>Write your answers, then copy one prompt into an AI to grade them out of 3.</p></button>
       <button class="mode" data-start="stages"><span class="meta">12 multiple choice</span><h3>Stages drill</h3><p>Demographic transition stages and country data.</p></button>
       <button class="mode" data-start="vocab"><span class="meta">${GLOSS.length} terms</span><h3>Vocabulary</h3><p>Match each definition to its glossary term.</p></button>
-      ${missed.length ? `<button class="mode wide" data-start="missed"><span class="meta">${Math.min(missed.length, 20)} question${missed.length === 1 ? "" : "s"}</span><h3>Redo missed</h3><p>Questions you got wrong or only partly right.</p></button>` : ""}
+      ${missed.length ? `<button class="mode wide" data-start="missed"><span class="meta">${Math.min(missed.length, 20)} question${missed.length === 1 ? "" : "s"}</span><h3>Redo missed</h3><p>Multiple-choice questions you got wrong.</p></button>` : ""}
     </div></section>
     <section class="section"><h2>Practice one topic</h2><div class="topicbox"><div class="chips">${Object.entries(TOPICS).map(([t, n]) => `<button class="chip" data-topic="${t}">${esc(n)}</button>`).join("")}</div></div></section>
     <section class="section"><h2>Your scores</h2><div class="hist">${histHtml}</div></section>`;
@@ -664,33 +660,17 @@ function question() {
       <h2 class="qtext">${esc(qtext)}</h2>${sub}
       ${fig}${body}
       <div class="actions"><button class="btn ghost small" data-go="prev" ${run.i ? "" : "disabled"}>Back</button><span class="spacer"></span>
-        <button class="btn" data-go="next" ${answered(it.id) ? "" : "disabled"}>${last ? "See results" : "Next"}</button></div>
+        <button class="btn" data-go="next" ${canGoOn(it.id) ? "" : "disabled"}>${last ? "See results" : "Next"}</button></div>
     </article>`;
   const ta = app.querySelector("textarea");
-  if (ta && !ta.disabled && matchMedia("(hover: hover)").matches) { ta.focus({preventScroll: true}); ta.setSelectionRange(ta.value.length, ta.value.length); }
+  if (ta && matchMedia("(hover: hover)").matches) { ta.focus({preventScroll: true}); ta.setSelectionRange(ta.value.length, ta.value.length); }
   scrollTo(0, 0);
 }
 
 function saBody(q, a) {
-  const text = a ? a.text || "" : (run.draft && run.draft[q.id]) || "";
-  const locked = a && (a.pending || typeof a.score === "number");
-  let out = `<div class="sa"><textarea id="sa" maxlength="1500" placeholder="Type your answer in full sentences…" ${locked ? "disabled" : ""}>${esc(text)}</textarea><span class="wc">${words(text)} words</span></div>`;
-  if (!a || (!a.pending && typeof a.score !== "number" && !a.err)) return out + `<div class="rowbtns"><button class="btn sun" data-go="grade">Grade my answer</button></div>`;
-  if (a.pending) return out + `<div class="grading"><span class="spin"></span>Grading like a 9th grade biology teacher…</div>`;
-  if (a.err && typeof a.score !== "number") return out + `<div class="fb part"><h4>The AI grader couldn't be reached</h4><p>${esc(a.err)}</p>
-    <div class="model"><b>Example full-credit answer</b>${esc(q.model)}</div>
-    <p>Compare your answer and give yourself a score, or try the grader again.</p>
-    <div class="selfscore">${[0, 1, 2, 3].map(s => `<button class="btn ghost small" data-self="${s}">${s} / ${SA_PTS}</button>`).join("")}<button class="btn small" data-go="grade">Try again</button></div></div>`;
-  return out + saResult(q, a);
-}
-
-function saResult(q, a) {
-  const cls = a.score === SA_PTS ? "ok" : a.score === 0 ? "no" : "part";
-  const head = a.score === SA_PTS ? "Full credit" : a.score === 0 ? "No credit" : "Partial credit";
-  const list = (lbl, xs) => xs && xs.length ? `<div><span class="lbl">${lbl}</span><ul>${xs.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : "";
-  return `<div class="fb ${cls}"><span class="pts">${a.score} / ${SA_PTS} POINTS${a.self ? " · SELF-SCORED" : ""}</span><h4>${head}</h4>${a.fb ? `<p>${esc(a.fb)}</p>` : ""}
-    ${list("You got", a.got)}${list("Missing or wrong", a.miss)}
-    <div class="model"><b>Example full-credit answer</b>${esc(q.model)}</div></div>`;
+  const text = (a && a.text) || "";
+  return `<div class="sa"><textarea id="sa" maxlength="1500" placeholder="Type your answer in full sentences…">${esc(text)}</textarea><span class="wc">${words(text)} words</span></div>
+    <p class="qhint">Short answers are graded at the end: the results page gives you a prompt to paste into an AI.</p>`;
 }
 
 const words = s => (String(s).trim().match(/\S+/g) || []).length;
@@ -704,67 +684,77 @@ function choose(i) {
   saveRun(); question();
 }
 
-async function grade() {
-  const it = run.items[run.i], q = ITEMS[it.id];
-  const ta = document.getElementById("sa");
-  const text = ta ? ta.value.trim() : (run.res[it.id] && run.res[it.id].text) || "";
-  if (!text) { run.res[it.id] = {text: "", score: 0, fb: "No answer was written, so this gets 0 points.", got: [], miss: ["Write an answer to earn points"]}; saveRun(); question(); return; }
-  const id = it.id, mine = run;
-  run.res[id] = {text, pending: true};
-  question();
-  let a;
-  try {
-    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 60000);
-    const r = await fetch(GRADER, {method: "POST", headers: {"Content-Type": "text/plain"}, body: JSON.stringify({q: q.q, key: q.key, model: q.model, answer: text, pts: SA_PTS}), signal: ctl.signal});
-    clearTimeout(timer);
-    const j = await r.json().catch(() => ({}));
-    if (!r.ok || typeof j.score !== "number") throw new Error(j.message || "The grader answered " + r.status + ".");
-    a = {text, score: Math.max(0, Math.min(SA_PTS, Math.round(j.score))), fb: String(j.feedback || ""), got: (j.got || []).map(String), miss: (j.missing || []).map(String)};
-  } catch (e) {
-    a = {text, err: e.name === "AbortError" ? "It took too long to answer." : (e.message || "Network error.")};
-  }
-  if (run !== mine) return;
-  run.res[id] = a; saveRun();
-  if (run.items[run.i].id === id) question();
+/* ---------- AI grading prompt ---------- */
+function aiPrompt(r) {
+  const sas = r.items.filter(it => ITEMS[it.id].kind === "sa");
+  const head = `You are my 9th grade biology teacher. Grade my short answers from a practice test on Unit 3: Human Impact (human population growth and the demographic transition, ecological footprints and the Anthropocene, human causes of global change, climate change, and sustainable development).
+
+Grade each answer out of ${SA_PTS} points the way a fair 9th grade biology teacher would:
+3 = answers every part of the question with correct science and enough explanation or examples
+2 = mostly correct, but one part is missing, the explanation is thin, or there is a small mistake
+1 = shows some understanding (at least one correct idea), but big parts are missing or wrong
+0 = blank, off topic, or wrong
+
+The key points show what a strong answer could include. They are not a checklist, so give credit for correct ideas in my own words. If a question asks for a certain number of examples, I need that many for full credit. Ignore spelling and grammar unless the meaning is unclear.
+
+For each question, tell me my score, what I got right, and what to add or fix to get full credit. Then give my total out of ${sas.length * SA_PTS}.`;
+  const body = sas.map((it, i) => {
+    const q = ITEMS[it.id], a = r.res[it.id] || {};
+    return `Question ${i + 1}: ${q.q}${q.ft ? `\n(${q.ft})` : ""}\nKey points: ${q.key.join("; ")}\nMy answer: ${(a.text || "").trim() || "(blank)"}`;
+  }).join("\n\n");
+  return head + "\n\n" + body;
 }
 
-function selfScore(s) {
-  const it = run.items[run.i], q = ITEMS[it.id], a = run.res[it.id] || {};
-  run.res[it.id] = {text: a.text || "", score: s, self: true, fb: "", got: [], miss: []};
-  saveRun(); question();
+async function copyPrompt(btn) {
+  const ta = document.getElementById("aiprompt");
+  let ok = false;
+  try { await navigator.clipboard.writeText(ta.value); ok = true; } catch (e) {}
+  if (!ok) { ta.focus(); ta.select(); try { ok = document.execCommand("copy"); } catch (e) {} }
+  btn.textContent = ok ? "Copied!" : "Press Ctrl+C / ⌘C to copy";
+  clearTimeout(copyPrompt.t); copyPrompt.t = setTimeout(() => btn.textContent = "Copy prompt", 2500);
 }
 
 /* ---------- results ---------- */
 function results() {
   const r = run, sc = tally(r);
-  const hist = store.get(K + "hist", []);
+  const sas = r.items.filter(it => ITEMS[it.id].kind === "sa"), mcN = sc.max;
   if (!r.saved) {
-    hist.push({d: Date.now(), title: r.title, pct: sc.pct});
-    store.set(K + "hist", hist.slice(-40));
+    if (mcN) {
+      const hist = store.get(K + "hist", []);
+      hist.push({d: Date.now(), title: r.title, pct: sc.pct});
+      store.set(K + "hist", hist.slice(-40));
+    }
     const missed = new Set(store.get(K + "missed", []));
     for (const it of r.items) {
-      const q = ITEMS[it.id], a = r.res[it.id];
-      const bad = !a || (q.kind === "sa" ? (a.score || 0) < 2 : !a.ok);
-      bad ? missed.add(it.id) : missed.delete(it.id);
+      if (ITEMS[it.id].kind === "sa") continue;
+      const a = r.res[it.id];
+      a && a.ok ? missed.delete(it.id) : missed.add(it.id);
     }
     store.set(K + "missed", [...missed]);
     r.saved = true;
     saveRun();
   }
-  const mcN = r.items.filter(it => ITEMS[it.id].kind !== "sa").length, mcOk = r.items.filter(it => ITEMS[it.id].kind !== "sa" && r.res[it.id] && r.res[it.id].ok).length;
-  const saItems = r.items.filter(it => ITEMS[it.id].kind === "sa"), saPts = saItems.reduce((s, it) => s + ((r.res[it.id] || {}).score || 0), 0);
-  const parts = [mcN ? `${mcOk} / ${mcN} multiple choice` : "", saItems.length ? `${saPts} / ${saItems.length * SA_PTS} short-answer points` : ""].filter(Boolean).join(" · ");
+  const written = sas.filter(it => ((r.res[it.id] || {}).text || "").trim()).length;
+  const head = mcN
+    ? `<div class="big">${sc.pct}%</div><div><h1>${esc(r.title)}</h1><p>${sc.got} / ${mcN} multiple choice${sas.length ? ` · ${sas.length} short answer${sas.length === 1 ? "" : "s"} to grade with AI` : ""}</p></div>`
+    : `<div class="big">${written}/${sas.length}</div><div><h1>${esc(r.title)}</h1><p>short answers written. Copy the prompt below to get them graded.</p></div>`;
   const bars = Object.entries(sc.by).map(([t, b]) => { const p = Math.round(100 * b.got / b.max); return `<div class="bar"><span>${esc(topicName(t))}</span><div class="track"><div class="fill ${p < 60 ? "lo" : p < 80 ? "mid" : ""}" style="width:${p}%"></div></div><span class="v">${b.got}/${b.max}</span></div>`; }).join("");
-  const miss = r.items.filter(it => { const q = ITEMS[it.id], a = r.res[it.id]; return !a || (q.kind === "sa" ? (a.score || 0) < SA_PTS : !a.ok); }).map(it => {
+  const grade = sas.length ? `<section class="section"><h2>Grade your short answers with AI</h2><div class="hist prompt">
+      <ol class="steps"><li>Copy the prompt.</li><li>Paste it into an AI chat like ChatGPT, Claude or Gemini.</li><li>It grades each answer out of ${SA_PTS} like a 9th grade biology teacher and tells you what to add.</li></ol>
+      <textarea id="aiprompt" readonly aria-label="Prompt to paste into an AI">${esc(aiPrompt(r))}</textarea>
+      <div class="rowbtns"><button class="btn sun" data-go="copy">Copy prompt</button></div></div></section>
+    <section class="section"><h2>Example full-credit answers</h2><div class="missed">${sas.map(it => { const q = ITEMS[it.id], a = r.res[it.id] || {}; return `<div class="miss half"><span class="q">${esc(q.q)}</span><span class="yours">Your answer: ${esc((a.text || "").trim() || "(blank)")}</span><span class="corr">Example: ${esc(q.model)}</span></div>`; }).join("")}</div></section>` : "";
+  const miss = r.items.filter(it => ITEMS[it.id].kind !== "sa" && !(r.res[it.id] && r.res[it.id].ok)).map(it => {
     const q = ITEMS[it.id], a = r.res[it.id] || {};
-    if (q.kind === "sa") return `<div class="miss ${(a.score || 0) > 0 ? "half" : ""}"><span class="q">${esc(q.q)}</span><span class="yours">Your answer (${a.score || 0}/${SA_PTS}): ${esc(a.text || "(blank)")}</span>${a.fb ? `<span class="why">${esc(a.fb)}</span>` : ""}<span class="corr">Full-credit answer: ${esc(q.model)}</span></div>`;
     const right = q.kind === "vocab" ? q.term : q.a[0];
     return `<div class="miss"><span class="q">${esc(q.kind === "vocab" ? "“" + q.def + "”" : q.q)}</span><span class="yours">You picked: ${esc(a.pick || "(skipped)")}</span><span class="corr">Answer: ${esc(right)}</span>${q.why ? `<span class="why">${esc(q.why)}</span>` : ""}</div>`;
   }).join("");
+  const review = mcN ? `<section class="section"><h2>${miss ? "Multiple choice to review" : "Every multiple-choice answer was right."}</h2>${miss ? `<div class="missed">${miss}</div>` : ""}</section>` : "";
   app.innerHTML = `
-    <header class="score"><div class="big">${sc.pct}%</div><div><h1>${esc(r.title)}</h1><p>${parts}</p></div></header>
+    <header class="score">${head}</header>
+    ${grade}
     ${Object.keys(sc.by).length > 1 ? `<section class="section"><h2>By topic</h2><div class="hist"><div class="bars">${bars}</div></div></section>` : ""}
-    <section class="section"><h2>${miss ? "Review" : "Nothing to review. Every answer earned full credit."}</h2>${miss ? `<div class="missed">${miss}</div>` : ""}</section>
+    ${review}
     <section class="section"><div class="rowbtns">${miss ? `<button class="btn sun" data-start="missed">Redo missed</button>` : ""}<button class="btn" data-start="${r.mode === "topic" ? "quick" : r.mode === "missed" ? "full" : r.mode}">${r.mode === "topic" || r.mode === "missed" ? "Take another test" : "Try again (new questions)"}</button><button class="btn ghost" data-go="done">Home</button></div></section>`;
   scrollTo(0, 0);
 }
@@ -782,7 +772,6 @@ app.addEventListener("click", e => {
   if (b.dataset.start) return start(b.dataset.start);
   if (b.dataset.topic) return start("topic", b.dataset.topic);
   if (b.dataset.pick != null) return choose(+b.dataset.pick);
-  if (b.dataset.self != null) return selfScore(+b.dataset.self);
   const go = b.dataset.go;
   if (go === "home") { stash(); home(); }
   else if (go === "resume") show();
@@ -790,16 +779,14 @@ app.addEventListener("click", e => {
   else if (go === "done") { run = null; saveRun(); home(); }
   else if (go === "prev") { stash(); run.i = Math.max(0, run.i - 1); saveRun(); question(); }
   else if (go === "next") { stash(); run.i++; saveRun(); show(); }
-  else if (go === "grade") grade();
+  else if (go === "copy") copyPrompt(b);
   else if (go === "clearhist") { if (confirm("Clear your score history?")) { store.del(K + "hist"); home(); } }
 });
 
 function stash() {
   const ta = document.getElementById("sa");
-  if (!ta || ta.disabled || !run) return;
-  const id = run.items[run.i].id;
-  run.draft = run.draft || {};
-  run.draft[id] = ta.value;
+  if (!ta || !run || run.i >= run.items.length) return;
+  run.res[run.items[run.i].id] = {text: ta.value};
   saveRun();
 }
 
