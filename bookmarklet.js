@@ -18,7 +18,7 @@ set(k, v) { try { localStorage.setItem('classdash_' + k, JSON.stringify(v)); } c
 // Personal settings (the Settings page). Saved in this browser as classdash_prefs, so updates never reset them.
 const PREF_DEFAULT = { theme: 'dark', accent: '', size: 'normal', full: false, motion: true, start: 'home', clock24: false, seconds: false, outside: true, blurGrades: false, gameOpen: 'here', recent: true, tiles: 'medium', gameMute: true, streakIntro: true, qsKey: { code: 'KeyQ', alt: true, ctrl: false, shift: false, meta: false } };
 let P = Object.assign({}, PREF_DEFAULT, store.get('prefs', {}));
-const VIEWS = ['home', 'todo', 'grades', 'classes', 'calendar', 'schedule', 'hallpass', 'study', 'games'];
+const VIEWS = ['home', 'todo', 'grades', 'classes', 'calendar', 'schedule', 'hallpass', 'study', 'games', 'browser'];
 const CANVAS_VIEWS = ['home', 'todo', 'grades', 'classes', 'calendar'];
 function startView() {
 if (LIB) return window.__classDashStart === 'study' ? 'study' : 'games';
@@ -235,6 +235,13 @@ a.pcls:hover{text-decoration:underline}
 .ib:hover{color:var(--tx);background:var(--p3)}
 .ib.spinning svg{animation:sp .8s linear infinite}
 .ct{flex:1;overflow:auto;padding:22px 24px}
+.ct:has(.browser-page){padding:0;overflow:hidden;min-height:0}
+.browser-page{width:100%;height:100%;min-height:0;display:flex;flex-direction:column}
+.browser-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:var(--p1);border-bottom:1px solid var(--ln)}
+.browser-bar .sub{min-width:0}
+.browser-bar a{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;background:var(--p2);font-weight:600;font-size:12px;white-space:nowrap}
+.browser-bar a:hover{background:var(--p3)}
+.browser-frame{flex:1;min-height:0;width:100%;border:0;background:#fff}
 .ct::-webkit-scrollbar{width:12px}
 .ct::-webkit-scrollbar-thumb{background:var(--p3);border-radius:10px;border:3px solid var(--bg)}
 .hello{margin-bottom:18px}
@@ -888,7 +895,7 @@ root.innerHTML = `<style>${CSS}</style><div class="bd${LIB ? ' lib' : ''}"><div 
 document.body.appendChild(host);
 if (!document.getElementById('classboard-font')) { const fl = document.createElement('link'); fl.id = 'classboard-font'; fl.rel = 'stylesheet'; fl.href = 'https://fonts.googleapis.com/css2?family=Geist:wght@400..700&display=swap'; (document.head || document.documentElement).appendChild(fl); }
 const $ = s => root.querySelector(s);
-const NAV = [['home', 'Overview', I.home], ['todo', 'To-Do', I.check], ['grades', 'Grades', I.chart], ['classes', 'Classes', I.book], ['calendar', 'Calendar', I.cal], ['schedule', 'Schedule', I.clock], ['hallpass', 'Hall Pass', I.pass], ['study', 'Study', I.study], ['games', 'Games', I.game]];
+const NAV = [['home', 'Overview', I.home], ['todo', 'To-Do', I.check], ['grades', 'Grades', I.chart], ['classes', 'Classes', I.book], ['calendar', 'Calendar', I.cal], ['schedule', 'Schedule', I.clock], ['hallpass', 'Hall Pass', I.pass], ['study', 'Study', I.study], ['games', 'Games', I.game], ['browser', 'Browser', I.globe]];
 const navOf = v => v === 'course' ? 'classes' : v === 'play' ? 'games' : v === 'read' || v === 'cards' ? 'study' : v;
 const usesLib = v => v === 'games' || v === 'study';
 function paintChrome() {
@@ -918,6 +925,7 @@ const box = keep && $(keep);
 if (box) { box.focus(); if (box.setSelectionRange) box.setSelectionRange(box.value.length, box.value.length); }
 loadLib();
 }
+else if (v === 'browser') ct.innerHTML = vBrowser();
 else if (v === 'hallpass') ct.innerHTML = vHallPass();
 else if (v === 'admin') ct.innerHTML = S.draft ? vAdmin() : empty('Nothing here.');
 else if (v === 'settings') ct.innerHTML = vSettings();
@@ -930,6 +938,8 @@ else if (!S.loadedAt) ct.innerHTML = S.error ? vError() : '<div class="spin"></d
 else ct.innerHTML = { home: vHome, todo: vTodo, grades: vGrades, classes: vClasses, calendar: vCal, course: vCourse }[v]();
 ct.scrollTop = keepScroll ? top : 0;
 }
+const BROWSER_URL = 'https://invisiproxyltsl.onrender.com/mycs?cache=943449902';
+const vBrowser = () => `<div class="browser-page"><div class="browser-bar"><span class="sub">InvisiProxy</span><a href="${BROWSER_URL}" target="_blank" rel="noopener noreferrer">${I.ext} Open in new tab</a></div><iframe class="browser-frame" title="InvisiProxy Browser" src="${BROWSER_URL}" allow="fullscreen; clipboard-read; clipboard-write" referrerpolicy="no-referrer"></iframe></div>`;
 const go = v => { if (S.view === 'play') flushPlay(); S.view = v; if (VIEWS.includes(v)) store.set('lastView', v); renderMain(); };
 const tile = (k, v, s, color, g) => `<div class="card tile${g ? ' gtile' : ''}"><div class="k">${k}</div><div class="v" style="color:${color || 'var(--tx)'}">${v}</div><div class="sub">${s}</div></div>`;
 function status(x) {
@@ -2383,7 +2393,7 @@ return s;
 }
 var SITE = fixSite(store.get('site', null));
 const curSite = () => S.draft || SITE;
-function shownNav() { const h = curSite().hidden || []; return NAV.filter(n => !h.includes(n[0]) && (!LIB || n[0] === 'study' || n[0] === 'games')); }
+function shownNav() { const h = curSite().hidden || []; return NAV.filter(n => !h.includes(n[0]) && (!LIB || n[0] === 'study' || n[0] === 'games' || n[0] === 'browser')); }
 const inWindow = b => { const now = Date.now(), a = b.start ? new Date(b.start).getTime() : -Infinity, z = b.end ? new Date(b.end).getTime() : Infinity; return now >= a && now < z; };
 function paintBanners() {
 const s = curSite(), gone = store.get('bannersClosed', []);
