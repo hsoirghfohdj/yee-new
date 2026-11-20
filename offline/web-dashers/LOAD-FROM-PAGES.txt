@@ -1,1 +1,0 @@
-Web Dashers uses multiple JavaScript, level, and media files. Load it from GitHub Pages so relative assets resolve properly.
