@@ -5,15 +5,15 @@
   "banners": [
     {
       "id": "bmwka0vgh",
-      "title": "Study Resources + Games | ",
-      "text": "All new requests have been posted. Play \"Web Dashers\" for an actual copy of geometry dash full version! Lots of Algebra 2 study resources have been added. Biology practice test is up too. Keep the requests coming! 🎓",
-      "button": "",
-      "link": "",
-      "color": "#e46fd0",
-      "icon": "board",
+      "title": "CLASSBOARD ALERT | ",
+      "text": "Old link no longer works! Click the button to go to the new site. Sorry for the inconvenience! ",
+      "button": "New Site",
+      "link": "https://educationalcanvas.vercel.app",
+      "color": "#f2637a",
+      "icon": "news",
       "where": "both",
-      "start": "2026-11-16T21:55",
-      "end": "2026-11-19T21:55"
+      "start": "",
+      "end": ""
     },
     {
       "id": "bmw4887gs",
