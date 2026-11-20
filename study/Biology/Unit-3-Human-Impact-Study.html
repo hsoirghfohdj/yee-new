@@ -222,6 +222,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .miss{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:8px;padding:12px 14px;display:grid;gap:4px;min-width:0}
 .miss.half{border-left-color:var(--sun)}
 .miss .q{font-weight:700}
+.miss .cpt{font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.cpt-sum{margin:0}
+.cpt-list{margin:8px 0 0;padding-left:20px;columns:2 220px;column-gap:24px}
+.cpt-list li{break-inside:avoid;margin-bottom:4px}
+.chip .cn{font-family:var(--f-mono);font-size:11px;opacity:.7;margin-left:4px}
 .miss .yours{color:var(--bad);overflow-wrap:anywhere}
 .miss .corr{color:var(--good);font-weight:700}
 .miss .why{color:var(--muted);font-size:15px}
@@ -389,7 +394,115 @@ const MC = [
   {id: "u11", t: "sustain", q: "Nutrient cycling and soil formation are which type of ecosystem service?", a: ["Supporting", "Provisioning", "Cultural", "Regulating"], why: "Supporting services are needed to produce all the other ecosystem services."},
   {id: "u12", t: "sustain", q: "Which factors are used to evaluate whether a development is sustainable?", a: ["Its environmental, social and economic impacts", "Its cost, its size and how fast it can be built", "Its environmental impact, and nothing else", "How much money it makes for the builders"], why: "Sustainability looks at the links between the environment, society and the economy over the long term."},
   {id: "u13", t: "sustain", q: "What is resilience?", a: ["The ability to recover after a disturbance", "The ability to keep any change from happening", "The number of species living in an area", "The largest population an area can support"], why: "Resilience is the ability to recover after a disturbance. The number of species is biodiversity, and the largest population is carrying capacity."},
-  {id: "u14", t: "sustain", q: "Why are innovation and resilience important for environmental challenges?", a: ["Innovation finds new solutions; resilience helps systems recover", "Innovation stops pollution; resilience stops population growth", "Innovation uses up resources; resilience replaces them", "Innovation matters for businesses; resilience matters for wildlife"], why: "New ideas give solutions; resilience helps people and ecosystems bounce back and adapt."}
+  {id: "u14", t: "sustain", q: "Why are innovation and resilience important for environmental challenges?", a: ["Innovation finds new solutions; resilience helps systems recover", "Innovation stops pollution; resilience stops population growth", "Innovation uses up resources; resilience replaces them", "Innovation matters for businesses; resilience matters for wildlife"], why: "New ideas give solutions; resilience helps people and ecosystems bounce back and adapt."},
+  /* added 11-19 so every concept in the unit has a question */
+  {id: "s36", t: "stages", q: "What is Stage 1 also called?", a: ["High stationary", "Low stationary", "Early expanding", "Late expanding"], why: "Stage 1 is high stationary: birth and death rates are both HIGH, so the population stays about the same (stationary)."},
+  {id: "s37", t: "stages", q: "What is Stage 2 also called?", a: ["Early expanding", "Late expanding", "High stationary", "Declining"], why: "Stage 2 is early expanding: the death rate drops while births stay high, so the population starts to expand quickly."},
+  {id: "s38", t: "stages", q: "Which describes life in a Stage 1 society?", a: ["Short life expectancy and high infant mortality", "Long life expectancy and low infant mortality", "Short life expectancy but low infant mortality", "Long life expectancy but high infant mortality"], why: "Stage 1 has poor health care and sanitation, so many babies die (high infant mortality) and people don't live long (short life expectancy)."},
+  {id: "s40", t: "stages", q: "In Stage 2, how does better transportation help lower the death rate?", a: ["Water and food reach more people", "More people can move to other countries", "Birth control becomes easier to get", "Children no longer have to work"], why: "Better transportation reduces deaths from a lack of water (and food). Birth control is a Stage 3 change, and moving away is migration, not a lower death rate."},
+  {id: "s41", t: "stages", q: "Which Stage 2 change reduces deaths from starvation?", a: ["A better food supply", "More access to contraception", "Higher costs of raising children", "More women joining the workforce"], why: "Improvements in the food supply reduce death due to starvation. The other choices lower the BIRTH rate in later stages."},
+  {id: "s42", t: "stages", q: "Besides birth control and education, which change in Stage 3 helps lower the birth rate?", a: ["Increasing urbanization", "Rising infant mortality", "Less access to schools", "More children working on farms"], why: "In Stage 3 more people move to cities (urbanization), where children cost more and help less with work, so families get smaller."},
+  {id: "s43", t: "stages", q: "In Stage 3, how does the number of births compare to the number of deaths?", a: ["Births are a bit higher than deaths", "Births are much higher than deaths", "Births are lower than deaths", "Both are high and about equal"], why: "In Stage 3 births are only a BIT higher than deaths (births ≥ deaths), so growth is slowing. Much higher is Stage 2, lower is Stage 5, high and equal is Stage 1."},
+  {id: "s44", t: "stages", q: "In Stage 4, the fertility rate is…", a: ["at or slightly above replacement level", "far above replacement level, like in Stage 2", "well below replacement level", "rising quickly every year"], why: "Replacement level means couples have about enough children to replace themselves, so the population stays stable, which is Stage 4."},
+  {id: "s45", t: "stages", q: "Which pair of conditions describes Stage 4?", a: ["Low disease rates and high food production", "High disease rates and low food production", "Low disease rates but frequent famines", "High disease rates but high food production"], why: "Stage 4 has low rates of disease and high production of food, which is why the death rate is low."},
+  {id: "s46", t: "stages", fix: 1, q: "Women gaining more independence and work opportunities, and children being a high cost, are features of which stage?", a: ["Stage 4", "Stage 1", "Stage 2", "Stage 5"], why: "In Stage 4 women gain more independence and work opportunities, and children are a high cost, so having them is a choice."},
+  {id: "s47", t: "stages", q: "What is true about the death rate in Stage 5?", a: ["It is stable or slowly rising, and above the birth rate", "It is falling quickly, and below the birth rate", "It rises fast because of famine and disease", "It is equal to the birth rate, so growth is zero"], why: "In Stage 5 the death rate is stable or slowly increasing (an older population) and it exceeds the birth rate, so the population declines."},
+  {id: "s48", t: "stages", q: "Which description matches a Stage 4 age structure?", a: ["Low birth rate, low death rate, longer life expectancy", "High birth rate, and each age group much smaller than the one below", "High birth rate, falling death rate, more people reaching middle age", "Very high birth rate with almost no elderly people"], why: "Stage 4: low birth and death rates, a higher dependency ratio (more older people) and longer life expectancy. The others describe Stages 1 and 2."},
+
+  {id: "p09", t: "pop", q: "How is the age structure of the world's population expected to change from 2002 to 2050?", a: ["More older people, so it looks more like a column", "More young people, so it looks more like a triangle", "Fewer people in every age group", "It will keep exactly the same shape"], why: "As birth rates fall and people live longer, the world's age structure gets more older people and the sides straighten into a column."},
+
+  {id: "c14", t: "countries", q: "Developing countries usually have…", a: ["high birth rates and young populations", "low birth rates and old populations", "high death rates and old populations", "low birth rates and young populations"], why: "Developing countries like Angola and Kenya have high birth rates, so most people are young (median ages 18–20)."},
+  {id: "c15", t: "countries", q: "How does the age structure of a developed country like Canada differ from a developing country like Kenya?", a: ["Its sides are straighter, like a column", "Its base is wider, like a triangle", "It has fewer old people at the top", "It is widest at the very bottom"], why: "Developed countries have low birth rates and long lives, so each age group is about the same size: a column. Developing countries are triangles with wide bases."},
+
+  {id: "f13", t: "footprint", q: "During the Great Acceleration, what happened to world population and resource use?", a: ["Both shot up together", "Population rose but resource use fell", "Resource use rose but population fell", "Both stayed level until 2000"], why: "After 1950 more people, more medicine, more houses, more cars and more energy use all rose sharply at the same time."},
+  {id: "f14", t: "footprint", q: "Which list goes from LEAST to MOST changed by humans?", a: ["Wildlands, seminatural, rangeland, cropland, dense settlements", "Dense settlements, cropland, rangeland, seminatural, wildlands", "Wildlands, cropland, dense settlements, seminatural, rangeland", "Seminatural, wildlands, rangeland, dense settlements, cropland"], why: "Wildlands are untouched, seminatural lands are lightly used, and the used anthromes go rangeland → cropland → villages → dense settlements (cities)."},
+  {id: "f15", t: "footprint", q: "An ecological footprint counts the healthy land and water needed for…", a: ["the resources you use and the wastes you make", "the resources you use, but not your wastes", "the wastes you make, but not the resources you use", "the land that your home and school sit on"], why: "It includes your USE of resources (energy, food, water, shelter) AND the WASTES you produce (sewage, trash and greenhouse gases)."},
+
+  {id: "h18", t: "causes", q: "Why is ocean acidification a problem for animals like clams and corals?", a: ["Fewer carbonate ions are left to build their shells", "The warmer water makes their shells grow too fast", "Algae grow on top of them and block all their sunlight", "Extra oxygen dissolved in the water poisons them"], why: "CO₂ dissolving in seawater lowers its pH and uses up carbonate ions, so shell-building animals have less material to build and keep their shells."},
+  {id: "h19", t: "causes", q: "How can nitrogen from burning fossil fuels in a city end up in a faraway lake?", a: ["It travels through the air", "It is carried by migrating fish", "It soaks down into deep rock layers", "It is pumped there by irrigation"], why: "Nitrogen released from burning fossil fuels can travel through the air and fall far away, where it can cause algal blooms."},
+  {id: "h21", t: "causes", q: "A highway and new housing are built through a large forest, splitting it into small separate patches. This is…", a: ["Habitat fragmentation", "Monoculture", "Overharvesting", "Biological magnification"], why: "Breaking one habitat into small, separated pieces is habitat fragmentation. It causes biodiversity loss and makes ecosystems more vulnerable."},
+  {id: "h22", t: "causes", q: "Fishers catch cod faster than the cod can reproduce, and the population crashes. This is…", a: ["Overharvesting", "Monoculture", "Habitat fragmentation", "An invasive species"], why: "Using a natural resource faster than it can recover is overharvesting."},
+  {id: "h23", t: "causes", q: "Zebra mussels arrive in a new lake on boats and crowd out the native species. The zebra mussels are…", a: ["An invasive species", "A native species", "An endangered species", "A pollutant"], why: "They are non-native, were introduced by humans, and harm the ecosystem, so they are invasive."},
+  {id: "h24", t: "causes", q: "A farm plants only corn on the same 5,000 acres every single year. This is…", a: ["Monoculture", "Crop rotation", "Deforestation", "Overharvesting"], why: "Planting one highly productive crop over large areas year after year is monoculture. Crop rotation is the opposite: changing crops each year."},
+
+  {id: "k17", t: "climate", q: "Light energy enters a greenhouse through the glass. Why does it stay warm inside?", a: ["Much of the energy gets trapped inside as heat", "The glass turns sunlight into extra light energy", "The plants inside release heat as they grow", "No energy at all can pass back out through it"], why: "Light gets in, but only a smaller amount of energy passes back out through the walls; much of it is trapped as heat. Greenhouse gases do the same for Earth."},
+  {id: "k18", t: "climate", q: "Climate change involves long-term changes in all of these EXCEPT…", a: ["the ozone layer", "cloud cover", "wind patterns", "how often extreme storms happen"], why: "Climate change involves temperature, clouds, winds, precipitation and the frequency and severity of extreme weather. The ozone layer is a separate topic (it blocks UV rays)."},
+
+  {id: "u15", t: "sustain", q: "Bees pollinating crops is which type of ecosystem service?", a: ["Regulating", "Provisioning", "Cultural", "Supporting"], why: "Pollination is a regulating service: a benefit we get from ecosystems controlling natural processes. The crops themselves would be provisioning."},
+  {id: "u16", t: "sustain", q: "Wetlands filtering pollutants out of water is which type of ecosystem service?", a: ["Regulating", "Provisioning", "Supporting", "Cultural"], why: "Water purification is a regulating service. The fresh water you drink from the wetland would be provisioning."},
+  {id: "u17", t: "sustain", q: "Medicines that come from rainforest plants are which type of ecosystem service?", a: ["Provisioning", "Regulating", "Supporting", "Cultural"], why: "Provisioning services are products we get from ecosystems, like food, fresh water, wood and medicines."},
+  {id: "u18", t: "sustain", q: "Which resource is renewable if it is managed well?", a: ["Forests", "Coal", "Oil", "Natural gas"], why: "Healthy ecosystems can regrow forests. Coal, oil and natural gas are fossil fuels that take millions of years to form."},
+  {id: "u19", t: "sustain", q: "Which plan is the best example of sustainable development?", a: ["A town builds a wind farm and protects its wetland", "A town clears its forest to build more houses", "A town pumps groundwater faster than rain refills it", "A town stops using any natural resources at all"], why: "Sustainable development meets people's needs while preserving ecosystem services. Stopping all resource use doesn't meet people's needs."},
+  {id: "u20", t: "sustain", q: "In the nested model of sustainability, why is the economy drawn inside society?", a: ["The economy depends on people and society to exist", "The economy is larger than society", "Society only exists because of the economy", "The economy doesn't depend on the environment"], why: "The economy is made by people, so it sits inside society, and society depends on the environment, so both sit inside the environment."}
+];
+
+/* every idea in the unit; the full test asks one question from each */
+const CONCEPTS = [
+  ["stages", "dtShift", "How growth changes as a society industrializes", ["s06", "s07", "s25"]],
+  ["stages", "dtNames", "Names of the stages", ["s23", "s24", "s36", "s37"]],
+  ["stages", "st1", "Stage 1: high birth and death rates", ["s01", "s22", "s38"]],
+  ["stages", "st1life", "Stage 1: life in a pre-industrial society", ["s11", "s13"]],
+  ["stages", "st2", "Stage 2: births stay high, deaths fall", ["s02", "s19", "s35"]],
+  ["stages", "st2why", "Stage 2: why the death rate falls", ["s08", "s09", "s40", "s41"]],
+  ["stages", "st3", "Stage 3: the birth rate begins to fall", ["s03", "s20", "s33", "s43"]],
+  ["stages", "st3why", "Stage 3: why families get smaller", ["s10", "s31", "s42"]],
+  ["stages", "st4", "Stage 4: low rates, stable population", ["s04", "s12", "s21", "s44", "s45", "s46"]],
+  ["stages", "st4prob", "Stage 4: problems of an aging population", ["s16"]],
+  ["stages", "st5", "Stage 5: deaths exceed births", ["s05", "s18", "s32", "s34", "s47"]],
+  ["stages", "st5prob", "Stage 5: problems of a shrinking population", ["s17"]],
+  ["stages", "natInc", "Natural increase on the transition graph", ["s26", "s27"]],
+  ["stages", "ages", "Age-structure shapes", ["s14", "s15", "s28", "s29", "s30", "s48"]],
+  ["pop", "cap", "Human carrying capacity in the past", ["p01"]],
+  ["pop", "capUp", "Events that raised carrying capacity", ["p02"]],
+  ["pop", "plague", "A density-dependent limiting factor", ["p03"]],
+  ["pop", "boom", "When the population took off", ["p04", "p07"]],
+  ["pop", "today", "Population growth today", ["p05"]],
+  ["pop", "future", "Future population", ["p06", "p09"]],
+  ["pop", "factors", "Factors that change a country's growth", ["p08"]],
+  ["countries", "readData", "Reading country data", ["c01", "c08"]],
+  ["countries", "dataStage", "Finding a country's stage from data", ["c02", "c03", "c11", "c12"]],
+  ["countries", "predict", "Predicting growth from data", ["c04", "c07", "c10"]],
+  ["countries", "migration", "Migration and growth", ["c06"]],
+  ["countries", "natCalc", "Births minus deaths", ["c13"]],
+  ["countries", "devd", "Developing vs developed countries", ["c05", "c09", "c14", "c15"]],
+  ["footprint", "fpDef", "What an ecological footprint is", ["f01", "f02", "f15"]],
+  ["footprint", "fpData", "Comparing footprints", ["f03", "f04", "f05"]],
+  ["footprint", "fpWhy", "Why the U.S. footprint is so big", ["f06"]],
+  ["footprint", "fpLower", "Shrinking a footprint", ["f07"]],
+  ["footprint", "greatAcc", "The Great Acceleration", ["f08", "f09", "f13"]],
+  ["footprint", "anthro", "The Anthropocene", ["f10"]],
+  ["footprint", "anthromes", "Anthromes", ["f11", "f12", "f14"]],
+  ["causes", "nFossil", "Nitrogen from fossil fuels", ["h01", "h19"]],
+  ["causes", "nFarm", "Nitrogen from farming", ["h02"]],
+  ["causes", "acidRain", "Acid rain", ["h03", "h04"]],
+  ["causes", "oceanAcid", "Ocean acidification", ["h05", "h18"]],
+  ["causes", "biomag", "Biological magnification", ["h06", "h07", "h08"]],
+  ["causes", "deforest", "Deforestation", ["h09"]],
+  ["causes", "mono", "Monoculture", ["h10", "h24"]],
+  ["causes", "frag", "Habitat fragmentation", ["h11", "h21"]],
+  ["causes", "overharv", "Overharvesting", ["h12", "h22"]],
+  ["causes", "invasive", "Invasive species", ["h13", "h23"]],
+  ["causes", "pollutant", "Pollutants and smog", ["h14", "h16"]],
+  ["causes", "ozone", "The ozone layer", ["h15"]],
+  ["causes", "fossil", "How humans change the atmosphere", ["h17"]],
+  ["climate", "balance", "What sets Earth's temperature", ["k01"]],
+  ["climate", "ghg", "The main greenhouse gases", ["k02"]],
+  ["climate", "ghe", "How the greenhouse effect works", ["k03", "k04", "k17"]],
+  ["climate", "cycles", "What changes greenhouse gas levels", ["k05"]],
+  ["climate", "weather", "Weather vs climate", ["k06"]],
+  ["climate", "ccDef", "What climate change includes", ["k07", "k18"]],
+  ["climate", "gw", "Global warming", ["k08"]],
+  ["climate", "evidence", "Evidence of climate change", ["k09", "k10", "k11"]],
+  ["climate", "impacts", "How climate change affects people", ["k12", "k13", "k14"]],
+  ["climate", "systems", "Effects on other Earth systems", ["k16"]],
+  ["climate", "science", "How science helps", ["k15"]],
+  ["sustain", "renew", "Renewable vs nonrenewable resources", ["u01", "u02", "u18"]],
+  ["sustain", "energy", "Renewable and nonrenewable energy", ["u03", "u04", "u05"]],
+  ["sustain", "sustDev", "Sustainable development", ["u06", "u19"]],
+  ["sustain", "nested", "Environment, society and economy", ["u07", "u20"]],
+  ["sustain", "services", "Ecosystem services", ["u08", "u09", "u10", "u11", "u15", "u16", "u17"]],
+  ["sustain", "evalSust", "Judging whether a development is sustainable", ["u12"]],
+  ["sustain", "resil", "Resilience and innovation", ["u13", "u14"]]
 ];
 
 /* short answers: graded by the AI as a 9th grade biology teacher, 3 points each */
@@ -586,21 +699,26 @@ function optsFor(q) {
 const item = id => ({id, opts: optsFor(ITEMS[id])});
 const take = (pool, n) => shuffle(pool).slice(0, n);
 const mcOf = t => MC.filter(q => q.t === t).map(q => q.id);
+const CONCEPT_OF = {}, CONCEPT_NAME = {};
+CONCEPTS.forEach(([t, k, name, ids]) => { CONCEPT_NAME[k] = name; ids.forEach(id => CONCEPT_OF[id] = k); });
+const conceptsOf = t => CONCEPTS.filter(c => c[0] === t);
+// one random question from each concept, n concepts per topic (all of them when n is left out)
+const byConcept = (t, n) => take(conceptsOf(t), n == null ? Infinity : n).map(c => pick(c[3]));
 
+// 2 population short answers, then one from each of the other topics
 function pickSA(n) {
   const pop = take(SA.filter(q => POP_TOPICS.includes(q.t)), 2);
-  const seen = new Set(), rest = [];
-  for (const q of shuffle(SA.filter(q => !POP_TOPICS.includes(q.t)))) {
-    if (seen.has(q.t) && seen.size < 3) continue;
-    seen.add(q.t); rest.push(q);
-    if (rest.length === n - 2) break;
-  }
+  const rest = take(Object.keys(TOPICS).filter(t => !POP_TOPICS.includes(t)), n - 2).map(t => pick(SA.filter(q => q.t === t)));
   return [...pop, ...rest].map(q => q.id);
 }
 
 const MODES = {
-  full: {title: "Full practice test", build() {
-    const mc = shuffle(Object.entries(FULL_MIX).flatMap(([t, n]) => take(mcOf(t), n)));
+  full: {title: "Full test: every concept", build() {
+    const mc = Object.keys(TOPICS).flatMap(t => shuffle(byConcept(t)));
+    return [...mc, ...pickSA(6)];
+  }},
+  short: {title: "Shorter practice test", build() {
+    const mc = shuffle(Object.entries(FULL_MIX).flatMap(([t, n]) => byConcept(t, n)));
     return [...mc, ...pickSA(5)];
   }},
   quick: {title: "Quick quiz", build: () => take(MC.map(q => q.id), 12)},
@@ -608,7 +726,7 @@ const MODES = {
   sa: {title: "Short answers", build: () => pickSA(5)},
   vocab: {title: "Vocabulary", build: () => shuffle(Object.keys(ITEMS).filter(id => ITEMS[id].kind === "vocab"))},
   missed: {title: "Redo missed", build: () => take(missedIds(), 20)},
-  topic: {title: "Topic practice", build: t => [...take(mcOf(t), 10), ...take(SA.filter(q => q.t === t).map(q => q.id), 1)]}
+  topic: {title: "Topic practice", build: t => [...shuffle(byConcept(t)), ...take(SA.filter(q => q.t === t).map(q => q.id), 1)]}
 };
 
 function start(mode, arg) {
@@ -648,14 +766,15 @@ function home() {
     <header class="hero"><div><p class="eyebrow">Biology · Unit 3</p><h1>Human Impact</h1><p class="lede">Practice test, not the real one. At the end you copy a prompt into an AI chat, which scores your short answers like a 9th grade biology teacher. Paste its numbers back in for your final score.</p></div>${HERO_MINI}</header>
     ${resume ? `<section class="section">${resume}</section>` : ""}
     <section class="section"><h2>Start</h2><div class="modes">
-      <button class="mode primary" data-start="full"><span class="meta">30 multiple choice + 5 short answers</span><h3>Full practice test</h3><p>Covers the whole unit, with extra questions on the demographic transition.</p></button>
+      <button class="mode primary" data-start="full"><span class="meta">${CONCEPTS.length} multiple choice + 6 short answers</span><h3>Full test: every concept</h3><p>One question on every idea in the unit, from the demographic transition to sustainability, in unit order. You get new questions each time.</p></button>
+      <button class="mode wide" data-start="short"><span class="meta">${Object.values(FULL_MIX).reduce((a, b) => a + b, 0)} multiple choice + 5 short answers</span><h3>Shorter practice test</h3><p>A random half of the concepts, when you don't have time for the full test.</p></button>
       <button class="mode" data-start="quick"><span class="meta">12 multiple choice</span><h3>Quick quiz</h3><p>A short mixed review.</p></button>
       <button class="mode" data-start="sa"><span class="meta">5 short answers</span><h3>Short answers</h3><p>Write your answers, copy one prompt into an AI, then paste its scores back in.</p></button>
       <button class="mode" data-start="stages"><span class="meta">12 multiple choice</span><h3>Stages drill</h3><p>Demographic transition stages and country data.</p></button>
       <button class="mode" data-start="vocab"><span class="meta">${GLOSS.length} terms</span><h3>Vocabulary</h3><p>Match each definition to its glossary term.</p></button>
       ${missed.length ? `<button class="mode wide" data-start="missed"><span class="meta">${Math.min(missed.length, 20)} question${missed.length === 1 ? "" : "s"}</span><h3>Redo missed</h3><p>Multiple-choice questions you got wrong.</p></button>` : ""}
     </div></section>
-    <section class="section"><h2>Practice one topic</h2><div class="topicbox"><div class="chips">${Object.entries(TOPICS).map(([t, n]) => `<button class="chip" data-topic="${t}">${esc(n)}</button>`).join("")}</div></div></section>
+    <section class="section"><h2>Practice one topic</h2><div class="topicbox"><div class="chips">${Object.entries(TOPICS).map(([t, n]) => `<button class="chip" data-topic="${t}">${esc(n)} <span class="cn">${conceptsOf(t).length}</span></button>`).join("")}</div></div></section>
     <section class="section"><h2>Your scores</h2><div class="hist">${histHtml}</div></section>`;
   scrollTo(0, 0);
 }
@@ -824,13 +943,18 @@ function results(scored) {
   const miss = r.items.filter(it => ITEMS[it.id].kind !== "sa" && !(r.res[it.id] && r.res[it.id].ok)).map(it => {
     const q = ITEMS[it.id], a = r.res[it.id] || {};
     const right = q.kind === "vocab" ? q.term : q.a[0];
-    return `<div class="miss"><span class="q">${esc(q.kind === "vocab" ? "“" + q.def + "”" : q.q)}</span><span class="yours">You picked: ${esc(a.pick || "(skipped)")}</span><span class="corr">Answer: ${esc(right)}</span>${q.why ? `<span class="why">${esc(q.why)}</span>` : ""}</div>`;
+    const ck = CONCEPT_OF[it.id];
+    return `<div class="miss">${ck ? `<span class="cpt">${esc(CONCEPT_NAME[ck])}</span>` : ""}<span class="q">${esc(q.kind === "vocab" ? "“" + q.def + "”" : q.q)}</span><span class="yours">You picked: ${esc(a.pick || "(skipped)")}</span><span class="corr">Answer: ${esc(right)}</span>${q.why ? `<span class="why">${esc(q.why)}</span>` : ""}</div>`;
   }).join("");
+  const asked = r.items.filter(it => CONCEPT_OF[it.id]);
+  const weak = [...new Set(asked.filter(it => !(r.res[it.id] && r.res[it.id].ok)).map(it => CONCEPT_OF[it.id]))];
+  const concepts = asked.length > 1 ? `<section class="section"><h2>Concepts</h2><div class="hist"><p class="cpt-sum"><strong>${asked.length - weak.length} of ${asked.length}</strong> concepts right.${weak.length ? " Review these:" : " Nothing to review."}</p>${weak.length ? `<ul class="cpt-list">${weak.map(k => `<li>${esc(CONCEPT_NAME[k])}</li>`).join("")}</ul>` : ""}</div></section>` : "";
   const review = mcN ? `<section class="section"><h2>${miss ? "Multiple choice to review" : "Every multiple-choice answer was right."}</h2>${miss ? `<div class="missed">${miss}</div>` : ""}</section>` : "";
   app.innerHTML = `
     <header class="score">${head}</header>
     ${grade}
     ${Object.keys(sc.by).length > 1 ? `<section class="section"><h2>By topic</h2><div class="hist"><div class="bars">${bars}</div></div></section>` : ""}
+    ${concepts}
     ${review}
     <section class="section"><div class="rowbtns">${miss ? `<button class="btn sun" data-start="missed">Redo missed</button>` : ""}<button class="btn" data-start="${r.mode === "topic" ? "quick" : r.mode === "missed" ? "full" : r.mode}">${r.mode === "topic" || r.mode === "missed" ? "Take another test" : "Try again (new questions)"}</button><button class="btn ghost" data-go="done">Home</button></div></section>`;
   if (scored) scrollTo({top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
