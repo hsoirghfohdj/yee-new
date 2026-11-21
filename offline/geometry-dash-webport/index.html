@@ -1,5 +1,34 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="preconnect" href="https://raw.githubusercontent.com"><script async src="https://www.googletagmanager.com/gtag/js?id=G-8K9SYB8360"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-8K9SYB8360');</script><base href="https://cdn.jsdelivr.net/gh/Ale7208/geometry-dash-wasm/">
 <script>
+// A third-party, sandboxed iframe may deny the Gamepad API even when the
+// embedding page requests permission. The WASM input loop expects getGamepads()
+// not to throw, so report no connected pads instead of crashing the game.
+(function () {
+  var nav = window.navigator;
+  if (!nav) return;
+  ['getGamepads', 'webkitGetGamepads'].forEach(function (name) {
+    var original = nav[name];
+    if (typeof original !== 'function') return;
+    var safe = function () {
+      try {
+        return original.apply(nav, arguments);
+      } catch (error) {
+        if (error && (error.name === 'SecurityError' ||
+            /permission|feature.policy|not.allowed/i.test(String(error.message || error)))) {
+          return [null, null, null, null];
+        }
+        throw error;
+      }
+    };
+    try {
+      Object.defineProperty(nav, name, { configurable: true, value: safe });
+    } catch (error) {
+      try { nav[name] = safe; } catch (_) {}
+    }
+  });
+})();
+</script>
+<script>
 (function () {
   window.gdInLevel = false;
   var soundNames = new WeakMap();
