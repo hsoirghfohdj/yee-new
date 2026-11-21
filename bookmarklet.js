@@ -27,7 +27,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Important news now pops up in a box the next time you open Classboard, so you won’t miss it.';
+const WHATSNEW = 'Important news now pops up in a box the next time you open Classboard, so you won’t miss it. Games, and games opened in a new tab, now load straight from Classboard’s new game server.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -1503,7 +1503,7 @@ const GAME_SANDBOX = 'allow-scripts allow-pointer-lock allow-forms allow-modals 
 // If a game won't load from the repo, this computer remembers to use the copy on Vercel for it (for 3 days),
 // and if Vercel doesn't answer, GitHub Pages. Games from the repo load their other files (scripts, styles,
 // sounds) from Vercel too: raw GitHub sends those as plain text, which browsers refuse to run.
-const VERCEL = 'https://classboardd.vercel.app/';
+const VERCEL = 'https://educationalcanvas.vercel.app/';
 const vercelUrl = p => VERCEL + p.split('/').map(encodeURIComponent).join('/');
 // Games that run better on their own page than inside Classboard. Their loading screen says so, and "New tab"
 // opens the game's real address on Vercel instead of an about:blank copy.
