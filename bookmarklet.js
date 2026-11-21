@@ -10,6 +10,11 @@ const REPO = 'hsoirghfohdj/yee-new', BRANCH = 'main', DIR = 'offline/', STUDY = 
 const PAGES = 'https://hsoirghfohdj.github.io/yee-new/';
 const WEB_DASHERS_GAME = 'offline/web-dashers/index.html';
 const INTERSTELLAR_GAME = 'offline/interstellar/index.html';
+const GEO_DASH_GAME = 'offline/geometry-dash-webport/index.html';
+// Games that only ever load from one address (no repo/Vercel copies, no "try another way"), and whose game page
+// doesn't say where they load from.
+const PINNED_GAMES = { [GEO_DASH_GAME]: 'https://hsoirghfohdj.github.io/yee-new/offline/geometry-dash-webport/' };
+const pinnedUrl = id => PINNED_GAMES[id] || null;
 const rawOf = p => 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + p.split('/').map(encodeURIComponent).join('/');
 const store = {
 get(k, d) { try { const v = localStorage.getItem('classdash_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
@@ -1295,13 +1300,14 @@ if (usesLib(S.view) || (S.view === 'admin' && !(root.activeElement && root.activ
 const vPlay = () => {
 const p = PACK.find(x => x.id === S.game);
 if (!p) return `<div class="gbar"><button class="btn" data-go="games">← Games</button></div>` + empty('That game is no longer in the repo.');
+const pin = pinnedUrl(p.id);
 return `<div class="play"><div class="gbar wide"><button class="btn" data-go="games">← Games</button>
-<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${esc(p.desc)} · <span class="gsrc">loading…</span><span class="ptime">${playLine(true)}</span></div></div>
+<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${pin ? '' : `${esc(p.desc)} · <span class="gsrc">loading…</span>`}<span class="ptime">${ptimeText()}</span></div></div>
 <button class="btn snd" data-act="sound" title="Turn the game's sound on or off">${soundBtn()}</button><button class="btn" data-act="full">Full screen</button>
 <div class="gmw"><button class="btn" data-act="gmore" title="More options" aria-label="More options">${I.dots}</button><div class="gmenu" hidden>
-<button data-act="newtab">${I.ext}Open in a new tab</button><button data-act="reload">${I.refresh}Restart</button><button data-act="altsrc">${I.shuffle}Try another way to load it</button><button data-act="report">${I.flag}Report a problem</button><button data-act="license">${I.doc}License</button></div></div></div>
+<button data-act="newtab">${I.ext}Open in a new tab</button><button data-act="reload">${I.refresh}Restart</button>${pin ? '' : `<button data-act="altsrc">${I.shuffle}Try another way to load it</button>`}<button data-act="report">${I.flag}Report a problem</button><button data-act="license">${I.doc}License</button></div></div></div>
 <div class="rep" hidden><span class="t">What's wrong with ${esc(p.name)}?</span><div class="seg mini">${REPORT_WHY.map(w => `<button type="button" data-why="${esc(w)}">${esc(w)}</button>`).join('')}</div>
-<button class="btn pri" data-act="reportsend">Send report</button><button class="btn" data-act="altsrc" title="Load it from a different copy of the game">Try another way</button><span class="amsg"></span></div>
+<button class="btn pri" data-act="reportsend">Send report</button>${pin ? '' : '<button class="btn" data-act="altsrc" title="Load it from a different copy of the game">Try another way</button>'}<span class="amsg"></span></div>
 <div class="frame"><div class="spin"></div></div></div>`;
 };
 const SRC_LABEL = { repo: 'straight from the repo', pages: 'from GitHub Pages', vercel: 'from Vercel' };
@@ -1324,6 +1330,7 @@ say('Thanks! We got your report.', 'ok');
 // Load the open game from the next copy: repo -> Vercel -> GitHub Pages -> repo
 function altSource() {
 if (!S.game) return;
+if (pinnedUrl(S.game)) { rememberSrc(S.game, null); return renderMain(); }
 const next = { repo: 'vercel', vercel: 'pages', pages: 'repo' }[S.gameMode] || 'vercel';
 S.altWhy = '';
 rememberSrc(S.game, next === 'repo' ? null : next);
@@ -1349,6 +1356,7 @@ const all = store.get('playAll', {}); all[S.game] = (all[S.game] || 0) + playPen
 playPending = 0;
 }
 const fmtPlay = ms => { const m = Math.floor(ms / 6e4); return m < 1 ? 'under a minute' : m < 60 ? m + ' min' : Math.floor(m / 60) + ' h ' + (m % 60) + ' min'; };
+const ptimeText = () => pinnedUrl(S.game) ? playLine(true).replace(/^ · p/, 'P') : playLine(true);
 const playLine = inGame => { const p = playStats(), ms = (inGame ? (p.games[S.game] || 0) : p.ms) + (inGame ? playPending : 0); return ms < 6e4 ? '' : inGame ? ' · played ' + fmtPlay(ms) + ' today' : ' · you\'ve played ' + fmtPlay(ms) + ' today'; };
 // Loading screen shown over a game until its page has finished downloading
 const LOAD_TIPS = [
@@ -1530,6 +1538,8 @@ const memSrc = id => { const m = store.get('gameSrc', {})[id]; return m && Date.
 const rememberSrc = (id, src) => { const m = store.get('gameSrc', {}); if (src) m[id] = { src, at: Date.now() }; else delete m[id]; store.set('gameSrc', m); };
 const headOk = u => fetch(u, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok).catch(() => false);
 function frameGame(f, path, muted) {
+const pin = pinnedUrl(path);
+if (pin) { f.removeAttribute('sandbox'); f.removeAttribute('srcdoc'); f.src = pin; return Promise.resolve('pages'); }
 // Web Dashers needs thousands of separate assets. Use the same-repository Vercel
 // deployment first; the large GitHub Pages mirror has intermittently returned 503s.
 const want = path === WEB_DASHERS_GAME || path === INTERSTELLAR_GAME ? 'vercel' : memSrc(path) || (repoGame(path) ? 'repo' : 'pages');
@@ -3575,7 +3585,7 @@ const tick = () => {
 const n = new Date();
 if (S.view === 'play' && S.game && document.visibilityState === 'visible') {
 playPending += 1000;
-if (playPending >= 15000) { flushPlay(); const el = root.querySelector('.gbar .ptime'); if (el) el.textContent = playLine(true); }
+if (playPending >= 15000) { flushPlay(); const el = root.querySelector('.gbar .ptime'); if (el) el.textContent = ptimeText(); }
 }
 $('.clock').textContent = fmtTime(n, P.seconds);
 $('.date').textContent = n.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
