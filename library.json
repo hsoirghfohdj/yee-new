@@ -1,5 +1,5 @@
 {
-"generated": "2026-11-20T23:49:57Z",
+"generated": "2026-11-21T00:03:05Z",
 "files": [
 "offline/1-on-1-soccer.html",
 "offline/1-on-1-soccer.jpg",
@@ -283,6 +283,8 @@
 "offline/funny-shooter-2.jpg",
 "offline/geometry-dash-lite.html",
 "offline/geometry-dash-lite.jpg",
+"offline/geometry-dash-webport/index.html",
+"offline/geometry-dash-webport/sw.js",
 "offline/geometry-dash.jpg",
 "offline/geometry-vibes.html",
 "offline/geometry-vibes.jpg",
@@ -8611,6 +8613,7 @@
 "offline/zombie-rush.html": "2026-10-30T01:58:58Z",
 "offline/zrist.html": "2026-10-30T01:58:58Z",
 "offline/krillion.html": "2026-11-16T05:43:02Z",
-"offline/web-dashers/index.html": "2026-11-18T02:02:52Z"
+"offline/web-dashers/index.html": "2026-11-18T02:02:52Z",
+"offline/geometry-dash-webport/index.html": "2026-11-21T00:03:05Z"
 }
 }
