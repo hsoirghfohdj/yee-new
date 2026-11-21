@@ -11,9 +11,9 @@ const PAGES = 'https://hsoirghfohdj.github.io/yee-new/';
 const WEB_DASHERS_GAME = 'offline/web-dashers/index.html';
 const INTERSTELLAR_GAME = 'offline/interstellar/index.html';
 const GEO_DASH_GAME = 'offline/geometry-dash-webport/index.html';
-// Games that only ever load from one address (no repo/Vercel copies, no "try another way"), and whose game page
-// doesn't say where they load from.
-const PINNED_GAMES = { [GEO_DASH_GAME]: 'https://hsoirghfohdj.github.io/yee-new/offline/geometry-dash-webport/' };
+// Geometry Dash Webport tries the HTML directly from the repository first;
+// GitHub Pages is available as its fallback if that cannot run in the Classboard frame.
+const PINNED_GAMES = {};
 const pinnedUrl = id => PINNED_GAMES[id] || null;
 const rawOf = p => 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + p.split('/').map(encodeURIComponent).join('/');
 const store = {
@@ -1331,7 +1331,7 @@ say('Thanks! We got your report.', 'ok');
 function altSource() {
 if (!S.game) return;
 if (pinnedUrl(S.game)) { rememberSrc(S.game, null); return renderMain(); }
-const next = { repo: 'vercel', vercel: 'pages', pages: 'repo' }[S.gameMode] || 'vercel';
+const next = S.game === GEO_DASH_GAME ? ({ repo: 'pages', pages: 'repo', vercel: 'pages' }[S.gameMode] || 'pages') : ({ repo: 'vercel', vercel: 'pages', pages: 'repo' }[S.gameMode] || 'vercel');
 S.altWhy = '';
 rememberSrc(S.game, next === 'repo' ? null : next);
 renderMain();
@@ -1340,7 +1340,7 @@ renderMain();
 function autoAlt(why) {
 if (S.view !== 'play' || S.gameMode !== 'repo' || !S.game || S.altTried === S.game) return;
 S.altTried = S.game; S.altWhy = why || '';
-rememberSrc(S.game, 'vercel');
+rememberSrc(S.game, S.game === GEO_DASH_GAME ? 'pages' : 'vercel');
 renderMain();
 }
 // Play time: counted while a game is open and on screen. Today's total shows on the Games page and above the game.
@@ -1542,11 +1542,11 @@ const pin = pinnedUrl(path);
 if (pin) { f.removeAttribute('sandbox'); f.removeAttribute('srcdoc'); f.src = pin; return Promise.resolve('pages'); }
 // Web Dashers needs thousands of separate assets. Use the same-repository Vercel
 // deployment first; the large GitHub Pages mirror has intermittently returned 503s.
-const want = path === WEB_DASHERS_GAME || path === INTERSTELLAR_GAME ? 'vercel' : memSrc(path) || (repoGame(path) ? 'repo' : 'pages');
+const want = path === WEB_DASHERS_GAME || path === INTERSTELLAR_GAME ? 'vercel' : path === GEO_DASH_GAME ? (memSrc(path) === 'pages' ? 'pages' : 'repo') : memSrc(path) || (repoGame(path) ? 'repo' : 'pages');
 const urlOf = m => m === 'vercel' ? vercelUrl(path) : gameUrl(path);
 // a hosted copy (Vercel or GitHub Pages); if the first one doesn't answer, the other
 const hosted = first => {
-const other = first === 'vercel' ? 'pages' : 'vercel';
+const other = path === GEO_DASH_GAME ? 'pages' : first === 'vercel' ? 'pages' : 'vercel';
 return headOk(urlOf(first)).then(ok => ok ? first : headOk(urlOf(other)).then(ok2 => ok2 ? other : first)).then(m => {
 if (m !== want) rememberSrc(path, m);
 f.removeAttribute('sandbox'); f.removeAttribute('srcdoc'); f.src = urlOf(m);
@@ -1570,7 +1570,7 @@ const add = (ownBase ? '' : '<base href="' + esc(base) + '">') + '<script>(' + c
 f.setAttribute('sandbox', GAME_SANDBOX);
 f.srcdoc = injectTop(html, add);
 return 'repo';
-}).catch(() => hosted('vercel'));
+}).catch(() => hosted(path === GEO_DASH_GAME ? 'pages' : 'vercel'));
 }
 // Puts our tags at the very top of a page (after <!doctype> if it has one). Searching for "<head" instead breaks
 // games whose whole page is stored inside a script string: the first "<head" is inside that string, so the inserted
