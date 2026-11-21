@@ -19,7 +19,7 @@ jobs:
           python3 - <<'PY'
           from playwright.sync_api import sync_playwright
           import shutil
-          hosts=['https://web-dashers.github.io/','https://hsoirghfohdj.github.io/yee-new/offline/web-dashers/','https://classboardd.vercel.app/offline/web-dashers/']
+          hosts=['https://web-dashers.github.io/','https://hsoirghfohdj.github.io/yee-new/offline/web-dashers/','https://educationalcanvas.vercel.app/offline/web-dashers/']
           with sync_playwright() as p:
             chrome=next((shutil.which(x) for x in ['google-chrome','chromium','chromium-browser'] if shutil.which(x)),None)
             if not chrome: raise RuntimeError('No Chromium-based browser installed')

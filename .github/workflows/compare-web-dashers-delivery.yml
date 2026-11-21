@@ -15,7 +15,7 @@ jobs:
           sites={
             'original':'https://web-dashers.github.io/',
             'github':'https://hsoirghfohdj.github.io/yee-new/offline/web-dashers/',
-            'vercel':'https://classboardd.vercel.app/offline/web-dashers/'
+            'vercel':'https://educationalcanvas.vercel.app/offline/web-dashers/'
           }
           paths=['index.html','assets/scripts/core/level.js','assets/scripts/core/game-scene.js','assets/game-ground/groundSquare_10_001.png','assets/game-ground/groundSquare_11_001.png','assets/sheets/GJ_GameSheet.png','assets/sprites/player_01_001.png','assets/levels/level_1.txt','assets/audio/stereo_madness.mp3']
           for path in paths:
