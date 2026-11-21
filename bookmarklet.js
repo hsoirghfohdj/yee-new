@@ -27,7 +27,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'Important news now pops up in a box the next time you open Classboard, so you won’t miss it. Games, and games opened in a new tab, now load straight from Classboard’s new game server.';
+const WHATSNEW = 'Important news now pops up in a box the next time you open Classboard, so you won’t miss it. Games, and games opened in a new tab, now load straight from Classboard’s new game server. Game pages show where each game loads from again.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -1296,7 +1296,7 @@ const vPlay = () => {
 const p = PACK.find(x => x.id === S.game);
 if (!p) return `<div class="gbar"><button class="btn" data-go="games">← Games</button></div>` + empty('That game is no longer in the repo.');
 return `<div class="play"><div class="gbar wide"><button class="btn" data-go="games">← Games</button>
-<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub"><span class="ptime">${playNow()}</span></div></div>
+<div class="grow"><div class="t">${esc(p.name)}</div><div class="sub">${esc(p.desc)} · <span class="gsrc">loading…</span><span class="ptime">${playLine(true)}</span></div></div>
 <button class="btn snd" data-act="sound" title="Turn the game's sound on or off">${soundBtn()}</button><button class="btn" data-act="full">Full screen</button>
 <div class="gmw"><button class="btn" data-act="gmore" title="More options" aria-label="More options">${I.dots}</button><div class="gmenu" hidden>
 <button data-act="newtab">${I.ext}Open in a new tab</button><button data-act="reload">${I.refresh}Restart</button><button data-act="altsrc">${I.shuffle}Try another way to load it</button><button data-act="report">${I.flag}Report a problem</button><button data-act="license">${I.doc}License</button></div></div></div>
@@ -1349,7 +1349,6 @@ const all = store.get('playAll', {}); all[S.game] = (all[S.game] || 0) + playPen
 playPending = 0;
 }
 const fmtPlay = ms => { const m = Math.floor(ms / 6e4); return m < 1 ? 'under a minute' : m < 60 ? m + ' min' : Math.floor(m / 60) + ' h ' + (m % 60) + ' min'; };
-const playNow = () => playLine(true).replace(/^ · p/, 'P');
 const playLine = inGame => { const p = playStats(), ms = (inGame ? (p.games[S.game] || 0) : p.ms) + (inGame ? playPending : 0); return ms < 6e4 ? '' : inGame ? ' · played ' + fmtPlay(ms) + ' today' : ' · you\'ve played ' + fmtPlay(ms) + ' today'; };
 // Loading screen shown over a game until its page has finished downloading
 const LOAD_TIPS = [
@@ -1519,7 +1518,8 @@ try { w.opener = null; } catch (e) {}
 const box = S.view === 'play' && S.game === p.id && root.querySelector('.frame');
 if (!box) return true;
 box.dataset.tabbed = '1';
-const snd = root.querySelector('[data-act="sound"]');
+const sub = root.querySelector('.gbar .gsrc'), snd = root.querySelector('[data-act="sound"]');
+if (sub) sub.textContent = 'open in a new tab';
 if (snd) snd.hidden = true;
 box.innerHTML = `<div class="gload"><div class="gt gla">${art(p)}</div><div class="glt">${esc(p.name)} is open in a new tab</div>
 <div class="gls">Switch to that tab to play. Closed it by accident? Open it again, or play here instead.</div>
@@ -1593,7 +1593,7 @@ const n = box.querySelector('.tabnote');
 setTimeout(() => { if (n.isConnected) { n.classList.add('out'); setTimeout(() => n.remove(), 300); } }, 15000);
 }, { once: true });
 S.gameMode = null;
-frameGame(f, path, !S.soundOn).then(mode => { if (box.dataset.tabbed) return; S.gameMode = mode; paintSound(); if (box.isConnected) box.appendChild(f); });
+frameGame(f, path, !S.soundOn).then(mode => { if (box.dataset.tabbed) return; S.gameMode = mode; paintSound(); const sub = root.querySelector('.gbar .gsrc'); if (sub) sub.textContent = (SRC_LABEL[mode] || '') + (S.altWhy && mode === 'vercel' && S.altTried === path ? " (the repo copy didn't load right)" : ''); if (box.isConnected) box.appendChild(f); });
 }
 const startPack = ct => startFrame(ct, S.game);
 // Study pages load straight from the repo (raw.githubusercontent.com), so a new upload shows up
@@ -3575,7 +3575,7 @@ const tick = () => {
 const n = new Date();
 if (S.view === 'play' && S.game && document.visibilityState === 'visible') {
 playPending += 1000;
-if (playPending >= 15000) { flushPlay(); const el = root.querySelector('.gbar .ptime'); if (el) el.textContent = playNow(); }
+if (playPending >= 15000) { flushPlay(); const el = root.querySelector('.gbar .ptime'); if (el) el.textContent = playLine(true); }
 }
 $('.clock').textContent = fmtTime(n, P.seconds);
 $('.date').textContent = n.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
