@@ -27,7 +27,7 @@ if (!VIEWS.includes(v)) v = 'home';
 return !isCanvas && CANVAS_VIEWS.includes(v) ? 'games' : v;
 }
 // What's new in this version (shown in the update prompt). Change it when you publish an update.
-const WHATSNEW = 'A calmer daily streak: click Ignite to light today’s flame. Updates now show a simple progress bar inside Classboard. Game pages no longer show where each game is loaded from.';
+const WHATSNEW = 'Important news now pops up in a box the next time you open Classboard, so you won’t miss it.';
 // Updates: keep running the version you accepted ("installed") and ask before switching to a newer one.
 // The bookmark always downloads the newest bookmarklet.js; if it differs from the installed copy,
 // the installed copy runs instead and shows an "Update available" bar.
@@ -111,6 +111,8 @@ mute: svg('<path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/>'),
 key: svg('<circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 9.2-9.2M16 7l3 3M14 9l2 2"/>'),
 chev: svg('<path d="m6 9 6 6 6-6"/>'),
 lock: svg('<rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 15v2"/>'),
+bell: svg('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>'),
+warn: svg('<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'),
 tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
 };
 const CSS = `
@@ -681,6 +683,52 @@ a.ares:hover .t{color:var(--act)}
 .bd.updating .sb{pointer-events:none;opacity:.55}
 .cd-toast{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:70;max-width:min(560px,92vw);display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(124,92,255,.95),rgba(232,121,249,.92));color:#fff;font-size:14px;line-height:1.4;box-shadow:0 18px 50px rgba(124,92,255,.45);animation:cdtoast 5.6s ease both}
 .cd-toast b{display:block;font-size:15px}
+.alr-ov{--alc:var(--ac);position:absolute;inset:0;z-index:60;display:grid;place-items:center;padding:24px;box-sizing:border-box;overflow:auto;background:color-mix(in srgb,var(--bg) 62%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:cdfade .2s ease both}
+.alr-ov.crit{--alc:var(--bad);background:radial-gradient(60% 55% at 50% 45%,color-mix(in srgb,var(--bad) 16%,transparent),transparent 75%),color-mix(in srgb,var(--bg) 84%,transparent)}
+.alr-ov.out{animation:cdfade .18s ease reverse both}
+.alr{position:relative;width:min(440px,100%);padding:22px 22px 18px;border-radius:18px;background:var(--p1);border:1px solid var(--ln);box-shadow:0 24px 70px rgba(0,0,0,.45);text-align:left;outline:none;animation:alrin .32s cubic-bezier(.2,1.2,.4,1) both}
+.alr-ov.crit .alr{border-color:color-mix(in srgb,var(--bad) 55%,var(--ln));box-shadow:0 0 0 4px color-mix(in srgb,var(--bad) 12%,transparent),0 24px 70px rgba(0,0,0,.55)}
+.alr-ov.crit .alr::before{content:"";position:absolute;left:22px;right:22px;top:-1px;height:3px;border-radius:0 0 3px 3px;background:var(--bad)}
+.alr-ov.out .alr{animation:none}
+.alr.nudge{animation:alrnudge .38s ease}
+@keyframes alrin{from{opacity:0;transform:translateY(14px) scale(.97)}}
+@keyframes alrnudge{20%{transform:translateX(-7px)}45%{transform:translateX(6px)}70%{transform:translateX(-3px)}}
+.alr-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-right:34px}
+.alr-ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex:none;color:var(--alc);background:color-mix(in srgb,var(--alc) 16%,transparent)}
+.alr-ov.crit .alr-ic{color:#fff;background:var(--bad)}
+.alr-k{font-size:12px;font-weight:650;color:var(--mu)}
+.alr-ov.crit .alr-k{color:var(--bad);text-transform:uppercase;letter-spacing:.09em;font-size:11.5px;font-weight:750}
+.alr-x{all:unset;cursor:pointer;position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:var(--mu)}
+.alr-x:hover{color:var(--tx);background:var(--p2)}
+.alr-x:focus-visible{outline:2px solid var(--ac)}
+.alr-t{margin:0 0 6px;font-size:19px;line-height:1.3;font-weight:700;letter-spacing:-.01em;overflow-wrap:anywhere}
+.alr-m{margin:0;font-size:14.5px;line-height:1.55;color:color-mix(in srgb,var(--tx) 82%,var(--mu));white-space:pre-line;overflow-wrap:anywhere;max-height:min(46vh,340px);overflow:auto}
+.alr-cta{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;margin-top:20px}
+.alr-cta .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;box-sizing:border-box;padding:0 16px}
+.alr-cta .btn svg{width:15px;height:15px}
+.alr-cta .btn:focus-visible{outline:2px solid var(--tx);outline-offset:2px}
+.alr-ov.crit .alr-ok{background:var(--bad);color:#fff;position:relative;overflow:hidden;min-width:136px}
+.alr-ok[disabled]{cursor:default}
+.alr-ov.crit .alr-ok[disabled]{background:color-mix(in srgb,var(--bad) 35%,var(--p2));color:color-mix(in srgb,#fff 70%,var(--mu))}
+.alr-ok .alr-fill{position:absolute;inset:0;background:var(--bad);transform-origin:left;transform:scaleX(0);animation:alrfill var(--wait,1.6s) linear forwards}
+.alr-ok span{position:relative}
+@keyframes alrfill{to{transform:scaleX(1)}}
+.alr-pv{margin:12px 0 0;font-size:11.5px;color:var(--mu);text-align:center}
+.cd-still .alr,.cd-still .alr.nudge,.cd-still .alr-ov{animation:none}
+@media (max-width:560px){.alr-ov{padding:16px;align-items:end}.alr{padding:20px 18px 16px}.alr-cta .btn{flex:1 1 auto}}
+.akind{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.akind button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto 1fr;column-gap:10px;row-gap:2px;align-items:center;padding:12px;border-radius:12px;background:var(--bg);border:1px solid var(--ln);color:var(--tx)}
+.akind button:hover{border-color:var(--p3)}
+.akind button.on{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 9%,var(--bg))}
+.akind button.crit.on{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 9%,var(--bg))}
+.akind button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.akind .ak-ic{grid-row:span 2;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:var(--ac);background:color-mix(in srgb,var(--ac) 15%,transparent)}
+.akind .crit .ak-ic{color:var(--bad);background:color-mix(in srgb,var(--bad) 15%,transparent)}
+.akind b{font-size:13.5px}
+.akind small{font-size:12px;line-height:1.4;color:var(--mu)}
+.adm textarea.amsgbox{height:110px;font:13px/1.5 Geist,system-ui,sans-serif;white-space:pre-wrap;resize:vertical}
+.bd.th-light .alr-ov{background:color-mix(in srgb,var(--bg) 55%,transparent)}
+.bd.th-light .alr{box-shadow:0 24px 70px rgba(30,20,60,.2)}
 @keyframes cdtoast{0%{opacity:0;transform:translate(-50%,20px)}8%,88%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,10px)}}
 `;
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -2329,7 +2377,8 @@ ${on ? `<span class="chip ac">Now · ${span(p.b - m)} left</span>` : done ? '<sp
 // ---- Site settings: site.json in the repo (name, icon, colour, banners, hidden pages, hall pass link) ----
 const ICON_CHOICES = ['board', 'cap', 'book', 'study', 'star', 'bolt', 'rocket', 'heart', 'news', 'leaf', 'flask', 'atom', 'math', 'globe', 'talk', 'code', 'game', 'cal', 'clock', 'pass', 'chart'];
 const COLOR_CHOICES = ['#a78bfa', '#3ecf8e', '#f5b546', '#f2637a', '#7c9cff', '#4cc9f0', '#ff8f5a', '#e46fd0'];
-const SITE_DEFAULT = { name: 'Classboard', icon: 'board', accent: '#a78bfa', banners: [], hidden: [], hallpass: PASS, featured: [], hiddenGames: [] };
+const ALERT_DEFAULT = { id: '', on: false, level: 'normal', title: '', text: '', button: '', link: '', where: 'both' };
+const SITE_DEFAULT = { name: 'Classboard', icon: 'board', accent: '#a78bfa', banners: [], hidden: [], hallpass: PASS, featured: [], hiddenGames: [], alert: ALERT_DEFAULT };
 const clone = o => JSON.parse(JSON.stringify(o));
 const hexOk = c => /^#[0-9a-f]{6}$/i.test(c || '');
 function fixSite(j) {
@@ -2338,6 +2387,9 @@ if (!Array.isArray(s.banners)) s.banners = [];
 if (!Array.isArray(s.hidden)) s.hidden = [];
 if (!Array.isArray(s.featured)) s.featured = [];
 if (!Array.isArray(s.hiddenGames)) s.hiddenGames = [];
+s.alert = Object.assign(clone(ALERT_DEFAULT), s.alert && typeof s.alert === 'object' && !Array.isArray(s.alert) ? s.alert : {});
+if (s.alert.level !== 'critical') s.alert.level = 'normal';
+if (!['dashboard', 'library', 'both'].includes(s.alert.where)) s.alert.where = 'both';
 s.banners = s.banners.filter(b => b && typeof b === 'object').map(b => Object.assign({ id: 'b' + Math.random().toString(36).slice(2, 8), title: '', text: '', button: '', link: '', color: '#3ecf8e', icon: 'news', where: 'both', start: '', end: '' }, b));
 return s;
 }
@@ -2365,7 +2417,7 @@ $('[data-omni]').placeholder = 'Search ' + nm + ', or go to study.ecology-study'
 paintBanners();
 }
 function loadSite() {
-fetch(RAW + 'site.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => {
+return fetch(RAW + 'site.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => {
 if (!j) return;
 const s = fixSite(j);
 if (JSON.stringify(s) === JSON.stringify(SITE)) return;
@@ -2386,6 +2438,55 @@ if (/\//.test(link) || /\.html?$/i.test(link)) return void window.open(PAGES + l
 const hit = omniSearch(link).find(x => x.s >= 1000);
 if (hit) hit.open(); else if (NAV.some(n => n[0] === link)) go(link);
 }
+// ---- Alert box: one message from Admin that pops up the next time people open Classboard ----
+// "normal" can be closed any way; "critical" is red and only closes with "I understand" (or its button).
+// Each person sees an alert once (classdash_alertSeen = its id); publishing a changed alert gives it a new id.
+const alertLive = a => !!(a && a.on && a.id && (a.title || a.text) && (a.where === 'both' || a.where === (LIB ? 'library' : 'dashboard')));
+function maybeAlert() {
+const a = SITE.alert;
+if (S.updating || !alertLive(a) || store.get('alertSeen', '') === a.id || (S.alr && S.alr.a.id === a.id)) return;
+showAlert(a);
+}
+function showAlert(a, preview) {
+if (S.alr) { S.alr.ov.remove(); S.alr = null; }
+const crit = a.level === 'critical', wait = crit ? (still() ? 800 : 1600) : 0;
+const ov = document.createElement('div');
+ov.className = 'alr-ov' + (crit ? ' crit' : '');
+ov.setAttribute('role', crit ? 'alertdialog' : 'dialog'); ov.setAttribute('aria-modal', 'true');
+ov.setAttribute('aria-label', a.title || (crit ? 'Important' : 'Message'));
+const nm = curSite().name || 'Classboard';
+ov.innerHTML = `<div class="alr" tabindex="-1">${crit ? '' : `<button class="alr-x" data-act="alrclose" aria-label="Close">${I.x}</button>`}
+<div class="alr-hd"><span class="alr-ic">${crit ? I.warn : I.bell}</span><span class="alr-k">${crit ? 'Important' : 'From ' + esc(/^class dash$/i.test(nm) ? 'Classboard' : nm)}</span></div>
+${a.title ? `<h3 class="alr-t">${esc(a.title)}</h3>` : ''}${a.text ? `<p class="alr-m">${esc(a.text)}</p>` : ''}
+<div class="alr-cta">${a.button && a.link ? `<button class="btn" data-act="alrgo">${esc(a.button)}${/^https?:/i.test(a.link) ? I.ext : ''}</button>` : ''}<button class="btn pri alr-ok" data-act="alrok"${wait ? ' disabled' : ''}>${wait ? `<i class="alr-fill" style="--wait:${wait}ms"></i>` : ''}<span>${crit ? 'I understand' : 'Got it'}</span></button></div>
+${preview ? '<p class="alr-pv">Preview · only you can see this</p>' : ''}</div>`;
+ov.addEventListener('click', e => { if (e.target === ov) crit ? nudgeAlert() : closeAlert(); });
+$('.win').appendChild(ov);
+S.alr = { ov, a, crit, preview: !!preview, ready: !wait };
+const ok = ov.querySelector('.alr-ok');
+if (wait) { ov.querySelector('.alr').focus({ preventScroll: true }); setTimeout(() => { if (!S.alr || S.alr.ov !== ov) return; S.alr.ready = true; ok.disabled = false; ok.focus({ preventScroll: true }); }, wait); }
+else ok.focus({ preventScroll: true });
+}
+function nudgeAlert() {
+const c = S.alr && S.alr.ov.querySelector('.alr'); if (!c) return;
+c.classList.remove('nudge'); void c.offsetWidth; c.classList.add('nudge');
+}
+function closeAlert() {
+const A2 = S.alr; if (!A2) return;
+S.alr = null;
+if (!A2.preview) store.set('alertSeen', A2.a.id);
+A2.ov.classList.add('out');
+setTimeout(() => A2.ov.remove(), still() ? 0 : 180);
+const nx = S.alrNext; S.alrNext = null;
+if (nx) setTimeout(nx, 250);
+}
+function alertAct(act) {
+const A2 = S.alr; if (!A2) return;
+if (act === 'alrgo') { const link = A2.a.link; closeAlert(); openLink(link); }
+else if (act === 'alrclose') { if (A2.crit) nudgeAlert(); else closeAlert(); }
+else if (A2.ready) closeAlert();
+else nudgeAlert();
+}
 // ---- Admin (hidden page: type the passphrase in the search bar once, then use the Admin button) ----
 const SEAL = 'b1b303b405163284c0f00b8e4bd9e1e85816f6e6b882e11d49dab44868b39375';
 async function sealed(v) {
@@ -2397,7 +2498,8 @@ const dirty = () => !!S.draft && JSON.stringify(S.draft) !== JSON.stringify(SITE
 function paintAdminLink() { const b = $('.sbl [data-act="admin"]'); if (b) b.hidden = !store.get('admin', false); }
 function openAdmin() { store.set('admin', true); paintAdminLink(); S.draft = clone(SITE); A.msg = null; A.arm = null; A.edit = null; go('admin'); applySite(); loadLib(); }
 const NEW_BANNER = () => ({ id: 'b' + Date.now().toString(36), title: '', text: '', button: '', link: '', color: '#3ecf8e', icon: 'news', where: 'both', start: '', end: '' });
-const ATABS = [['study', 'Study', I.study], ['games', 'Games', I.game], ['look', 'Look', I.star], ['banners', 'Banners', I.news], ['pages', 'Pages & links', I.book], ['activity', 'Activity', I.clock], ['advanced', 'Advanced', I.code], ['key', 'GitHub key', I.key]];
+const ATABS = [['study', 'Study', I.study], ['games', 'Games', I.game], ['look', 'Look', I.star], ['banners', 'Banners', I.news], ['alert', 'Alert', I.bell], ['pages', 'Pages & links', I.book], ['activity', 'Activity', I.clock], ['advanced', 'Advanced', I.code], ['key', 'GitHub key', I.key]];
+const DRAFT_BAR = `<div class="adraft"><span class="grow wrap"><b>Unpublished changes</b> to the look, banners, alert or pages. Only you can see them until you publish.</span><button class="btn" data-act="adm-discard">Discard</button><button class="btn pri" data-act="adm-publish">Publish for everyone</button></div>`;
 function aSay(text, cls) {
 A.msg = { text, cls };
 const el = root.querySelector('.atop .amsg');
@@ -2476,10 +2578,13 @@ SITE = fixSite(next); store.set('site', SITE);
 if (S.draft) fn(S.draft);
 applySite();
 }
+const alertSig = a => JSON.stringify([a.on, a.level, a.title, a.text, a.button, a.link, a.where]);
 async function publishSite() {
 const draft = clone(S.draft);
+if (draft.alert.on && (!draft.alert.id || alertSig(draft.alert) !== alertSig(SITE.alert))) draft.alert.id = 'a' + Date.now().toString(36);
 await ghChange('Update site settings', async () => [{ path: 'site.json', b64: b64enc(JSON.stringify(draft, null, 2) + '\n') }]);
 SITE = fixSite(draft); store.set('site', SITE);
+if (S.draft) S.draft.alert.id = draft.alert.id;
 return 'Published! Everyone gets it within about 5 minutes.';
 }
 // ---- Admin page ----
@@ -2491,8 +2596,8 @@ const head = `<div class="card adm atop"><div class="ahd"><span class="logo">${I
 ${key ? '<span class="chip gd">GitHub key saved</span>' : '<button class="btn pri" data-act="adm-tab" data-t="key">Add GitHub key</button>'}</div>
 <div class="amsg ${m.cls}">${A.busy ? '<span class="aspin"></span>' : ''}${esc(m.text)}</div></div>`;
 const tabs = `<div class="atabs">${ATABS.map(([k, l, ic]) => `<button data-act="adm-tab" data-t="${k}" class="${A.tab === k ? 'on' : ''}">${ic}${l}${k === 'key' && !key ? ' <span class="badge">!</span>' : ''}</button>`).join('')}</div>`;
-const draftBar = dirty() ? `<div class="adraft"><span class="grow wrap"><b>Unpublished changes</b> to the look, banners or pages. Only you can see them until you publish.</span><button class="btn" data-act="adm-discard">Discard</button><button class="btn pri" data-act="adm-publish">Publish for everyone</button></div>` : '';
-const body = { study: aStudy, games: aGames, look: aLook, banners: aBanners, pages: aPages, activity: aActivity, advanced: aAdvanced, key: aKey }[A.tab] || aStudy;
+const draftBar = dirty() ? DRAFT_BAR : '';
+const body = { study: aStudy, games: aGames, look: aLook, banners: aBanners, alert: aAlert, pages: aPages, activity: aActivity, advanced: aAdvanced, key: aKey }[A.tab] || aStudy;
 return head + tabs + draftBar + body();
 }
 const cleanSeg = s => String(s || '').trim().replace(/[\\/:*?"<>|#%[\]\u0000-\u001f]+/g, '').replace(/\s+/g, '-').replace(/^[.-]+/, '').slice(0, 60);
@@ -2594,6 +2699,23 @@ ${s.banners.map((b, i) => `<div class="abn"><div class="arow" style="margin-top:
 <div class="arow"><span class="alab">Colour</span><div class="sws">${sw(b.color, c => `data-bcolor="${i}:${c}"`)}</div></div>
 <div class="arow"><span class="alab">Icon</span><div class="icons">${icons(b.icon, k => `data-bicon="${i}:${k}"`)}</div></div></div>`).join('') || '<p class="sub">No banners yet.</p>'}
 <div class="arow"><button class="btn" data-act="adm-addb">${I.plus}Add banner</button></div></div>`;
+}
+function aAlert() {
+const a = S.draft.alert, crit = a.level === 'critical', pub = SITE.alert, live = pub.on && pub.id && (pub.title || pub.text);
+const where = { dashboard: 'the dashboard', library: 'the library site', both: 'the dashboard and library site' }[pub.where];
+return `<div class="card adm"><h2>Alert box<span>pops up the next time people open Classboard</span></h2>
+<div class="arow" style="margin-top:0">${live ? `<span class="chip ${pub.level === 'critical' ? 'bad' : 'gd'}">${pub.level === 'critical' ? 'Critical alert is on' : 'Alert is on'}</span><span class="sub">for ${where}</span>` : '<span class="chip">No alert showing</span>'}<span class="grow"></span>
+<div class="seg mini" title="Turn the alert on or off">${[[false, 'Off'], [true, 'On']].map(([v, l]) => `<button data-aon="${v}" class="${!!a.on === v ? 'on' : ''}">${l}</button>`).join('')}</div>
+<button class="btn sm" data-act="adm-apv">Preview</button></div>
+<label class="alab">Kind</label>
+<div class="akind"><button data-akind="normal" class="${crit ? '' : 'on'}"><span class="ak-ic">${I.bell}</span><b>Normal</b><small>A casual note. People can close it any time.</small></button>
+<button data-akind="critical" class="crit${crit ? ' on' : ''}"><span class="ak-ic">${I.warn}</span><b>Critical</b><small>Red and serious. People have to click “I understand” to close it.</small></button></div>
+<label class="alab">Title</label><input data-af="title" style="width:100%" value="${esc(a.title)}" placeholder="${crit ? 'e.g. Classboard is moving' : 'e.g. New games this week!'}" maxlength="80">
+<label class="alab">Message</label><textarea class="amsgbox" data-af="text" placeholder="What do you want people to know?" maxlength="600">${esc(a.text)}</textarea>
+<div class="arow"><input data-af="button" value="${esc(a.button)}" placeholder="Button text (optional)" maxlength="40"><input class="wide" data-af="link" value="${esc(a.link)}" placeholder="Button link: https://…, study/Biology/file.html, or study.biology"></div>
+<div class="arow"><span class="alab">Show on</span><div class="seg mini">${[['dashboard', 'Dashboard'], ['library', 'Library site'], ['both', 'Both']].map(([k, l]) => `<button data-awhere="${k}" class="${a.where === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
+<p class="sub wrap" style="margin-top:14px">Each person sees it once, the next time they open Classboard. If you change it and publish again, everyone sees the new one, even people who closed the old one.</p>
+${live && a.on ? `<div class="arow"><button class="btn sm" data-act="adm-aagain">Show it again to everyone</button></div>` : ''}</div>`;
 }
 function aPages() {
 const s = S.draft;
@@ -2895,6 +3017,11 @@ if (t.matches('[data-agq]')) { A.gq = t.value; A.gshow = 80; renderMain(true); c
 const s = S.draft;
 if (!s) return;
 if (t.matches('[data-site]')) { s[t.dataset.site] = t.value; applySite(); paintDraftBar(); }
+else if (t.matches('[data-af]')) {
+const a = s.alert, f = t.dataset.af;
+if (!a.on && !a.title && !a.text && (f === 'title' || f === 'text') && t.value.trim()) { a.on = true; root.querySelectorAll('[data-aon]').forEach(b => b.classList.toggle('on', b.dataset.aon === 'true')); }
+a[f] = t.value; paintDraftBar();
+}
 else if (t.matches('[data-bf]')) { const [i, f] = t.dataset.bf.split(':'); if (s.banners[i]) s.banners[i][f] = t.value; paintBanners(); paintDraftBar(); }
 else if (t.matches('[data-shide]')) { const v = t.dataset.shide; s.hidden = s.hidden.filter(x => x !== v); if (!t.checked) s.hidden.push(v); paintChrome(); paintDraftBar(); }
 else if (t.matches('[data-upcat]')) { A.up.cat = t.value; renderMain(true); }
@@ -2906,7 +3033,7 @@ if (S.view !== 'admin') return;
 const has = !!root.querySelector('.adraft');
 if (has === dirty()) return;
 if (has) root.querySelector('.adraft').remove();
-else { const tabs = root.querySelector('.atabs'); if (tabs) tabs.insertAdjacentHTML('afterend', `<div class="adraft"><span class="grow wrap"><b>Unpublished changes</b> to the look, banners or pages. Only you can see them until you publish.</span><button class="btn" data-act="adm-discard">Discard</button><button class="btn pri" data-act="adm-publish">Publish for everyone</button></div>`); }
+else { const tabs = root.querySelector('.atabs'); if (tabs) tabs.insertAdjacentHTML('afterend', DRAFT_BAR); }
 }
 root.addEventListener('change', e => {
 const t = e.target;
@@ -2919,12 +3046,12 @@ else if (t.matches('[data-acover]')) uploadCover(t.files && t.files[0]);
 else if (t.matches('[data-akey]')) uploadKey(t.files && t.files[0]);
 });
 root.addEventListener('click', e => {
-const t = e.target.closest('[data-sicon],[data-saccent],[data-bwhere],[data-bcolor],[data-bicon],[data-upkind],[data-banner],[data-bclose],[data-act^="adm-"]');
+const t = e.target.closest('[data-sicon],[data-saccent],[data-bwhere],[data-bcolor],[data-bicon],[data-akind],[data-awhere],[data-aon],[data-upkind],[data-banner],[data-bclose],[data-act^="adm-"]');
 if (!t) return;
 const d = t.dataset, s = S.draft;
 if (d.banner) { const b = curSite().banners.find(x => x.id === d.banner); if (b) openLink(b.link); return; }
 if (d.bclose) { if (!S.draft) store.set('bannersClosed', [...store.get('bannersClosed', []).filter(x => x !== d.bclose), d.bclose].slice(-50)); paintBanners(); return; }
-if (d.act && d.act.startsWith('adm-') && !['adm-addb', 'adm-rmb', 'adm-bup', 'adm-bdup'].includes(d.act)) { if (!/del$/.test(d.act)) A.arm = null; adminAct(d, t); return; }
+if (d.act && d.act.startsWith('adm-') && !['adm-addb', 'adm-rmb', 'adm-bup', 'adm-bdup', 'adm-apv', 'adm-aagain'].includes(d.act)) { if (!/del$/.test(d.act)) A.arm = null; adminAct(d, t); return; }
 if (!s) return;
 const pair = v => { const k = v.indexOf(':'); return [Number(v.slice(0, k)), v.slice(k + 1)]; };
 if (d.sicon) s.icon = d.sicon;
@@ -2932,6 +3059,11 @@ else if (d.saccent) s.accent = d.saccent;
 else if (d.bwhere) { const [i, v] = pair(d.bwhere); s.banners[i].where = v; }
 else if (d.bcolor) { const [i, v] = pair(d.bcolor); s.banners[i].color = v; }
 else if (d.bicon) { const [i, v] = pair(d.bicon); s.banners[i].icon = v; }
+else if (d.akind) s.alert.level = d.akind;
+else if (d.awhere) s.alert.where = d.awhere;
+else if (d.aon) s.alert.on = d.aon === 'true';
+else if (d.act === 'adm-apv') { const a = s.alert; if (!a.title && !a.text) return aSay('Write a title or message first, then preview it.', 'err'); return showAlert(a, true); }
+else if (d.act === 'adm-aagain') { s.alert.id = ''; aSay('Publish to show the alert again to everyone.', ''); }
 else if (d.upkind) A.up.kind = d.upkind;
 else if (d.act === 'adm-addb') s.banners.push(NEW_BANNER());
 else if (d.act === 'adm-bdup') { const b = s.banners[Number(d.i)]; if (b) s.banners.splice(Number(d.i) + 1, 0, Object.assign(clone(b), { id: 'b' + Date.now().toString(36) })); }
@@ -3003,6 +3135,7 @@ b.title = st.lit ? st.s.count + '-day streak · lit today' : st.shown ? 'Light t
 }
 function openStreak() {
 if (S.stk || S.updating) return;
+if (S.alr) { S.alrNext = openStreak; return; }
 const st = streakNow();
 const ov = document.createElement('div');
 ov.className = 'stk-ov' + (st.lit ? ' done' : '');
@@ -3329,6 +3462,7 @@ else if (d.act === 'close') close();
 else if (d.act === 'later') $('.ubar').hidden = true;
 else if (d.act === 'streak') openStreak();
 else if (d.act === 'stkclose') closeStreak();
+else if (d.act === 'alrok' || d.act === 'alrclose' || d.act === 'alrgo') alertAct(d.act);
 else if (d.act === 'stkignite') igniteStreak();
 else if (d.act === 'hallpass') openHallPass();
 else if (d.act === 'checkupd') checkUpdates();
@@ -3378,6 +3512,15 @@ if (S.view === 'study') { S.sq = e.target.value; filterStudy(); } else { S.q = e
 function onKey(e) {
 const down = e.type === 'keydown', study = S.view === 'study';
 if (S.updating) { e.preventDefault(); e.stopPropagation(); return; }
+if (S.alr) {
+e.stopPropagation();
+if (e.key === 'Tab') return;
+e.preventDefault();
+if (!down || e.repeat) return;
+if (e.key === 'Escape') alertAct('alrclose');
+else if (e.key === ' ' || e.key === 'Enter') { const f = root.activeElement; if (f && f.closest && f.closest('.alr-ov') && f.matches('button:not([disabled])')) f.click(); else alertAct('alrok'); }
+return;
+}
 if (S.stk) {
 e.stopPropagation();
 if (e.key === 'Escape' && down) { e.preventDefault(); closeStreak(); }
@@ -3470,7 +3613,7 @@ if (S.view !== 'games' && !shownNav().some(n => n[0] === S.view)) S.view = isCan
 tick();
 applyPrefs();
 paintAdminLink();
-loadSite();
+loadSite().then(maybeAlert);
 renderMain();
 load();
 paintStreakChip();
