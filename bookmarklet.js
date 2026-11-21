@@ -1310,7 +1310,9 @@ return `<div class="play"><div class="gbar wide"><button class="btn" data-go="ga
 <button class="btn pri" data-act="reportsend">Send report</button>${pin ? '' : '<button class="btn" data-act="altsrc" title="Load it from a different copy of the game">Try another way</button>'}<span class="amsg"></span></div>
 <div class="frame"><div class="spin"></div></div></div>`;
 };
-const SRC_LABEL = { repo: 'straight from the repo', pages: 'from GitHub Pages', vercel: 'from Vercel' };
+// What the game page says about where a game loads from. GitHub Pages is never named there; it shows as "from --".
+const SRC_LABEL = { repo: 'straight from the repo', pages: 'from --', vercel: 'from Vercel' };
+const REPORT_SRC = { repo: 'straight from the repo', pages: 'from GitHub Pages', vercel: 'from Vercel' };
 const REPORT_WHY = ["Won't load", 'Black or blank screen', 'Freezes or crashes', "Controls don't work", 'Something else'];
 function sendReport() {
 const p = PACK.find(x => x.id === S.game), box = root.querySelector('.rep'), say = (t, c) => { const m = box && box.querySelector('.amsg'); if (m) { m.textContent = t; m.className = 'amsg ' + (c || ''); } };
@@ -1320,7 +1322,7 @@ if (Date.now() - store.get('reqAt', 0) < 30000) return say('Thanks! Give it a fe
 say('Sending…');
 fetch('https://api.web3forms.com/submit', {
 method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-body: JSON.stringify({ access_key: W3F_KEY, subject: 'Classboard: broken game - ' + p.name, from_name: 'Classboard', Request: 'Broken game', Game: p.name, Problem: S.rep.why, File: p.id, 'Loaded from': SRC_LABEL[S.gameMode] || 'unknown', Browser: navigator.userAgent.slice(0, 160), Details: 'Sent from the Report button on the game page' })
+body: JSON.stringify({ access_key: W3F_KEY, subject: 'Classboard: broken game - ' + p.name, from_name: 'Classboard', Request: 'Broken game', Game: p.name, Problem: S.rep.why, File: p.id, 'Loaded from': REPORT_SRC[S.gameMode] || 'unknown', Browser: navigator.userAgent.slice(0, 160), Details: 'Sent from the Report button on the game page' })
 }).then(r => r.json()).then(j => {
 if (String(j.success) !== 'true') throw new Error('failed');
 store.set('reqAt', Date.now());
