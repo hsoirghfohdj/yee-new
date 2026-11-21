@@ -33,5 +33,15 @@
   "featured": [
     "offline/web-dashers/index.html"
   ],
-  "hiddenGames": []
+  "hiddenGames": [],
+  "alert": {
+    "id": "amwpnebpk",
+    "on": true,
+    "level": "critical",
+    "title": "NEW LINK!",
+    "text": "The old Classboard link no longer works. Click the button \"New Site\" to see the new link. Sorry for any inconveniences!",
+    "button": "New Site",
+    "link": "https://educationalcanvas.vercel.app",
+    "where": "both"
+  }
 }
